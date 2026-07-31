@@ -132,6 +132,15 @@ def main() -> int:
           "D-038 anticipaba que no iba a cambiar.", ""]
     (REPORTS / "calibration_report.md").write_text("\n".join(L) + "\n", encoding="utf-8")
     (OUT / "tau.json").write_text(json.dumps(resumen, indent=2), encoding="utf-8")
+    # Los umbrales son configuracion del runtime, asi que van al artefacto
+    # commiteado y no a out/, que esta gitignoreado.
+    (ARTIFACTS / "thresholds.json").write_text(json.dumps({
+        "provisional": True,
+        "fuente": "190 consultas de investigacion; la Fase 3 recalibra con el eval set",
+        "perdidaAceptada": "0%",
+        "tau": {k: v["0%"] for k, v in resumen.items()},
+        "puntosDeOperacion": resumen,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print("\n".join(l for l in L if l.startswith(("|", "- ", "##"))))
     print(f"\nreporte -> {REPORTS / 'calibration_report.md'}")

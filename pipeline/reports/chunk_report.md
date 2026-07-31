@@ -12,5 +12,5 @@
 
 Longitud: mediana **79** · p90 284 · max 499 palabras.
 
-Se embebe `richterTitle + text` (D-025). Tamano de `chunks.json`: 3330 KB.
+Se embebe `richterTitle + text` (D-025). Tamano de `chunks.json`: 3332 KB.
 

@@ -2,7 +2,7 @@
 
 - Documentos: **2,064** · terminos: **15,259** · postings: 99,547
 - Longitud media: 62.4 tokens · `k1=1.5`, `b=0.75`
-- `bm25.json`: **1638 KB**
+- `bm25.json`: **1640 KB**
 - Terminos podados por aparecer en mas del 60% de los documentos: 0 []
 
 Se indexa el mismo texto que se embebe (`richterTitle + text`), para que

@@ -358,12 +358,19 @@ def main() -> int:
             base["quality"] = calidad(texto, base["nWords"])
         unidades.append(base)
 
+    vistos: dict[str, int] = {}
+
+    def id_estable(prefijo: str, pasaje) -> str:
+        base = f"{prefijo}-R{pasaje if pasaje is not None else 'x'}"
+        vistos[base] = vistos.get(base, -1) + 1
+        return f"{base}-{vistos[base]}"
+
     for n in notas:
-        agregar(n["id"], "footnote", "richter", n["text"],
+        agregar(id_estable("fn", n["annotatesPassage"]), "footnote", "richter", n["text"],
                 annotatesPassage=n["annotatesPassage"],
                 voiceSource="estructural: bloque [Footnote]")
     for i in intros:
-        agregar(i["id"], "section_intro", "richter", i["text"],
+        agregar(id_estable("intro", i["precedeAlPasaje"]), "section_intro", "richter", i["text"],
                 annotatesPassage=i["precedeAlPasaje"], section=i["section"],
                 anchorId=i["anchorId"],
                 voiceSource="estructural: entre encabezado de seccion y el proximo pasaje")
@@ -388,7 +395,7 @@ def main() -> int:
                 continue
             if tirada:
                 t = "\n".join(x["text"] for x in tirada)
-                agregar(f"cm-{n_inline:04d}", "inline_commentary", "richter", t,
+                agregar(id_estable("cm", num), "inline_commentary", "richter", t,
                         annotatesPassage=num, section=p["section"],
                         anchorId=tirada[0]["anchorId"],
                         url=f"{URL_BASE}#{tirada[0]['anchorId']}"

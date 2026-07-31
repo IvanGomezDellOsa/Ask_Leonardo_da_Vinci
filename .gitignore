@@ -22,3 +22,7 @@ pipeline/raw/*
 experiments/*/data/
 __pycache__/
 *.pyc
+
+# Node
+/node_modules/
+/.next/

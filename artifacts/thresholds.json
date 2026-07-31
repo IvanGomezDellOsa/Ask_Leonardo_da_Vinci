@@ -1,0 +1,21 @@
+{
+  "provisional": true,
+  "fuente": "190 consultas de investigacion; la Fase 3 recalibra con el eval set",
+  "perdidaAceptada": "0%",
+  "tau": {
+    "es": 0.7807633280754088,
+    "en": 0.8262516856193541
+  },
+  "puntosDeOperacion": {
+    "es": {
+      "0%": 0.7807633280754088,
+      "2%": 0.7831105113029478,
+      "5%": 0.7955676317214965
+    },
+    "en": {
+      "0%": 0.8262516856193541,
+      "2%": 0.8279819536209105,
+      "5%": 0.8364083796739578
+    }
+  }
+}

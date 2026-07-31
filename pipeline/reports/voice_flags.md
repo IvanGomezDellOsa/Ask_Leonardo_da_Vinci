@@ -17,8 +17,8 @@ en `pipeline/review/review_overrides.jsonl`. El pipeline lo vuelve a leer.
 - **`rt-0669`** (531 pal · anio_posterior_a_1519)
   > On the battle of Anghiari. Florentine Neri di Gino Capponi Bernardetto de' Medici Micheletto, Niccolo da Pisa Conte Francesco Pietro Gian Paolo Guelfo Orsino, Messer Rinaldo degli Albizzi Be
 
-- **`rt-0705`** (39 pal · anio_posterior_a_1519)
-  > Snow taken from the high peaks of mountains might be carried to hot places and let to fall at festivals in open places at summer time. *** End of Volume 1 Volume 2 Translated by Jean Paul Ri
+- **`rt-0705`** (38 pal · anio_posterior_a_1519)
+  > Snow taken from the high peaks of mountains might be carried to hot places and let to fall at festivals in open places at summer time. End of Volume 1 Volume 2 Translated by Jean Paul Richte
 
 - **`rt-0725`** (760 pal · anio_posterior_a_1519)
   > THE MONUMENT TO MESSER GIOVANNI JACOMO DA TREVULZO. [2] Cost of the making and materials for the horse [5]. A courser, as large as life, with the rider requires for the cost of the metal, du
@@ -29,8 +29,8 @@ en `pipeline/review/review_overrides.jsonl`. El pipeline lo vuelve a leer.
 - **`rt-0747`** (130 pal · referencia_al_aparato)
   > The main underground channel does not receive turbid water, but that water runs in the ditches outside the town with four mills at the entrance and four at the outlet; and this may be done b
 
-- **`rt-0755`** (790 pal · referencia_al_aparato)
-  > It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters made in the frieze. _B. The theory of Dome Architecture. I have already, 
+- **`rt-0755`** (789 pal · referencia_al_aparato)
+  > It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters made in the frieze. B. The theory of Dome Architecture. I have already, i
 
 - **`rt-0757`** (440 pal · referencia_al_aparato)
   > This building is inhabited below and above; the way up is by the campaniles, and in going up one has to use the platform, where the drums of the four domes are, and this platform has a parap
@@ -39,21 +39,21 @@ en `pipeline/review/review_overrides.jsonl`. El pipeline lo vuelve a leer.
   > CONCERNING ARCHITRAVES OF ONE OR SEVERAL PIECES. An architrave of several pieces is stronger than that of one single piece, if those pieces are placed with their length in the direction of t
 
 - **`rt-1294`** (31 pal · referencia_al_aparato)
-  > [Of Funeral Rites, and Processions, and Lights, and Bells, and Followers.] The greatest honours will be paid to men, and much pomp, without their knowledge. ***84 and following; compare No. 
+  > [Of Funeral Rites, and Processions, and Lights, and Bells, and Followers.] The greatest honours will be paid to men, and much pomp, without their knowledge. 84 and following; compare No. 846
 
 - **`rt-1405`** (28 pal · anio_posterior_a_1519)
-  > 24 tavole make 1 perch. 4 trabochi make 1 tavola. 4 braccia and a half make a trabocco. A perch contains 1936 square braccia, or 1944. I.2 70b]
+  > 24 tavole make 1 perch. 4 trabochi make 1 tavola. 4 braccia and a half make a trabocco. A perch contains 1936 square braccia, or 1944. I.2 70b
 
 - **`rt-1467`** (81 pal · referencia_al_aparato)
   > Gian Maria 4, Benedetto 4, Gian Pietro [*5] 3, Salai 3, Bartolomeo 3, Gherardo 4. 2. 3. Francesco de' Melzi is often mentioned, see Nos. 1350. 3. Salai. See No. 1519 note. 1466. This seems t
 
-- **`rt-1469`** (239 pal · referencia_al_aparato)
-  > Book on Arithmetic 'Flowers of Virtue', Pliny, 'Lives of the Philosophers', The Bible, 'Lapidary', 'On warfare' 'Epistles of Filelfo', ****below must belong to previous page's footnotes*** o
+- **`rt-1469`** (237 pal · referencia_al_aparato)
+  > Book on Arithmetic 'Flowers of Virtue', Pliny, 'Lives of the Philosophers', The Bible, 'Lapidary', 'On warfare' 'Epistles of Filelfo', below must belong to previous page's footnotes observat
 
 - **`rt-1503`** (75 pal · primera_persona_editorial)
   > of double the diameter cannot be moved by double the exertion, be- cause the superficies of a body of the same form but twice as large has four times the extent of the superficies of the sma
 
-- **`rt-1522`** (149 pal · anio_posterior_a_1519)
+- **`rt-1522`** (147 pal · anio_posterior_a_1519)
   > EXPENSES OF THE INTERMENT OF CATERINA. For the 3 Ibs of tapers 27 S For the bier 8 S A pall over the bier 12 S For bearing and placing the cross 4 S For bearing the body 8 S For 4 priests an
 
 - **`rt-1533`** (73 pal · anio_posterior_a_1519)
@@ -280,7 +280,7 @@ Es donde estaria un falso negativo del clasificador de bloque.
   > OF THE SHADOW AND ITS MOTION. When two bodies casting shadows, and one in front of the other, are between a window and the wall with some space between them, the shadow of the body which is 
 
 - **`rt-1397`** (13 pal)
-  > Have some ears of corn of large size sent from Florence. S.K.M.II.2 52a]
+  > Have some ears of corn of large size sent from Florence. S.K.M.II.2 52a
 
 - **`rt-1532`** (33 pal)
   > To Salai 4 grossoni, and for one braccio of velvet, 5 lire, and 1/2; viz. 10 soldi for loops of silver; Salai 14 soldi for binding, the making of the cloak 25 soldi.
@@ -328,7 +328,7 @@ Es donde estaria un falso negativo del clasificador de bloque.
   > The bough of the walnut which is only hit and beaten when it has brought to perfection…
 
 - **`rt-1480`** (12 pal)
-  > Aristotle says that every body tends to maintain its nature. K.2 3b]
+  > Aristotle says that every body tends to maintain its nature. K.2 3b
 
 - **`rt-1341`** (14 pal)
   > To my illustrious Lord, Lodovico, Duke of Bari, Leonardo da Vinci of Florence— Leonardo.
@@ -400,7 +400,7 @@ Es donde estaria un falso negativo del clasificador de bloque.
   > Perspective, in dealing with distances, makes use of two opposite pyramids, one of which has its apex in the eye and the base as distant as the horizon. The other has the base towards the ey
 
 - **`rt-1508`** (24 pal)
-  > How this proposition of Xenophon is false. If you take away unequal quantities from unequal quantities, but in the same proportion, &c. B. 4a]
+  > How this proposition of Xenophon is false. If you take away unequal quantities from unequal quantities, but in the same proportion, &c. B. 4a
 
 - **`rt-0948`** (12 pal)
   > The waters of the salt sea are fresh at the greatest depths.
@@ -493,7 +493,7 @@ Es donde estaria un falso negativo del clasificador de bloque.
   > Francesco d'Antonio at Florence. 11. 13. 12. *13. 24. *16.
 
 - **`rt-1411`** (3 pal)
-  > Pulleys,—nails,—rope,—mercury,—cloth, Monday. W.A.II.202b]
+  > Pulleys,—nails,—rope,—mercury,—cloth, Monday. W.A.II.202b
 
 - **`rt-1338`** (74 pal)
   > BOOK 43. OF THE MOVEMENT OF AIR ENCLOSED IN WATER. I have seen motions of the air so furious that they have carried, mixed up in their course, the largest trees of the forest and whole roofs

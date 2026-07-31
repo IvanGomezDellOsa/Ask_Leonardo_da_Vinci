@@ -4,10 +4,10 @@
 
 | | unidades | palabras |
 |---|---:|---:|
-| **Leonardo** (indice T1) | 1,549 | 169,783 |
-| Richter · `absence` | 36 | 9,411 |
-| Richter · `substantive` | 578 | 56,155 |
-| Richter · `apparatus` (fuera del indice) | 466 | 6,437 |
+| **Leonardo** (indice T1) | 1,549 | 169,757 |
+| Richter · `absence` | 36 | 9,385 |
+| Richter · `substantive` | 563 | 55,240 |
+| Richter · `apparatus` (fuera del indice) | 476 | 6,201 |
 
 ## Comentario de Richter extraido de adentro de los pasajes
 

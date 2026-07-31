@@ -97,6 +97,66 @@ RASGOS_LEONARDO = [
 # "Begun by me, Leonardo da Vinci, on the 12th of July 1505", "I, Leonardo da
 # Vinci, lent to Vante". Lo que nunca hace es hablar de si mismo en tercera
 # persona, que es lo que el rasgo quiere capturar.
+# --------------------------------------------------------------------------
+# higiene e indicador de calidad
+# --------------------------------------------------------------------------
+
+RE_ENVOLTORIO = re.compile(r"^\[Footnote(?:\s*\d+)?\s*:?\s*|\s*\]\s*$")
+RE_TRANSCRIPTOR = re.compile(r"\*{2,}[^*]{0,40}\*{2,}|\*{3,}")
+RE_GUION_BAJO = re.compile(r"_")
+
+
+def limpiar(texto: str) -> str:
+    """Saca los restos del aparato que no son parte del texto.
+
+    El envoltorio `[Footnote: ... ]` es un delimitador del transcriptor, no
+    prosa de Richter; los guiones bajos son marcas de cursiva del .txt que el
+    generador de HTML de Gutenberg dejo sin limpiar (97 unidades); y `***` son
+    marcas del propio transcriptor ("*** from previous page?***").
+    """
+    texto = RE_ENVOLTORIO.sub("", texto)
+    texto = RE_TRANSCRIPTOR.sub(" ", texto)
+    texto = RE_GUION_BAJO.sub("", texto)
+    texto = re.sub(r"[ \t]+", " ", texto)
+    return re.sub(r"\n{2,}", "\n", texto).strip()
+
+
+# Palabras funcionales del ingles. Un texto de Leonardo traducido por Richter
+# las usa; una lista de toponimos, un verso latino o un OCR de griego roto, no.
+FUNCIONALES = set(
+    "the a an of and or to in on at by for with is are was were be been being it "
+    "its this that these those as from not no all any which who when where what "
+    "will would shall should may might can could do does did has have had but if "
+    "so than then there their they he she we you your his her my me i".split())
+RE_NO_LATINO = re.compile(r"[Ͱ-Ͽἀ-῿Ѐ-ӿ]")
+UMBRAL_FUNCIONALES = 0.22
+
+
+def calidad(texto: str, n_palabras: int) -> str:
+    """`low` marca material sin contenido recuperable. Ver D-054.
+
+    D-044 dejo esto pendiente para la Fase 1 y advirtio que un filtro por tasa
+    de palabras funcionales "se lleva puestos aforismos legitimos y cortos".
+    Medido, con el umbral en 0,22 no ocurre: los imanes que D-044 nombra caen
+    entre 0,00 y 0,20, y los pasajes legitimos mas pobres estan en 0,36.
+    "A point is not part of a line" da 0,71.
+    """
+    if n_palabras < 8:
+        return "low"
+    if RE_NO_LATINO.search(texto):
+        return "low"
+    letras = sum(c.isalpha() for c in texto)
+    if letras / max(1, len(texto)) < 0.62:
+        return "low"
+    palabras = re.findall(r"[A-Za-z']+", texto.lower())
+    ratio = sum(1 for w in palabras if w in FUNCIONALES) / max(1, len(palabras))
+    if ratio < UMBRAL_FUNCIONALES:
+        return "low"
+    if len(re.findall(r"[a-z]\.", texto)) >= 6:
+        return "low"
+    return "ok"
+
+
 RE_AUTONOMBRE = re.compile(r"\b(?:I|me|my|mine)\b[^.]{0,60}\bLeonardo\b", re.I)
 
 UMBRAL_SEMILLA = 2.0     # 77% de recall con 0,4% de falsos positivos
@@ -245,15 +305,20 @@ def main() -> int:
     unidades: list[dict] = []
 
     def agregar(uid, kind, voice, texto, **extra):
+        texto = limpiar(texto)
+        if not texto:
+            return
         base = {"id": uid, "kind": kind, "voice": voice, "text": texto,
                 "nWords": len(texto.split()), "flags": [],
                 "richterNo": None, "richterTitle": None, "section": None,
                 "subsection": None, "annotatesPassage": None,
-                "anchorId": None, "url": None, "utility": None,
+                "anchorId": None, "url": None, "utility": None, "quality": None,
                 "voiceSource": "estructural"}
         base.update(extra)
         if voice == "richter":
             base["utility"] = utilidad(texto, base["nWords"])
+        else:
+            base["quality"] = calidad(texto, base["nWords"])
         unidades.append(base)
 
     for n in notas:

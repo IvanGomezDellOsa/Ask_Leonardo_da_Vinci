@@ -1,0 +1,14 @@
+#!/bin/sh
+# Rejects the commit if any staged addition matches a known API key pattern.
+
+pattern='AIza[0-9A-Za-z_-]{35}|gsk_[A-Za-z0-9]{40,}|sk-[A-Za-z0-9]{20,}'
+
+matches=$(git diff --cached -U0 --diff-filter=ACM | grep -E '^\+' | grep -vE '^\+\+\+' | grep -E "$pattern")
+
+if [ -n "$matches" ]; then
+  echo "pre-commit: possible API key detected in staged changes, aborting commit"
+  echo "$matches"
+  exit 1
+fi
+
+exit 0

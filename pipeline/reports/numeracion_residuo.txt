@@ -1,0 +1,60 @@
+Residuo de numeracion: HTML contra .txt.
+
+lineas de numeracion en el HTML : 1,550
+lineas de numeracion en el .txt : 1,566
+
+--- en el .txt y NO en el HTML ---
+  12. -> *13. 24. *16.
+
+  43. -> *73-75. shadow extends as far as the borders of Sarmatia, twelve days off; and in the middle of December it extends as far as the Hyperborean mountains, which are at a month's journey to the North [*75]. And the side which faces the wind is always free from clouds and mists, because the wind which i
+
+  200. -> To make the model in clay and then in wax......... duc. 432. To the labourers for polishing it when it is cast. ....... duc. 450. in all. . duc. 1582. [12] Cost of the marble of the monument [14]. Cost of the marble according to the drawing. The piece of marble under the horse which is 4 braccia lon
+
+  1031. -> Feathers will raise men, as they do birds, towards heaven (that is, by the letters which are written with quills.) The works of men's hands will occasion their death. (Swords and Spears.) Men out of fear will cling to the thing they most fear. (That is they will be miserable lest they should fall in
+
+  1075. -> The river at Villefranche may be conducted to Romorantin which may be done by the inhabitants; and the timber of which their houses are built may be carried in boats to Romorantin . The river may be dammed up at such a height that the waters may be brought back to Romorantin with a convenient fall.
+
+  1414. -> Paul of Vannochio at Siena ... The upper chamber for the apostles. [4] Buildings by Bramante. The governor of the castle made a prisoner. [Footnote 6: Visconti. Chi fosse quel Visconte non sapremmo indovinare fra tanti di questo nome. Arluno narra che allora atterrate furono le case de' Viconti, de'
+
+  1489. -> 5th Book of Euclid. First definition: a part is a quantity of less magnitude than the greater magnitude when the less is contained a certain number of times in the greater. A part properly speaking is that which may be multiplied, that is when, being multiplied by a certain number, it forms exactly 
+
+  1493. -> Ammianus Marcellinus asserts that seven hundred thousand volumes of books were burnt in the siege of Alexandria in the time of Julius Cesar. Tr. 2] W. XXIII.]
+
+  1504. -> On the 9th day of August, 1504, I took 10 florins in gold[*2] .... [*3] on Friday the 9th day of August fifteen grossoni that is fl. 5 S 5 .... given to me 1 florin in gold on the l2th day of August [*4] ..... on the 14th of August, 32 grossoni to Tommaso. On the l8th of the same 5 grossoni to Salai
+
+  1511. -> On the first day of February, lire 1200. S.K.M.III. 47a]
+
+  1520. -> On Tuesday I bought wine for morning [drinking]; on Friday the 4th day of September the same. S.K.M. II.I 94b]
+
+  1523. -> Salai's cloak, the 4th of April 1497. 4 braccia of silver cloth l. 15 S 4 green velvet to trim it l. 9 S -- binding l.-- S 9 loops l.-- S 12 the making l. 1 S 5 binding for the front l.-- S 5 stitching _________ here are 13 grossoni of his l. 26 S 5 Salai stole the soldi.
+
+  1534. -> To Salai S 42 2 dozen of laces S 8 for papers S 3 d 8 a pair of shoes S 14 for velvet S 14 a sword and knife S 21 to the barber S 11 to Paolo for a.... S 20 For having his fortune told S 6
+
+  1540. -> 20 pounds of German blue, at one ducat the pound lire 80 S d 60 pounds of white, S.. the pound lire 15 S d 1 1/2 pound at 48 the pound lire 6 S d 2 pounds of cinnabar at S 18 the pound lire 1 S 16 d 6 pounds of green at S 12 the pound lire 3 S 12 d 4 pounds of yellow at S 12 the pound lire 2 S 8 d 1
+
+  3046. -> 
+
+  57000. -> Of time and its divisions (916-918).
+
+--- en el HTML y NO en el .txt ---
+--- numeros que no existen en NINGUNO de los dos archivos ---
+    (huecos de la propia numeracion de Richter o numeros absorbidos por
+     una nota que el fuente no cierra; no son perdida del parser)
+    185, 307, 314, 706, 716, 911, 912, 1077, 1156, 1301, 1474, 1475, 1513
+
+--- lineas 'N.' descartadas por romper la monotonia ---
+    (anios, importes y referencias cruzadas sueltos en su propia linea)
+    1489.
+    200.
+    3046.
+    1520.
+    57000.
+    1075.
+    1031.
+    43.
+    1414.
+    12.
+    1493.
+    1511.
+    1504.
+

@@ -1,0 +1,404 @@
+Titulos del Volumen II: decididos por la regla nominal, sin indice.
+
+El Volumen I tiene indice de contenidos y ahi el titulo es un dato, no
+una inferencia. El Volumen II no lo tiene. Estos son todos los candidatos
+estructurales del Volumen II con el veredicto de la regla, para revision
+ocular: un ACEPTA equivocado se lleva puesto el cuerpo de un pasaje.
+
+aceptados 161 de 395 candidatos
+
+  [ACEPTA] R-703   Ornaments and Decorations for feasts (703-705)
+  [rechaza] R-704   A bird, for a comedy
+  [ACEPTA] R-709   Degree—point—minute—minim
+  [ACEPTA] R-710   Notes on the casting of the Sforza monument (710-715)
+  [rechaza] R-712   Dam it up again with glue and clay, or white of egg, and bricks and rubbish
+  [rechaza] R-713   All the heads of the large nails
+  [rechaza] R-714   These bindings go inside
+  [ACEPTA] R-717   Messer Galeazzo's big genet
+  [rechaza] R-718   Messer Galeazzo's Sicilian horse
+  [ACEPTA] R-719   Occasional references to the Sforza monument (719-724)
+  [rechaza] R-721   On the 23rd of April 1490 I began this book, and recommenced the horse
+  [rechaza] R-724   Of the horse I will say nothing because I know the times
+  [ACEPTA] R-725   The project of the Trivulzio monument
+  [rechaza] R-726   The sum total of every thing added together amount to …… duc. 3046
+  [rechaza] R-729   Vitrified brass makes a fine red
+  [ACEPTA] R-731   On bronze casting generally (731-740)
+  [rechaza] R-733   Take to every 2 cups of plaster 1 of ox-horns burnt, mix them together and make your cast with it
+  [rechaza] R-734   When you want to take a cast in wax, burn the scum with a candle, and the cast will come out without bubbles
+  [rechaza] R-737   Such as the mould is, so will the cast be
+  [rechaza] R-745   The third text given under No. 747 refers to works executed by Leonardo in France._
+  [rechaza] R-747   Let the width of the streets be equal to the average height of the houses
+  [rechaza] R-751   The firststorey [or terrace] must be entirely solid
+  [rechaza] R-752   The plan of the pavilion which is in the middle of the labyrinth of the Duke of Milan
+  [ACEPTA] R-753   A. General Observations._
+  [rechaza] R-754   A building should always be detached on all sides so that its form may be seen
+  [rechaza] R-757   On the left is a view of the exterior of the preceding plan. It is accompanied by the following note:_
+  [ACEPTA] R-759   G. Description of an unknown Temple
+  [rechaza] R-760   The following texts refer to the construction of palaces and other buildings destined for private use:
+  [ACEPTA] R-761   On the dispositions of a stable
+  [ACEPTA] R-762   Decorations for feasts
+  [rechaza] R-766   The plinth must be as broad as the thickness of the wall against which the plinth is built
+  [rechaza] R-775   A new tower founded partly on old masonry
+  [rechaza] R-783   A continuous body which has been forcibly bent into an arch, thrusts in the direction of the straight line, wh
+  [rechaza] R-784   In an arch judiciously weighted the thrust is oblique, so that the triangle c n b has no weight upon it
+  [rechaza] R-785   I here ask what weight will be needed to counterpoise and resist the tendency of each of these arches to give 
+  [rechaza] R-794   That angle will offer the greatest resistance which is most acute, and the most obtuse will be the weakest
+  [ACEPTA] R-797   Plans and suggestions for the arrangement of materials (797-802)
+  [rechaza] R-801   Begin the anatomy at the head and finish at the sole of the foot
+  [ACEPTA] R-803   Plans for the representation of muscles by drawings (803-809)
+  [rechaza] R-807   Which nerves or sinews of the hand are those which close and part the fingers and toes latteraly?
+  [ACEPTA] R-809   On corpulency and leanness (809-811)
+  [rechaza] R-811   Where the muscles separate one from another you must give profiles and where they coalesce …
+  [ACEPTA] R-812   The divisions of the head (812. 813)
+  [ACEPTA] R-814   Physiological problems (814. 815)
+  [ACEPTA] R-816   The divisions of the animal kingdom (816. 817)
+  [ACEPTA] R-818   Miscellaneous notes on the study of Zoology (818-821)
+  [rechaza] R-819   Procure the placenta of a calf when it is born and observe the form of the cotyledons, if their cotyledons are
+  [rechaza] R-820   Describe the tongue of the woodpecker and the jaw of the crocodile
+  [ACEPTA] R-822   Comparative study of the structure of bones and of the action of muscles (822-826)
+  [rechaza] R-827   Comparative study of the organs of sense in men and animals
+  [ACEPTA] R-828   Advantages in the structure of the eye in certain animals (828-831)
+  [rechaza] R-830   Study the anatomy of various eyes and see which are the muscles which open and close the said pupils of the ey
+  [ACEPTA] R-832   (832. 833)
+  [rechaza] R-833   It may be shown how all the vowels are pronounced with the farthest portion of the false palate which is above
+  [ACEPTA] R-834   On the conditions of sight (834. 835)
+  [rechaza] R-835   No body can be apprehended without light and shade, and light and shade are caused by light
+  [ACEPTA] R-836   The seat of the common sense
+  [ACEPTA] R-837   On the origin of the soul
+  [rechaza] R-838   On the relations of the soul to the organs of sense
+  [ACEPTA] R-839   On involuntary muscular action
+  [ACEPTA] R-840   Miscellaneous physiological observations (840-842)
+  [rechaza] R-842   I reveal to men the origin of the first, or perhaps second cause of their existence
+  [ACEPTA] R-843   The laws of nutrition and the support of life (843-848)
+  [rechaza] R-846   In dead matter insensible life remains, which, reunited to the stomachs of living beings, resumes life, both s
+  [ACEPTA] R-848   On the circulation of the blood (848-850)
+  [ACEPTA] R-851   Some notes on medicine (851-855)
+  [rechaza] R-854   Medicine is the restoration of discordant elements; sickness is the discord of the elements infused into the l
+  [rechaza] R-855   Those who are annoyed by sickness at sea should drink extract of wormwood
+  [ACEPTA] R-857   The earth's place in the universe (857. 858)
+  [rechaza] R-858   These lines are those which in all their parts are equidistant from the centre of the globe
+  [ACEPTA] R-859   The fundamental laws of the solar system (859-864)
+  [rechaza] R-862   It would remain in a sphere round that centre equally thick, but the sphere would have a smaller diameter than
+  [ACEPTA] R-863   And the rocks with their various strata?
+  [ACEPTA] R-865   How to prove that the earth is a planet (865-867)
+  [rechaza] R-866   That the earth is a star
+  [rechaza] R-869   Beyond the sun and us there is darkness and so the air appears blue
+  [ACEPTA] R-874   On the luminosity of the Earth in the universal space (874-878)
+  [ACEPTA] R-879   The question of the true and of the apparent size of the sun (879-884)
+  [ACEPTA] R-881   Marcellus and many others praise the sun
+  [ACEPTA] R-885   Of the nature of Sunlight
+  [ACEPTA] R-886   Considerations as to the size of the sun (886-891)
+  [rechaza] R-887   The sun does not move
+  [rechaza] R-889   Take the measure of the sun at the solstice in mid-June
+  [rechaza] R-890   Every object seen through a curved medium seems to be of larger size than it is
+  [ACEPTA] R-892   On the luminousity of the moon (892-901)
+  [rechaza] R-894   And show that the image of the sun in the sea cannot appear one and undivided, as it appears in a perfectly pl
+  [rechaza] R-895   How shadows are lost at great distances, as is shown by the shadow side of the moon which is never seen
+  [rechaza] R-901   All my opponent's arguments to say that there is no water in the moon
+  [ACEPTA] R-902   Explanation of the lumen cinereum in the moon
+  [ACEPTA] R-903   On the spots in the moon (903-907)
+  [ACEPTA] R-908   On the moon's halo
+  [ACEPTA] R-909   On instruments for observing the moon (909. 910)
+  [ACEPTA] R-914   Observations on the stars
+  [ACEPTA] R-915   On history of astronomy
+  [ACEPTA] R-916   Of time and its divisions (916-918)
+  [rechaza] R-918   Describe the nature of Time as distinguished from the Geometrical definitions
+  [ACEPTA] R-919   Schemes for the arrangement of the materials (919-928)
+  [ACEPTA] R-921   Book 15 of matters worn away by water
+  [rechaza] R-923   Describe all the forms taken by water from its greatest to its smallest wave, and their causes
+  [rechaza] R-924   Book 9, of accidental risings of water
+  [rechaza] R-925   Place at the beginning what a river can effect
+  [rechaza] R-926   A book of guarding against the impetus of rivers so that towns may not be damaged by them
+  [rechaza] R-927   A book of the formation of hills of sand or gravel at great depths in water
+  [rechaza] R-928   A book of the various motions of waters in their rivers
+  [ACEPTA] R-929   General introduction
+  [ACEPTA] R-930   The arrangement of Book I
+  [ACEPTA] R-931   Definitions (931. 932)
+  [rechaza] R-932   Among the four elements water is the second both in weight and in instability
+  [ACEPTA] R-933   Of the surface of the water in relation to the globe (933-936)
+  [ACEPTA] R-937   Of the proportion of the mass of water to that of the earth (937. 938)
+  [ACEPTA] R-939   The theory of Plato
+  [rechaza] R-940   That the flow of rivers proves the slope of the land
+  [ACEPTA] R-941   Theory of the elevation of water within the mountains
+  [ACEPTA] R-942   The relative height of the surface of the sea to that of the land (942-945)
+  [rechaza] R-943   Obviously no portions of dry land left uncovered by water can ever be lower than the surface of the watery sph
+  [ACEPTA] R-946   Refutation of Pliny's theory as to the saltness of the sea (946. 947)
+  [ACEPTA] R-948   The characteristics of sea water (948. 949)
+  [rechaza] R-949   The waters of the salt sea are fresh at the greatest depths
+  [ACEPTA] R-950   On the formation of Gulfs (950. 951)
+  [rechaza] R-951   All inland seas and the gulfs of those seas, are made by rivers which flow into the sea
+  [ACEPTA] R-952   On the encroachments of the sea on the land and vice versa (952-954)
+  [ACEPTA] R-955   The ebb and flow of the tide (955-960)
+  [rechaza] R-956   Look whether the sea is at its greatest flow when the moon is half way over our hemisphere [on the meridian]
+  [ACEPTA] R-961   Theory of the circulation of the waters (961. 962)
+  [rechaza] R-962   Very large rivers flow under ground
+  [ACEPTA] R-963   Observations in support of the hypothesis (963-969)
+  [rechaza] R-970   On the way in which the sources of rivers are fed
+  [ACEPTA] R-971   The tide in estuaries
+  [ACEPTA] R-972   On the alterations, caused in the courses of rivers by their confluence (972-974)
+  [ACEPTA] R-975   Whirlpools
+  [ACEPTA] R-976   On the alterations in the channels of rivers
+  [ACEPTA] R-977   The origin of the sand in rivers (977. 978)
+  [ACEPTA] R-979   The formation of mountains (979-983)
+  [rechaza] R-980   Mountains are destroyed by the currents of rivers
+  [rechaza] R-982   In proportion as the valleys become deeper, the more quickly are their sides worn away
+  [rechaza] R-983   In every concavity at the summit of the mountains we shall always find the divisions of the strata in the rock
+  [rechaza] R-984   The authorities for the study of the structure of the earth
+  [ACEPTA] R-986   Doubts about the deluge
+  [rechaza] R-987   That marine shells could not go up the mountains
+  [rechaza] R-988   The marine shells were not produced away from the sea
+  [ACEPTA] R-989   Further researches (989-991)
+  [ACEPTA] R-992   Other problems (992-994)
+  [ACEPTA] R-995   Constituents of the atmosphere
+  [ACEPTA] R-996   On the motion of air (996—999)
+  [ACEPTA] R-1000  The globe an organism
+  [ACEPTA] R-1001  Canals in connection with the Arno (1001-1008)
+  [rechaza] R-1004  By guiding the Arno above and below a treasure will be found in each acre of ground by whomsoever will
+  [rechaza] R-1005  The wall of the old houses runs towards the gate of San Nicolo
+  [rechaza] R-1006  The ruined wall is 640 braccia; 130 is the wall remaining with the mill; 300 braccia were broken in 4 years by
+  [rechaza] R-1008  The eddy made by the Mensola, when the Arno is low and the Mensola full
+  [ACEPTA] R-1009  Canals in the Milanese (1009-1013)
+  [rechaza] R-1010  The canal of San Cristofano at Milan made May 3rd 1509
+  [ACEPTA] R-1014  Estimates and preparatory studies for canals (1014. 1015)
+  [ACEPTA] R-1016  Notes on buildings in Milan (1016-1019)
+  [rechaza] R-1017  Moforte—porta resa—porta nova—strada nova—navilio—porta cumana—barco—porta giovia—porta vercellina—porta sco A
+  [ACEPTA] R-1018  The filling of the moats of the Castle of Milan
+  [rechaza] R-1019  To heat the water for the stove of the Duchess take four parts of cold water to three parts of hot water
+  [ACEPTA] R-1020  To place the mass v r in the…
+  [ACEPTA] R-1021  Remarks on natural phenomena in and near Milan (1021. 1022)
+  [ACEPTA] R-1023  Note on Pavia
+  [ACEPTA] R-1024  Notes on the Sforzesca near Vigevano (1024-1028)
+  [rechaza] R-1025  On the 2nd day of February 1494. At Sforzesca I drew twenty five steps, 2/3 braccia to each, and 8 braccia wid
+  [rechaza] R-1026  The vineyards of Vigevano on the 20th day of March 1494
+  [rechaza] R-1027  To lock up a butteris at Vigevano
+  [ACEPTA] R-1029  Notes on the North Italian lake. (1029-1033)
+  [ACEPTA] R-1034  Notes on places in Central Italy, visited in 1502 (1034-1054)
+  [rechaza] R-1035  Pigeon-house at Urbino, the 30th day of July 1502
+  [rechaza] R-1036  Made by the sea at Piombino
+  [rechaza] R-1037  Acquapendente is near Orvieto
+  [rechaza] R-1038  The rock of Cesena
+  [rechaza] R-1039  Siena, a b 4 braccia, a c 10 braccia. Steps at [the castle of] Urbino
+  [rechaza] R-1040  The bell of Siena, that is the manner of its movement, and the place of the attachment of the clapper
+  [rechaza] R-1041  On St. Mary's day in the middle of August, at Cesena, 1502
+  [rechaza] R-1042  Stairs of the [palace of the] Count of Urbino,—rough
+  [rechaza] R-1043  At the fair of San Lorenzo at Cesena. 1502
+  [rechaza] R-1044  Windows at Cesena
+  [rechaza] R-1046  The rock of the harbour of Cesena is four points towards the South West from Cesena
+  [rechaza] R-1048  Thus grapes are carried at Cesena. The number of the diggers of the ditches is [arranged] pyramidically
+  [rechaza] R-1050  The fortress at Urbino
+  [rechaza] R-1051  Bertinoro, as regards Imola, is five points from the East to wards the South East, at 27 miles
+  [rechaza] R-1052  Bertinoro is seen from Imola two points from the East towards the South East at a distance of 27 miles
+  [rechaza] R-1054  On the first of August 1502, the library at Pesaro
+  [ACEPTA] R-1055  Alessandria in Piedmont (1055. 1056)
+  [ACEPTA] R-1057  The Alps (1057-1062)
+  [rechaza] R-1060  The river Arve, a quarter of a mile from Geneva in Savoy, where the fair is held on midsummerday in the villag
+  [ACEPTA] R-1063  The Appenins (1063-1068)
+  [rechaza] R-1064  That the Gallic Alps are the highest part of Europe
+  [rechaza] R-1065  And of these I found some in the rocks of the high Appenines and mostly at the rock of La Vernia
+  [rechaza] R-1067  A method for drying the marsh of Piombino
+  [rechaza] R-1071  Perpignan. Roanne. Lyons. Paris. Ghent. Bruges. Holland
+  [ACEPTA] R-1080  On the Germans (1080. 1081)
+  [ACEPTA] R-1082  The Danube
+  [ACEPTA] R-1083  The straits of Gibraltar (1083-1085)
+  [rechaza] R-1089  Circumfulgore is a naval machine. It was an invention of the men of Majorca
+  [ACEPTA] R-1090  The Levantine Sea
+  [ACEPTA] R-1091  The Red Sea. (1091. 1092)
+  [ACEPTA] R-1093  The Nile (1093-1098)
+  [rechaza] R-1094  Therefore we must conclude those mountains to be of the greatest height, above which the clouds falling in sno
+  [rechaza] R-1095  In these four meshes of the net the camels for baggage place their feet
+  [rechaza] R-1097  Very many times the Nile and other very large rivers have poured out their whole element of water and restored
+  [rechaza] R-1098  Why does the inundation of the Nile occur in the summer, coming from torrid countries?
+  [ACEPTA] R-1099  Customs of Asiatic Nations (1099. 1100)
+  [ACEPTA] R-1101  Rhodes (1101. 1102)
+  [ACEPTA] R-1103  Cyprus (1103. 1104)
+  [ACEPTA] R-1104  The Caspian Sea (1105. 1106)
+  [ACEPTA] R-1107  The sea of Azov
+  [ACEPTA] R-1108  The Dardanelles
+  [ACEPTA] R-1109  Constantinople
+  [ACEPTA] R-1110  The Euphrates
+  [ACEPTA] R-1111  Centrae Asia
+  [ACEPTA] R-1112  On the natives of hot countries
+  [ACEPTA] R-1113  The ship's logs of Vitruvius, of Alberti and of Leonardo
+  [ACEPTA] R-1114  Methods of staying and moving in water
+  [ACEPTA] R-1115  On naval warfare (1115. 1116)
+  [ACEPTA] R-1117  The use of swimming belts
+  [ACEPTA] R-1118  On the gravity of water
+  [ACEPTA] R-1119  Diving apparatus and Skating (1119-1121)
+  [rechaza] R-1120  Of walking under water. Method of walking on water
+  [rechaza] R-1121  Just as on a frozen river a man may run without moving his feet, so a car might be made that would slide by it
+  [ACEPTA] R-1122  On Flying machines (1122-1126)
+  [ACEPTA] R-1127  Of mining
+  [ACEPTA] R-1128  Of Greek fire
+  [ACEPTA] R-1129  Of Music (1129. 1130)
+  [ACEPTA] R-1132  Prayers to God (1132. 1133)
+  [ACEPTA] R-1134  The powers of Nature (1134-1139)
+  [rechaza] R-1136  Necessity is the theme and the inventress, the eternal curb and law of nature
+  [rechaza] R-1139  Our body is dependant on heaven and heaven on the Spirit
+  [ACEPTA] R-1140  Psychology (1140-1147)
+  [rechaza] R-1143  The spirit desires to remain with its body, because, without the organic instruments of that body, it can neit
+  [rechaza] R-1145  Why does the eye see a thing more clearly in dreams than with the imagination being awake?
+  [rechaza] R-1146  The senses are of the earth; Reason, stands apart in contemplation
+  [rechaza] R-1147  Discerning, judging, deliberating are acts of the human mind
+  [ACEPTA] R-1148  Science, its principles and rules (1148—1161)
+  [rechaza] R-1149  Science is the observation of things possible, whether present or past; prescience is the knowledge of things 
+  [rechaza] R-1151  Wisdom is the daughter of experience
+  [rechaza] R-1152  Nature is full of infinite causes that have never occured in experience
+  [rechaza] R-1153  Truth was the only daughter of Time
+  [rechaza] R-1157  Every instrument requires to be made by experience
+  [rechaza] R-1161  Science is the captain, and practice the soldiers
+  [ACEPTA] R-1162  What is life? (1162. 1163)
+  [ACEPTA] R-1164  Death
+  [ACEPTA] R-1165  (1165-1170)
+  [rechaza] R-1167  By these square-blocks are meant the life and the studies of men
+  [rechaza] R-1168  The knowledge of past times and of the places on the earth is both an ornament and nutriment to the human mind
+  [rechaza] R-1170  Avoid studies of which the result dies with the worker
+  [rechaza] R-1173  For nothing can be loved or hated unless it is first known
+  [rechaza] R-1174  As a day well spent procures a happy sleep, so a life well employed procures a happy death
+  [rechaza] R-1175  Life if well spent, is long
+  [rechaza] R-1178  When Fortune comes, seize her in front with a sure hand, because behind she is bald
+  [ACEPTA] R-1180  On foolishness and ignorance (1180—1182)
+  [rechaza] R-1181  The greatest deception men suffer is from their own opinions
+  [rechaza] R-1182  Folly is the shield of shame, as unreadiness is that of poverty glorified
+  [ACEPTA] R-1183  On riches (1183—1187)
+  [rechaza] R-1186  He who possesses most must be most afraid of loss
+  [rechaza] R-1187  He who wishes to be rich in a day will be hanged in a year
+  [ACEPTA] R-1188  Rules of Life (1188-1202)
+  [rechaza] R-1189  You grow in reputation like bread in the hands of a child
+  [rechaza] R-1190  Savage he is who saves himself
+  [rechaza] R-1191  We ought not to desire the impossible
+  [rechaza] R-1192  The grave will fall in upon him who digs it
+  [rechaza] R-1194  Where there is most feeling, there is the greatest martyrdom;—a great martyr
+  [rechaza] R-1195  Be not false about the past
+  [rechaza] R-1197  To speak well of a base man is much the same as speaking ill of a good man
+  [rechaza] R-1198  Envy wounds with false accusations, that is with detraction, a thing which scares virtue
+  [rechaza] R-1199  We are deceived by promises and time disappoints us …
+  [rechaza] R-1200  Fear arises sooner than any thing else
+  [rechaza] R-1201  It is ill to praise, and worse to reprimand in matters that you do not understand
+  [ACEPTA] R-1203  Politics (1203. 1204)
+  [ACEPTA] R-1205  Against Speculators (1205. 1206)
+  [ACEPTA] R-1207  Against alchemists (1207. 1208)
+  [ACEPTA] R-1209  Against friars
+  [ACEPTA] R-1210  Against writers of epitomes
+  [ACEPTA] R-1211  On spirits (1211—1213)
+  [rechaza] R-1213  Beware of the teaching of these speculators, because their reasoning is not confirmed by experience
+  [ACEPTA] R-1216  Nonentity
+  [ACEPTA] R-1217  Reflections on Nature (1217-1219)
+  [rechaza] R-1224  The toad feeds on earth and always remains lean; because it never eats enough:— it is so afraid lest it should
+  [rechaza] R-1228  Although partridges steal each other's eggs, nevertheless the young born of these eggs always return to their 
+  [rechaza] R-1231  And this is the last vice to be conquered
+  [rechaza] R-1237  At that height nothing can go unless it has a gift from Heaven, and that is where the chameleon flies
+  [rechaza] R-1240  This carries instantaneous death in its fangs; and, that it may not hear the charmer it stops its ears with it
+  [rechaza] R-1243  The spider brings forth out of herself the delicate and ingenious web, which makes her a return by the prey it
+  [rechaza] R-1245  These punish those who are scoffing at them by pecking out their eyes; for nature has so ordered it, that they
+  [rechaza] R-1260  The crocodile is a terror to those that flee, and a base coward to those that pursue him
+  [rechaza] R-1261  These creatures when they feel themselves bitten by the spider called father-long-legs, eat crabs and free the
+  [rechaza] R-1262  This beast after its bowels have fallen out will still fight with the dogs and hunters
+  [rechaza] R-1263  When it has killed the Chameleon it takes laurel as a purge
+  [ACEPTA] R-1264  Motion tends towards the centre of gravity
+  [ACEPTA] R-1265  Fables on animals (1265-1270)
+  [ACEPTA] R-1271  Fables on lifeless objects (1271—1274)
+  [ACEPTA] R-1275  Fables on plants (1275-1279)
+  [rechaza] R-1277  One keeps it upright, the other keeps it from low company
+  [rechaza] R-1282  When wine is drunk by a drunkard, that wine is revenged on the drinker
+  [rechaza] R-1296  With a stone and with iron things will be made visible which before were not seen
+  [rechaza] R-1302  The Forests will bring forth young which will be the cause of their death. (The handle of the hatchet.)
+  [rechaza] R-1303  The wind passing through the skins of animals will make men dance. (That is the Bag-pipe, which makes people d
+  [rechaza] R-1305  And those which will have their food in their mouth will be deprived of it by the hands of others *( the oven.
+  [rechaza] R-1307  How many will there be who, after they are dead, will putrefy inside their own houses, filling all the surroun
+  [rechaza] R-1308  Much treasure and great riches will be laid upon four-footed beasts, which will convey them to divers places
+  [rechaza] R-1309  Huge figures will appear in human shape, and the nearer you get to them, the more will their immense size dimi
+  [rechaza] R-1311  Some will go about in white garments with arrogant gestures threatening others with metal and fire which will 
+  [rechaza] R-1312  Men, when dead, will pass through their own bowels
+  [rechaza] R-1313  Men will take pleasure in seeing their own work destroyed and injured
+  [ACEPTA] R-1314  Schemes for fables, etc. (1314-1323)
+  [rechaza] R-1317  The goldfinch gives victuals to its caged young. Death rather than loss of liberty
+  [rechaza] R-1319  All those things which in winter are hidden under the snow, will be uncovered and laid bare in summer. *(for F
+  [rechaza] R-1320  The lily set itself down by the shores of the Ticino, and the current carried away bank and the lily with it
+  [rechaza] R-1321  Why Hungarian ducats have a double cross on them
+  [rechaza] R-1322  A vase of unbaked clay, when broken, may be remoulded, but not a baked one
+  [ACEPTA] R-1324  Schemes for prophecies (1324-1329)
+  [rechaza] R-1325  The mirror conducts itself haughtily holding mirrored in itself the Queen. When she departs the mirror remains
+  [rechaza] R-1327  All men will take refuge in Africa
+  [rechaza] R-1329  The man who may be most necessary to him who needs him, will be repaid with ingratitude, that is greatly conte
+  [ACEPTA] R-1332  Irony (1332)
+  [ACEPTA] R-1333  Tricks (1333-1335)
+  [ACEPTA] R-1336  Drafts of Letters and Reports referring to Armenia (1336. 1337)
+  [ACEPTA] R-1338  Notes about events observed abroad (1338-1339)
+  [ACEPTA] R-1340  Drafts of Letters to Lodovico il Moro (1340-1345)
+  [rechaza] R-1342  To my illustrious Lord, Lodovico, Duke of Bari, Leonardo da Vinci of Florence— Leonardo
+  [ACEPTA] R-1346  Draft of letter to be sent to Piacenza (1346. 1347)
+  [rechaza] R-1347  The miserable painstakers … with what hope may they expect a reward of their merit?
+  [ACEPTA] R-1348  Letter to the Cardinal Ippolito d' Este
+  [ACEPTA] R-1349  Draft of Letter to the Governor of Milan
+  [rechaza] R-1350  Drafts of Letters to the Superintendent of Canals and to Fr. Melzi
+  [ACEPTA] R-1353  Draft of letter written at Rome
+  [ACEPTA] R-1354  Miscellaneous Records (1354. 1355)-
+  [rechaza] R-1355  And at the great fall it seemed as though the whole province quaked
+  [ACEPTA] R-1356  Miscellaneous drafts of letters and personal records (1356—1368)
+  [rechaza] R-1360  As I told you in past days, you know that I am without any…. Francesco d'Antonio. Bernardo di Maestro Jacopo
+  [rechaza] R-1361  Tell me how the things happened
+  [rechaza] R-1366  Tell me if anything was ever done
+  [rechaza] R-1367  Tell me if ever I did a thing which me …
+  [rechaza] R-1368  Do not reveal, if liberty is precious to you; my face is the prison of love
+  [ACEPTA] R-1369  Notes bearing Dates (1369—1378)
+  [rechaza] R-1370  The day of Santa Maria della Neve [of the Snows] August the 2nd 1473
+  [rechaza] R-1371  On the 2nd of April 1489, book entitled 'Of the human figure'
+  [rechaza] R-1372  On the ist of August 1499, I wrote here of motion and of weight
+  [rechaza] R-1374  On Wednesday at seven o'clock died Ser Piero da Vinci on the 9th of July 1504
+  [rechaza] R-1375  Begun by me, Leonardo da Vinci, on the l2th of July 1505
+  [rechaza] R-1376  Begun at Milan on the l2th of September 1508
+  [rechaza] R-1377  On the 9th of January 1513
+  [ACEPTA] R-1379  Memoranda before 1500 (1379-l413)
+  [ACEPTA] R-1414  Memoranda after 1500 (1414—1434)
+  [rechaza] R-1424  The room in the tower of Vaneri
+  [rechaza] R-1426  Hermes the philosopher
+  [rechaza] R-1427  Suisset, viz. calculator,—Tisber, —Angelo Fossobron,—Alberto
+  [rechaza] R-1428  The structure of the drawbridge shown me by Donnino, and why c and d thrust downwards
+  [rechaza] R-1430  This stratagem was used by the Gauls against the Romans, and so great a mortality ensued that all Rome was dre
+  [rechaza] R-1431  Alberto da Imola;—Algebra, that is, the demonstration of the equality of one thing to another
+  [rechaza] R-1432  Johannes Rubicissa e Robbia
+  [rechaza] R-1433  Ask the wife of Biagio Crivelli how the capon nurtures and hatches the eggs of the hen,—he being drunk
+  [rechaza] R-1434  The book on Water to Messer Marco Antonio
+  [ACEPTA] R-1435  Undated memoranda (1435-1457)
+  [rechaza] R-1438  Giovanni Fabre,—Lazaro del Volpe,— the common,—Ser Piero
+  [ACEPTA] R-1441  Tinned iron,—pierced iron
+  [rechaza] R-1442  See the shop that was formerly Bartolommeo's, the stationer
+  [rechaza] R-1443  The first book is by Michele di Francesco Nabini; it treats on science
+  [rechaza] R-1444  Messer Francesco, physician of Lucca, with the Cardinal Farnese
+  [rechaza] R-1446  Where natural vivacity is lacking it must be supplied by art
+  [rechaza] R-1447  Salvadore, the matress maker, lives on the Piazza di Sant' Andrea, you enter by the furrier's
+  [rechaza] R-1448  Monsignore de' Pazzi,—Ser Antonio Pacini
+  [rechaza] R-1449  Paolino Scarpellino, called Assiolo has great knowledge of water works
+  [rechaza] R-1451  Giuliano Condi[*1],—Tomaso Ridolf1,— Tomaso Paganelli,—Nicolo delNero,—Simone Zasti,—Nasi,—the heir of Lionard
+  [rechaza] R-1452  Pandolfino
+  [rechaza] R-1453  Vespuccio will give me a book of Geometry
+  [rechaza] R-1454  Marcantonio Colonna at Santi Apostoli
+  [rechaza] R-1457  Bernardo da Ponte … Val di Lugano … many veins for anatomical demonstration
+  [ACEPTA] R-1458  Notes on pupils (1458-1468.)
+  [ACEPTA] R-1460  On the 6th day of October
+  [rechaza] R-1462  On the l4th of July, I had from Galeazze 2 Rhenish florins
+  [rechaza] R-1463  On the l5th day of September Giulio began the lock of my studio 1494
+  [rechaza] R-1466  I left Milan for Rome on the 24th day of September, 1513, with Giovanni [*2], Francesco di Melzi [*3], Salai, 
+  [ACEPTA] R-1467  Benedetto, 24 grossoni
+  [ACEPTA] R-1469  Quotations and notes on books and authors (1469—1508)
+  [rechaza] R-1470  Formulary of letters,
+  [rechaza] R-1471  Nonius Marcellus, Festus Pompeius, Marcus Varro
+  [rechaza] R-1473  See 'On Ships' Messer Battista, and Frontinus 'On Acqueducts' 
+  [rechaza] R-1496  Of the error of those who practice without knowledge;— See first the 'Ars poetica' of Horace 
+  [rechaza] R-1497  The heirs of Maestro Giovanni Ghiringallo have the works of Pelacano
+  [rechaza] R-1498  The catapult, as we are told by Nonius and Pliny, is a machine devised by those &c
+  [rechaza] R-1506  Virgil says that a blank shield is devoid of merit because among the people of Athens the true recognition con
+  [rechaza] R-1507  In Vitolone there are 805 conclusions [problems] in perspective
+  [ACEPTA] R-1509  Inventories and accounts (1509-1545)
+  [rechaza] R-1514  The days I calculate at 3, for the invention of the composition, pilasters and other things
+  [rechaza] R-1516  The cornice above lire 30 The cornice below lire 7 The compositions, one with another lire 13
+  [rechaza] R-1517  On the l4th of March I had 13 lire S. 4; 16 lire remain
+  [rechaza] R-1525  On Monday I bought 4 braccia of cloth lire 13 S 14 1/2 on the 17th of, October 1497
+  [rechaza] R-1527  Friday, the pth day of August 1504, I took 10 ducats out of the box
+  [rechaza] R-1537  On Thursday morning one florin
+  [rechaza] R-1538  On Saint Ambrose's day from the morning to Thursday 36 soldi
+  [ACEPTA] R-1546  Notes by unknown persons among the MSS. (1546—1565)
+  [rechaza] R-1552  On Monday, the l3th of February, I lent lire S 7 to Lionardo to spend, Friday d 7
+  [rechaza] R-1553  Stephano Chigi, Canonico….., servant of the honorable Count Grimani at S. Apostoli
+  [rechaza] R-1564  Memorandum to Maestro Lionardo to have … the state of Florence
+  [rechaza] R-1566  XVIo* C. 6 de Ciuitate Dei, 2*se Antipodes

@@ -13,7 +13,7 @@ Fuente: `pipeline/raw/pg5000-images.html` · 1,600,813 bytes
 | Lineas de numeracion | 1,563 | 1,565 | desvio -2 |
 | Numeros de pasaje tras el filtro de monotonia | 1,550 | — | 13 descartados |
 | Pasajes >= 8 palabras (con titulo adentro, comparable al control) | 1,494 | 1,504 | desvio -10 |
-| Pasajes >= 8 palabras (con el titulo ya extraido) | 1,490 | — | |
+| Pasajes >= 8 palabras (con el titulo ya extraido) | 1,489 | — | |
 | Titulos tematicos de Richter | 343 | 651 | desvio -308 |
 
 El control de 1.504 se midio con los titulos en mayuscula de Leonardo y los
@@ -26,20 +26,20 @@ el numero siga siendo comparable despues de extraer los titulos.
 - Volumen II (703 en adelante): no hay indice. Decide la regla nominal sobre 395 candidatos, **161 aceptados** → `reports/titulos_volumen2.txt`, para revision ocular.
 - **Precision de la regla medida contra el indice del Volumen I: 90.4% · recall 98.4%** (179 aciertos, 19 falsos positivos, 3 falsos negativos).
 
-**Discrepancia con D-025.** El documento dice 651 titulos; con esta definicion son 343. La hipotesis medida: los encabezados `<h5>` en mayuscula que NO son de seccion —los que escribio el propio Leonardo en sus manuscritos, tipo `OF PAINTING.`— son **713**. No coincide exactamente con 651; la diferencia queda anotada y sin forzar. Aca esos encabezados quedan dentro del cuerpo del pasaje, que es lo que mantiene comparable el control de 1.504.
+**Discrepancia con D-025.** El documento dice 651 titulos; con esta definicion son 343. La hipotesis medida: los encabezados `<h5>` en mayuscula que NO son de seccion —los que escribio el propio Leonardo en sus manuscritos, tipo `OF PAINTING.`— son **709**. No coincide exactamente con 651; la diferencia queda anotada y sin forzar. Aca esos encabezados quedan dentro del cuerpo del pasaje, que es lo que mantiene comparable el control de 1.504.
 
 ## Distribucion de longitud
 
 | | palabras | doc |
 |---|---:|---:|
-| mediana | 66 | 68 |
-| media | 128.0 | 129,5 |
-| p10 / p90 | 13 / 266 | 14 / 272 |
+| mediana | 64 | 68 |
+| media | 116.6 | 129,5 |
+| p10 / p90 | 13 / 253 | 14 / 272 |
 | maximo | 3,338 | 3.339 |
-| total en cuerpos | 198,347 | ~202.728 |
+| total en cuerpos | 180,678 | ~202.728 |
 
-- Pasajes < 15 palabras: **183** (doc: 178) — se agrupan en `04_chunk.py`
-- Pasajes > 500 palabras: **57** (doc: 60) — se parten con solape
+- Pasajes < 15 palabras: **184** (doc: 178) — se agrupan en `04_chunk.py`
+- Pasajes > 500 palabras: **40** (doc: 60) — se parten con solape
 - Pasajes sin ancla `id`: **0**
 - Pasajes sin titulo de Richter asignado: **0**
 
@@ -53,6 +53,7 @@ el numero siga siendo comparable despues de extraer los titulos.
 ## Secciones detectadas
 
 - desde R-1: **Prolegomena and General Introduction to the Book on Painting**
+- desde R-40: **Linear Perspective**
 - desde R-110: **Six books on Light and Shade**
 - desde R-222: **Perspective of Disappearance**
 - desde R-263: **Theory of colours**
@@ -66,27 +67,28 @@ el numero siga siendo comparable despues de extraer los titulos.
 - desde R-601: **The Practice of Painting** › SUGGESTIONS FOR COMPOSITIONS
 - desde R-612: **The Practice of Painting** › THE ARTIST'S MATERIALS
 - desde R-651: **The Practice of Painting** › PHILOSOPHY AND HISTORY OF THE ART OF PAINTING
+- desde R-663: **Studies and Sketches for Pictures and Decorations**
 - desde R-707: **The notes on Sculpture**
 - desde R-741: **Architectural Designs**
-- desde R-770: **Architectural Designs** › ON FISSURES IN WALLS
-- desde R-777: **Architectural Designs** › ON FISSURES IN NICHES
-- desde R-779: **Architectural Designs** › ON THE NATURE OF THE ARCH
-- desde R-789: **Architectural Designs** › ON FOUNDATIONS, THE NATURE OF THE GROUND AND SUPPORTS
-- desde R-793: **Architectural Designs** › ON THE RESISTANCE OF BEAMS
+- desde R-770: **Theoretical writings on Architecture** › ON FISSURES IN WALLS
+- desde R-777: **Theoretical writings on Architecture** › ON FISSURES IN NICHES
+- desde R-779: **Theoretical writings on Architecture** › ON THE NATURE OF THE ARCH
+- desde R-789: **Theoretical writings on Architecture** › ON FOUNDATIONS, THE NATURE OF THE GROUND AND SUPPORTS
+- desde R-793: **Theoretical writings on Architecture** › ON THE RESISTANCE OF BEAMS
 - desde R-796: **Anatomy, Zoology and Physiology** › ANATOMY
 - desde R-816: **Anatomy, Zoology and Physiology** › ZOOLOGY AND COMPARATIVE ANATOMY
 - desde R-827: **Anatomy, Zoology and Physiology** › PHYSIOLOGY
 - desde R-857: **Astronomy** › THE EARTH AS A PLANET
 - desde R-879: **Astronomy** › THE SUN
 - desde R-892: **Astronomy** › THE MOON
-- desde R-919: **Astronomy** › INTRODUCTION
-- desde R-930: **Astronomy** › OF THE NATURE OF WATER
-- desde R-946: **Astronomy** › ON THE OCEAN
-- desde R-961: **Astronomy** › SUBTERRANEAN WATER COURSES
-- desde R-970: **Astronomy** › OF RIVERS
-- desde R-979: **Astronomy** › ON MOUNTAINS
-- desde R-985: **Astronomy** › GEOLOGICAL PROBLEMS
-- desde R-995: **Astronomy** › ON THE ATMOSPHERE
+- desde R-919: **Physical Geography** › INTRODUCTION
+- desde R-930: **Physical Geography** › OF THE NATURE OF WATER
+- desde R-946: **Physical Geography** › ON THE OCEAN
+- desde R-961: **Physical Geography** › SUBTERRANEAN WATER COURSES
+- desde R-970: **Physical Geography** › OF RIVERS
+- desde R-979: **Physical Geography** › ON MOUNTAINS
+- desde R-985: **Physical Geography** › GEOLOGICAL PROBLEMS
+- desde R-995: **Physical Geography** › ON THE ATMOSPHERE
 - desde R-1001: **Topographical Notes** › ITALY
 - desde R-1069: **Topographical Notes** › FRANCE
 - desde R-1083: **Topographical Notes** › THE COUNTRIES OF THE WESTERN END OF THE MEDITERRANEAN

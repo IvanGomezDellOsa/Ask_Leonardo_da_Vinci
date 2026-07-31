@@ -87,7 +87,11 @@ P_A, P_B = "", ""
 RE_PROT = re.compile(f"{P_A}(\\d+){P_B}")
 RE_MARCADOR = re.compile(r"\[\s*\*?\d+\s*\]")                     # [*65], [13]
 RE_INSERCION = re.compile(r"\[(?!Footnote)[^\[\]]{1,60}\]", re.S)
-RE_ROMANO = re.compile(r"^\s*([IVXLC]+)\.?\s*$")
+# Algunos encabezados de seccion conservan el guion bajo del .txt que el
+# generador de HTML de Gutenberg no limpio: `<h5 id="id02565">_X.</h5>`. Sin
+# tolerarlo, la seccion X queda sin detectar y su introduccion entera —prosa de
+# Richter en primera persona— se queda dentro del cuerpo de R-662.
+RE_ROMANO = re.compile(r"^\s*[_*]*([IVXLC]+)\.?[_*]*\s*$")
 
 # Siglas de manuscrito que Richter deja sueltas al final de un pasaje
 # ("C.A. 94b; 271b]", "W. XXIII.]"). No son titulos.
@@ -605,8 +609,26 @@ def main() -> int:
           f"resto por regla)")
     print(f"regla nominal en Vol I   : precision {prec:.1%}  recall {rec:.1%}")
 
+    # -- introducciones de seccion: prosa editorial de Richter que el parseo
+    # ingenuo mete al final del pasaje ANTERIOR. Es lo que `14` O4 detecto al
+    # ver pasajes de mas de 2.000 palabras, y es la mitad del riesgo R1: R-662
+    # terminaba con el encabezado "X. Studies and Sketches for Pictures and
+    # Decorations" y la introduccion entera de Richter a esa seccion, en primera
+    # persona y sin una sola cursiva que lo delatara.
+    #
+    # Entre un encabezado de seccion y el proximo numero de pasaje no puede
+    # haber texto de Leonardo: todo pasaje empieza en su numero.
+    b_num_set = {bloque_de(m.start(), anclas) for m in marcas}
+    intros: dict[int, str] = {}
+    for h in sorted(consumidos):
+        j = h + 1
+        while j < len(bloques) and j not in b_num_set:
+            if limpio.get(j) and j not in consumidos and j not in titulos:
+                intros[j] = secciones.get(j, ("", ""))[0]
+            j += 1
+
     # -- pasajes
-    saltar = set(titulos) | consumidos
+    saltar = set(titulos) | consumidos | set(intros)
     pasajes = []
     titulo_vigente = ""
     for k, m in enumerate(marcas):
@@ -678,6 +700,13 @@ def main() -> int:
                    [{"bloque": i, "richterNo": candidatos[i][1], "titulo": t}
                     for i, t in sorted(titulos.items())])
     escribir_jsonl(OUT / "toc.jsonl", indice)
+    escribir_jsonl(OUT / "intros.jsonl", [
+        {"id": f"intro-{k:03d}", "bloque": i, "section": sec,
+         "anchorId": por_indice.get(i, {}).get("id"),
+         "precedeAlPasaje": min((int(m.group(1)) for m in marcas
+                                 if bloque_de(m.start(), anclas) > i), default=None),
+         "text": limpio[i], "nWords": len(limpio[i].split())}
+        for k, (i, sec) in enumerate(sorted(intros.items()))])
 
     # los titulos del Volumen II corren sin indice que los respalde
     V = ["Titulos del Volumen II: decididos por la regla nominal, sin indice.",

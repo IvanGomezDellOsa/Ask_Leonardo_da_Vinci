@@ -1,0 +1,24 @@
+==============================================================================
+¿EL TECHO ES EL MODELO O LA ARQUITECTURA?
+==============================================================================
+
+  multilingual-e5-small    max       umbral unico: AUC=0.7710 exactitud=70.5%
+      es: AUC=0.9207 exactitud=86.3% margen=-0.0509
+      en: AUC=0.9388 exactitud=90.4% margen=-0.0350
+      por idioma: exactitud=88.4%  distancia taus=0.0575
+
+  multilingual-e5-small    top3 med  umbral unico: AUC=0.7594 exactitud=70.5%
+      es: AUC=0.9109 exactitud=88.3% margen=-0.0591
+      en: AUC=0.9246 exactitud=87.3% margen=-0.0330
+      por idioma: exactitud=87.9%  distancia taus=0.0578
+
+  multilingual-e5-base     max       umbral unico: AUC=0.8325 exactitud=75.8%
+      es: AUC=0.9198 exactitud=87.4% margen=-0.0414
+      en: AUC=0.9588 exactitud=90.6% margen=-0.0453
+      por idioma: exactitud=88.9%  distancia taus=0.0344
+
+  multilingual-e5-base     top3 med  umbral unico: AUC=0.8236 exactitud=74.2%
+      es: AUC=0.9317 exactitud=87.4% margen=-0.0330
+      en: AUC=0.9543 exactitud=89.6% margen=-0.0420
+      por idioma: exactitud=88.4%  distancia taus=0.0310
+

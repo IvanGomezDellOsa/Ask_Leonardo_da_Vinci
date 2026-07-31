@@ -1,0 +1,91 @@
+==============================================================================
+¿ROMPE EL TECHO UN CROSS-ENCODER?
+==============================================================================
+e5-small propone K=10 candidatos por consulta; el cross-encoder los juzga.
+consultas: 190   pasajes: 1,504
+
+------------------------------------------------------------------------------
+LINEA DE BASE — el bi-encoder solo
+------------------------------------------------------------------------------
+  e5-small, coseno maximo
+    umbral UNICO : AUC=0.7710  exactitud=70.5%  tau=0.8063
+      es: AUC=0.9207  exactitud=86.3%  tau=+0.8017  margen=-0.0509
+      en: AUC=0.9388  exactitud=90.4%  tau=+0.8592  margen=-0.0350
+    umbral POR IDIOMA: exactitud=88.4%   distancia entre taus=0.0575
+    con el umbral unico: pasan 88.4% de las 'dentro', se cuelan 47.4% de las 'fuera'
+
+------------------------------------------------------------------------------
+CROSS-ENCODER — cross-encoder/mmarco-mMiniLMv2-L12-H384-v1
+------------------------------------------------------------------------------
+  puntaje maximo del cross-encoder
+    umbral UNICO : AUC=0.9331  exactitud=87.9%  tau=-1.3283
+      es: AUC=0.9508  exactitud=89.4%  tau=-1.3233  margen=-2.4204
+      en: AUC=0.9264  exactitud=86.3%  tau=-1.6720  margen=-4.0527
+    umbral POR IDIOMA: exactitud=87.9%   distancia entre taus=0.3487
+    con el umbral unico: pasan 91.6% de las 'dentro', se cuelan 15.8% de las 'fuera'
+
+------------------------------------------------------------------------------
+CROSS-ENCODER — BAAI/bge-reranker-v2-m3
+------------------------------------------------------------------------------
+  puntaje maximo del cross-encoder
+    umbral UNICO : AUC=0.9329  exactitud=86.3%  tau=0.0232
+      es: AUC=0.9215  exactitud=85.4%  tau=+0.0188  margen=-0.1831
+      en: AUC=0.9628  exactitud=89.5%  tau=+0.0243  margen=-0.1849
+    umbral POR IDIOMA: exactitud=87.4%   distancia entre taus=0.0055
+    con el umbral unico: pasan 80.0% de las 'dentro', se cuelan 7.4% de las 'fuera'
+
+------------------------------------------------------------------------------
+LAS QUE SIGUEN FALLANDO — ce_bge-reranker-v2-m3, umbral unico 0.0232
+------------------------------------------------------------------------------
+  [dentro/es] +0.008  ¿Cómo hacen los pájaros para sostenerse en el aire sin batir las alas?
+        -> R-1126: An object offers as much resistance to the air as the air does to the object. You may see that the beating of its wings against th
+  [dentro/es] +0.003  ¿Cómo están dispuestos los músculos del brazo?
+        -> R-595: OF THE DISPOSITION OF LIMBS. As regards the disposition of limbs in movement you will have to consider that when you wish to repre
+  [dentro/es] +0.006  ¿Cómo se forman los remolinos en el agua?
+        -> R-389: Observe the motion of the surface of the water which resembles that of hair, and has two motions, of which one goes on with the fl
+  [dentro/en] +0.016  How do birds stay aloft without beating their wings?
+        -> R-1123: Remember that your flying machine must imitate no other than the bat, because the web is what by its union gives the armour, or st
+  [fuera/en] +0.085  What did you think of Michelangelo as a rival?
+        -> R-1489: _It may be incidentally remarked that no sketches are known for the portrait of "Mona Lisa", nor do the MS. notes ever allude to i
+  [dentro/es] +0.001  ¿Qué forma toman las olas cuando el viento sopla sobre un lago?
+        -> R-610: The tremendous fury of the wind driven by the falling in of the hills on the caves within--by the falling of the hills which serve
+  [dentro/es] +0.010  ¿Por qué se encuentran conchas marinas en la cima de las montañas?
+        -> R-1106: WHY WATER IS FOUND AT THE TOP OF MOUNTAINS. >From the straits of Gibraltar to the Don is 3500 miles, that is one mile and 1/6, giv
+  [dentro/es] +0.001  ¿Cómo se pintan los pliegues de los paños?
+        -> R-616: This paper should be painted over with candle soot tempered with thin glue, then smear the leaf thinly with white lead in oil as i
+  [dentro/es] +0.003  ¿Cómo se dibuja el cabello cuando está en movimiento?
+        -> R-389: Observe the motion of the surface of the water which resembles that of hair, and has two motions, of which one goes on with the fl
+  [dentro/es] +0.019  ¿Cuáles son las proporciones del caballo?
+        -> R-337: The torso _a b_ in its thinnest part measures a foot; and from _a_ to _b_ is 2 feet, which makes two squares to the seat--its thin
+  [dentro/es] +0.021  ¿Cómo debe componerse una escena de batalla?
+        -> R-601: OF THE WAY OF REPRESENTING A BATTLE. First you must represent the smoke of artillery mingling in the air with the dust and tossed 
+  [dentro/es] +0.004  ¿Cómo se ejercita la memoria visual?
+        -> R-506: PAINTING. The mind of the painter must resemble a mirror, which always takes the colour of the object it reflects and is completel
+  [dentro/es] +0.002  ¿Cómo vuelan las aves contra el viento?
+        -> R-472: Trees struck by the force of the wind bend to the side towards which the wind is blowing; and the wind being past they bend in the
+  [dentro/es] +0.001  ¿Qué hace el ave con la cola cuando gira en el aire?
+        -> R-1126: An object offers as much resistance to the air as the air does to the object. You may see that the beating of its wings against th
+  [dentro/es] +0.003  ¿Cómo se levanta un peso por medio de poleas?
+        -> R-380: OF THE HUMAN BODY IN ACTION. When you want to represent a man as moving some weight consider what the movements are that are to be
+  [dentro/es] +0.005  ¿Cómo se debe fortificar una ciudad?
+        -> R-742: must be 300 braccia, each street receiving its light through the openings of the upper streets, and at each arch must be a winding
+  [dentro/es] +0.008  ¿Por qué las hojas se disponen así alrededor del tallo?
+        -> R-414: In the walnut tree the leaves which are distributed on the shoots of this year are further apart from each other and more numerous
+  [dentro/en] +0.012  What shape do waves take when the wind blows over a lake?
+        -> R-996: That the return eddies of wind at the mouth of certain valleys strike upon the waters and scoop them out in a great hollow, whirl 
+  [dentro/en] +0.005  How does one train the visual memory?
+        -> R-531: OF A METHOD OF LEARNING WELL BY HEART. When you want to know a thing you have studied in your memory proceed in this way: When you
+  [dentro/en] +0.004  How should a city be fortified?
+        -> R-766: The ancient architects ...... beginning with the Egyptians (?) who, as Diodorus Siculus writes, were the first to build and constr
+  [fuera/es] +0.184  ¿Quién ganó las últimas elecciones en Argentina?
+        -> R-1450: Giuliano Condi[*1],--Tomaso Ridolf1,-- Tomaso Paganelli,--Nicolo delNero,--Simone Zasti,--Nasi,--the heir of Lionardo Manelli, --G
+  [fuera/en] +0.035  What did you feel while painting the Last Supper?
+        -> R-662: The painter strives and competes with nature. _X. Studies and Sketches for Pictures and Decorations. An artist's manuscript notes 
+  [fuera/en] +0.177  What did you die of?
+        -> R-848: Death in old men, when not from fever, is caused by the veins which go from the spleen to the valve of the liver, and which thicke
+  [fuera/en] +0.070  How old were you when you died?
+        -> R-1372: On the 9th of July 1504, Wednesday, at seven o'clock, died Ser Piero da Vinci, notary at the Palazzo del Podest*a, my father, --at
+  [fuera/en] +0.189  Who won the last election in Argentina?
+        -> R-1450: Giuliano Condi[*1],--Tomaso Ridolf1,-- Tomaso Paganelli,--Nicolo delNero,--Simone Zasti,--Nasi,--the heir of Lionardo Manelli, --G
+  [fuera/en] +0.088  How does the internet work?
+        -> R-1123: Remember that your flying machine must imitate no other than the bat, because the web is what by its union gives the armour, or st

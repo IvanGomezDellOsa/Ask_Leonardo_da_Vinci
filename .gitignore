@@ -8,3 +8,9 @@ pipeline/out/
 pipeline/raw/
 *.log
 .DS_Store
+
+# Experimento de separabilidad: el codigo y los resultados SI se publican
+# (son la prueba de la tesis, D-036). Los datos pesados no.
+experiments/*/data/
+__pycache__/
+*.pyc

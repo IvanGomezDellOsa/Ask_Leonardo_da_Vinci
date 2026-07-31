@@ -1,0 +1,36 @@
+==============================================================================
+PASAJES BASURA — cuanto del solapamiento causan
+==============================================================================
+filtro: tasa de palabras funcionales inglesas >= 0.18 y >= 15 palabras
+corpus: 1,504 pasajes  ->  1,362 se conservan, 142 se descartan (9.4%)
+
+--- muestra de lo que se descarta ---
+  R-27    tasa=0.29 pal=14   Objects seen by one and the same eye appear sometimes large, and sometimes small.
+  R-40    tasa=0.50 pal=12   ON PAINTING. Perspective is the best guide to the art of Painting.
+  R-43    tasa=0.62 pal=8    A point is not part of a line.
+  R-105   tasa=0.17 pal=12   The eye cannot judge where an object high up ought to descend.
+  R-228   tasa=0.50 pal=14   The eye cannot take in a luminous angle which is too close to it.
+  R-266   tasa=0.50 pal=14   An image produced in a mirror is affected by the colour of the mirror.
+  R-323   tasa=0.36 pal=14   For each man respectively the distance between _a b_ is equal to _c d_.
+  R-330   tasa=0.16 pal=20   _a n b_ are equal; _c n d_ are equal; _n c_ makes two feet; _n d_ makes 2 feet.
+
+--- muestra de lo que se conserva ---
+  R-1     tasa=0.37 pal=110  How by a certain machine many may stay some time under water. And how and wherefore I do not de
+  R-2     tasa=0.45 pal=33   When you put together the science of the motions of water, remember to include under each propo
+  R-3     tasa=0.42 pal=19   Let no man who is not a Mathematician read the elements of my work. The disorder in the MSS.
+  R-4     tasa=0.40 pal=173  Begun at Florence, in the house of Piero di Braccio Martelli, on the 22nd day of March 1508. An
+
+------------------------------------------------------------------------------
+ANTES — los 1.504
+------------------------------------------------------------------------------
+  espanol   AUC=0.9207  margen=-0.0509  tau=0.8017  exactitud=86.3%   (media dentro=0.8149  fuera=0.7878)
+  ingles    AUC=0.9388  margen=-0.0350  tau=0.8592  exactitud=90.4%   (media dentro=0.8770  fuera=0.8313)
+  global    AUC=0.7710  margen=-0.0725
+
+------------------------------------------------------------------------------
+DESPUES — los 1,362 limpios
+------------------------------------------------------------------------------
+  espanol   AUC=0.9402  margen=-0.0422  tau=0.7984  exactitud=89.4%   (media dentro=0.8144  fuera=0.7813)
+  ingles    AUC=0.9450  margen=-0.0350  tau=0.8592  exactitud=90.4%   (media dentro=0.8768  fuera=0.8286)
+  global    AUC=0.7865  margen=-0.0725
+

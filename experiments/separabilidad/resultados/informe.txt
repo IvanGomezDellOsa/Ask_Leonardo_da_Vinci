@@ -1,0 +1,93 @@
+==============================================================================
+EXPERIMENTO DE SEPARABILIDAD — gate de abstencion por coseno maximo
+==============================================================================
+corpus   : PG #5000, Notebooks of Leonardo da Vinci (Richter, 1888)
+pasajes  : 1.504 utilizables (>= 8 palabras, sin las 864 notas de Richter)
+muestra  : 200 al azar, semilla 42
+modelo   : intfloat/multilingual-e5-small, prefijos 'passage: ' / 'query: '
+consultas: 40 (20 dentro / 20 fuera, mitad es / mitad en)
+
+------------------------------------------------------------------------------
+GLOBAL
+------------------------------------------------------------------------------
+  las 40 consultas
+    dentro  n=20  media=0.8362  desvio=0.0339  min=0.7844  max=0.8841
+    fuera   n=20  media=0.7873  desvio=0.0306  min=0.7399  max=0.8458
+    separacion de medias = +0.0489   Cohen d = 1.51   AUC = 0.8525
+    SOLAPAMIENTO en [0.7844, 0.8458]  ancho=0.0614  (11 dentro y 8 fuera en la zona)
+    umbral optimo τ = 0.7842   exactitud balanceada = 80.0%   |  dentro bien = 100%   fuera bien = 60%
+
+------------------------------------------------------------------------------
+POR IDIOMA
+------------------------------------------------------------------------------
+  ESPANOL
+    dentro  n=10  media=0.8064  desvio=0.0127  min=0.7844  max=0.8239
+    fuera   n=10  media=0.7648  desvio=0.0116  min=0.7399  max=0.7806
+    separacion de medias = +0.0416   Cohen d = 3.42   AUC = 1.0000
+    SIN SOLAPAMIENTO — brecha limpia de 0.0038  (max fuera=0.7806 < min dentro=0.7844)
+    umbral optimo τ = 0.7825   exactitud balanceada = 100.0%   |  dentro bien = 100%   fuera bien = 100%
+
+  INGLES
+    dentro  n=10  media=0.8660  desvio=0.0169  min=0.8339  max=0.8841
+    fuera   n=10  media=0.8099  desvio=0.0267  min=0.7562  max=0.8458
+    separacion de medias = +0.0561   Cohen d = 2.51   AUC = 0.9900
+    SOLAPAMIENTO en [0.8339, 0.8458]  ancho=0.0119  (1 dentro y 1 fuera en la zona)
+    umbral optimo τ = 0.8465   exactitud balanceada = 95.0%   |  dentro bien = 90%   fuera bien = 100%
+
+------------------------------------------------------------------------------
+EL UMBRAL GLOBAL APLICADO A CADA IDIOMA
+------------------------------------------------------------------------------
+  (usando el mismo τ = 0.7842 para todos, que es lo que hara el sistema)
+    espanol   dentro bien =  100% (10/10)   fuera bien =  100% (10/10)
+    ingles    dentro bien =  100% (10/10)   fuera bien =   20% (2/10)
+
+------------------------------------------------------------------------------
+CONSULTAS MAL CLASIFICADAS CON EL UMBRAL GLOBAL
+------------------------------------------------------------------------------
+    [fuera/en] 0.8221  What do you think of the Mona Lisa and her smile?
+    [fuera/en] 0.8339  What did you think of Michelangelo as a rival?
+    [fuera/en] 0.8040  Were you ever in love with anyone?
+    [fuera/en] 0.8331  Tell me about your death in France.
+    [fuera/en] 0.8185  What is your opinion on this year's presidential election?
+    [fuera/en] 0.8458  How does artificial intelligence work?
+    [fuera/en] 0.7964  Who is going to win the football World Cup?
+    [fuera/en] 0.8048  What do you make of the European Union's immigration policy?
+
+------------------------------------------------------------------------------
+CONTROL — los mismos calculos contra los 1.504 pasajes, no contra 200
+------------------------------------------------------------------------------
+  La muestra de 200 es el 13% del corpus: muchas consultas 'dentro' no tienen
+  material relevante en la muestra y puntuan bajo por eso, no porque el corpus
+  no las cubra. El indice real va a tener los 1.504. Este control mide cuanto
+  cambia la separabilidad al usarlos todos.
+  los 1.504 pasajes
+    dentro  n=20  media=0.8518  desvio=0.0364  min=0.8021  max=0.9027
+    fuera   n=20  media=0.8033  desvio=0.0318  min=0.7405  max=0.8544
+    separacion de medias = +0.0485   Cohen d = 1.42   AUC = 0.8375
+    SOLAPAMIENTO en [0.8021, 0.8544]  ancho=0.0523  (10 dentro y 9 fuera en la zona)
+    umbral optimo τ = 0.8017   exactitud balanceada = 77.5%   |  dentro bien = 100%   fuera bien = 55%
+    desplazamiento vs. la muestra de 200:  dentro +0.0156   fuera +0.0160
+    espanol   AUC=1.0000  τ=0.8017  exactitud=100%   (media dentro=0.8178  fuera=0.7807)   MARGEN=+0.0008
+    ingles    AUC=1.0000  τ=0.8629  exactitud=100%   (media dentro=0.8858  fuera=0.8259)   MARGEN=+0.0169
+
+  El margen es la distancia entre el 'fuera' mas alto y el 'dentro' mas bajo:
+  cuanto aire tiene el umbral antes de equivocarse. Un AUC de 1,00 con margen
+  de milesimas separa perfecto en ESTAS 40 consultas y no garantiza nada sobre
+  las siguientes 40.
+
+------------------------------------------------------------------------------
+PASAJES IMAN — los que absorben varias consultas 'fuera' (muestra de 200)
+------------------------------------------------------------------------------
+     9 consultas -> R-1069 (29 palabras): GERMANY. FRANCE. a. Austria, a. Picardy. b. Saxony. b. Normandy. c. Nuremberg. c. Dauphine. d. Flanders. SPAIN. a. Biscay. b. Castille. c. Galicia. d....
+     5 consultas -> R-1347 (59 palabras): There is one whom his Lordship invited from Florence to do this work and who is a worthy master, but with so very much business he will never finish i...
+     3 consultas -> R-66 (75 palabras): The images of objects are all diffused through the atmosphere which receives them; and all on every side in it. To prove this, let _a c e_ be objects ...
+
+------------------------------------------------------------------------------
+LOS EXTREMOS
+------------------------------------------------------------------------------
+    'fuera' mas alto  : 0.8458
+    'dentro' mas bajo : 0.7844
+    fuera mas alto : "How does artificial intelligence work?"
+      -> R-66: The images of objects are all diffused through the atmosphere which receives them; and all on every side in it. To prove this, let _a c e_ be objects of which the images are admitted to a dark chamber by the small holes ...
+    dentro mas bajo: "¿Cómo están dispuestos los músculos del brazo?"
+      -> R-781: ON THE REMEDY FOR EARTHQUAKES. The arch which throws its pressure perpendicularly on the abutments will fulfil its function whatever be its direction, upside down, sideways or upright. The arch will not break if the chor...

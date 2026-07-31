@@ -1,0 +1,41 @@
+==============================================================================
+EL COSENO COMO PRE-FILTRO, NO COMO JUEZ
+==============================================================================
+El umbral no se elige para maximizar exactitud sino para no perder
+consultas contestables. Lo que pasa el filtro va a un juicio mejor.
+
+------------------------------------------------------------------------------
+coseno e5 (por idioma)
+------------------------------------------------------------------------------
+  perdida    tau            basura atajada     trafico que sigue
+  --------------------------------------------------------------
+     0%   es 0.7914 / en 0.8289   44/95 ( 46%)      146/190 ( 77%)
+     1%   es 0.7936 / en 0.8315   47/95 ( 49%)      141/190 ( 74%)
+     2%   es 0.7959 / en 0.8341   52/95 ( 55%)      136/190 ( 72%)
+     5%   es 0.7977 / en 0.8384   60/95 ( 63%)      124/190 ( 65%)
+    10%   es 0.7999 / en 0.8473   72/95 ( 76%)      108/190 ( 57%)
+
+------------------------------------------------------------------------------
+cross-encoder bge (umbral unico)
+------------------------------------------------------------------------------
+  perdida    tau            basura atajada     trafico que sigue
+  --------------------------------------------------------------
+     0%   +0.0007                 45/95 ( 47%)      145/190 ( 76%)
+     1%   +0.0008                 47/95 ( 49%)      142/190 ( 75%)
+     2%   +0.0010                 50/95 ( 53%)      138/190 ( 73%)
+     5%   +0.0027                 62/95 ( 65%)      123/190 ( 65%)
+    10%   +0.0048                 68/95 ( 72%)      112/190 ( 59%)
+
+------------------------------------------------------------------------------
+LOS DOS EN CASCADA — coseno pre-filtra, cross-encoder juzga
+------------------------------------------------------------------------------
+  pre-filtro con 0% de perdida  +  cross-encoder tau=+0.0077
+      exactitud balanceada = 88.4%   responde 87.4% de las contestables   se cuela 10.5% de la basura
+      llamadas al juez caro: 146/190 (77% del trafico)
+  pre-filtro con 2% de perdida  +  cross-encoder tau=+0.0077
+      exactitud balanceada = 88.9%   responde 87.4% de las contestables   se cuela 9.5% de la basura
+      llamadas al juez caro: 136/190 (72% del trafico)
+  pre-filtro con 5% de perdida  +  cross-encoder tau=+0.0077
+      exactitud balanceada = 88.4%   responde 85.3% de las contestables   se cuela 8.4% de la basura
+      llamadas al juez caro: 124/190 (65% del trafico)
+

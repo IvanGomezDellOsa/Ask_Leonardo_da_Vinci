@@ -1,0 +1,67 @@
+==============================================================================
+COMPARACION DE DISENOS DEL GATE — mismas 190 consultas, mismo corpus
+==============================================================================
+pasajes: 1,504   consultas: 190
+
+------------------------------------------------------------------------------
+1-2 · SCORE CRUDO (coseno maximo)
+------------------------------------------------------------------------------
+  coseno maximo, tal cual
+    umbral UNICO   : AUC=0.7710  exactitud=70.5%  tau=0.8063
+      es: AUC=0.9207  exactitud=86.3%  tau=0.8017  margen=-0.0509
+      en: AUC=0.9388  exactitud=90.4%  tau=0.8592  margen=-0.0350
+    umbral POR IDIOMA: exactitud global=88.4%   distancia entre taus=0.0575
+
+------------------------------------------------------------------------------
+3 · SCORE NORMALIZADO — comparar el mejor pasaje contra el fondo
+------------------------------------------------------------------------------
+  Si el idioma corre TODAS las similitudes de una consulta por igual,
+  medir cuanto se despega el mejor del resto cancela ese corrimiento.
+
+  z-score  (max - media) / desvio
+    umbral UNICO   : AUC=0.5987  exactitud=60.5%  tau=3.6135
+      es: AUC=0.5009  exactitud=52.7%  tau=3.6135  margen=-1.9117
+      en: AUC=0.6702  exactitud=68.3%  tau=3.6124  margen=-2.0508
+    umbral POR IDIOMA: exactitud global=60.5%   distancia entre taus=0.0011
+
+  delta    max - media
+    umbral UNICO   : AUC=0.8851  exactitud=81.1%  tau=0.0751
+      es: AUC=0.8134  exactitud=74.7%  tau=0.0734  margen=-0.0323
+      en: AUC=0.9450  exactitud=89.5%  tau=0.0720  margen=-0.0275
+    umbral POR IDIOMA: exactitud global=82.1%   distancia entre taus=0.0014
+
+  delta99  max - percentil 99
+    umbral UNICO   : AUC=0.7126  exactitud=65.3%  tau=0.0312
+      es: AUC=0.6073  exactitud=59.0%  tau=0.0233  margen=-0.0329
+      en: AUC=0.8067  exactitud=74.6%  tau=0.0285  margen=-0.0243
+    umbral POR IDIOMA: exactitud global=66.8%   distancia entre taus=0.0052
+
+  robusta  (max - p50) / (p99 - p50)
+    umbral UNICO   : AUC=0.5355  exactitud=54.7%  tau=1.5907
+      es: AUC=0.4455  exactitud=51.2%  tau=1.3003  margen=-0.7220
+      en: AUC=0.6237  exactitud=62.9%  tau=1.6533  margen=-0.5999
+    umbral POR IDIOMA: exactitud global=57.4%   distancia entre taus=0.3529
+
+------------------------------------------------------------------------------
+4 · TRADUCIR LA CONSULTA AL INGLES — cota superior
+------------------------------------------------------------------------------
+  94 consultas en espanol tienen su equivalente exacto en ingles.
+  Se compara, sobre ESE mismo subconjunto, el score de la version
+  espanola contra el de la version inglesa.
+
+    sin traducir (embebida en espanol)      AUC=0.9203  exactitud=86.2%  tau=0.8017  margen=-0.0509
+    traducida al ingles (cota superior)     AUC=0.9389  exactitud=90.4%  tau=0.8592  margen=-0.0350
+
+  Sistema completo con todas las consultas llevadas a ingles:
+      todo en ingles, umbral unico
+    umbral UNICO   : AUC=0.9310  exactitud=90.0%  tau=0.8592
+
+------------------------------------------------------------------------------
+RESUMEN — exactitud con UN SOLO umbral
+------------------------------------------------------------------------------
+    crudo                                  70.5%
+    z-score  (max - media) / desvio        60.5%
+    delta    max - media                   81.1%
+    delta99  max - percentil 99            65.3%
+    robusta  (max - p50) / (p99 - p50)     54.7%
+    todo traducido a ingles                90.0%

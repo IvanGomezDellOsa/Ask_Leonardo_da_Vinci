@@ -1,0 +1,41 @@
+==============================================================================
+ANATOMIA DEL ERROR — que tipo de consulta 'fuera' se cuela
+==============================================================================
+umbral por idioma: es=0.8017  en=0.8592
+consultas 'fuera': 95
+
+  categoria          n   se cuelan   cos medio   cos max
+  --------------------------------------------------------
+  vida moderna      13     2 ( 15%)      0.8026    0.8639
+  biografia         20     3 ( 15%)      0.8191    0.8573
+  obra famosa       18     2 ( 11%)      0.8189    0.8581
+  politica          12     1 (  8%)      0.8009    0.8432
+  deporte           10     0 (  0%)      0.7946    0.8392
+  tecnologia        22     0 (  0%)      0.8097    0.8591
+  --------------------------------------------------------
+  TOTAL             95     8 (  8%)
+
+--- las que se cuelan, una por una ---
+  0.8639 [en/vida moderna  ] How do you make a pizza?
+          -> R-617: Very excellent will be a stiff white paper, made of the usual mixture and filtered milk of an herb called calves foot; a
+  0.8424 [es/obra famosa   ] ¿Peleaste con Miguel Ángel en Florencia?
+          -> R-1563: Memorandum to Maestro Lionardo to have ... the state of Florence.
+  0.8146 [es/biografia     ] ¿De qué moriste?
+          -> R-1546: Miseracione divina sacro sancte Romane ecclesie tituli n cardinalis 2wulgariter nuncupatus venerabili religioso fratri J
+  0.8122 [es/politica      ] ¿Qué te parece la Unión Europea?
+          -> R-1560: Ut bene respondet Naturae ars docta! dedisset Vincius, ut tribuit cetera  sic animam  Noluit ut similis magis haec for
+  0.8080 [es/biografia     ] ¿Cómo era tu relación con Salaì?
+          -> R-1528: On the day of October, 1508, I had 30 scudi; 13 I lent to Salai to make up his sister's dowry, and 17 I have left.
+  0.8054 [es/biografia     ] ¿Tuviste hijos?
+          -> R-1558: **IlavTcov avTKX[AcpXt(uv Suo soostai smataupovTou; 2irptoo[Aiaaai w avepu>uo? 'Ae7]vac ToT? Qs.oi<; 8sj(o[j-ai.** C.A.1
+  0.8040 [es/obra famosa   ] ¿Qué sentiste al pintar La Última Cena?
+          -> R-662: The painter strives and competes with nature. _X. Studies and Sketches for Pictures and Decorations. An artist's manuscr
+  0.8031 [es/vida moderna  ] ¿Cómo se hace una pizza?
+          -> R-617: Very excellent will be a stiff white paper, made of the usual mixture and filtered milk of an herb called calves foot; a
+
+------------------------------------------------------------------------------
+SI UNA LISTA CURADA RESUELVE 'obra famosa' + 'biografia'
+------------------------------------------------------------------------------
+  esas dos categorias son 38 de 95 consultas 'fuera' (40%)
+  y aportan 5 de las 8 filtraciones (62%)
+  al gate le quedarian 57 consultas 'fuera', con 3 filtraciones (5%)

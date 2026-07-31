@@ -1,0 +1,77 @@
+Consultas a revisar a mano: el resultado sugiere que la etiqueta puesta
+a mano podria estar mal. Si una 'dentro' recupera un pasaje que no tiene
+nada que ver, el corpus quiza no cubra ese tema y la etiqueta es optimista.
+Si una 'fuera' recupera algo pertinente, quiza el corpus si lo cubra.
+Esto NO se corrigio automaticamente: los numeros de arriba usan las
+etiquetas originales.
+
+--- es · las 8 'dentro' mas bajas -------------------------------
+  0.7914  ¿Cómo se pintan los pliegues de los paños?
+          -> R-628: TO PREPARE A PANEL FOR PAINTING ON. The panel should be cypress or pear or service-tree or walnut. You must coat it over with mastic and turpentine tw
+  0.7962  ¿Cómo se ejercita la memoria visual?
+          -> R-82: An experiment showing that though the pupil may not be moved from its position the objects seen by it may appear to move from their places. If you loo
+  0.7970  ¿Cómo se dibuja el cabello cuando está en movimiento?
+          -> R-389: Observe the motion of the surface of the water which resembles that of hair, and has two motions, of which one goes on with the flow of the surface, t
+  0.7989  ¿Cómo se levanta un peso por medio de poleas?
+          -> R-762: THE WAY TO CONSTRUCT A FRAME-WORK FOR DECORATING BUILDINGS. The way in which the poles ought to be placed for tying bunches of juniper on to them. The
+  0.7992  ¿Qué hace el ave con la cola cuando gira en el aire?
+          -> R-1126: An object offers as much resistance to the air as the air does to the object. You may see that the beating of its wings against the air supports a hea
+  0.8002  ¿Se puede construir una máquina para que el hombre vuele?
+          -> R-1122: Man when flying must stand free from the waist upwards so as to be able to balance himself as he does in a boat so that the centre of gravity in himse
+  0.8021  ¿Cómo se forman los remolinos en el agua?
+          -> R-993: You now have to prove that the shells cannot have originated if not in salt water, almost all being of that sort; and that the shells in Lombardy are 
+  0.8025  ¿Cómo están dispuestos los músculos del brazo?
+          -> R-595: OF THE DISPOSITION OF LIMBS. As regards the disposition of limbs in movement you will have to consider that when you wish to represent a man who, by s
+--- es · las 8 'fuera' mas altas --------------------------------
+  0.8424  ¿Peleaste con Miguel Ángel en Florencia?
+          -> R-1563: Memorandum to Maestro Lionardo to have ... the state of Florence.
+  0.8146  ¿De qué moriste?
+          -> R-1546: Miseracione divina sacro sancte Romane ecclesie tituli n cardinalis 2wulgariter nuncupatus venerabili religioso fratri Johanni Mair d'Nustorf 3ordinis
+  0.8122  ¿Qué te parece la Unión Europea?
+          -> R-1560: Ut bene respondet Naturae ars docta! dedisset Vincius, ut tribuit cetera  sic animam  Noluit ut similis magis haec foret: altera sic est: Possidet i
+  0.8080  ¿Cómo era tu relación con Salaì?
+          -> R-1528: On the day of October, 1508, I had 30 scudi; 13 I lent to Salai to make up his sister's dowry, and 17 I have left.
+  0.8054  ¿Tuviste hijos?
+          -> R-1558: **IlavTcov avTKX[AcpXt(uv Suo soostai smataupovTou; 2irptoo[Aiaaai w avepu>uo? 'Ae7]vac ToT? Qs.oi<; 8sj(o[j-ai.** C.A.130a; 397a]
+  0.8040  ¿Qué sentiste al pintar La Última Cena?
+          -> R-662: The painter strives and competes with nature. _X. Studies and Sketches for Pictures and Decorations. An artist's manuscript notes can hardly be expect
+  0.8031  ¿Cómo se hace una pizza?
+          -> R-617: Very excellent will be a stiff white paper, made of the usual mixture and filtered milk of an herb called calves foot; and when this paper is prepared
+  0.8013  ¿Qué película me recomendás ver?
+          -> R-576: Where the shadow should be on the face. General suggestions for historical pictures (577-581).
+
+--- en · las 8 'dentro' mas bajas -------------------------------
+  0.8289  How should a city be fortified?
+          -> R-1203: There will be eternal fame also for the inhabitants of that town, constructed and enlarged by him. All communities obey and are led by their magnates,
+  0.8345  What shape do waves take when the wind blows over a lake?
+          -> R-605: Describe a wind on land and at sea. Describe a storm of rain.
+  0.8366  How is a weight raised by means of pulleys?
+          -> R-369: A sitting man cannot raise himself if that part of his body which is front of his axis [centre of gravity] does not weigh more than that which is behi
+  0.8427  How should a battle scene be composed?
+          -> R-601: OF THE WAY OF REPRESENTING A BATTLE. First you must represent the smoke of artillery mingling in the air with the dust and tossed up by the movement o
+  0.8458  What are the proportions of a horse?
+          -> R-718: Measurement of the Sicilian horse the leg from behind, seen in front, lifted and extended. Occasional references to the Sforza monument (719-724).
+  0.8482  How many heads tall is a well proportioned man?
+          -> R-309: If a man 2 braccia high is too small, one of four is too tall, the medium being what is admirable. Between 2 and 4 comes 3; therefore take a man of 3 
+  0.8546  What should the painter do when he is alone?
+          -> R-494: OF THE LIFE OF THE PAINTER IN HIS STUDIO. To the end that well-being of the body may not injure that of the mind, the painter or draughtsman must rema
+  0.8548  What does a bird do with its tail when it turns in the air?
+          -> R-1259: trochilus, a very small bird, runs at once to its mouth and hops among its teeth and goes pecking out the remains of the food, and so inciting it with
+--- en · las 8 'fuera' mas altas --------------------------------
+  0.8639  How do you make a pizza?
+          -> R-617: Very excellent will be a stiff white paper, made of the usual mixture and filtered milk of an herb called calves foot; and when this paper is prepared
+  0.8591  How does the internet work?
+          -> R-65: PERSPECTIVE. The air is filled with endless images of the objects distributed in it; and all are represented in all, and all in one, and all in each, 
+  0.8581  What did you feel while painting the Last Supper?
+          -> R-662: The painter strives and competes with nature. _X. Studies and Sketches for Pictures and Decorations. An artist's manuscript notes can hardly be expect
+  0.8573  What was your relationship with Salai like?
+          -> R-1533: I gave to Salai 93 lire 6 soldi, of which I have had 67 lire and there remain 26 lire 6 soldi.
+  0.8571  How do we get to Mars?
+          -> R-101: Begin from the line _m f_ with the eye below; then go up and do the same with the line _n f_, then with the eye above and close to the 2 gauges on the
+  0.8546  How does a vaccine work?
+          -> R-843: HOW THE BODY OF ANIMALS IS CONSTANTLY DYING AND BEING RENEWED. The body of any thing whatever that takes nourishment constantly dies and is constantly
+  0.8544  What do you think of the Mona Lisa and her smile?
+          -> R-1404: Giovannina, has a fantastic face,--is at Santa Caterina, at the Hospital. I.2 IIa]
+  0.8544  How does a smartphone work?
+          -> R-270: OF THE RAYS WHICH CONVEY THROUGH THE AIR THE IMAGES OF OBJECTS. All the minutest parts of the image intersect each other without interfering with each
+

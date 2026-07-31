@@ -1,0 +1,92 @@
+==============================================================================
+UMBRAL DE ABSTENCION — 190 consultas contra los 1.504 pasajes
+==============================================================================
+modelo   : intfloat/multilingual-e5-small, prefijos 'passage: ' / 'query: '
+consultas: 190 (95 dentro / 95 fuera, 95 es / 95 en)
+           tanda 1 = 40 exploratorias, tanda 2 = 150 nuevas
+corpus   : los 1.504 pasajes completos (no la muestra de 200)
+bootstrap: 4,000 remuestreos, semilla 42
+
+------------------------------------------------------------------------------
+GLOBAL — un solo umbral para los dos idiomas
+------------------------------------------------------------------------------
+  las 190 juntas
+    dentro  n= 95  media=0.8456  desvio=0.0357  min=0.7914  max=0.9313
+    fuera   n= 95  media=0.8098  desvio=0.0300  min=0.7405  max=0.8639
+    AUC    = 0.7710   IC95% [0.7029, 0.8330]
+    MARGEN = -0.0725   IC95% [-0.0725, -0.0611]   (NEGATIVO = se pisan)
+    tau optimo      = 0.8063  IC95% [0.7981, 0.8653]   exactitud balanceada = 70.5%
+      -> deja pasar 88.4% de las 'dentro' y bloquea 52.6% de las 'fuera'
+    tau conservador = 0.8639   0 falsos aceptados
+      -> cuesta abstenerse en 62.1% de las 'dentro' (59 de 95)
+    puntos de operacion:
+        tau      'dentro' que pasan     'fuera' que se cuelan
+      0.8639          37.9%                    1.1%   (percentil 100 de 'fuera')
+      0.8593          40.0%                    1.1%   (percentil 99 de 'fuera')
+      0.8575          41.1%                    3.2%   (percentil 97 de 'fuera')
+      0.8554          41.1%                    5.3%   (percentil 95 de 'fuera')
+      0.8512          44.2%                   10.5%   (percentil 90 de 'fuera')
+
+------------------------------------------------------------------------------
+POR IDIOMA — un umbral para cada uno
+------------------------------------------------------------------------------
+  ESPAÑOL (95)
+    dentro  n= 48  media=0.8149  desvio=0.0122  min=0.7914  max=0.8513
+    fuera   n= 47  media=0.7878  desvio=0.0181  min=0.7405  max=0.8424
+    AUC    = 0.9207   IC95% [0.8537, 0.9712]
+    MARGEN = -0.0509   IC95% [-0.0509, -0.0140]   (NEGATIVO = se pisan)
+    tau optimo      = 0.8017  IC95% [0.7954, 0.8081]   exactitud balanceada = 86.3%
+      -> deja pasar 87.5% de las 'dentro' y bloquea 85.1% de las 'fuera'
+    tau conservador = 0.8424   0 falsos aceptados
+      -> cuesta abstenerse en 97.9% de las 'dentro' (47 de 48)
+    puntos de operacion:
+        tau      'dentro' que pasan     'fuera' que se cuelan
+      0.8424           2.1%                    2.1%   (percentil 100 de 'fuera')
+      0.8296           6.2%                    2.1%   (percentil 99 de 'fuera')
+      0.8137          47.9%                    4.3%   (percentil 97 de 'fuera')
+      0.8109          56.2%                    6.4%   (percentil 95 de 'fuera')
+      0.8046          77.1%                   10.6%   (percentil 90 de 'fuera')
+
+  INGLES (95)
+    dentro  n= 47  media=0.8770  desvio=0.0213  min=0.8289  max=0.9313
+    fuera   n= 48  media=0.8313  desvio=0.0228  min=0.7628  max=0.8639
+    AUC    = 0.9388   IC95% [0.8852, 0.9792]
+    MARGEN = -0.0350   IC95% [-0.0350, -0.0180]   (NEGATIVO = se pisan)
+    tau optimo      = 0.8592  IC95% [0.8545, 0.8653]   exactitud balanceada = 90.4%
+      -> deja pasar 83.0% de las 'dentro' y bloquea 97.9% de las 'fuera'
+    tau conservador = 0.8639   0 falsos aceptados
+      -> cuesta abstenerse en 23.4% de las 'dentro' (11 de 47)
+    puntos de operacion:
+        tau      'dentro' que pasan     'fuera' que se cuelan
+      0.8639          76.6%                    2.1%   (percentil 100 de 'fuera')
+      0.8616          78.7%                    2.1%   (percentil 99 de 'fuera')
+      0.8586          83.0%                    4.2%   (percentil 97 de 'fuera')
+      0.8578          83.0%                    6.2%   (percentil 95 de 'fuera')
+      0.8554          83.0%                   10.4%   (percentil 90 de 'fuera')
+
+------------------------------------------------------------------------------
+EL DESPLAZAMIENTO ENTRE IDIOMAS
+------------------------------------------------------------------------------
+    media dentro:  es=0.8149   en=0.8770   diferencia=+0.0621
+    media fuera :  es=0.7878   en=0.8313   diferencia=+0.0435
+    distancia entre los dos tau optimos = +0.0575
+    Esa distancia es el motivo por el que un umbral unico no sirve.
+
+------------------------------------------------------------------------------
+TANDA 1 vs TANDA 2 — ¿se sostiene el resultado exploratorio?
+------------------------------------------------------------------------------
+    tanda 1 · es:  n=10+10  AUC=1.0000  margen=+0.0008  tau=0.8017
+    tanda 1 · en:  n=10+10  AUC=1.0000  margen=+0.0169  tau=0.8629
+    tanda 2 · es:  n=38+37  AUC=0.9011  margen=-0.0509  tau=0.8041
+    tanda 2 · en:  n=37+38  AUC=0.9182  margen=-0.0350  tau=0.8592
+
+------------------------------------------------------------------------------
+PASAJES IMAN — absorben consultas 'fuera' y comen margen
+------------------------------------------------------------------------------
+     10 consultas -> R-1382 (10 palabras): Ask maestro Lodovico for 'the conduits of water'. F1. Uff.]...
+      9 consultas -> R-1560 (80 palabras): Ut bene respondet Naturae ars docta! dedisset Vincius, ut tribuit cetera  sic animam  Noluit ut similis magis haec foret: altera...
+      6 consultas -> R-1069 (29 palabras): GERMANY. FRANCE. a. Austria, a. Picardy. b. Saxony. b. Normandy. c. Nuremberg. c. Dauphine. d. Flanders. SPAIN. a. Biscay. b. Cast...
+      4 consultas -> R-1558 (14 palabras): **IlavTcov avTKX[AcpXt(uv Suo soostai smataupovTou; 2irptoo[Aiaaai w avepu>uo? 'Ae7]vac ToT? Qs.oi<; 8sj(o[j-ai.** C.A.130a; 397a]...
+      3 consultas -> R-900 (17 palabras): OF THE MOON. All my opponent's arguments to say that there is no water in the moon....
+      3 consultas -> R-1565 (8 palabras): XVIo* C. 6 de Ciuitate Dei, 2*se Antipodes....
+

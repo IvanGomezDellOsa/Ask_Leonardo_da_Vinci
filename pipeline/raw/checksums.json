@@ -1,0 +1,14 @@
+{
+  "pg5000-images.html": {
+    "bytes": 1600813,
+    "sha256": "110a9d1b0e88fdf0f0c0cabf04d603a9c63f521685aa3b3ef9befaf45b177803",
+    "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html",
+    "rol": "fuente de parseo"
+  },
+  "pg5000.txt": {
+    "bytes": 1433832,
+    "sha256": "83e79e107270ea7cbbc4b478913978738ae3d763081e54bc173a663d08ca5b10",
+    "url": "https://www.gutenberg.org/cache/epub/5000/pg5000.txt",
+    "rol": "diffs legibles en Git; no se parsea"
+  }
+}

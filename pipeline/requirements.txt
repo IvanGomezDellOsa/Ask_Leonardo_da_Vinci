@@ -1,0 +1,5 @@
+# Pipeline de ingesta. Offline: no se despliega y no necesita ninguna API key.
+requests>=2.32
+beautifulsoup4>=4.12
+numpy>=1.26
+sentence-transformers>=5.0

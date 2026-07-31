@@ -1,1 +1,8 @@
 hooks/* text eol=lf
+
+# Las fuentes de Project Gutenberg se guardan byte a byte. Vienen con CRLF y
+# el pipeline verifica su SHA-256: si git normalizara los saltos de linea, un
+# clon en Linux o en CI recibiria 33.313 bytes menos y la verificacion de
+# 01_download.py fallaria contra su propio corpus.
+pipeline/raw/pg5000-images.html -text
+pipeline/raw/pg5000.txt         -text

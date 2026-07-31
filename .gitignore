@@ -5,9 +5,17 @@ docs/
 node_modules/
 .next/
 pipeline/out/
-pipeline/raw/
 *.log
 .DS_Store
+
+# Las dos fuentes de Project Gutenberg SI se commitean (D-024, R4): el parseo
+# tiene que ser reproducible. Se excluye el resto de pipeline/raw/.
+# Ojo: tiene que ser "raw/*" y no "raw/" — git no reabre un archivo si el
+# directorio padre esta excluido, y el negado quedaria sin efecto en silencio.
+pipeline/raw/*
+!pipeline/raw/pg5000-images.html
+!pipeline/raw/pg5000.txt
+!pipeline/raw/checksums.json
 
 # Experimento de separabilidad: el codigo y los resultados SI se publican
 # (son la prueba de la tesis, D-036). Los datos pesados no.

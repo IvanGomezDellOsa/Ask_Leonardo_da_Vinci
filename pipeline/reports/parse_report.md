@@ -14,7 +14,7 @@ Fuente: `pipeline/raw/pg5000-images.html` · 1,600,813 bytes
 | Numeros de pasaje tras el filtro de monotonia | 1,550 | — | 13 descartados |
 | Pasajes >= 8 palabras (con titulo adentro, comparable al control) | 1,494 | 1,504 | desvio -10 |
 | Pasajes >= 8 palabras (con el titulo ya extraido) | 1,489 | — | |
-| Titulos tematicos de Richter | 343 | 651 | desvio -308 |
+| Titulos tematicos de Richter | 346 | 651 | desvio -305 |
 
 El control de 1.504 se midio con los titulos en mayuscula de Leonardo y los
 titulos de Richter dentro de los cuerpos. Se reportan las dos cifras para que
@@ -24,9 +24,9 @@ el numero siga siendo comparable despues de extraer los titulos.
 
 - Indice de contenidos del Volumen I: **219 entradas**, cubren los pasajes 1-702 con **0 huecos**. Es un dato del libro, no una inferencia.
 - Volumen II (703 en adelante): no hay indice. Decide la regla nominal sobre 395 candidatos, **161 aceptados** → `reports/titulos_volumen2.txt`, para revision ocular.
-- **Precision de la regla medida contra el indice del Volumen I: 90.4% · recall 98.4%** (179 aciertos, 19 falsos positivos, 3 falsos negativos).
+- **Precision de la regla medida contra el indice del Volumen I: 91.9% · recall 98.4%** (182 aciertos, 16 falsos positivos, 3 falsos negativos).
 
-**Discrepancia con D-025.** El documento dice 651 titulos; con esta definicion son 343. La hipotesis medida: los encabezados `<h5>` en mayuscula que NO son de seccion —los que escribio el propio Leonardo en sus manuscritos, tipo `OF PAINTING.`— son **709**. No coincide exactamente con 651; la diferencia queda anotada y sin forzar. Aca esos encabezados quedan dentro del cuerpo del pasaje, que es lo que mantiene comparable el control de 1.504.
+**Discrepancia con D-025.** El documento dice 651 titulos; con esta definicion son 346. La hipotesis medida: los encabezados `<h5>` en mayuscula que NO son de seccion —los que escribio el propio Leonardo en sus manuscritos, tipo `OF PAINTING.`— son **709**. No coincide exactamente con 651; la diferencia queda anotada y sin forzar. Aca esos encabezados quedan dentro del cuerpo del pasaje, que es lo que mantiene comparable el control de 1.504.
 
 ## Distribucion de longitud
 

@@ -346,6 +346,13 @@ def parsear_indice() -> list[dict]:
         bruto = re.sub(r"^\s*[.\-—]+\s*", "", bruto)
         bruto = RE_ALLCAPS.sub(" ", bruto)          # encabezados de seccion
         bruto = RE_ROMANO_INLINE.sub(" ", bruto)
+        # La primera entrada arrastra el encabezado del propio indice
+        # ("CONTENTS OF VOLUME I. PROLEGOMENA ... .--The author's intention").
+        # Richter separa entradas con ".--", asi que lo que vale es el ultimo
+        # segmento; y se limpian los restos en mayuscula de dos letras que el
+        # patron de ALLCAPS no alcanza ("OF", "TO", "ON").
+        bruto = re.split(r"\.--|\.—", bruto)[-1]
+        bruto = re.sub(r"^(?:[A-Z][A-Z'’.\-]*[ .,:]*){2,}", " ", bruto)
         titulo = " ".join(bruto.replace("_", "").split()).strip(" .-—")
         g = m.groups()
         a, b = (int(g[2]), int(g[2])) if g[2] else (int(g[0]), int(g[1]))

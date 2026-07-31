@@ -7,7 +7,7 @@
 | **Leonardo** (indice T1) | 1,549 | 169,757 |
 | Richter · `absence` | 36 | 9,385 |
 | Richter · `substantive` | 563 | 55,240 |
-| Richter · `apparatus` (fuera del indice) | 476 | 6,201 |
+| Richter · `apparatus` (fuera del indice) | 474 | 6,187 |
 
 ## Comentario de Richter extraido de adentro de los pasajes
 

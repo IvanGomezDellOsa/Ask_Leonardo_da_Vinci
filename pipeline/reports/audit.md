@@ -5,8 +5,8 @@ Fuente: `pg5000-images.html` · 1,563,675 bytes
 ## A. Conservacion de texto
 
 - palabras en el HTML (cuerpo): **249,750**
-- en unidades: 240,583 · en titulos: 2,187 · preliminares (portada, prefacio, indice): 4,113
-- **sin contabilizar: 2,867 (1.1%)**
+- en unidades: 240,569 · en titulos: 2,208 · preliminares (portada, prefacio, indice): 4,113
+- **sin contabilizar: 2,860 (1.1%)**
 - ok — la fuga de texto se mantiene por debajo del 6% (es 1.1%)
 
 ## B. Higiene del texto

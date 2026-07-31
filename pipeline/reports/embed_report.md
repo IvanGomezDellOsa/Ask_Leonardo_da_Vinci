@@ -11,8 +11,8 @@ reconstruccion. Medido sobre 400 chunks al azar contra el corpus completo:
 
 | | media | p99 | max |
 |---|---:|---:|---:|
-| `abs(cos_f32 - cos_int8)` | 0.002034 | 0.006101 | 0.010808 |
-| sobre el `cos_max` (lo que umbraliza el gate) | 0.001829 | — | 0.005745 |
+| `abs(cos_f32 - cos_int8)` | 0.002036 | 0.006104 | 0.010808 |
+| sobre el `cos_max` (lo que umbraliza el gate) | 0.001833 | — | 0.005745 |
 
 El vecino mas cercano cambia en **7.2%** de los casos. La diagonal se excluye: cada chunk se encuentra a si mismo con coseno 1,0 exacto en las dos representaciones, y dejarla adentro hace parecer que la cuantizacion no mueve nada.
 

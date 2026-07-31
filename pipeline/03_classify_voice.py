@@ -70,13 +70,19 @@ RASGOS_RICHTER = [
     (1.0, "sigla_de_manuscrito", re.compile(
         r"(Pl\.\s*[IVXLC]|\bMSS?\.|C\.\s?A\.\s?\d|S\.\s?K\.\s?M\.|Ash\.\s?[IVX]|"
         r"Br\.\s?M\.|\bfol\.)")),
+    # El HTML conserva el guion bajo del .txt como marca de cursiva en la
+    # seccion de arquitectura, donde <i> no se uso. Medido: 23 bloques lo llevan
+    # y los 23 son catalogo de Richter ("_III. Castles and Villas.").
+    (2.0, "cursiva_literal", re.compile(r"^\s*_")),
     (1.0, "meta_discurso_editorial", re.compile(
         r"\b(we (?:find|see|have|know|may|shall|must|possess|often meet)"
         r"|it seems to me|the reader|in the following pages"
         r"|as (?:we|I) have (?:already )?(?:seen|said|observed)"
+        r"|I have (?:already)?[^.]{0,30}(?:pointed out|shown|described|mentioned)"
         r"|this (?:drawing|sketch|plan|page|note|passage|chapter|volume)"
         r"|the (?:drawing|sketch|original|facsimile|editor)"
-        r"|reproduced|is (?:shown|given|indicated) (?:in|on|by|here))\b", re.I)),
+        r"|reproduced|is (?:shown|given|indicated|drawn|sketched|engraved) "
+        r"(?:in|on|by|here|above|below))\b", re.I)),
 ]
 
 # Evidencia A FAVOR de Leonardo: el registro del cuaderno. Richter escribe
@@ -105,6 +111,18 @@ RE_ENVOLTORIO = re.compile(r"^\[Footnote(?:\s*\d+)?\s*:?\s*|\s*\]\s*$")
 RE_TRANSCRIPTOR = re.compile(r"\*{2,}[^*]{0,40}\*{2,}|\*{3,}")
 RE_GUION_BAJO = re.compile(r"_")
 
+# Ni Leonardo ni Richter: es el transcriptor de Project Gutenberg y las
+# cabeceras de pagina del libro. No tiene autor y no va a ningun indice.
+RE_TRANSCRIPTOR_BOILER = re.compile(
+    r"(?:End of Volume\s*\d+"
+    r"|Volume\s*\d+\s*Translated by Jean Paul Richter\s*\d*"
+    r"|Translated by Jean Paul Richter"
+    r"|The Notebooks of Leonardo Da Vinci"
+    r"|There are characters present in the original[^.]*\."
+    r"|Section title:.*"
+    r"|below must belong to previous page.*"
+    r"|from previous page\??)", re.I)
+
 
 def limpiar(texto: str) -> str:
     """Saca los restos del aparato que no son parte del texto.
@@ -114,9 +132,13 @@ def limpiar(texto: str) -> str:
     generador de HTML de Gutenberg dejo sin limpiar (97 unidades); y `***` son
     marcas del propio transcriptor ("*** from previous page?***").
     """
+    texto = RE_TRANSCRIPTOR_BOILER.sub(" ", texto)
     texto = RE_ENVOLTORIO.sub("", texto)
     texto = RE_TRANSCRIPTOR.sub(" ", texto)
     texto = RE_GUION_BAJO.sub("", texto)
+    # cola de aparato pegada al final: "84 and following; compare No. 846."
+    texto = re.sub(r"\s*\b(?:\d+ and following[;,]?\s*)?(?:compare|see)\s+Nos?\."
+                   r"\s*[\d,.\s]*\.?\s*$", "", texto, flags=re.I)
     texto = re.sub(r"[ \t]+", " ", texto)
     return re.sub(r"\n{2,}", "\n", texto).strip()
 
@@ -161,6 +183,7 @@ RE_AUTONOMBRE = re.compile(r"\b(?:I|me|my|mine)\b[^.]{0,60}\bLeonardo\b", re.I)
 
 UMBRAL_SEMILLA = 2.0     # 77% de recall con 0,4% de falsos positivos
 UMBRAL_EXPANSION = 0.5   # solo para bloques contiguos a una semilla
+MAX_HUECO = 3            # bloques que se rellenan entre dos tiradas
 
 # Se evaluo y se descarto una regla de "pasaje dominado por Richter" (si mas del
 # 60% de sus palabras eran de Richter, el pasaje entero pasaba a serlo). Medida,
@@ -218,6 +241,20 @@ def clasificar_bloques(bloques: list[dict]) -> dict[int, list[dict]]:
                     bs[j]["voice"] = "richter"
                     bs[j]["voiceSource"] = "bloque: contiguo a una semilla"
                     j += paso
+        # Relleno de huecos: un bloque que queda ENTRE dos tiradas de Richter es
+        # de Richter. Su comentario es prosa continua; el texto de Leonardo no
+        # reaparece por dos parrafos en medio de un ensayo editorial. Sin esto,
+        # R-755 conservaba "I have already, in another place, pointed out the law
+        # of construction", que no dispara ningun rasgo y esta rodeado de dos
+        # bloques que si. Se exige que el hueco no tenga evidencia clara de
+        # Leonardo, para no rellenar sobre texto suyo.
+        marcados = [i for i, b in enumerate(bs) if b["voice"] == "richter"]
+        for a, z in zip(marcados, marcados[1:]):
+            if 1 < z - a <= MAX_HUECO + 1:
+                for j in range(a + 1, z):
+                    if bs[j]["score"] > -1.0:
+                        bs[j]["voice"] = "richter"
+                        bs[j]["voiceSource"] = "bloque: hueco entre dos tiradas"
     return por_pasaje
 
 

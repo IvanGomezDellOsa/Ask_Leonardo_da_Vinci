@@ -6,7 +6,7 @@ Revisar **el 100% de lo marcado** mas la muestra aleatoria. Para corregir:
 
 en `pipeline/review/review_overrides.jsonl`. El pipeline lo vuelve a leer.
 
-## Unidades `leonardo` con bandera: 18
+## Unidades `leonardo` con bandera: 11
 
 - **`rt-0004`** (163 pal · primera_persona_editorial)
   > Begun at Florence, in the house of Piero di Braccio Martelli, on the 22nd day of March 1508. And this is to be a collection without order, taken from many papers which I have copied here, ho
@@ -17,41 +17,20 @@ en `pipeline/review/review_overrides.jsonl`. El pipeline lo vuelve a leer.
 - **`rt-0669`** (531 pal · anio_posterior_a_1519)
   > On the battle of Anghiari. Florentine Neri di Gino Capponi Bernardetto de' Medici Micheletto, Niccolo da Pisa Conte Francesco Pietro Gian Paolo Guelfo Orsino, Messer Rinaldo degli Albizzi Be
 
-- **`rt-0705`** (38 pal · anio_posterior_a_1519)
-  > Snow taken from the high peaks of mountains might be carried to hot places and let to fall at festivals in open places at summer time. End of Volume 1 Volume 2 Translated by Jean Paul Richte
-
 - **`rt-0725`** (760 pal · anio_posterior_a_1519)
   > THE MONUMENT TO MESSER GIOVANNI JACOMO DA TREVULZO. [2] Cost of the making and materials for the horse [5]. A courser, as large as life, with the rider requires for the cost of the metal, du
 
 - **`rt-0737`** (222 pal · anio_posterior_a_1519)
   > HOW CASTS OUGHT TO BE POLISHED. Make a bunch of iron wire as thick as thread, and scrub them with [this and] water; hold a bowl underneath that it may not make a mud below. HOW TO REMOVE THE
 
-- **`rt-0747`** (130 pal · referencia_al_aparato)
+- **`rt-0747`** (124 pal · referencia_al_aparato)
   > The main underground channel does not receive turbid water, but that water runs in the ditches outside the town with four mills at the entrance and four at the outlet; and this may be done b
 
-- **`rt-0755`** (789 pal · referencia_al_aparato)
-  > It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters made in the frieze. B. The theory of Dome Architecture. I have already, i
-
-- **`rt-0757`** (440 pal · referencia_al_aparato)
-  > This building is inhabited below and above; the way up is by the campaniles, and in going up one has to use the platform, where the drums of the four domes are, and this platform has a parap
-
-- **`rt-0769`** (149 pal · referencia_al_aparato)
-  > CONCERNING ARCHITRAVES OF ONE OR SEVERAL PIECES. An architrave of several pieces is stronger than that of one single piece, if those pieces are placed with their length in the direction of t
-
-- **`rt-1294`** (31 pal · referencia_al_aparato)
-  > [Of Funeral Rites, and Processions, and Lights, and Bells, and Followers.] The greatest honours will be paid to men, and much pomp, without their knowledge. 84 and following; compare No. 846
+- **`rt-0755`** (352 pal · referencia_al_aparato)
+  > It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters made in the frieze. Domes rising from a square base and four pillars. a) 
 
 - **`rt-1405`** (28 pal · anio_posterior_a_1519)
   > 24 tavole make 1 perch. 4 trabochi make 1 tavola. 4 braccia and a half make a trabocco. A perch contains 1936 square braccia, or 1944. I.2 70b
-
-- **`rt-1467`** (81 pal · referencia_al_aparato)
-  > Gian Maria 4, Benedetto 4, Gian Pietro [*5] 3, Salai 3, Bartolomeo 3, Gherardo 4. 2. 3. Francesco de' Melzi is often mentioned, see Nos. 1350. 3. Salai. See No. 1519 note. 1466. This seems t
-
-- **`rt-1469`** (237 pal · referencia_al_aparato)
-  > Book on Arithmetic 'Flowers of Virtue', Pliny, 'Lives of the Philosophers', The Bible, 'Lapidary', 'On warfare' 'Epistles of Filelfo', below must belong to previous page's footnotes observat
-
-- **`rt-1503`** (75 pal · primera_persona_editorial)
-  > of double the diameter cannot be moved by double the exertion, be- cause the superficies of a body of the same form but twice as large has four times the extent of the superficies of the sma
 
 - **`rt-1522`** (147 pal · anio_posterior_a_1519)
   > EXPENSES OF THE INTERMENT OF CATERINA. For the 3 Ibs of tapers 27 S For the bier 8 S A pall over the bier 12 S For bearing and placing the cross 4 S For bearing the body 8 S For 4 priests an
@@ -62,7 +41,7 @@ en `pipeline/review/review_overrides.jsonl`. El pipeline lo vuelve a leer.
 - **`rt-1539`** (199 pal · anio_posterior_a_1519)
   > For paper S 18 for canvas S 30 for paper S 10 d 19 Total S 73 1540. 20 pounds of German blue, at one ducat the pound lire 80 S d 60 pounds of white, S.. the pound lire 15 S d 1 1/2 pound at 
 
-## Bloques en el limite: 157
+## Bloques en el limite: 151
 
 Puntuaron entre 0.5 y 2.0 y **no** se excindieron.
 Es donde estaria un falso negativo del clasificador de bloque.
@@ -193,6 +172,9 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **R-728** bloque 2 (score 1.0 · meta_discurso_editorial)
   > The diameter is given in the lead enclosed; it is beaten with a hammer and several times extended; the lead is folded and kept wrapped up in parchment so that the powder may not be spilt; th
 
+- **R-745** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > The front a m will give light to the rooms; a e will be 6 braccia—a b 8 braccia —b e 30 braccia, in order that the rooms under the porticoes may be lighted; c d f is the place where the boat
+
 - **R-747** bloque 9 (score 1.0 · sigla_de_manuscrito)
   > Pl. LXXXI, No. 2 (MS. C. A, 75b; 221a, see No. 748). Project for a royal residence at Amboise in France.
 
@@ -229,23 +211,20 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **R-755** bloque 61 (score 1.0 · sigla_de_manuscrito)
   > d) Pl. LXXXVIII, No. 1. Inside of the same octagon. MS. B, 30a, and 34b; these are three repetitions of parts of the same plan with very slight variations.
 
-- **R-755** bloque 70 (score 1.0 · meta_discurso_editorial)
-  > The sketch on the right hand side gives most likely the elevation for the last named plan.
+- **R-786** bloque 9 (score 1.0 · meta_discurso_editorial)
+  > The arch itself tends to fall. If the arch be 30 braccia and the interval between the walls which carry it be 20, we know that 30 cannot pass through the 20 unless 20 becomes likewise 30. He
 
-- **R-755** bloque 90 (score 1.0 · sigla_de_manuscrito)
-  > Pl. LXXXIV No. 3. On the principal axes are square chapels with three niches; on the diagonals octagonal chapels with niches. Cod. Atl. 340b gives a somewhat similar arrangement.
+- **R-787** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > Here it is shown how the arches made in the side of the octagon thrust the piers of the angles outwards, as is shown by the line h c and by the line t d which thrust out the pier m; that is 
 
-- **R-755** bloque 91 (score 1.0 · sigla_de_manuscrito)
-  > MS. B. 30. The principal development is thrown on the diagonal axes by square chapels with three niches; on the principal axes are inner recesses communicating with outer ones.
+- **R-801** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > 3 men complete, 3 with bones and nerves, 3 with the bones only. Here we have 12 demonstrations of entire figures.
 
-- **R-755** bloque 92 (score 1.0 · sigla_de_manuscrito)
-  > The plan Pl. XCIII No. 2 (MS. B. 22) differs from this only in so far as the outer semicircles have become circular chapels, projecting from the external square as apses; one of them serves 
+- **R-827** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > The eyes in the Lion tribe have a large part of the head for their sockets and the optic nerves communicate at once with the brain; but the contrary is to be seen in man, for the sockets of 
 
-- **R-757** bloque 17 (score 1.0 · sigla_de_manuscrito)
-  > Pl. XCVIII (P. V., 182._ No. d'ordre 2386). In the midst of a hilly landscape rises an artificial mountain in the form of a gigantic cone, crowned by an imposing temple. At two thirds of the
-
-- **R-757** bloque 18 (score 1.0 · meta_discurso_editorial)
-  > The section of a gallery given in the sketch to the right below shows the roof to be constructed on the principle of superimposed horizontal layers, projecting one beyond the other, and each
+- **R-828** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > Every object we see will appear larger at midnight than at midday, and larger in the morning than at midday.
 
 ## Muestra aleatoria de 100 (semilla 42)
 

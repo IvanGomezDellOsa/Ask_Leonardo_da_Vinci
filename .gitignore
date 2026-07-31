@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+docs/
+node_modules/
+.next/
+pipeline/out/
+pipeline/raw/
+*.log
+.DS_Store

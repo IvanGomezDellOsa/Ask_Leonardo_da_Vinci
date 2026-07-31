@@ -9,9 +9,11 @@
  * haya claves configuradas, esto imprime exactamente lo que se le mandaria.
  */
 
+import { readFileSync } from "node:fs";
 import { pipeline } from "@huggingface/transformers";
 import { Corpus, recortar } from "../src/lib/retrieval.js";
 import { cargarUmbrales, decidir, Idioma } from "../src/lib/grounding.js";
+import { PresupuestoTpm, construirPrompt, generar, groq } from "../src/lib/llm.js";
 
 const ART = new URL("../artifacts/", import.meta.url);
 
@@ -39,6 +41,15 @@ const LOTE: [Idioma, string, string][] = [
   ["es", "F", "¿Cómo eras físicamente?"],
   ["es", "F", "¿Quién era Salaì para vos?"],
 ];
+
+// La clave sale de .env.local, que esta gitignoreado. Nunca de NEXT_PUBLIC_*
+// ni del cliente (D-035). Sin clave, el banco corre igual y muestra el prompt.
+const claveGroq = (readFileSync(new URL("../.env.local", import.meta.url), "utf8")
+  .match(/^GROQ_API_KEY=(.+)$/m) ?? [])[1]?.trim();
+const presupuesto = new PresupuestoTpm(6000);
+const cascada = claveGroq
+  ? [groq("llama-3.3-70b-versatile", claveGroq), groq("llama-3.1-8b-instant", claveGroq)]
+  : [];
 
 const corpus = new Corpus(ART);
 const umbrales = cargarUmbrales(ART);
@@ -74,6 +85,19 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
     console.log(`      ${recortar(p.chunk.text, 28)}`);
   }
   if (d.notas.length) console.log(`    (${d.notas.length} notas de Richter vinculadas)`);
+
+  if (cascada.length) {
+    const { system, messages } = construirPrompt(
+      texto, d.pasajes.map((p) => ({ ...p.chunk })), [], idioma);
+    const r = await generar(cascada, presupuesto, system, messages);
+    if (!r) {
+      console.log("    [Leonardo descansa] presupuesto de tokens agotado");
+    } else {
+      console.log(`\n  ${r.proveedor} · ${r.tokensEntrada}+${r.tokensSalida} tokens` +
+                  ` · ${presupuesto.usoActual()}/6000 TPM`);
+      console.log(r.texto.split("\n").map((l) => "  │ " + l).join("\n"));
+    }
+  }
   return d;
 }
 

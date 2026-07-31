@@ -15,6 +15,8 @@
  * Ninguna clave sale de aca. Todas las llamadas pasan por el servidor (D-035).
  */
 
+import { recortar } from "./retrieval.js";
+
 export type Idioma = "es" | "en";
 
 export interface Pasaje {
@@ -99,11 +101,22 @@ STYLE
 /** ~4 caracteres por token; alcanza para el presupuesto, no para facturar. */
 export const estimarTokens = (s: string): number => Math.ceil(s.length / 4);
 
+/**
+ * El recorte a `maxPalabras` se aplica ACA y no en el llamador, porque esta es
+ * la funcion que administra el presupuesto de contexto (D-020, D-023). Estuvo
+ * roto hasta el 2026-07-31: `recortar` existia y solo se usaba para imprimir en
+ * consola, asi que al prompt entraban pasajes enteros. Medido sobre el indice:
+ * 291 de los 1.444 chunks de Leonardo (20,2%) superan las 200 palabras y el
+ * mayor tiene 499, de modo que el peor caso con k=3 eran ~1.950 tokens solo de
+ * pasajes, contra los ~1.100 tokens/request sobre los que `04` v3 calcula la
+ * capacidad del proyecto entero.
+ */
 export function construirPrompt(
   consulta: string, pasajes: Pasaje[], historial: Turno[], idioma: Idioma,
+  maxPalabras = 200,
 ): { system: string; messages: { role: "user" | "assistant"; content: string }[] } {
   const cuerpo = pasajes
-    .map((p) => `[${p.richterNo}] ${p.richterTitle ?? ""}\n${p.text}`)
+    .map((p) => `[${p.richterNo}] ${p.richterTitle ?? ""}\n${recortar(p.text, maxPalabras)}`)
     .join("\n\n");
   const system = `${IDENTIDAD[idioma]}\n\n${REGLA[idioma]}\n\nPASAJES\n\n${cuerpo}`;
   // Historial recortado a 4 turnos (D-020): es presupuesto de capacidad.

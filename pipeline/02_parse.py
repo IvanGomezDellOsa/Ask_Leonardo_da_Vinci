@@ -456,17 +456,33 @@ def bloque_de(pos: int, anclas: list[tuple[int, int]]) -> int:
     return r
 
 
-def cuerpo(texto: str, ini: int, fin: int, saltar: set[int]) -> str:
-    """Texto del pasaje, sin los bloques marcados (titulos y encabezados)."""
+def partes(texto: str, ini: int, fin: int, saltar: set[int],
+           bloque_ini: int) -> list[tuple[int, str]]:
+    """Bloques del pasaje, cada uno con su indice, sin los marcados.
+
+    Se devuelven por separado y no concatenados porque la clasificacion de voz
+    trabaja a nivel de bloque: la prosa de Richter aparece interleaveada DENTRO
+    de un pasaje, no solo en sus bordes (D-052).
+    """
     trozo = texto[ini:fin]
-    partes = RE_SENT.split(trozo)
-    salida = [re.sub(r"\s+", " ", partes[0]).strip()] if partes else []
-    for k in range(1, len(partes) - 1, 2):
-        i = int(partes[k])
+    piezas = RE_SENT.split(trozo)
+    salida: list[tuple[int, str]] = []
+    primera = re.sub(r"\s+", " ", piezas[0]).strip() if piezas else ""
+    if primera:
+        salida.append((bloque_ini, primera))
+    for k in range(1, len(piezas) - 1, 2):
+        i = int(piezas[k])
         if i in saltar:
             continue
-        salida.append(re.sub(r"\s+", " ", partes[k + 1]).strip())
-    return "\n".join(p for p in salida if p)
+        t = re.sub(r"\s+", " ", piezas[k + 1]).strip()
+        if t:
+            salida.append((i, t))
+    return salida
+
+
+def cuerpo(texto: str, ini: int, fin: int, saltar: set[int]) -> str:
+    """Texto del pasaje, sin los bloques marcados (titulos y encabezados)."""
+    return "\n".join(t for _, t in partes(texto, ini, fin, saltar, -1))
 
 
 # --------------------------------------------------------------------------
@@ -630,6 +646,7 @@ def main() -> int:
     # -- pasajes
     saltar = set(titulos) | consumidos | set(intros)
     pasajes = []
+    filas_bloques: list[dict] = []
     titulo_vigente = ""
     for k, m in enumerate(marcas):
         fin = marcas[k + 1].start() if k + 1 < len(marcas) else len(texto)
@@ -645,7 +662,16 @@ def main() -> int:
         # en el Volumen I el rango del indice manda sobre la propagacion
         titulo_final = titulo_del_indice.get(n_pas, titulo_vigente)
 
-        cuerpo_txt = cuerpo(texto, m.end(), fin, saltar)
+        piezas = partes(texto, m.end(), fin, saltar, b_num)
+        cuerpo_txt = "\n".join(t for _, t in piezas)
+        for orden, (bi, t) in enumerate(piezas):
+            crudo = por_indice.get(bi, {})
+            largo = max(1, len(crudo.get("texto", "")))
+            filas_bloques.append({
+                "richterNo": n_pas, "blockIdx": bi, "orden": orden,
+                "anchorId": crudo.get("id"), "text": t, "nWords": len(t.split()),
+                "italicRatio": round(crudo.get("italico", 0) / largo, 3),
+            })
         # el cuerpo con el titulo adentro, solo para comparar con el control
         cuerpo_crudo = cuerpo(texto, m.end(), fin, consumidos)
         sec, sub = secciones.get(b_num, ("", ""))
@@ -700,6 +726,7 @@ def main() -> int:
                    [{"bloque": i, "richterNo": candidatos[i][1], "titulo": t}
                     for i, t in sorted(titulos.items())])
     escribir_jsonl(OUT / "toc.jsonl", indice)
+    escribir_jsonl(OUT / "blocks.jsonl", filas_bloques)
     escribir_jsonl(OUT / "intros.jsonl", [
         {"id": f"intro-{k:03d}", "bloque": i, "section": sec,
          "anchorId": por_indice.get(i, {}).get("id"),

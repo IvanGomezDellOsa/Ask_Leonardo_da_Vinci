@@ -1,18 +1,12 @@
 # Revision dirigida de voz (R1)
 
-R1 es el riesgo numero uno del proyecto y falla en silencio. Hay que
-revisar **el 100% de lo marcado** mas la muestra aleatoria.
+Revisar **el 100% de lo marcado** mas la muestra aleatoria. Para corregir:
 
-Para corregir una unidad, agregar una linea a `pipeline/review/review_overrides.jsonl`:
+    {"id": "rt-0795", "voice": "richter", "motivo": "prosa editorial"}
 
-    {"id": "rt-0795", "voice": "richter", "motivo": "prosa editorial de Richter"}
+en `pipeline/review/review_overrides.jsonl`. El pipeline lo vuelve a leer.
 
-El pipeline la vuelve a leer, asi que la revision queda versionada y el
-parseo sigue siendo reproducible.
-
-## Marcadas: 31 unidades
-
-### `primera_persona_editorial` — 10 unidades
+## Unidades `leonardo` con bandera: 18
 
 - **`rt-0004`** (163 pal · primera_persona_editorial)
   > Begun at Florence, in the house of Piero di Braccio Martelli, on the 22nd day of March 1508. And this is to be a collection without order, taken from many papers which I have copied here, ho
@@ -20,81 +14,11 @@ parseo sigue siendo reproducible.
 - **`rt-0013`** (184 pal · primera_persona_editorial)
   > Among all the studies of natural causes and reasons Light chiefly delights the beholder; and among the great features of Mathematics the certainty of its demonstrations is what preeminently 
 
-- **`rt-0207`** (110 pal · primera_persona_editorial)
-  > It is impossible that an object mirrored on water should correspond in form to the object mirrored, since the centre of the eye is above the surface of the water. This is made plain in the f
-
-- **`rt-0656`** (262 pal · primera_persona_editorial)
-  > We know very well that a really experienced and good painter will not make such mistakes; on the contrary, with sound rules he will remove so little at a time that he will bring his work to 
-
-- **`rt-0740`** (1176 pal · primera_persona_editorial+anio_posterior_a_1519)
-  > OF LUTING THE FURNACE WITHIN. The furnace must be luted before you put the metal in it, with earth from Valenza, and over that with ashes. OF RESTORING THE METAL WHEN IT IS BECOMING COOL. Wh
-
-- **`rt-0904`** (292 pal · primera_persona_editorial)
-  > OF THE SPOTS ON THE MOON. Others say that the moon is composed of more or less transparent parts; as though one part were something like alabaster and others like crystal or glass. It would 
-
-- **`rt-1336`** (2443 pal · primera_persona_editorial+referencia_al_aparato+anio_posterior_a_1519)
-  > TO THE DEVATDAR OF SYRIA, LIEUTENANT OF THE SACRED SULTAN OF BABYLON. [*3] The recent disaster in our Northern parts which I am certain will terrify not you alone but the whole world, which 
-
-- **`rt-1351`** (781 pal · primera_persona_editorial)
-  > [Most illustrious Lord. I greatly rejoice most Illustrious Lord at your…] I was so greatly rejoiced, most illustrious Lord, by the desired restoration of your health, that it almost had the 
-
-- **`rt-1352`** (144 pal · primera_persona_editorial)
-  > I was so greatly rejoiced, most Illustrious Lord, by the wished for recovery of your health, that my own ills have almost left me; and I say God be praised for it. But it vexes me greatly th
-
-- **`rt-1503`** (75 pal · primera_persona_editorial)
-  > of double the diameter cannot be moved by double the exertion, be- cause the superficies of a body of the same form but twice as large has four times the extent of the superficies of the sma
-
-### `referencia_al_aparato` — 14 unidades
-
-- **`rt-0744`** (134 pal · referencia_al_aparato)
-  > ON MOVING HOUSES. Let the houses be moved and arranged in order; and this will be done with facility because such houses are at first made in pieces on the open places, and can then be fitte
-
-- **`rt-0747`** (417 pal · referencia_al_aparato)
-  > The main underground channel does not receive turbid water, but that water runs in the ditches outside the town with four mills at the entrance and four at the outlet; and this may be done b
-
-- **`rt-0755`** (3338 pal · referencia_al_aparato+anio_posterior_a_1519)
-  > It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters made in the frieze. _B. The theory of Dome Architecture. This subject has
-
-- **`rt-0756`** (530 pal · referencia_al_aparato)
-  > This edifice is inhabited [accessible] below and above, like San Sepolcro, and it is the same above as below, except that the upper story has the dome c d; and the lower has the dome a b, an
-
-- **`rt-0757`** (1468 pal · referencia_al_aparato+anio_posterior_a_1519)
-  > This building is inhabited below and above; the way up is by the campaniles, and in going up one has to use the platform, where the drums of the four domes are, and this platform has a parap
-
-- **`rt-0759`** (690 pal · referencia_al_aparato)
-  > Twelve flights of steps led up to the great temple, which was eight hundred braccia in circumference and built on an octagonal plan. At the eight corners were eight large plinths, one bracci
-
-- **`rt-0768`** (289 pal · referencia_al_aparato)
-  > a b is 1/3 of n m; m o is 1/6 of r o. The ovolo projects 1/6 of r o; s 7 1/5 of r o, a b is divided into 9 1/2; the abacus is 3/9 the ovolo 4/9, the bead-moulding and the fillet 2/9 and 1/2.
-
-- **`rt-0769`** (149 pal · referencia_al_aparato)
-  > CONCERNING ARCHITRAVES OF ONE OR SEVERAL PIECES. An architrave of several pieces is stronger than that of one single piece, if those pieces are placed with their length in the direction of t
-
-- **`rt-0795`** (2016 pal · referencia_al_aparato)
-  > ON THE LENGTH OF BEAMS. That beam which is more than 20 times as long as its greatest thickness will be of brief duration and will break in half; and remember, that the part built into the w
-
-- **`rt-1294`** (31 pal · referencia_al_aparato)
-  > [Of Funeral Rites, and Processions, and Lights, and Bells, and Followers.] The greatest honours will be paid to men, and much pomp, without their knowledge. ***84 and following; compare No. 
-
-- **`rt-1336`** (2443 pal · primera_persona_editorial+referencia_al_aparato+anio_posterior_a_1519)
-  > TO THE DEVATDAR OF SYRIA, LIEUTENANT OF THE SACRED SULTAN OF BABYLON. [*3] The recent disaster in our Northern parts which I am certain will terrify not you alone but the whole world, which 
-
-- **`rt-1467`** (343 pal · referencia_al_aparato)
-  > Gian Maria 4, Benedetto 4, Gian Pietro [*5] 3, Salai 3, Bartolomeo 3, Gherardo 4. *1465. 2. Giovan; it is not likely that Leonardo should have called Giovan' Antonio Beltraffio at one time G
-
-- **`rt-1469`** (298 pal · referencia_al_aparato)
-  > Book on Arithmetic 'Flowers of Virtue', Pliny, 'Lives of the Philosophers', The Bible, 'Lapidary', 'On warfare' 'Epistles of Filelfo', ****below must belong to previous page's footnotes*** o
-
-- **`rt-1476`** (346 pal · referencia_al_aparato+erudito_del_XIX)
-  > If any man could have discovered the utmost powers of the cannon, in all its various forms and have given such a secret to the Romans, with what rapidity would they have conquered every coun
-
-### `anio_posterior_a_1519` — 12 unidades
-
 - **`rt-0669`** (531 pal · anio_posterior_a_1519)
   > On the battle of Anghiari. Florentine Neri di Gino Capponi Bernardetto de' Medici Micheletto, Niccolo da Pisa Conte Francesco Pietro Gian Paolo Guelfo Orsino, Messer Rinaldo degli Albizzi Be
 
-- **`rt-0705`** (45 pal · anio_posterior_a_1519)
-  > Snow taken from the high peaks of mountains might be carried to hot places and let to fall at festivals in open places at summer time. *** End of Volume 1 The Notebooks of Leonardo Da Vinci 
+- **`rt-0705`** (39 pal · anio_posterior_a_1519)
+  > Snow taken from the high peaks of mountains might be carried to hot places and let to fall at festivals in open places at summer time. *** End of Volume 1 Volume 2 Translated by Jean Paul Ri
 
 - **`rt-0725`** (760 pal · anio_posterior_a_1519)
   > THE MONUMENT TO MESSER GIOVANNI JACOMO DA TREVULZO. [2] Cost of the making and materials for the horse [5]. A courser, as large as life, with the rider requires for the cost of the metal, du
@@ -102,20 +26,32 @@ parseo sigue siendo reproducible.
 - **`rt-0737`** (222 pal · anio_posterior_a_1519)
   > HOW CASTS OUGHT TO BE POLISHED. Make a bunch of iron wire as thick as thread, and scrub them with [this and] water; hold a bowl underneath that it may not make a mud below. HOW TO REMOVE THE
 
-- **`rt-0740`** (1176 pal · primera_persona_editorial+anio_posterior_a_1519)
-  > OF LUTING THE FURNACE WITHIN. The furnace must be luted before you put the metal in it, with earth from Valenza, and over that with ashes. OF RESTORING THE METAL WHEN IT IS BECOMING COOL. Wh
+- **`rt-0747`** (130 pal · referencia_al_aparato)
+  > The main underground channel does not receive turbid water, but that water runs in the ditches outside the town with four mills at the entrance and four at the outlet; and this may be done b
 
-- **`rt-0755`** (3338 pal · referencia_al_aparato+anio_posterior_a_1519)
-  > It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters made in the frieze. _B. The theory of Dome Architecture. This subject has
+- **`rt-0755`** (790 pal · referencia_al_aparato)
+  > It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters made in the frieze. _B. The theory of Dome Architecture. I have already, 
 
-- **`rt-0757`** (1468 pal · referencia_al_aparato+anio_posterior_a_1519)
+- **`rt-0757`** (440 pal · referencia_al_aparato)
   > This building is inhabited below and above; the way up is by the campaniles, and in going up one has to use the platform, where the drums of the four domes are, and this platform has a parap
 
-- **`rt-1336`** (2443 pal · primera_persona_editorial+referencia_al_aparato+anio_posterior_a_1519)
-  > TO THE DEVATDAR OF SYRIA, LIEUTENANT OF THE SACRED SULTAN OF BABYLON. [*3] The recent disaster in our Northern parts which I am certain will terrify not you alone but the whole world, which 
+- **`rt-0769`** (149 pal · referencia_al_aparato)
+  > CONCERNING ARCHITRAVES OF ONE OR SEVERAL PIECES. An architrave of several pieces is stronger than that of one single piece, if those pieces are placed with their length in the direction of t
+
+- **`rt-1294`** (31 pal · referencia_al_aparato)
+  > [Of Funeral Rites, and Processions, and Lights, and Bells, and Followers.] The greatest honours will be paid to men, and much pomp, without their knowledge. ***84 and following; compare No. 
 
 - **`rt-1405`** (28 pal · anio_posterior_a_1519)
   > 24 tavole make 1 perch. 4 trabochi make 1 tavola. 4 braccia and a half make a trabocco. A perch contains 1936 square braccia, or 1944. I.2 70b]
+
+- **`rt-1467`** (81 pal · referencia_al_aparato)
+  > Gian Maria 4, Benedetto 4, Gian Pietro [*5] 3, Salai 3, Bartolomeo 3, Gherardo 4. 2. 3. Francesco de' Melzi is often mentioned, see Nos. 1350. 3. Salai. See No. 1519 note. 1466. This seems t
+
+- **`rt-1469`** (239 pal · referencia_al_aparato)
+  > Book on Arithmetic 'Flowers of Virtue', Pliny, 'Lives of the Philosophers', The Bible, 'Lapidary', 'On warfare' 'Epistles of Filelfo', ****below must belong to previous page's footnotes*** o
+
+- **`rt-1503`** (75 pal · primera_persona_editorial)
+  > of double the diameter cannot be moved by double the exertion, be- cause the superficies of a body of the same form but twice as large has four times the extent of the superficies of the sma
 
 - **`rt-1522`** (149 pal · anio_posterior_a_1519)
   > EXPENSES OF THE INTERMENT OF CATERINA. For the 3 Ibs of tapers 27 S For the bier 8 S A pall over the bier 12 S For bearing and placing the cross 4 S For bearing the body 8 S For 4 priests an
@@ -126,16 +62,192 @@ parseo sigue siendo reproducible.
 - **`rt-1539`** (199 pal · anio_posterior_a_1519)
   > For paper S 18 for canvas S 30 for paper S 10 d 19 Total S 73 1540. 20 pounds of German blue, at one ducat the pound lire 80 S d 60 pounds of white, S.. the pound lire 15 S d 1 1/2 pound at 
 
-### `erudito_del_XIX` — 1 unidades
+## Bloques en el limite: 157
 
-- **`rt-1476`** (346 pal · referencia_al_aparato+erudito_del_XIX)
-  > If any man could have discovered the utmost powers of the cannon, in all its various forms and have given such a secret to the Romans, with what rapidity would they have conquered every coun
+Puntuaron entre 0.5 y 2.0 y **no** se excindieron.
+Es donde estaria un falso negativo del clasificador de bloque.
+
+- **R-705** bloque 5 (score 1.5 · anio_posterior_a_1519)
+  > 1888
+
+- **R-725** bloque 6 (score 1.5 · anio_posterior_a_1519)
+  > in all. . duc. 1582.
+
+- **R-1113** bloque 1 (score 1.5 · artista_posterior)
+  > The ancients used various devices to ascertain the distance gone by a ship each hour, among which Vitruvius gives one in his work on Architecture which is just as fallacious as all the other
+
+- **R-1405** bloque 0 (score 1.5 · anio_posterior_a_1519)
+  > 24 tavole make 1 perch. 4 trabochi make 1 tavola. 4 braccia and a half make a trabocco. A perch contains 1936 square braccia, or 1944.
+
+- **R-1414** bloque 1 (score 1.5 · artista_posterior)
+  > [4] Buildings by Bramante. The governor of the castle made a prisoner.
+
+- **R-1439** bloque 0 (score 1.5 · artista_posterior)
+  > Quadrant of Carlo Marmocchi,—Messer Francesco Araldo,—Ser Benedetto d'Accie perello,—Benedetto on arithmetic,—Maestro Paulo, physician,—Domenico di Michelino,— …… of the Alberti,—Messer Giov
+
+- **R-1448** bloque 22 (score 1.5 · artista_posterior)
+  > Groups by Bramante ,—
+
+- **R-1522** bloque 2 (score 1.5 · anio_posterior_a_1519)
+  > 1523.
+
+- **R-1533** bloque 0 (score 1.5 · anio_posterior_a_1519)
+  > I gave to Salai 93 lire 6 soldi, of which I have had 67 lire and there remain 26 lire 6 soldi. 1534.
+
+- **R-1539** bloque 3 (score 1.5 · anio_posterior_a_1519)
+  > Total S 73 1540.
+
+- **R-8** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > The order of your book must proceed on this plan: first simple beams, then (those) supported from below, then suspended in part, then wholly [suspended]. Then beams as supporting other weigh
+
+- **R-22** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > In so small a space it can be reproduced and rearranged in its whole expanse. Describe in your anatomy what proportion there is between the diameters of all the images in the eye and the dis
+
+- **R-31** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > Every object we see will appear larger at midnight than at midday, and larger in the morning than at midday.
+
+- **R-36** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > The eye which turns from a white object in the light of the sun and goes into a less fully lighted place will see everything as dark. And this happens either because the pupils of the eyes w
+
+- **R-38** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > The pupil of the eye, in the open air, changes in size with every degree of motion from the sun; and at every degree of its changes one and the same object seen by it will appear of a differ
+
+- **R-47** bloque 2 (score 1.0 · meta_discurso_editorial)
+  > HOW WE MAY CONCLUDE THAT A SUPERFICIES TERMINATES IN A POINT?
+
+- **R-50** bloque 3 (score 1.0 · meta_discurso_editorial)
+  > [Perspective is a rational demonstration, by which we may practically and clearly understand how objects transmit their own image, by lines forming a Pyramid (centred) in the eye.]
+
+- **R-61** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > It can clearly be shown that all bodies are, by their images, all-pervading in the surrounding atmosphere, and each complete in itself as to substance form and colour; this is seen by the im
+
+- **R-81** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > Just as all lines can meet at a point without interfering with each other—being without breadth or thickness—in the same way all the images of surfaces can meet there; and as each given poin
+
+- **R-108** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > Here follows what is wanting in the margin at the foot on the other side of this page.
+
+- **R-117** bloque 2 (score 1.0 · meta_discurso_editorial)
+  > The first kind of Light which may illuminate opaque bodies is called Direct light—as that of the sun or any other light from a window or flame. The second is Diffused [universal] light, such
+
+- **R-130** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > The reason by which we know that a light radiates from a single centre is this: We plainly see that a large light is often much broader than some small object which nevertheless—and although
+
+- **R-169** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > Among bodies of equal size, that one which is illuminated by the largest light will have the shortest shadow. Experiment confirms this proposition. Thus the body m n is surrounded by a large
+
+- **R-173** bloque 2 (score 1.0 · meta_discurso_editorial)
+  > and is in a straight line with the centre of the primary shadow, with the centre of the body casting it and of the derivative light and with the centre of the window and, finally, with the c
+
+- **R-178** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > Then we may say that the line p h is darker than any other part of the space o p c h, because this line faces the whole surface in shadow of the wall b s. The line o c is lighter than the ot
+
+- **R-230** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > The edges of an object placed in front of the pupil of the eye will be less distinct in proportion as they are closer to the eye. This is shown by the edge of the object n placed in front of
+
+- **R-249** bloque 4 (score 1.0 · sigla_de_manuscrito)
+  > Propositions on perspective of disappearance from MS. C. (250-262).
+
+- **R-284** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > Since we see that the quality of colour is known [only] by means of light, it is to be supposed that where there is most light the true character of a colour in light will be best seen; and 
+
+- **R-288** bloque 5 (score 1.0 · meta_discurso_editorial)
+  > There are many birds in various regions of the world on whose feathers we see the most splendid colours produced as they move, as we see in our own country in the feathers of peacocks or on 
+
+- **R-288** bloque 6 (score 1.0 · meta_discurso_editorial)
+  > Again, on the surface of antique glass found underground and on the roots of turnips kept for some time at the bottom of wells or other stagnant waters [we see] that each root displays colou
+
+- **R-305** bloque 3 (score 1.0 · meta_discurso_editorial)
+  > Darkness affects every thing with its hue, and the more an object differs from darkness, the more we see its real and natural colour. The mountains will look few, because only those will be 
+
+- **R-351** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > When the arm is bent at an angle at the elbow, it will produce some angle; the more acute the angle is, the more will the muscles within the bend be shortened; while the muscles outside will
+
+- **R-375** bloque 3 (score 1.0 · meta_discurso_editorial)
+  > [32] The higher the step is which a man has to mount, the farther forward will he place his head in advance of his upper foot, so as to weigh more on a than on b; this man will not be on the
+
+- **R-407** bloque 0 (score 1.0 · meta_discurso_editorial)
+  > The lowest branches, after they have formed the angle of their separation from the parent stem, always bend downwards so as not to crowd against the other branches which follow them on the s
+
+- **R-407** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > The main branch always goes below, as is shown by the branch f n m, which does not go to f n o.
+
+- **R-447** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > The sun being in the East [to the right], the trees to the West [or left] of the eye will show in small relief and almost imperceptible gradations, because the atmosphere which lies between 
+
+- **R-500** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > Some may distinctly assert that those persons are under a delusion who call that painter a good master who can do nothing well but a head or a figure. Certainly this is no great achievement;
+
+- **R-567** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > We see quite plainly that all the images of visible objects that lie before us, whether large or small, reach our sense by the minute aperture of the eye; and if, through so small a passage 
+
+- **R-597** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > Of the nature of movements in man. Do not repeat the same gestures in the limbs of men unless you are compelled by the necessity of their action, as is shown in a b.
+
+- **R-607** bloque 1 (score 1.0 · meta_discurso_editorial)
+  > The air was darkened by the heavy rain whose oblique descent driven aslant by the rush of the winds, flew in drifts through the air not otherwise than as we see dust, varied only by the stra
+
+- **R-725** bloque 8 (score 1.0 · meta_discurso_editorial)
+  > Cost of the marble according to the drawing. The piece of marble under the horse which is 4 braccia long, 2 braccia and 2 inches wide and 9 inches thick 58 hundredweight, at 4 Lire and 10 So
+
+- **R-728** bloque 2 (score 1.0 · meta_discurso_editorial)
+  > The diameter is given in the lead enclosed; it is beaten with a hammer and several times extended; the lead is folded and kept wrapped up in parchment so that the powder may not be spilt; th
+
+- **R-747** bloque 9 (score 1.0 · sigla_de_manuscrito)
+  > Pl. LXXXI, No. 2 (MS. C. A, 75b; 221a, see No. 748). Project for a royal residence at Amboise in France.
+
+- **R-747** bloque 10 (score 1.0 · sigla_de_manuscrito)
+  > Pl. LXXXII, No. 1 (C. A 308a; 939a). A plan for a somewhat extensive residence, and various details; but there is no text to elucidate it; in courts are written the three names:
+
+- **R-755** bloque 27 (score 1.0 · meta_discurso_editorial)
+  > a) First type. _A Dome resting on four pillars in the centre of a square edifice, with an apse in the middle, of each of the four sides. We have eleven variations of this type.
+
+- **R-755** bloque 28 (score 1.0 · sigla_de_manuscrito)
+  > aa) Pl. LXXXVIII, No. 3.
+
+- **R-755** bloque 29 (score 1.0 · sigla_de_manuscrito)
+  > bb) Pl. LXXX, No. 5.
+
+- **R-755** bloque 30 (score 1.0 · sigla_de_manuscrito)
+  > cc) Pl. LXXXV, Nos. 2, 3, 5.
+
+- **R-755** bloque 31 (score 1.0 · sigla_de_manuscrito)
+  > dd) Pl. LXXXIV, No. 1 and 4 beneath.
+
+- **R-755** bloque 32 (score 1.0 · sigla_de_manuscrito)
+  > ee) Pl. LXXXV, Nos. 1, 7, 10, 11._
+
+- **R-755** bloque 56 (score 1.0 · sigla_de_manuscrito)
+  > MS. B. 11b (see Pl. XCIV, No. 3).
+
+- **R-755** bloque 58 (score 1.0 · sigla_de_manuscrito)
+  > a) MS. B, 21a; Pl. LXXXVIII, No. 4.
+
+- **R-755** bloque 60 (score 1.0 · sigla_de_manuscrito)
+  > c) Pl. LXXXVIII, No. 5. Elevation to the plans on the same sheet, it is accompanied by the note: "ciasscuno de' 9 tiburi no'uole - passare l'alteza - di - 2 - quadri" (neither of the 9 domes
+
+- **R-755** bloque 61 (score 1.0 · sigla_de_manuscrito)
+  > d) Pl. LXXXVIII, No. 1. Inside of the same octagon. MS. B, 30a, and 34b; these are three repetitions of parts of the same plan with very slight variations.
+
+- **R-755** bloque 70 (score 1.0 · meta_discurso_editorial)
+  > The sketch on the right hand side gives most likely the elevation for the last named plan.
+
+- **R-755** bloque 90 (score 1.0 · sigla_de_manuscrito)
+  > Pl. LXXXIV No. 3. On the principal axes are square chapels with three niches; on the diagonals octagonal chapels with niches. Cod. Atl. 340b gives a somewhat similar arrangement.
+
+- **R-755** bloque 91 (score 1.0 · sigla_de_manuscrito)
+  > MS. B. 30. The principal development is thrown on the diagonal axes by square chapels with three niches; on the principal axes are inner recesses communicating with outer ones.
+
+- **R-755** bloque 92 (score 1.0 · sigla_de_manuscrito)
+  > The plan Pl. XCIII No. 2 (MS. B. 22) differs from this only in so far as the outer semicircles have become circular chapels, projecting from the external square as apses; one of them serves 
+
+- **R-757** bloque 17 (score 1.0 · sigla_de_manuscrito)
+  > Pl. XCVIII (P. V., 182._ No. d'ordre 2386). In the midst of a hilly landscape rises an artificial mountain in the form of a gigantic cone, crowned by an imposing temple. At two thirds of the
+
+- **R-757** bloque 18 (score 1.0 · meta_discurso_editorial)
+  > The section of a gallery given in the sketch to the right below shows the roof to be constructed on the principle of superimposed horizontal layers, projecting one beyond the other, and each
 
 ## Muestra aleatoria de 100 (semilla 42)
-
-Sirve para estimar la tasa de error en lo que NO tiene bandera. `14` E1
-advierte que una muestra de 100 sobre ~1.500 tiene ~68% de probabilidad de
-no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 
 - **`rt-1320`** (11 pal)
   > A JEST. Why Hungarian ducats have a double cross on them.
@@ -146,8 +258,8 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-0052`** (373 pal)
   > Perspective is a rational demonstration, confirmed by experience, that all objects transmit their image to the eye by a pyramid of lines. By a pyramid of lines I understand those lines which
 
-- **`rt-1533`** (73 pal · YA MARCADA)
-  > I gave to Salai 93 lire 6 soldi, of which I have had 67 lire and there remain 26 lire 6 soldi. 1534. To Salai S 42 2 dozen of laces S 8 for papers S 3 d 8 a pair of shoes S 14 for velvet S 1
+- **`rt-1535`** (39 pal)
+  > On Friday morning, one florin to Salai to spend; 3 soldi received bread S.. d wine S.. d grapes S.. d mushrooms S.. d fruit S.. d bran S.. d at the barber's S.. d for shoes S.. d
 
 - **`rt-0567`** (356 pal)
   > WHY FACES [SEEN] AT A DISTANCE LOOK DARK. We see quite plainly that all the images of visible objects that lie before us, whether large or small, reach our sense by the minute aperture of th
@@ -161,17 +273,17 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-0287`** (43 pal)
   > Treat of the rainbow in the last book on Painting, but first write the book on colours produced by the mixture of other colours, so as to be able to prove by those painters' colours how the 
 
-- **`rt-1522`** (149 pal · YA MARCADA)
-  > EXPENSES OF THE INTERMENT OF CATERINA. For the 3 Ibs of tapers 27 S For the bier 8 S A pall over the bier 12 S For bearing and placing the cross 4 S For bearing the body 8 S For 4 priests an
+- **`rt-1524`** (19 pal)
+  > On Monday I bought 4 braccia of cloth lire 13 S 14 1/2 on the 17th of, October 1497.
 
 - **`rt-0211`** (120 pal)
   > OF THE SHADOW AND ITS MOTION. When two bodies casting shadows, and one in front of the other, are between a window and the wall with some space between them, the shadow of the body which is 
 
-- **`rt-1396`** (12 pal)
-  > Giuliano da Maria, physician, has a steward without hands. S.K.M. II.2 27a]
+- **`rt-1397`** (13 pal)
+  > Have some ears of corn of large size sent from Florence. S.K.M.II.2 52a]
 
-- **`rt-1531`** (28 pal)
-  > Thursday, the eighth day of June, I took 17 grossoni, 18 soldi; on the same Thursday in the morning I gave to Salai 22 soldi for the expenses.
+- **`rt-1532`** (33 pal)
+  > To Salai 4 grossoni, and for one braccio of velvet, 5 lire, and 1/2; viz. 10 soldi for loops of silver; Salai 14 soldi for binding, the making of the cloak 25 soldi.
 
 - **`rt-1125`** (41 pal)
   > Bags by which a man falling from a height of 6 braccia may avoid hurting himself, by a fall whether into water or on the ground; and these bags, strung together like a rosary, are to be fixe
@@ -215,14 +327,14 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-0411`** (17 pal)
   > The bough of the walnut which is only hit and beaten when it has brought to perfection…
 
-- **`rt-1479`** (31 pal)
-  > Aristotle in Book 3 of the Ethics: Man merits praise or blame solely in such mat- ters as lie within his option to do or not to do. C.A. 121a; 375a]
+- **`rt-1480`** (12 pal)
+  > Aristotle says that every body tends to maintain its nature. K.2 3b]
 
 - **`rt-1341`** (14 pal)
   > To my illustrious Lord, Lodovico, Duke of Bari, Leonardo da Vinci of Florence— Leonardo.
 
-- **`rt-1447`** (5 pal)
-  > Monsignore de' Pazzi,—Ser Antonio Pacini.
+- **`rt-1448`** (320 pal)
+  > An algebra, which the Marliani have, written by their father, — On the bone, by the Marliani,— On the bone which penetrates, Gian Giacomo of Bellinzona, to draw out the nail with facility,— 
 
 - **`rt-0865`** (6 pal)
   > That the earth is a star.
@@ -245,8 +357,8 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-0330`** (20 pal)
   > a n b are equal; c n d are equal; n c makes two feet; n d makes 2 feet.
 
-- **`rt-1440`** (2 pal)
-  > Colours, formula,—Archimedes,—Marcantonio.
+- **`rt-1441`** (9 pal)
+  > See the shop that was formerly Bartolommeo's, the stationer.
 
 - **`rt-0871`** (167 pal)
   > a b is the aperture through which the sun passes, and if you could measure the size of the solar rays at n m, you could accurately trace the real lines of the convergence of the solar rays, 
@@ -287,8 +399,8 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-0089`** (147 pal)
   > Perspective, in dealing with distances, makes use of two opposite pyramids, one of which has its apex in the eye and the base as distant as the horizon. The other has the base towards the ey
 
-- **`rt-1507`** (6 pal)
-  > Vitolone, at Saint Mark's. K.2 12b}
+- **`rt-1508`** (24 pal)
+  > How this proposition of Xenophon is false. If you take away unequal quantities from unequal quantities, but in the same proportion, &c. B. 4a]
 
 - **`rt-0948`** (12 pal)
   > The waters of the salt sea are fresh at the greatest depths.
@@ -326,8 +438,8 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-0397`** (96 pal)
   > There is no boss on branches which has not been produced by some branch which has failed. The lower shoots on the branches of trees grow more than the upper ones and this occurs only because
 
-- **`rt-1453`** (5 pal)
-  > Marcantonio Colonna at Santi Apostoli.
+- **`rt-1454`** (193 pal)
+  > A box, a cage,— A square, to make the bird ,— Pandolfino's book, mortar [?],— Small knives, Venieri for the *1454. *Pen for ruling, stone,—star,— To have the vest dyed, Alfieri's tazza,— The
 
 - **`rt-0143`** (28 pal)
   > A body in shadow situated between the light and the eye can never display its illuminated portion unless the eye can see the whole of the primary light.
@@ -371,17 +483,17 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-0433`** (66 pal)
   > OF DARK LEAVES IN FRONT OF TRANSPARENT ONES. When the leaves are interposed between the light and the eye, then that which is nearest to the eye will be the darkest, and the most distant wil
 
-- **`rt-1383`** (42 pal)
-  > … at Pistoja, Fioravante di Domenico at Florence is my most beloved friend, as though he were my [brother]. *** from previous page?*** II. 'De Ponderibus'. A large number of Leonardo's notes
+- **`rt-1384`** (59 pal)
+  > On the 16th day of July. Caterina came on 16th day of July, 1493. Messer Mariolo's Morel the Florentin, has a big horse with a fine neck and a beautiful head. The white stallion belonging to
 
 - **`rt-0550`** (73 pal)
   > THAT SHADOWS CAST BY A PARTICULAR LIGHT SHOULD BE AVOIDED, BECAUSE THEY ARE EQUALLY STRONG AT THE ENDS AND AT THE BEGINNING. The shadows cast by the sun or any other particular light have no
 
-- **`rt-1448`** (320 pal)
-  > An algebra, which the Marliani have, written by their father, — On the bone, by the Marliani,— On the bone which penetrates, Gian Giacomo of Bellinzona, to draw out the nail with facility,— 
+- **`rt-1449`** (10 pal)
+  > Francesco d'Antonio at Florence. 11. 13. 12. *13. 24. *16.
 
-- **`rt-1410`** (2 pal)
-  > Caravaggio. W.A.II.5b]
+- **`rt-1411`** (3 pal)
+  > Pulleys,—nails,—rope,—mercury,—cloth, Monday. W.A.II.202b]
 
 - **`rt-1338`** (74 pal)
   > BOOK 43. OF THE MOVEMENT OF AIR ENCLOSED IN WATER. I have seen motions of the air so furious that they have carried, mixed up in their course, the largest trees of the forest and whole roofs
@@ -401,8 +513,8 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-1102`** (6 pal)
   > Rhodes has in it 5000 houses.
 
-- **`rt-1506`** (9 pal)
-  > In Vitolone there are 805 conclusions [problems] in perspective.
+- **`rt-1507`** (6 pal)
+  > Vitolone, at Saint Mark's. K.2 12b}
 
 - **`rt-0338`** (13 pal)
   > A man when he lies down is reduced to 1/9 of his height.
@@ -419,8 +531,8 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-1321`** (17 pal)
   > A SIMILE. A vase of unbaked clay, when broken, may be remoulded, but not a baked one.
 
-- **`rt-1420`** (33 pal)
-  > Where is Valentino? —boots,—boxes in the custom-house …,— the monk at the Carmine,—squares,— Piero Martelli,—[8] Salvi Borgherini,—send back the bags,—a support for the spectacles,— the nude
+- **`rt-1421`** (103 pal)
+  > Concave mirrors; philosophy of Aristotle; the books of Avicenna Italian and Latin vocabulary; Messer Ottaviano Palavicino or his Vitruvius . bohemian knives; Vitruvius ; go every Saturday to
 
 - **`rt-1149`** (36 pal)
   > Experience, the interpreter between formative nature and the human race, teaches how that nature acts among mortals; and being constrained by necessity cannot act otherwise than as reason, w
@@ -428,8 +540,8 @@ no encontrar ninguno de los 18 casos: es complemento, no defensa principal.
 - **`rt-0453`** (426 pal)
   > All trees seen against the sun are dark towards the middle and this shadow will be of the shape of the tree when apart from others. The shadows cast by trees on which the sun shines are as d
 
-- **`rt-1413`** (15 pal)
-  > Near to Cordusio is Pier Antonio da Tossano and his brother Serafino. 1414. L. o']
+- **`rt-1414`** (60 pal)
+  > Paul of Vannochio at Siena … The upper chamber for the apostles. [4] Buildings by Bramante. The governor of the castle made a prisoner. Giovanni della Rosa deprived of his money. Borgonzio b
 
 - **`rt-0668`** (11 pal)
   > Philip, Simon, Matthew, Thomas, James the Greater, Peter, Philip, Andrew, Bartholomew.

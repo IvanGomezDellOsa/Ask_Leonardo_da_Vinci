@@ -206,9 +206,17 @@ def main() -> int:
     baja = [u for u in leo if u.get("quality") == "low"]
     L.append(f"- unidades de Leonardo marcadas `quality: low`: **{len(baja)}** "
              f"({sum(u['nWords'] for u in baja):,} palabras) — fuera del indice denso")
-    faltan = {1382, 1560, 1069, 1558, 1565} - {u["richterNo"] for u in baja}
-    ok(not faltan, f"los imanes que D-044 nombra quedan todos marcados "
-                   f"(sin marcar: {sorted(faltan)})", duro=True)
+    # Un iman esta resuelto si no puede llegar al prompt como voz de Leonardo, y
+    # eso ocurre por dos vias: marcado `quality: low`, o directamente fuera de su
+    # voz porque Richter lo titulo como ajeno (D-065). R-1558, R-1560 y R-1565
+    # salen hoy por la segunda; exigir solo la primera declaraba un fallo donde
+    # el material esta MEJOR contenido que antes.
+    neutralizados = {u["richterNo"] for u in baja}
+    neutralizados |= {u["richterNo"] for u in unidades
+                      if u["voice"] != "leonardo" and u.get("richterNo")}
+    faltan = {1382, 1560, 1069, 1558, 1565} - neutralizados
+    ok(not faltan, f"los imanes que D-044 nombra no pueden hablar como Leonardo "
+                   f"(sin resolver: {sorted(faltan)})", duro=True)
     con_bandera = [u for u in leo if u["flags"]]
     L.append(f"- unidades con bandera pendientes de revision: **{len(con_bandera)}**")
 

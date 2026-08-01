@@ -62,7 +62,12 @@ RASGOS_RICHTER = [
     # Leonardo no escribe su propio nombre en tercera persona. La excepcion
     # medida son los memorandos legales ("I, Leonardo da Vinci, lent to Vante"),
     # que se descuentan aparte.
-    (2.0, "nombra_a_leonardo", re.compile(r"\bLeonardo\b|\bthe master\b(?!\s+of\b)")),
+    # `Lionardo` no es un typo: la traduccion de Richter alterna las dos grafias,
+    # y la variante aparece justo en los apuntes de terceros ("I lent lire S 7 to
+    # Lionardo to spend"). Sin ella, el rasgo mas limpio del proyecto —180x, el
+    # unico que separa casi sin ruido— se pierde el caso que mas importa (D-065).
+    (2.0, "nombra_a_leonardo",
+     re.compile(r"\b(?:Leonardo|Lionardo)\b|\bthe master\b(?!\s+of\b)")),
     (1.5, "artista_posterior", re.compile(
         r"\b(Bramante|Michael Angelo|Michelangelo|Brunellesco|Raphael|Vasari|"
         r"Alberti|Verrocchio|Perugino|Botticelli)\b")),
@@ -179,7 +184,15 @@ def calidad(texto: str, n_palabras: int) -> str:
     return "ok"
 
 
-RE_AUTONOMBRE = re.compile(r"\b(?:I|me|my|mine)\b[^.]{0,60}\bLeonardo\b", re.I)
+RE_AUTONOMBRE = re.compile(
+    r"\b(?:I|me|my|mine)\b[^.]{0,60}\b(?:Leonardo|Lionardo)\b", re.I)
+
+# Richter titulo el mismo, en el cuerpo del libro, una seccion cuyo contenido NO
+# es de Leonardo: "Notes by unknown persons among the MSS.". Son apuntes de
+# terceros hallados entre sus manuscritos. Es un dato del libro, no una
+# inferencia, y es la unica senal que los tres mecanismos de abajo dejan pasar.
+# Ver D-065.
+RE_TITULO_AJENO = re.compile(r"Notes by unknown persons", re.I)
 
 UMBRAL_SEMILLA = 2.0     # 77% de recall con 0,4% de falsos positivos
 UMBRAL_EXPANSION = 0.5   # solo para bloques contiguos a una semilla
@@ -354,7 +367,13 @@ def main() -> int:
         base.update(extra)
         if voice == "richter":
             base["utility"] = utilidad(texto, base["nWords"])
-        else:
+        # `calidad` mide contenido recuperable y se diseno para CUERPOS DE PASAJE
+        # (D-054), asi que se aplica por `kind` y no por `voice`. Importa para los
+        # pasajes que Richter titulo como ajenos: sin esto, los imanes que D-044
+        # nombra —R-1558 (griego mal OCReado), R-1560 (verso latino sobre
+        # Leonardo), R-1565— salen del indice de Leonardo pero entran al de
+        # Richter como `substantive`, que es peor que como estaban. Ver D-065.
+        if kind == "passage":
             base["quality"] = calidad(texto, base["nWords"])
         unidades.append(base)
 
@@ -376,17 +395,30 @@ def main() -> int:
                 voiceSource="estructural: entre encabezado de seccion y el proximo pasaje")
 
     # pasajes, ya sin los bloques de Richter, y el comentario interleaveado aparte
-    n_inline = 0
+    n_inline = n_ajeno = 0
+    pal_ajeno = 0
     for num in sorted(por_pasaje):
         p, bs = pasajes[num], por_pasaje[num]
         leo = [b for b in bs if b["voice"] == "leonardo"]
         texto = "\n".join(b["text"] for b in leo)
+        # El cuerpo de un pasaje es de Leonardo (D-051) SALVO que Richter lo haya
+        # titulado como ajeno. Los tres mecanismos que dejaron entrar esto al
+        # indice de Leonardo estan medidos en D-065; ninguno es arreglable con
+        # las banderas, y este titulo los cubre a los tres.
+        ajeno = bool(p["richterTitle"] and RE_TITULO_AJENO.search(p["richterTitle"]))
         if texto.strip():
-            agregar(f"rt-{num:04d}", "passage", "leonardo", texto,
+            if ajeno:
+                n_ajeno += 1
+                pal_ajeno += len(texto.split())
+            agregar(f"rt-{num:04d}", "passage",
+                    "richter" if ajeno else "leonardo", texto,
                     richterNo=num, richterTitle=p["richterTitle"],
                     section=p["section"], subsection=p["subsection"],
                     anchorId=p["anchorId"], url=p["url"],
-                    voiceSource="estructural: cuerpo de pasaje numerado")
+                    annotatesPassage=num if ajeno else None,
+                    voiceSource="estructural: Richter lo titulo como ajeno"
+                                if ajeno else
+                                "estructural: cuerpo de pasaje numerado")
         # tiradas contiguas de Richter -> una unidad cada una
         tirada: list[dict] = []
         for b in bs + [None]:
@@ -431,6 +463,8 @@ def main() -> int:
           f"({sum(u['nWords'] for u in tri['apparatus']):>7,} palabras)  -> FUERA del indice")
     print(f"  comentario interleaveado extraido: {n_inline} tiradas, "
           f"{pal_richter:,} palabras ({pal_richter/pal_antes:.1%} del cuerpo)")
+    print(f"  pasajes que Richter titulo como ajenos: {n_ajeno}, "
+          f"{pal_ajeno:,} palabras -> fuera de la voz de Leonardo (D-065)")
     print(f"  con bandera         : {len(marcadas):>6,}")
 
     # ---------------- validaciones ----------------

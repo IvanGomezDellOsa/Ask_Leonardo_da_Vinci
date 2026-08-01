@@ -4,14 +4,14 @@
 
 | | unidades | palabras |
 |---|---:|---:|
-| **Leonardo** (indice T1) | 1,549 | 168,291 |
+| **Leonardo** (indice T1) | 1,527 | 166,580 |
 | Richter · `absence` | 36 | 9,465 |
-| Richter · `substantive` | 548 | 56,582 |
-| Richter · `apparatus` (fuera del indice) | 445 | 5,864 |
+| Richter · `substantive` | 560 | 58,152 |
+| Richter · `apparatus` (fuera del indice) | 455 | 6,005 |
 
 ## Comentario de Richter extraido de adentro de los pasajes
 
-- **30 tiradas · 12,158 palabras**, el 6.7% de lo que el parseo daba como cuerpo de pasaje.
+- **32 tiradas · 12,190 palabras**, el 6.7% de lo que el parseo daba como cuerpo de pasaje.
 
 | pasaje | palabras | excindidas | |
 |---|---:|---:|---:|

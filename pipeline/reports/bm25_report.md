@@ -1,8 +1,8 @@
 # Reporte del indice BM25
 
-- Documentos: **2,064** · terminos: **15,259** · postings: 99,547
+- Documentos: **2,062** · terminos: **15,252** · postings: 99,445
 - Longitud media: 62.4 tokens · `k1=1.5`, `b=0.75`
-- `bm25.json`: **1640 KB**
+- `bm25.json`: **1639 KB**
 - Terminos podados por aparecer en mas del 60% de los documentos: 0 []
 
 Se indexa el mismo texto que se embebe (`richterTitle + text`), para que

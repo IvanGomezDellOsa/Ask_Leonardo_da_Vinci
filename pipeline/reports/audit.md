@@ -20,7 +20,7 @@ Fuente: `pg5000-images.html` · 1,563,675 bytes
 
 ## C. Pasajes iman y material sin contenido (pendiente de D-044)
 
-- unidades de Leonardo sin contenido util: **171** (53,413 palabras)
+- unidades de Leonardo sin contenido util: **168** (52,467 palabras)
 - de los imanes que D-044 nombra [1069, 1382, 1558, 1560, 1565], detectados: **[1069]**
 
   - `rt-1295` (2050 pal · riqueza lexica 33%): (Of the Avaricious.) There will be many who will eagerly and with great care and solicitude follow up a thing,
@@ -31,10 +31,10 @@ Fuente: `pg5000-images.html` · 1,563,675 bytes
   - `rt-1350` (845 pal · riqueza lexica 34%): Magnificent President, I am sending thither Salai, my pupil, who is the bearer of this, and from him you will 
   - `rt-0902` (812 pal · riqueza lexica 30%): OF THE MOON. No solid body is less heavy than the atmosphere. Having proved that the part of the moon that shi
   - `rt-1351` (781 pal · riqueza lexica 37%): [Most illustrious Lord. I greatly rejoice most Illustrious Lord at your…] I was so greatly rejoiced, most illu
-  - `rt-1566` (781 pal · riqueza lexica 31%): Item. The said Testator desires to be buried within the church of Saint Florentin at Amboise, and that his bod
   - `rt-0725` (760 pal · riqueza lexica 23%): THE MONUMENT TO MESSER GIOVANNI JACOMO DA TREVULZO. [2] Cost of the making and materials for the horse [5]. A 
   - `rt-0786` (729 pal · riqueza lexica 31%): ON THE STRENGTH AND NATURE OF ARCHES, AND WHERE THEY ARE STRONG OR WEAK; AND THE SAME AS TO COLUMNS. That part
   - `rt-0896` (726 pal · riqueza lexica 34%): OF THE MOON. The moon has no light in itself; but so much of it as faces the sun is illuminated, and of that i
+  - `rt-1296` (724 pal · riqueza lexica 44%): *(Of going in Ships.)* We shall see the trees of the great forests of Taurus and of Sinai and of the Appenines
 
 ## D. Anclas de citacion
 
@@ -67,8 +67,8 @@ Fuente: `pg5000-images.html` · 1,563,675 bytes
 - ok — unidades de Leonardo que lo nombran sin marca de primera persona: 2
   - `rt-1348`: …lo in that admirable and pressing manner which your Highness can use, recommending to him Leonardo Vincio, your most humble servant as I am, and shall always be…
   - `rt-1350`: …6. Draft of a letter to Francesco Melzi, born l493—a youth therefore of about 17 in 1510. Leonardo addresses his young friend as "Messer", as being the son of a…
-- unidades de Leonardo marcadas `quality: low`: **104** (1,822 palabras) — fuera del indice denso
-- ok — los imanes que D-044 nombra quedan todos marcados (sin marcar: [])
+- unidades de Leonardo marcadas `quality: low`: **96** (1,412 palabras) — fuera del indice denso
+- ok — los imanes que D-044 nombra no pueden hablar como Leonardo (sin resolver: [])
 - unidades con bandera pendientes de revision: **11**
 
 ## Resumen

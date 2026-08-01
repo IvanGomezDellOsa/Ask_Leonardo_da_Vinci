@@ -237,8 +237,8 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **`rt-0052`** (373 pal)
   > Perspective is a rational demonstration, confirmed by experience, that all objects transmit their image to the eye by a pyramid of lines. By a pyramid of lines I understand those lines which
 
-- **`rt-1535`** (39 pal)
-  > On Friday morning, one florin to Salai to spend; 3 soldi received bread S.. d wine S.. d grapes S.. d mushrooms S.. d fruit S.. d bran S.. d at the barber's S.. d for shoes S.. d
+- **`rt-1536`** (5 pal)
+  > On Thursday morning one florin.
 
 - **`rt-0567`** (356 pal)
   > WHY FACES [SEEN] AT A DISTANCE LOOK DARK. We see quite plainly that all the images of visible objects that lie before us, whether large or small, reach our sense by the minute aperture of th
@@ -252,8 +252,8 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **`rt-0287`** (43 pal)
   > Treat of the rainbow in the last book on Painting, but first write the book on colours produced by the mixture of other colours, so as to be able to prove by those painters' colours how the 
 
-- **`rt-1524`** (19 pal)
-  > On Monday I bought 4 braccia of cloth lire 13 S 14 1/2 on the 17th of, October 1497.
+- **`rt-1525`** (129 pal)
+  > Memorandum. That on the 8th day of April 1503, I, Leonardo da Vinci, lent to Vante, miniature painter 4 gold ducats, in gold. Salai carried them to him and gave them into his own hand, and h
 
 - **`rt-0211`** (120 pal)
   > OF THE SHADOW AND ITS MOTION. When two bodies casting shadows, and one in front of the other, are between a window and the wall with some space between them, the shadow of the body which is 
@@ -261,8 +261,8 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **`rt-1397`** (13 pal)
   > Have some ears of corn of large size sent from Florence. S.K.M.II.2 52a
 
-- **`rt-1532`** (33 pal)
-  > To Salai 4 grossoni, and for one braccio of velvet, 5 lire, and 1/2; viz. 10 soldi for loops of silver; Salai 14 soldi for binding, the making of the cloak 25 soldi.
+- **`rt-1533`** (73 pal)
+  > I gave to Salai 93 lire 6 soldi, of which I have had 67 lire and there remain 26 lire 6 soldi. 1534. To Salai S 42 2 dozen of laces S 8 for papers S 3 d 8 a pair of shoes S 14 for velvet S 1
 
 - **`rt-1125`** (41 pal)
   > Bags by which a man falling from a height of 6 braccia may avoid hurting himself, by a fall whether into water or on the ground; and these bags, strung together like a rosary, are to be fixe
@@ -306,8 +306,8 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **`rt-0411`** (17 pal)
   > The bough of the walnut which is only hit and beaten when it has brought to perfection…
 
-- **`rt-1480`** (12 pal)
-  > Aristotle says that every body tends to maintain its nature. K.2 3b
+- **`rt-1481`** (13 pal)
+  > On the increase of the Nile, a small book by Aristotle. W.A. IV.151b
 
 - **`rt-1341`** (14 pal)
   > To my illustrious Lord, Lodovico, Duke of Bari, Leonardo da Vinci of Florence— Leonardo.
@@ -378,8 +378,8 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **`rt-0089`** (147 pal)
   > Perspective, in dealing with distances, makes use of two opposite pyramids, one of which has its apex in the eye and the base as distant as the horizon. The other has the base towards the ey
 
-- **`rt-1508`** (24 pal)
-  > How this proposition of Xenophon is false. If you take away unequal quantities from unequal quantities, but in the same proportion, &c. B. 4a
+- **`rt-1509`** (19 pal)
+  > On the 28th day of April I received from the Marchesino 103 lire and 12 dinari. Ash. I. Ia
 
 - **`rt-0948`** (12 pal)
   > The waters of the salt sea are fresh at the greatest depths.
@@ -417,8 +417,8 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **`rt-0397`** (96 pal)
   > There is no boss on branches which has not been produced by some branch which has failed. The lower shoots on the branches of trees grow more than the upper ones and this occurs only because
 
-- **`rt-1454`** (193 pal)
-  > A box, a cage,— A square, to make the bird ,— Pandolfino's book, mortar [?],— Small knives, Venieri for the *1454. *Pen for ruling, stone,—star,— To have the vest dyed, Alfieri's tazza,— The
+- **`rt-1455`** (7 pal)
+  > Search in Florence for…… *7. 36. Meteora.
 
 - **`rt-0143`** (28 pal)
   > A body in shadow situated between the light and the eye can never display its illuminated portion unless the eye can see the whole of the primary light.
@@ -492,8 +492,8 @@ Es donde estaria un falso negativo del clasificador de bloque.
 - **`rt-1102`** (6 pal)
   > Rhodes has in it 5000 houses.
 
-- **`rt-1507`** (6 pal)
-  > Vitolone, at Saint Mark's. K.2 12b}
+- **`rt-1508`** (24 pal)
+  > How this proposition of Xenophon is false. If you take away unequal quantities from unequal quantities, but in the same proportion, &c. B. 4a
 
 - **`rt-0338`** (13 pal)
   > A man when he lies down is reduced to 1/9 of his height.

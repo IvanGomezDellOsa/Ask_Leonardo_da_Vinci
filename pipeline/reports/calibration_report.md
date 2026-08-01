@@ -6,12 +6,12 @@
 > contra el eval set de 120 casos etiquetados a mano: otro instrumento, otra
 > pregunta. El numero de abajo es un punto de partida, no un resultado.
 
-- Indice: **1,444 chunks de Leonardo** (int8, `richterTitle + text`, parseo del HTML)
+- Indice: **1,431 chunks de Leonardo** (int8, `richterTitle + text`, parseo del HTML)
 - Consultas: 190 · **2 etiquetas corregidas** antes de medir (las de Salai, que `06` v4 documenta)
 
 ## espanol
 
-- dentro n=49 media 0.8145 · fuera n=46 media 0.7799 · **AUC 0.9406**
+- dentro n=49 media 0.8145 · fuera n=46 media 0.7797 · **AUC 0.9406**
 
 | perdida aceptada | tau | contestables que pasan | basura atajada |
 |---|---:|---:|---:|

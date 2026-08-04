@@ -27,6 +27,8 @@ export interface Resultado {
   modo: "rag" | "baseline";
   proveedor: string;
   k: number;
+  /** Huella del prompt con el que se genero. Ver `huellaPrompt` y D-064. */
+  prompt?: string;
   decision: "curada" | "abstiene" | "responde" | "sin_capacidad" | "error";
   cosMax: number | null;
   tau: number | null;

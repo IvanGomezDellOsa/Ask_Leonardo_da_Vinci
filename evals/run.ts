@@ -22,7 +22,7 @@ import { Corpus } from "../src/lib/retrieval.js";
 import { cargarUmbrales, decidir } from "../src/lib/grounding.js";
 import {
   PresupuestoTpm, construirPrompt, construirPromptSinRag, estimarTokens,
-  groq, gemini, type Proveedor,
+  groq, gemini, huellaPrompt, type Proveedor,
 } from "../src/lib/llm.js";
 import {
   ART, cargarCasos, leerJsonl, abrirSalida, claves, esperarCapacidad, progreso,
@@ -57,6 +57,7 @@ function construirProveedor(id: string): Proveedor {
   throw new Error(`proveedor desconocido: ${id}`);
 }
 const proveedor = construirProveedor(idProveedor);
+const HUELLA = huellaPrompt();
 
 // Gemini free tier no comparte el limite de Groq. El presupuesto de 6.000 TPM
 // es el de D-023 y solo aplica a Groq; para Gemini se usa una ventana holgada y
@@ -77,6 +78,7 @@ if (limite > 0) {
 const pendientes = casos.filter((c) => !hechos.has(c.id));
 
 console.log(`# Eval — modo ${modo} · k=${k} · ${idProveedor}`);
+console.log(`  prompt         : ${HUELLA}`);
 console.log(`  casos          : ${casos.length}`);
 console.log(`  ya hechos      : ${hechos.size}   (se saltean)`);
 console.log(`  pendientes     : ${pendientes.length}`);
@@ -120,7 +122,7 @@ const t0 = Date.now();
 let n = 0;
 for (const c of pendientes) {
   const t = Date.now();
-  const base = { id: c.id, modo, proveedor: idProveedor, k } as const;
+  const base = { id: c.id, modo, proveedor: idProveedor, k, prompt: HUELLA } as const;
   try {
     if (modo === "baseline") {
       // Sin retrieval y sin gate: el chatbot de personaje parametrico (paso 15).

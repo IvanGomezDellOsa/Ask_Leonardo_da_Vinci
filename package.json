@@ -8,7 +8,9 @@
     "ask": "tsx tools/ask.ts",
     "evals:verificar": "tsx evals/verificar_etiquetas.ts",
     "evals": "tsx evals/run.ts",
-    "evals:juzgar": "tsx evals/verificar_respuestas.ts"
+    "evals:juzgar": "tsx evals/verificar_respuestas.ts",
+    "evals:muestra": "tsx evals/muestra_para_etiquetar.ts",
+    "evals:acuerdo": "tsx evals/acuerdo.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6"

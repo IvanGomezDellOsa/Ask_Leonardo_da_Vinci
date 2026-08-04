@@ -23,7 +23,7 @@
 
 import { readFileSync } from "node:fs";
 import { Corpus, recortar } from "../src/lib/retrieval.js";
-import { groq } from "../src/lib/llm.js";
+import { groq, type CuotaAgotada } from "../src/lib/llm.js";
 import {
   ART, RAIZ, cargarCasos, leerJsonl, abrirSalida, claves, dormir, progreso,
   type Resultado,
@@ -215,6 +215,20 @@ for (const f of aJuzgar) {
       try { r = await juez.generar(INSTRUCCIONES, [{ role: "user", content: user }]); break; }
       catch (e) {
         const st = (e as Error & { status?: number }).status;
+        const cuota = (e as Error & { cuotaAgotada?: CuotaAgotada }).cuotaAgotada;
+        // Mismo bug que D-068 arreglo en el runner, y este archivo tiene su
+        // PROPIO loop de reintento: no heredaba el fix. Sin esto, cada ronda de
+        // este `for` reintenta a ciegas contra una cuota que no se libera hasta
+        // que pasa el tiempo que el proveedor ya declaro, y el corte general de
+        // la corrida nunca llega porque cada caso "gasta" sus 5 intentos y
+        // sigue, en vez de abortar entero.
+        if (cuota) {
+          const min = Math.ceil(cuota.esperaSegundos / 60);
+          console.log(`\n\n  CORTE: cuota diaria del juez agotada ` +
+                      `(${cuota.usado.toLocaleString()}/${cuota.limite.toLocaleString()} tokens). ` +
+                      `Esperar ~${min} min y volver a correr el mismo comando.`);
+          process.exit(2);
+        }
         if (st !== 429 && (st ?? 0) < 500) throw e;
         await dormir(8000 * (intento + 1));
       }

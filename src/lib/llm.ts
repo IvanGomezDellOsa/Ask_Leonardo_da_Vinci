@@ -182,11 +182,41 @@ export const estimarTokens = (s: string): number => Math.ceil(s.length / 4);
  *
  * D-064 congela el prompt antes de la bateria completa; este es el numero que
  * hace verificable ese congelamiento.
+ *
+ * **La huella depende SOLO del texto que ve el modelo, normalizado.** Suena
+ * obvio y no lo era: la version original unia los bloques con un separador que
+ * contenia un byte nulo accidental. Al limpiarlo, la huella cambio sin que
+ * cambiara una sola palabra del prompt, y 117 filas de eval quedaron marcadas
+ * como "de otro prompt". El reanudado se ofrecio a regenerarlas: horas de cuota
+ * por un cambio que el modelo nunca vio. Ver D-071.
+ *
+ * La leccion no es "elegir mejor separador" —eso es perseguir un hash— sino que
+ * la huella debe ser INVARIANTE a todo lo que no sea contenido: se normaliza el
+ * espacio en blanco y se hashea eso. Asi un retoque de formato, indentacion o
+ * separador no invalida mediciones validas, y un cambio real de palabras si.
+ *
+ * `EQUIVALENTES` registra huellas historicas que corresponden a este MISMO
+ * prompt. Es un registro explicito y auditable, no un silenciamiento: cada
+ * entrada dice por que se considera equivalente.
  */
+const EQUIVALENTES = new Set([
+  // Pre-D-071: mismo texto, separador con un byte nulo (2802e5ec87f2) y luego
+  // sin el (df9823bb6fc7). Ninguna palabra del prompt cambio entre las dos.
+  "2802e5ec87f2",
+  "df9823bb6fc7",
+]);
+
+/** ¿Esta fila se genero con el prompt vigente, o con uno equivalente? */
+export function huellaVigente(h: string | undefined): boolean {
+  return h === undefined || h === huellaPrompt() || EQUIVALENTES.has(h);
+}
+
 export function huellaPrompt(): string {
   const partes = (["es", "en"] as const).flatMap((i) =>
     [IDENTIDAD[i], PERSONA_FIRME[i], FUNDAMENTACION[i], PERSONAJE[i]]);
-  return createHash("sha256").update(partes.join(" ")).digest("hex").slice(0, 12);
+  // Normalizado: el contenido manda, el formato no.
+  const texto = partes.join("\n").replace(/\s+/g, " ").trim();
+  return createHash("sha256").update(texto).digest("hex").slice(0, 12);
 }
 
 /**

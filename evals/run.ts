@@ -22,7 +22,7 @@ import { Corpus } from "../src/lib/retrieval.js";
 import { cargarUmbrales, decidir } from "../src/lib/grounding.js";
 import {
   PresupuestoTpm, construirPrompt, construirPromptSinRag, estimarTokens,
-  groq, gemini, huellaPrompt, type Proveedor, type CuotaAgotada,
+  groq, gemini, huellaPrompt, huellaVigente, type Proveedor, type CuotaAgotada,
 } from "../src/lib/llm.js";
 import {
   ART, cargarCasos, leerJsonl, abrirSalida, claves, esperarCapacidad, progreso,
@@ -77,9 +77,18 @@ const salida = abrirSalida(`${etiqueta}.jsonl`);
 // Las filas con `error` NO cuentan como hechas: si contaran, reanudar saltearia
 // justo los casos que fallaron y la corrida quedaria incompleta para siempre,
 // con un resumen que igual da un numero. Se reintentan.
+// Y tampoco cuentan las filas de un PROMPT distinto al actual. `run.ts` ya
+// estampaba la huella pero no la miraba al reanudar: si el prompt del generador
+// cambiara (paso 19), reanudar habria salteado las filas viejas y la corrida
+// habria mezclado dos prompts en un mismo numero. Es el mismo bug que D-070
+// encontro en el juez, en su gemelo del generador.
 const previas = leerJsonl<Resultado>(salida.url);
-const hechos = new Set(previas.filter((r) => r.decision !== "error").map((r) => r.id));
+const hechos = new Set(
+  previas.filter((r) => r.decision !== "error" && huellaVigente(r.prompt))
+    .map((r) => r.id));
 const aReintentar = previas.filter((r) => r.decision === "error").length;
+const dePromptViejo = previas.filter(
+  (r) => r.decision !== "error" && !huellaVigente(r.prompt)).length;
 let casos = cargarCasos();
 if (limite > 0) {
   // Piloto de D-064: una muestra que toque las seis categorias, no las primeras N.
@@ -96,6 +105,7 @@ console.log(`  presupuesto    : ${TPM} TPM`);
 console.log(`  casos          : ${casos.length}`);
 console.log(`  ya hechos      : ${hechos.size}   (se saltean)`);
 if (aReintentar) console.log(`  con error      : ${aReintentar}   (se reintentan)`);
+if (dePromptViejo) console.log(`  DE PROMPT VIEJO: ${dePromptViejo}   (se regeneran; el prompt cambio)`);
 console.log(`  pendientes     : ${pendientes.length}`);
 console.log(`  salida         : ${salida.url.pathname.split("/").pop()}`);
 

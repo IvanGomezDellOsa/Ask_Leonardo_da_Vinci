@@ -68,6 +68,16 @@ const arg = (n: string, def: string): string => {
 };
 const entrada = arg("entrada", "");
 if (!entrada) { console.error("falta --entrada <archivo.jsonl>"); process.exit(1); }
+/**
+ * `--oro` juzga SOLO los casos del patron de oro.
+ *
+ * Validar el juez necesita 30 juicios; medir la tasa de alucinacion necesita los
+ * ~105. A ~1.600 tokens cada uno son 48k contra 168k, y el TPD del juez es
+ * 200k. Cuando el prompt del juez cambia hay que re-juzgar todo, y gastar el dia
+ * entero en la metrica ANTES de saber si el instrumento sirve es el orden
+ * equivocado: primero se valida, despues se mide (`06` v3 punto 5).
+ */
+const soloOro = args.includes("--oro");
 
 const env = claves();
 if (!env.GROQ_API_KEY) { console.error("falta GROQ_API_KEY en .env.local"); process.exit(1); }
@@ -208,25 +218,46 @@ Reply with JSON only, no fences:
  * habia que re-juzgar, y el kappa final se habria calculado sobre una mezcla
  * de instrumentos distintos sin que nada lo señalara.
  */
-const HUELLA_JUEZ = createHash("sha256").update(INSTRUCCIONES).digest("hex").slice(0, 12);
+const HUELLA_JUEZ = createHash("sha256")
+  .update(INSTRUCCIONES.replace(/\s+/g, " ").trim())   // normalizado, ver D-071
+  .digest("hex").slice(0, 12);
+
+/**
+ * Huellas historicas equivalentes a la vigente. Los 61 veredictos previos a
+ * D-070 no llevaban campo `prompt` y son del prompt ANTERIOR a las dos
+ * correcciones de sesgo, asi que NO son equivalentes: se re-juzgan. Se deja el
+ * registro vacio y explicito en vez de implicito.
+ */
+const EQUIVALENTES_JUEZ = new Set<string>();
+const juezVigente = (h: string | undefined): boolean =>
+  h === HUELLA_JUEZ || (h !== undefined && EQUIVALENTES_JUEZ.has(h));
 
 const previos = leerJsonl<Veredicto>(salida.url);
 // "Hecho" exige DOS cosas: sin error, Y del prompt actual. Un veredicto de un
 // prompt viejo no cuenta, aunque haya salido limpio.
 const hechos = new Set(
-  previos.filter((v) => !v.error && v.prompt === HUELLA_JUEZ).map((v) => v.id));
-const desactualizados = previos.filter((v) => !v.error && v.prompt !== HUELLA_JUEZ).length;
+  previos.filter((v) => !v.error && juezVigente(v.prompt)).map((v) => v.id));
+const desactualizados = previos.filter((v) => !v.error && !juezVigente(v.prompt)).length;
 
 // Solo se juzga lo que el sistema efectivamente afirmo. Las abstenciones y los
 // casos de capa 0 no entran al denominador de la tasa de alucinacion: tienen su
 // propia metrica.
-const aJuzgar = filas.filter((f) => f.decision === "responde" && f.respuesta && !hechos.has(f.id));
+const idsOro = new Set(
+  leerJsonl<{ id: string }>(new URL("evals/etiquetas_humanas.jsonl", RAIZ)).map((h) => h.id));
+const aJuzgar = filas
+  .filter((f) => f.decision === "responde" && f.respuesta && !hechos.has(f.id))
+  .filter((f) => !soloOro || idsOro.has(f.id))
+  // Los del patron de oro primero SIEMPRE: si la cuota se corta a mitad de
+  // camino, lo que queda juzgado es lo que permite validar el instrumento.
+  .sort((a, b) => Number(idsOro.has(b.id)) - Number(idsOro.has(a.id)));
 
 console.log(`# Verificacion — ${entrada}`);
 console.log(`  juez           : ${MODELO_JUEZ}   (el generador es ${filas[0]?.proveedor ?? "?"})`);
 console.log(`  prompt del juez: ${HUELLA_JUEZ}`);
 console.log(`  filas          : ${filas.length}`);
-console.log(`  a juzgar       : ${aJuzgar.length}   (solo las que respondieron)`);
+console.log(`  a juzgar       : ${aJuzgar.length}` +
+            (soloOro ? "   (SOLO patron de oro)" : "   (solo las que respondieron)") +
+            `   · del oro: ${aJuzgar.filter((f) => idsOro.has(f.id)).length}`);
 console.log(`  ya juzgadas    : ${hechos.size}`);
 if (desactualizados) {
   console.log(`  DE PROMPT VIEJO: ${desactualizados}   (se re-juzgan; el prompt del juez cambio)`);

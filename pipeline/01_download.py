@@ -49,7 +49,7 @@ FUENTES = [
 
 # La URL ebooks/5000.txt.utf-8 redirige a HTTP y algunos clientes la rechazan.
 # Las de cache/epub/ son las directas. (Nota del README del experimento.)
-UA = "leonardo-da-vinci-virtual/0.1 (pipeline de ingesta, uso no comercial)"
+UA = "ask-leonardo-da-vinci/0.1 (pipeline de ingesta, uso no comercial)"
 
 
 def sha256(datos: bytes) -> str:

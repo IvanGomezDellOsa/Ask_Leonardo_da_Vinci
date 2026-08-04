@@ -22,6 +22,7 @@
  */
 
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { Corpus, recortar } from "../src/lib/retrieval.js";
 import { groq, type CuotaAgotada } from "../src/lib/llm.js";
 import {
@@ -52,6 +53,9 @@ export interface Afirmacion { texto: string; etiqueta: "F" | "C" | "N" | "X"; mo
 export interface Veredicto {
   id: string;
   juez: string;
+  /** Huella de INSTRUCCIONES. Ver D-070: un veredicto de un prompt viejo no es
+   *  "ya hecho" para el prompt nuevo, aunque no tenga error. */
+  prompt: string;
   alucina: boolean;
   afirmaciones: Afirmacion[];
   error?: string;
@@ -98,23 +102,6 @@ const casos = new Map(cargarCasos().map((c) => [c.id, c]));
 const filas = leerJsonl<Resultado>(new URL(`evals/out/${entrada}`, RAIZ));
 asegurarJuezDistinto(filas);
 const salida = abrirSalida(entrada.replace(/\.jsonl$/, "") + ".veredictos.jsonl");
-// Los veredictos con `error` NO cuentan como hechos: si contaran, reanudar
-// saltearia justo los que fallaron y el patron de oro quedaria sin juzgar.
-// Mismo bug que tenia el runner (D-068).
-const previos = leerJsonl<Veredicto>(salida.url);
-const hechos = new Set(previos.filter((v) => !v.error).map((v) => v.id));
-
-// Solo se juzga lo que el sistema efectivamente afirmo. Las abstenciones y los
-// casos de capa 0 no entran al denominador de la tasa de alucinacion: tienen su
-// propia metrica.
-const aJuzgar = filas.filter((f) => f.decision === "responde" && f.respuesta && !hechos.has(f.id));
-
-console.log(`# Verificacion — ${entrada}`);
-console.log(`  juez           : ${MODELO_JUEZ}   (el generador es ${filas[0]?.proveedor ?? "?"})`);
-console.log(`  filas          : ${filas.length}`);
-console.log(`  a juzgar       : ${aJuzgar.length}   (solo las que respondieron)`);
-console.log(`  ya juzgadas    : ${hechos.size}`);
-if (!aJuzgar.length) { console.log("\n  nada que hacer."); process.exit(0); }
 
 const corpus = new Corpus(ART);
 const textoDe = new Map<number, { titulo: string | null; texto: string }>();
@@ -186,8 +173,65 @@ system precisely where it behaves as designed.
 
 Sustained genuine doubt resolves to N.
 
+TWO SYSTEMATIC OVER-FLAGGING FAILURES, found by measuring this judge against a
+human gold standard. Both inflate hallucination and must not recur.
+
+(a) STYLISTIC ELABORATION IS NOT A NEW CLAIM. A passage says drawing from nature
+is the source of true artistic growth; the answer adds "to tap into the very
+essence of art itself". That elaboration was wrongly marked N for "the notion of
+essence of art is not stated in any passage" — but it is not a new checkable
+fact, it is a flourish restating the SAME grounded claim in loftier words. The
+test is not "does this exact phrasing appear" but "does this sentence assert
+something that could be TRUE OR FALSE independently of the grounded claim it
+elaborates". If no, it is F, not N. This is the same principle as the borrowed-
+vocabulary rule above, applied in the opposite direction: both over-literal
+matching AND under-literal paraphrase-blindness are errors.
+
+(b) THE VAGUE/SPECIFIC AUTOBIOGRAPHICAL LINE WAS DRAWN TOO AGGRESSIVELY. "I have
+studied this at length in my work on perspective" and "this is an interesting
+effect I could use in my studies of light and shadow" were both wrongly marked
+N. Neither contains a checkable fact: no date, no place, no named work, nothing
+a reader could confirm false. The test is not "does this sentence describe the
+speaker's own activity" — nearly every sentence in this persona does — it is
+"does it contain a SPECIFIC, falsifiable detail (a place, a duration, a named
+result)". Absent that detail, it is X, regardless of how confident or personal
+the sentence sounds.
+
 Reply with JSON only, no fences:
 {"afirmaciones":[{"texto":"<the claim, quoted briefly>","etiqueta":"F|C|N|X","motivo":"<one short line>"}]}`;
+
+/**
+ * Huella de INSTRUCCIONES, igual en espiritu a `huellaPrompt` del generador
+ * (D-064). D-070: el prompt del juez cambio dos veces en la misma sesion para
+ * corregir sesgos de sobre-marcado, y sin esto un veredicto viejo se contaba
+ * como "ya hecho" para el prompt nuevo — el reanudado saltaba justo lo que
+ * habia que re-juzgar, y el kappa final se habria calculado sobre una mezcla
+ * de instrumentos distintos sin que nada lo señalara.
+ */
+const HUELLA_JUEZ = createHash("sha256").update(INSTRUCCIONES).digest("hex").slice(0, 12);
+
+const previos = leerJsonl<Veredicto>(salida.url);
+// "Hecho" exige DOS cosas: sin error, Y del prompt actual. Un veredicto de un
+// prompt viejo no cuenta, aunque haya salido limpio.
+const hechos = new Set(
+  previos.filter((v) => !v.error && v.prompt === HUELLA_JUEZ).map((v) => v.id));
+const desactualizados = previos.filter((v) => !v.error && v.prompt !== HUELLA_JUEZ).length;
+
+// Solo se juzga lo que el sistema efectivamente afirmo. Las abstenciones y los
+// casos de capa 0 no entran al denominador de la tasa de alucinacion: tienen su
+// propia metrica.
+const aJuzgar = filas.filter((f) => f.decision === "responde" && f.respuesta && !hechos.has(f.id));
+
+console.log(`# Verificacion — ${entrada}`);
+console.log(`  juez           : ${MODELO_JUEZ}   (el generador es ${filas[0]?.proveedor ?? "?"})`);
+console.log(`  prompt del juez: ${HUELLA_JUEZ}`);
+console.log(`  filas          : ${filas.length}`);
+console.log(`  a juzgar       : ${aJuzgar.length}   (solo las que respondieron)`);
+console.log(`  ya juzgadas    : ${hechos.size}`);
+if (desactualizados) {
+  console.log(`  DE PROMPT VIEJO: ${desactualizados}   (se re-juzgan; el prompt del juez cambio)`);
+}
+if (!aJuzgar.length) { console.log("\n  nada que hacer."); process.exit(0); }
 
 function extraerJson(s: string): { afirmaciones: Afirmacion[] } {
   const limpio = s.replace(/^\s*```(?:json)?/i, "").replace(/```\s*$/, "").trim();
@@ -237,11 +281,11 @@ for (const f of aJuzgar) {
     const j = extraerJson(r.texto);
     const afirmaciones = (j.afirmaciones ?? []).filter((a) => a && a.etiqueta);
     v = {
-      id: f.id, juez: MODELO_JUEZ, afirmaciones,
+      id: f.id, juez: MODELO_JUEZ, prompt: HUELLA_JUEZ, afirmaciones,
       alucina: afirmaciones.some((a) => a.etiqueta === "N"),
     };
   } catch (e) {
-    v = { id: f.id, juez: MODELO_JUEZ, alucina: false, afirmaciones: [], error: String(e).slice(0, 240) };
+    v = { id: f.id, juez: MODELO_JUEZ, prompt: HUELLA_JUEZ, alucina: false, afirmaciones: [], error: String(e).slice(0, 240) };
     process.stdout.write(`\n  ! ${f.id}: ${String(e).slice(0, 110)}\n`);
   }
   salida.escribir(v);

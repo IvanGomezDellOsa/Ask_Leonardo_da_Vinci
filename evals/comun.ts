@@ -66,8 +66,12 @@ export function leerJsonl<T extends { id: string }>(url: URL): T[] {
   if (!existsSync(url)) return [];
   const porId = new Map<string, T>();
   for (const l of readFileSync(url, "utf8").split("\n")) {
-    if (!l.trim()) continue;
-    const fila = JSON.parse(l) as T;
+    const t = l.trim();
+    // Mismo criterio que `cargarCasos` para dataset.jsonl: las lineas de
+    // comentario `//` se ignoran. `etiquetas_humanas.jsonl` sigue esa
+    // convencion en su cabecera y esta funcion generica no la conocia.
+    if (!t || t.startsWith("//")) continue;
+    const fila = JSON.parse(t) as T;
     porId.set(fila.id, fila);
   }
   return [...porId.values()];

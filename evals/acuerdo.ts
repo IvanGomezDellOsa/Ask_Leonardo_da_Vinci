@@ -27,7 +27,7 @@ import { existsSync } from "node:fs";
 import { RAIZ, SALIDAS, cargarCasos, leerJsonl } from "./comun.js";
 
 interface Humana { id: string; alucina: boolean; nota?: string }
-interface Veredicto { id: string; alucina: boolean; error?: string }
+interface Veredicto { id: string; alucina: boolean; error?: string; prompt?: string }
 
 const args = process.argv.slice(2);
 const arg = (n: string, def: string): string => {
@@ -36,6 +36,10 @@ const arg = (n: string, def: string): string => {
 };
 const entrada = arg("entrada", "");
 if (!entrada) { console.error("falta --entrada <archivo.jsonl>"); process.exit(1); }
+// Sin esto, un caso que todavia no se re-juzgo tras un cambio de prompt (D-070)
+// aportaria su veredicto VIEJO al kappa, silenciosamente, porque `leerJsonl`
+// solo garantiza "la ultima fila", no "la del prompt actual".
+const soloPromptActual = arg("prompt", "");
 
 const fHumanas = new URL("evals/etiquetas_humanas.jsonl", RAIZ);
 if (!existsSync(fHumanas)) {
@@ -43,9 +47,18 @@ if (!existsSync(fHumanas)) {
   process.exit(1);
 }
 const humanas = new Map(leerJsonl<Humana>(fHumanas).map((h) => [h.id, h]));
+const todosVeredictos = leerJsonl<Veredicto>(
+  new URL(entrada.replace(/\.jsonl$/, "") + ".veredictos.jsonl", SALIDAS));
+const promptsVistos = new Set(todosVeredictos.map((v) => v.prompt).filter(Boolean));
+if (!soloPromptActual && promptsVistos.size > 1) {
+  console.error(`AVISO: el archivo tiene veredictos de ${promptsVistos.size} prompts distintos ` +
+                `(${[...promptsVistos].join(", ")}). Pasa --prompt <huella> para comparar solo uno; ` +
+                "si no, se usan todos mezclados y el kappa mide un instrumento que no es uno solo.");
+}
 const juez = new Map(
-  leerJsonl<Veredicto>(new URL(entrada.replace(/\.jsonl$/, "") + ".veredictos.jsonl", SALIDAS))
-    .filter((v) => !v.error).map((v) => [v.id, v]));
+  todosVeredictos
+    .filter((v) => !v.error && (!soloPromptActual || v.prompt === soloPromptActual))
+    .map((v) => [v.id, v]));
 const casos = new Map(cargarCasos().map((c) => [c.id, c]));
 
 const pares = [...humanas.entries()]

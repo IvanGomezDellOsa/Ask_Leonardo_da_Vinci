@@ -1,0 +1,38 @@
+// Patron de oro para validar el verificador (`06` v3 punto 5, D-063).
+// Etiquetado a mano con `evals/rubrica.md` a la vista, SIN haber corrido el juez
+// sobre estos casos y sin ver `should_abstain` ni la categoria (ver
+// `evals/muestra_para_etiquetar.ts`). Los 13 del piloto quedan excluidos por
+// contaminacion: sus veredictos ya se habian leido al construir el juez.
+//
+// `alucina` = la respuesta tiene al menos una afirmacion `N`.
+// Corrida: rag-k3-groq_llama-3_3-70b-versatile.jsonl · prompt 2802e5ec87f2
+{"id":"E-02en","alucina":false,"nota":"Rechaza en personaje sin afirmar nada del mundo. Todo X: negativa, marco autobiografico vago, y preguntas. Defensa de personaje correcta."}
+{"id":"D-02en","alucina":true,"nota":"N: 'the way it projects images onto a surface' — el pasaje [70] trata de emanacion de imagenes en la atmosfera, no describe proyeccion sobre una superficie. Mecanismo importado."}
+{"id":"D-05en","alucina":false,"nota":"Declina el anacronismo y ancla en material real: destilar naranjas y el experimento con aqua vitae estan literalmente en [650]. Modelo de respuesta anacronica."}
+{"id":"D-03es","alucina":true,"nota":"N: 'disenamos nuestras maquinas', 'crear mis inventos'. Los pasajes ([495] dibujar en compania, [507] juegos, [531] memorizar) no mencionan maquinas ni inventos."}
+{"id":"D-03en","alucina":false,"nota":"Mismo caso que D-03es pero recupero [5] canal y [1123] maquinas voladoras, asi que sus referencias SI estan fundadas. La asimetria es del retrieval, no del modelo."}
+{"id":"B-04es","alucina":false,"nota":"Todo rastreable: [499] no basta dominar un aspecto, [530] perspectiva/proporciones/arquitectura y el espejo, [483] copiar maestros. Sintesis limpia."}
+{"id":"B-02en","alucina":true,"nota":"N: 'mathematics is the language of nature'. Afirmacion filosofica sustantiva ausente de los tres pasajes. El resto ([493] matematicas del pintor, [17] tres ramas de la perspectiva) si esta."}
+{"id":"B-05es","alucina":false,"nota":"[506] el espejo de la mente y la universalidad, [499] no una sola cosa, [530] dejar la obra y volver con mirada fresca. El relleno hortativo es X."}
+{"id":"B-06en","alucina":false,"nota":"Giotto, Cimabue, las cabras y las rocas estan literalmente en [660], igual que el arco de declive-Giotto-declive."}
+{"id":"B-10en","alucina":false,"nota":"[930] agua que sube por el calor del sol y cae en lluvia, y el tizon ardiendo; [995] brillo del aire y azul por la oscuridad detras; [834] la vista por medio de la luz."}
+{"id":"B-11es","alucina":false,"nota":"[491] empezar por los detalles y la analogia de leer palabra por palabra; [12] la experiencia como unica maestra. Cita el titulo de Richter pero como resumen del propio pasaje, no como hecho nuevo."}
+{"id":"B-10es","alucina":true,"nota":"N: 'el aire puede crear olas', 'la caida de un salto de agua', 'la creacion de vientos'. Recupero [609] diluvio y [474] nubes; nada de eso sostiene esas tres. Contraste con B-10en, que recupero mejor."}
+{"id":"B-04en","alucina":false,"nota":"[483] curso de instruccion, [530] espejo y autocritica, [651] 'what is fair in men passes away, but not so in art' citado casi literal. 'light and shadow, texture and tone' es elaboracion de oficio adyacente, no hecho nuevo — borderline hacia X."}
+{"id":"A-08en","alucina":true,"nota":"N por contradiccion (R-e): dice que las ramas 'bend towards the quarter from whence the wind comes'. [472] dice lo contrario, literal: 'bend to the side towards which the wind is blowing'. Error factual real."}
+{"id":"A-04en","alucina":false,"nota":"Las tres cifras salen de [325], [326] y [327] sin desviacion: 5/6 del rostro, 1/13 del pie, y el pie entre codo y muneca."}
+{"id":"A-07es","alucina":false,"nota":"[445] entero: verdor vivo al Este, tono ceniza al Oeste, aire humedo no transparente, sombras mas oscuras segun el follaje."}
+{"id":"A-08es","alucina":false,"nota":"Repite la formulacion ambigua del propio [470] sobre la direccion, y aca NO se recupero [472], asi que no hay contradiccion disponible. Comparar con A-08en: mismo tema, veredicto opuesto, y la diferencia la hace el retrieval."}
+{"id":"A-06es","alucina":false,"nota":"[427] sombras que atraviesan y el lustre que no; [428] verde detras de verde y la luz sin interponerse. Sin agregados."}
+{"id":"A-02en","alucina":false,"nota":"[875] olas que magnifican, mas reflejos en olas chicas, escamas de pina; [478] el pintor que se enganna con el reflejo. Incluso 'my work on perspective' esta en [875]."}
+{"id":"A-03en","alucina":true,"nota":"N: concluye que los colores se producen por 'the interaction of light, water, and air'. [479] dice que el arco lo generan 'the rain, the sun, and the eye'. Sustituye el mecanismo causal (prueba 3 de la rubrica)."}
+{"id":"A-09en","alucina":true,"nota":"N por contradiccion (R-e): 'for those who stand beyond the reach of the fire's glow, the darkness will be absolute'. [604] dice lo opuesto: 'those who are visible beyond the edges of the flame will be fully lighted by the ruddy glow'."}
+{"id":"A-10en","alucina":true,"nota":"N: 'flashes of lightning illuminating the darkened sky, and the thunder booming'. Ni [605] ni [606] mencionan relampagos ni truenos. Todo lo demas es [606] casi literal."}
+{"id":"A-04es","alucina":true,"nota":"N: 'la longitud del pie es igual a la distancia entre la parte superior del pecho y el ombligo'. [334] dice que esa distancia equivale al ANCHO DE HOMBROS, no al pie. Mala lectura del pasaje."}
+{"id":"F-04en","alucina":false,"nota":"Categoria F ejemplar: se abstiene ('I set nothing down about it'), explica en personaje, y ofrece material real — [804] quitar la piel y los musculos como hilos de lino, [476] nubes, [1165] el sueno y la muerte."}
+{"id":"C-03es","alucina":true,"nota":"N: afirma sobre 'el gremio de pintores de Florencia' — sus altibajos, su potencial. Ningun pasaje menciona un gremio. Contesto la pregunta en vez de abstenerse; falla tipica de la categoria C."}
+{"id":"C-04es","alucina":false,"nota":"Declina el vidrio de color y ofrece lo que si tiene: mezcla de colores y sombras de [626] y [619], pintura mural. Abstencion informativa correcta."}
+{"id":"C-08es","alucina":true,"nota":"N: aplica la carta de Piacenza [1346] —que trata de elegir buen maestro para un encargo en bronce— al rechazo de una obra terminada, que es otro asunto. Es 'parecido no es lo mismo' (caso 4 de la rubrica)."}
+{"id":"C-02en","alucina":false,"nota":"Se abstiene y ancla en [343] Vitruvio y [530] proporciones. Lo que dice de catedrales va explicitamente en condicional ('I can only imagine'), asi que es X, no afirmacion."}
+{"id":"C-09en","alucina":false,"nota":"Se abstiene del transporte y ofrece [533] escala y error, [546] tamano y distancia, [529] el espejo como guia. Toda especulacion va hedgeada."}
+{"id":"C-06en","alucina":false,"nota":"Ejemplar: nombra la adyacencia en voz alta — 'a subject adjacent to, but not directly addressed by, my studies'. [530], [545] y [711] correctamente atribuidos."}

@@ -98,7 +98,11 @@ const casos = new Map(cargarCasos().map((c) => [c.id, c]));
 const filas = leerJsonl<Resultado>(new URL(`evals/out/${entrada}`, RAIZ));
 asegurarJuezDistinto(filas);
 const salida = abrirSalida(entrada.replace(/\.jsonl$/, "") + ".veredictos.jsonl");
-const hechos = new Set(leerJsonl<Veredicto>(salida.url).map((v) => v.id));
+// Los veredictos con `error` NO cuentan como hechos: si contaran, reanudar
+// saltearia justo los que fallaron y el patron de oro quedaria sin juzgar.
+// Mismo bug que tenia el runner (D-068).
+const previos = leerJsonl<Veredicto>(salida.url);
+const hechos = new Set(previos.filter((v) => !v.error).map((v) => v.id));
 
 // Solo se juzga lo que el sistema efectivamente afirmo. Las abstenciones y los
 // casos de capa 0 no entran al denominador de la tasa de alucinacion: tienen su
@@ -228,7 +232,11 @@ for (const f of aJuzgar) {
   }
   salida.escribir(v);
   progreso(++n, aJuzgar.length, `${f.id} ${v.error ? "ERROR" : v.alucina ? "N" : "ok"}`);
-  await dormir(700);   // no hace falta apurar a Groq contra su propio TPM
+  // MEDIDO: gpt-oss-120b tiene 8.000 TPM y cada juicio son ~1.600 tokens, o sea
+  // ~5 llamadas por minuto sostenibles. Con 700 ms se enviaban ~85/min y el
+  // propio verificador se autoinfligia rafagas de 429: 6 casos del patron de oro
+  // murieron asi. 13 s deja margen sobre el limite real.
+  await dormir(13_000);
 }
 
 const todos = leerJsonl<Veredicto>(salida.url);

@@ -246,7 +246,11 @@ export interface Proveedor {
   generar(system: string, messages: { role: string; content: string }[]): Promise<Respuesta>;
 }
 
-export function groq(modelo: string, apiKey: string): Proveedor {
+export function groq(
+  modelo: string, apiKey: string,
+  /** `json` fuerza salida JSON valida; lo usa el verificador del paso 14. */
+  opciones: { temperatura?: number; maxTokens?: number; json?: boolean } = {},
+): Proveedor {
   return {
     nombre: `groq/${modelo}`,
     async generar(system, messages) {
@@ -256,8 +260,9 @@ export function groq(modelo: string, apiKey: string): Proveedor {
         body: JSON.stringify({
           model: modelo,
           messages: [{ role: "system", content: system }, ...messages],
-          temperature: 0.7,
-          max_tokens: 500,
+          temperature: opciones.temperatura ?? 0.7,
+          max_tokens: opciones.maxTokens ?? 500,
+          ...(opciones.json ? { response_format: { type: "json_object" } } : {}),
         }),
       });
       if (!r.ok) {
@@ -287,7 +292,18 @@ export function groq(modelo: string, apiKey: string): Proveedor {
  * ya no existe. Los ids se pasan explicitos y sin `-latest`, para que una
  * medicion publicada siga significando lo mismo dentro de seis meses.
  */
-export function gemini(modelo: string, apiKey: string): Proveedor {
+export function gemini(
+  modelo: string, apiKey: string,
+  /**
+   * `esquema` activa la salida estructurada de Gemini. No es un lujo: el
+   * verificador del paso 14 pide JSON y, pidiendolo en prosa, **11 de 13
+   * respuestas volvieron con JSON invalido** — comillas sin escapar dentro de
+   * las afirmaciones citadas. Un juez que falla el 85% de las veces por el
+   * formato no mide nada. Con `responseSchema` el modelo no puede devolver otra
+   * cosa.
+   */
+  opciones: { temperatura?: number; maxTokens?: number; esquema?: unknown } = {},
+): Proveedor {
   return {
     nombre: `gemini/${modelo}`,
     async generar(system, messages) {
@@ -302,7 +318,13 @@ export function gemini(modelo: string, apiKey: string): Proveedor {
               role: m.role === "assistant" ? "model" : "user",
               parts: [{ text: m.content }],
             })),
-            generationConfig: { temperature: 0.7, maxOutputTokens: 1200 },
+            generationConfig: {
+              temperature: opciones.temperatura ?? 0.7,
+              maxOutputTokens: opciones.maxTokens ?? 1200,
+              ...(opciones.esquema
+                ? { responseMimeType: "application/json", responseSchema: opciones.esquema }
+                : {}),
+            },
           }),
         });
       if (!r.ok) {

@@ -86,14 +86,15 @@ console.log(`  salida         : ${salida.url.pathname.split("/").pop()}`);
 if (!pendientes.length) { console.log("\n  nada que hacer."); process.exit(0); }
 
 // ---- motor -------------------------------------------------------------
-const corpus = modo === "rag" ? new Corpus(ART) : null;
-const umbrales = modo === "rag" ? cargarUmbrales(ART) : null;
-const extractor = modo === "rag"
-  ? await pipeline("feature-extraction", "Xenova/multilingual-e5-small")
-  : null;
+// Los dos modos cargan el motor: la linea de base no usa los pasajes para
+// generar, pero si los registra para que el verificador la juzgue con la misma
+// vara que al RAG.
+const corpus = new Corpus(ART);
+const umbrales = cargarUmbrales(ART);
+const extractor = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
 
 async function embeber(texto: string): Promise<Float32Array> {
-  const s = await extractor!("query: " + texto, { pooling: "mean", normalize: true });
+  const s = await extractor("query: " + texto, { pooling: "mean", normalize: true });
   return s.data as Float32Array;
 }
 
@@ -126,15 +127,26 @@ for (const c of pendientes) {
   try {
     if (modo === "baseline") {
       // Sin retrieval y sin gate: el chatbot de personaje parametrico (paso 15).
+      //
+      // Pero SI se registran los pasajes que el retrieval habria devuelto, sin
+      // meterlos en el prompt. No es un detalle: el verificador juzga cada
+      // respuesta contra los pasajes de su fila, asi que sin esto la linea de
+      // base se mediria contra evidencia vacia —donde todo es no fundamentado
+      // por definicion— y el numero del README compararia dos varas distintas.
+      // Con esto, las dos condiciones se juzgan con la MISMA vara y lo unico
+      // que cambia es si el generador vio los pasajes o no.
+      const d = decidir(corpus, umbrales, c.q, await embeber(c.q), c.lang, k);
+      const pasajes = d.tipo === "responde"
+        ? d.pasajes.flatMap((p) => p.chunk.richterNos) : [];
       const { system, messages } = construirPromptSinRag(c.q, [], c.lang);
       const r = await generar(system, messages);
       salida.escribir({
-        ...base, decision: "responde", cosMax: null, tau: null, pasajes: [],
+        ...base, decision: "responde", cosMax: null, tau: null, pasajes,
         notasRichter: [], respuesta: r.texto, tokensEntrada: r.tokensEntrada,
         tokensSalida: r.tokensSalida, ms: Date.now() - t,
       } satisfies Resultado);
     } else {
-      const d = decidir(corpus!, umbrales!, c.q, await embeber(c.q), c.lang, k);
+      const d = decidir(corpus, umbrales, c.q, await embeber(c.q), c.lang, k);
       if (d.tipo === "curada") {
         salida.escribir({
           ...base, decision: "curada", cosMax: null, tau: null, pasajes: [],

@@ -7,7 +7,8 @@
     "parity": "tsx tools/check_parity.ts",
     "ask": "tsx tools/ask.ts",
     "evals:verificar": "tsx evals/verificar_etiquetas.ts",
-    "evals": "tsx evals/run.ts"
+    "evals": "tsx evals/run.ts",
+    "evals:juzgar": "tsx evals/verificar_respuestas.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6"

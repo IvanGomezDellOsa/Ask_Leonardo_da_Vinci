@@ -98,6 +98,28 @@ console.log(`  ya hechos      : ${hechos.size}   (se saltean)`);
 if (aReintentar) console.log(`  con error      : ${aReintentar}   (se reintentan)`);
 console.log(`  pendientes     : ${pendientes.length}`);
 console.log(`  salida         : ${salida.url.pathname.split("/").pop()}`);
+
+/**
+ * Presupuesto ESTIMADO antes de gastar un token.
+ *
+ * El limite que rompio la corrida anterior no fue el de por minuto sino el
+ * DIARIO, y se rompio sin que nadie lo viera venir: tres corridas del piloto
+ * (13 casos cada una) se comieron ~51.000 tokens —la mitad del tope diario—
+ * antes de que empezara la medicion de verdad. Un aviso de dos lineas antes de
+ * arrancar habria evitado perder el dia.
+ *
+ * TPD del free tier de Groq para llama-3.3-70b-versatile: ~100.000.
+ */
+const TPD = Number(arg("tpd", "100000"));
+const COSTE_CASO = 1400;   // medido: ~1.100 de entrada + ~300 de salida
+const costeEstimado = pendientes.length * COSTE_CASO;
+console.log(`  coste estimado : ~${costeEstimado.toLocaleString()} tokens ` +
+            `(${pendientes.length} casos x ~${COSTE_CASO})`);
+if (costeEstimado > TPD) {
+  console.log(`\n  AVISO: la estimacion supera el tope diario (~${TPD.toLocaleString()} tokens).`);
+  console.log("  La corrida se va a cortar a mitad de camino. Corre por partes, o ajusta --tpd.");
+}
+
 if (!pendientes.length) { console.log("\n  nada que hacer."); process.exit(0); }
 
 // ---- motor -------------------------------------------------------------

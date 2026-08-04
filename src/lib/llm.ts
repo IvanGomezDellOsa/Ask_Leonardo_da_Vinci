@@ -186,7 +186,7 @@ export const estimarTokens = (s: string): number => Math.ceil(s.length / 4);
 export function huellaPrompt(): string {
   const partes = (["es", "en"] as const).flatMap((i) =>
     [IDENTIDAD[i], PERSONA_FIRME[i], FUNDAMENTACION[i], PERSONAJE[i]]);
-  return createHash("sha256").update(partes.join(" ")).digest("hex").slice(0, 12);
+  return createHash("sha256").update(partes.join(" ")).digest("hex").slice(0, 12);
 }
 
 /**
@@ -246,6 +246,35 @@ export interface Proveedor {
   generar(system: string, messages: { role: string; content: string }[]): Promise<Respuesta>;
 }
 
+/**
+ * Cuota diaria agotada, tal como Groq la reporta.
+ *
+ * Medido el 2026-08-04: el TPD (tokens per day) de Groq NO es un tope que
+ * resetea a medianoche — es una **ventana rodante de 24 horas**. Una corrida
+ * que se creia "fresca" porque habian pasado ~12 horas seguia cargando el
+ * consumo de la noche anterior, y se re-agoto a los 21 casos. El cuerpo del
+ * 429 lo dice todo: `"Limit 100000, Used 99398, ... try again in 6m32s"`.
+ *
+ * Reintentar contra esto es inutil: 6 minutos y medio no se acortan
+ * insistiendo. `esperaSegundos` es el tiempo que el propio proveedor declara.
+ */
+export interface CuotaAgotada { usado: number; limite: number; esperaSegundos: number }
+
+const RE_TPD = /tokens per day \(TPD\): Limit (\d+), Used (\d+)/;
+const RE_ESPERA = /try again in (?:(\d+)h)?(?:(\d+)m)?([\d.]+)s/;
+
+function detectarCuotaAgotada(cuerpoError: string, r: Response): CuotaAgotada | undefined {
+  if (r.status !== 429) return undefined;
+  const tpd = RE_TPD.exec(cuerpoError);
+  if (!tpd) return undefined;   // 429 transitorio (rafaga de RPM/TPM), no cuota diaria
+  const espera = RE_ESPERA.exec(cuerpoError);
+  const [, h, m, s] = espera ?? [];
+  const esperaSegundos = espera
+    ? (Number(h ?? 0) * 3600 + Number(m ?? 0) * 60 + Number(s ?? 0))
+    : Number(r.headers.get("retry-after") ?? 60);
+  return { usado: Number(tpd[2]), limite: Number(tpd[1]), esperaSegundos };
+}
+
 export function groq(
   modelo: string, apiKey: string,
   /** `json` fuerza salida JSON valida; lo usa el verificador del paso 14. */
@@ -266,8 +295,10 @@ export function groq(
         }),
       });
       if (!r.ok) {
-        const err = new Error(`${r.status} ${await r.text()}`);
+        const cuerpo = await r.text();
+        const err = new Error(`${r.status} ${cuerpo}`);
         (err as Error & { status?: number }).status = r.status;
+        (err as Error & { cuotaAgotada?: CuotaAgotada }).cuotaAgotada = detectarCuotaAgotada(cuerpo, r);
         throw err;
       }
       const j = await r.json();

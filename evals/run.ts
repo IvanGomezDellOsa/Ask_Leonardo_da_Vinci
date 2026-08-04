@@ -22,7 +22,7 @@ import { Corpus } from "../src/lib/retrieval.js";
 import { cargarUmbrales, decidir } from "../src/lib/grounding.js";
 import {
   PresupuestoTpm, construirPrompt, construirPromptSinRag, estimarTokens,
-  groq, gemini, huellaPrompt, type Proveedor,
+  groq, gemini, huellaPrompt, type Proveedor, type CuotaAgotada,
 } from "../src/lib/llm.js";
 import {
   ART, cargarCasos, leerJsonl, abrirSalida, claves, esperarCapacidad, progreso,
@@ -152,6 +152,12 @@ async function generar(system: string, msgs: { role: string; content: string }[]
       return r;
     } catch (e) {
       const st = (e as Error & { status?: number }).status;
+      const cuota = (e as Error & { cuotaAgotada?: CuotaAgotada }).cuotaAgotada;
+      // La cuota DIARIA no se libera reintentando. El cuerpo del 429 la reporta
+      // directo ("Limit 100000, Used 99398, try again in 6m32s"); creerle en el
+      // primer aviso, en vez de gastar 3 intentos a ciegas, es lo que evita
+      // repetir la maratón de 3 horas del 2026-08-03.
+      if (cuota) throw Object.assign(e as Error, { cuotaAgotada: cuota });
       ultimo = `${st ?? "sin status"}: ${String(e).slice(0, 160)}`;
       if (st !== 429 && (st ?? 0) < 500) throw e;
       // 429 o 5xx: backoff. No se pasa al siguiente proveedor a proposito — el
@@ -234,6 +240,22 @@ for (const c of pendientes) {
     }
     fallosSeguidos = 0;
   } catch (e) {
+    // NO se registra este como fallo del CASO: es la cuota del PROVEEDOR. Una
+    // fila "error" aca marcaria un caso perfectamente respondible como si algo
+    // le pasara a el, y el proximo `should_abstain` optimista de D-062 tomaria
+    // esa fila vacia como evidencia. Se corta la corrida entera sin escribir
+    // nada, y el caso sigue "pendiente" para la proxima corrida.
+    const cuota = (e as Error & { cuotaAgotada?: CuotaAgotada }).cuotaAgotada;
+    if (cuota) {
+      const min = Math.ceil(cuota.esperaSegundos / 60);
+      console.log(`\n\n  CORTE: cuota diaria de ${idProveedor} agotada ` +
+                  `(${cuota.usado.toLocaleString()}/${cuota.limite.toLocaleString()} tokens).`);
+      console.log(`  El proveedor pide esperar ~${min} min. Es una ventana RODANTE de 24 h`);
+      console.log("  (D-068): no resetea a medianoche, se libera de a poco. Reintentar ahora");
+      console.log("  no ayuda; correr el mismo comando en un rato reanuda donde quedo.");
+      console.log(`\n  Hechos hasta aca: ${hechos.size + n} de ${casos.length}.`);
+      process.exit(2);
+    }
     // Se registra el fallo en vez de abortar: al reanudar hay que poder ver
     // que caso rompio y por que.
     salida.escribir({
@@ -242,6 +264,13 @@ for (const c of pendientes) {
       ms: Date.now() - t, error: String(e).slice(0, 300),
     } satisfies Resultado);
     process.stdout.write(`\n  ! ${c.id}: ${String(e).slice(0, 120)}\n`);
+    if (++fallosSeguidos >= MAX_FALLOS_SEGUIDOS) {
+      console.log(`\n\n  CORTE: ${fallosSeguidos} casos seguidos agotaron sus reintentos.`);
+      console.log("  La cuota diaria del proveedor esta agotada — reintentar no la devuelve.");
+      console.log(`  Hechos hasta aca: ${hechos.size + n - fallosSeguidos} de ${casos.length}.`);
+      console.log("  Volve a correr el mismo comando cuando resetee: reanuda donde quedo.");
+      break;
+    }
   }
   progreso(++n, pendientes.length, `${c.id}  ${((Date.now() - t0) / 60000).toFixed(1)} min`);
 }

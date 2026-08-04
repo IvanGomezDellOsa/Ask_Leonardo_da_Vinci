@@ -62,11 +62,24 @@ const HUELLA = huellaPrompt();
 // Gemini free tier no comparte el limite de Groq. El presupuesto de 6.000 TPM
 // es el de D-023 y solo aplica a Groq; para Gemini se usa una ventana holgada y
 // se confia en el reintento ante 429.
-const presupuesto = new PresupuestoTpm(idProveedor.startsWith("groq") ? 6000 : 60_000);
+// MEDIDO el 2026-08-04 en los headers de Groq para llama-3.3-70b-versatile:
+//   x-ratelimit-limit-tokens: 12000     <- D-023 asume 6.000
+//   x-ratelimit-limit-requests: 1000
+// D-023 fijo 6.000 TPM leyendo la documentacion del free tier. El limite real
+// de ESTE modelo es el doble, asi que el presupuesto nos estaba estrangulando a
+// la mitad de la capacidad disponible. Se deja configurable y se documenta que
+// es un valor medido por modelo, no una constante del proveedor.
+const TPM = Number(arg("tpm", idProveedor.startsWith("groq") ? "12000" : "60000"));
+const presupuesto = new PresupuestoTpm(TPM);
 
 // ---- estado ------------------------------------------------------------
 const salida = abrirSalida(`${etiqueta}.jsonl`);
-const hechos = new Set(leerJsonl<Resultado>(salida.url).map((r) => r.id));
+// Las filas con `error` NO cuentan como hechas: si contaran, reanudar saltearia
+// justo los casos que fallaron y la corrida quedaria incompleta para siempre,
+// con un resumen que igual da un numero. Se reintentan.
+const previas = leerJsonl<Resultado>(salida.url);
+const hechos = new Set(previas.filter((r) => r.decision !== "error").map((r) => r.id));
+const aReintentar = previas.filter((r) => r.decision === "error").length;
 let casos = cargarCasos();
 if (limite > 0) {
   // Piloto de D-064: una muestra que toque las seis categorias, no las primeras N.
@@ -79,8 +92,10 @@ const pendientes = casos.filter((c) => !hechos.has(c.id));
 
 console.log(`# Eval — modo ${modo} · k=${k} · ${idProveedor}`);
 console.log(`  prompt         : ${HUELLA}`);
+console.log(`  presupuesto    : ${TPM} TPM`);
 console.log(`  casos          : ${casos.length}`);
 console.log(`  ya hechos      : ${hechos.size}   (se saltean)`);
+if (aReintentar) console.log(`  con error      : ${aReintentar}   (se reintentan)`);
 console.log(`  pendientes     : ${pendientes.length}`);
 console.log(`  salida         : ${salida.url.pathname.split("/").pop()}`);
 if (!pendientes.length) { console.log("\n  nada que hacer."); process.exit(0); }
@@ -102,23 +117,46 @@ async function generar(system: string, msgs: { role: string; content: string }[]
   const estimado = estimarTokens(system + msgs.map((m) => m.content).join("")) + 300;
   await esperarCapacidad(presupuesto, estimado,
     (uso) => process.stdout.write(`\n  … esperando ventana de TPM (${uso}/6000)\n`));
-  for (let intento = 0; intento < 5; intento++) {
+  let ultimo = "";
+  // 3 intentos, 28 s como mucho. La version de 8 intentos con backoff hasta 2
+  // min tardaba 8,1 MINUTOS por caso y fallaba igual: estaba esperando a que se
+  // liberara una ventana por minuto, pero el limite que se habia agotado era el
+  // DIARIO (TPD), que no se libera hasta el dia siguiente. Esperar mas no
+  // arregla un limite diario; solo quema tiempo. Ver `abortarSiCuotaAgotada`.
+  for (let intento = 0; intento < 3; intento++) {
     try {
       const r = await proveedor.generar(system, msgs);
       presupuesto.registrar(r.tokensEntrada + r.tokensSalida);
       return r;
     } catch (e) {
       const st = (e as Error & { status?: number }).status;
+      ultimo = `${st ?? "sin status"}: ${String(e).slice(0, 160)}`;
       if (st !== 429 && (st ?? 0) < 500) throw e;
       // 429 o 5xx: backoff. No se pasa al siguiente proveedor a proposito — el
       // paso 18 compara proveedores, asi que cada corrida mide UNO solo.
-      await new Promise((r) => setTimeout(r, 5000 * (intento + 1)));
+      await new Promise((r) => setTimeout(r, 4000 * 2 ** intento));
     }
   }
-  throw new Error("agotados los reintentos");
+  // El motivo del ultimo fallo va en el mensaje: "agotados los reintentos" a
+  // secas no deja diagnosticar contra que limite se choco.
+  throw new Error(`agotados los reintentos — ultimo fallo ${ultimo}`);
 }
 
 // ---- corrida -----------------------------------------------------------
+/**
+ * Corta la corrida cuando la cuota se agoto de verdad.
+ *
+ * No parsea el mensaje del proveedor —cada uno lo escribe distinto— sino que
+ * cuenta FALLOS CONSECUTIVOS. Un 429 suelto es una rafaga y se reintenta; tres
+ * casos seguidos que agotan sus reintentos significan que no queda cuota, y
+ * seguir es quemar horas para escribir filas de error.
+ *
+ * Es la diferencia entre enterarse en 90 segundos o en 6 horas: la corrida
+ * anterior gasto ~3 h reintentando contra un limite diario ya agotado.
+ */
+const MAX_FALLOS_SEGUIDOS = 3;
+let fallosSeguidos = 0;
+
 const t0 = Date.now();
 let n = 0;
 for (const c of pendientes) {
@@ -172,6 +210,7 @@ for (const c of pendientes) {
         } satisfies Resultado);
       }
     }
+    fallosSeguidos = 0;
   } catch (e) {
     // Se registra el fallo en vez de abortar: al reanudar hay que poder ver
     // que caso rompio y por que.

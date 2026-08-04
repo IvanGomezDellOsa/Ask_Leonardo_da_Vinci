@@ -48,10 +48,29 @@ export function cargarCasos(): Caso[] {
     .map((l) => JSON.parse(l) as Caso);
 }
 
-export function leerJsonl<T>(url: URL): T[] {
+/**
+ * Lee un JSONL de resultados y devuelve la ULTIMA fila por `id`.
+ *
+ * `abrirSalida` solo agrega (`appendFileSync`): nunca reescribe ni borra. Asi
+ * que cuando un caso falla, se reintenta y despues tiene exito, el archivo
+ * termina con DOS filas para el mismo id — la de error primero, la de exito
+ * despues. Sin deduplicar aca, el runner reanudado, el muestreador y el
+ * verificador verian ambas: la de exito se juzgaria dos veces con IDs
+ * repetidos, y "hechos" en el runner se calcularia mal.
+ *
+ * "Ultima fila gana" es correcto porque el runner APPENDEA en el orden en que
+ * termina cada llamada: una fila mas nueva siempre reemplaza a una mas vieja
+ * del mismo caso, nunca al reves.
+ */
+export function leerJsonl<T extends { id: string }>(url: URL): T[] {
   if (!existsSync(url)) return [];
-  return readFileSync(url, "utf8").split("\n").filter((l) => l.trim())
-    .map((l) => JSON.parse(l) as T);
+  const porId = new Map<string, T>();
+  for (const l of readFileSync(url, "utf8").split("\n")) {
+    if (!l.trim()) continue;
+    const fila = JSON.parse(l) as T;
+    porId.set(fila.id, fila);
+  }
+  return [...porId.values()];
 }
 
 export function abrirSalida(nombre: string): { url: URL; escribir: (o: unknown) => void } {

@@ -17,12 +17,14 @@
  * aparte y con otro modelo (`06` v3 punto 5, D-063).
  */
 
+import { readFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { pipeline } from "@huggingface/transformers";
-import { Corpus } from "../src/lib/retrieval.js";
-import { cargarUmbrales, decidir } from "../src/lib/grounding.js";
+import { citasInvalidas, quitarComillasInvalidas, podarTrasDeclinar } from "../src/lib/citas.js";
+import { cargarMotor, decidirCon } from "../src/lib/grounding.js";
 import {
   PresupuestoTpm, construirPrompt, construirPromptSinRag, estimarTokens,
-  groq, gemini, huellaPrompt, huellaVigente, type Proveedor, type CuotaAgotada,
+  groq, gemini, deepseek, huellaPrompt, huellaVigente, type Proveedor, type CuotaAgotada,
 } from "../src/lib/llm.js";
 import {
   ART, cargarCasos, leerJsonl, abrirSalida, claves, esperarCapacidad, progreso,
@@ -54,10 +56,69 @@ function construirProveedor(id: string): Proveedor {
     if (!env.GEMINI_API_KEY_A) throw new Error("falta GEMINI_API_KEY_A en .env.local");
     return gemini(modelo, env.GEMINI_API_KEY_A);
   }
+  // DeepSeek pasa a ser el generador por D-088: el free tier de Gemini no da
+  // para una corrida completa y bloqueo la medicion tres dias.
+  if (fam === "deepseek") {
+    if (!env.DEEPSEEK_API_KEY) throw new Error("falta DEEPSEEK_API_KEY en .env.local");
+    return deepseek(modelo, env.DEEPSEEK_API_KEY);
+  }
   throw new Error(`proveedor desconocido: ${id}`);
 }
 const proveedor = construirProveedor(idProveedor);
-const HUELLA = huellaPrompt();
+/**
+ * De QUE corpus salen los pasajes. Ver D-081.
+ *
+ * El prompt no es solo la plantilla: son la plantilla MAS los pasajes. Al
+ * conectar la traduccion (D-079) el modelo paso a ver castellano en vez de
+ * ingles sin que cambiara una palabra de la plantilla, la huella no se movio y
+ * el reanudado se salteo la corrida entera diciendo "pendientes: 0".
+ *
+ * Se hashea el contenido de `chunks_es.json`, que es lo que decide el texto
+ * mostrado. Si no existe, la variante es "en" y la huella vuelve a ser la
+ * historica.
+ */
+const fEs = new URL("chunks_es.json", ART);
+/**
+ * `cv1` = verificacion de cita activa (D-082).
+ *
+ * Se agrega porque el reintento por cita fabricada cambia la RESPUESTA sin
+ * cambiar ni la plantilla ni el corpus, y la huella volvio a no moverse: octava
+ * vez que el mismo error aparece. El principio, ya sin excusa: **todo lo que
+ * altera la salida va en la huella**, incluida la politica de generacion y no
+ * solo el texto del prompt. Si manana se cambian los reintentos o el criterio,
+ * este sufijo cambia con ellos.
+ */
+const POLITICA = "cv3";   // cv3 = ademas poda la continuacion sin cita tras declinar (D-093)
+
+/**
+ * DE QUE INDICE SALEN LOS PASAJES. Novena vez que el mismo error aparece, y la
+ * primera que se ataja antes de que cueste una corrida.
+ *
+ * D-081 metio el CORPUS en la huella y eso alcanzaba mientras hubiera un solo
+ * indice. Desde D-105 hay dos —ingles y castellano— y **cual se usa cambia los
+ * pasajes que el modelo ve sin cambiar una palabra del prompt ni un byte del
+ * corpus**: exactamente la forma del bug de D-079, con otra causa.
+ *
+ * Se hashean los DOS `index.bin` y los umbrales, que son lo que decide que
+ * pasajes entran y si entra alguno. Si manana se reindexa con otro modelo, o se
+ * mueve tau, la huella se mueve sola: no hay que acordarse de nada. Es la cura
+ * estructural que el proyecto viene nombrando —identidad por CONTENIDO en la
+ * frontera de E/S— en vez de enumerar a mano que importa.
+ */
+const huellaDeArchivo = (u: URL): string =>
+  existsSync(u) ? createHash("sha256").update(readFileSync(u)).digest("hex").slice(0, 8) : "-";
+const INDICE = [
+  huellaDeArchivo(new URL("index.bin", ART)),
+  huellaDeArchivo(new URL("es/index.bin", ART)),
+  huellaDeArchivo(new URL("thresholds.json", ART)),
+  huellaDeArchivo(new URL("es/thresholds.json", ART)),
+  huellaDeArchivo(new URL("curaduria.json", ART)),
+].join(".");
+
+const VARIANTE = (existsSync(fEs)
+  ? "es:" + createHash("sha256").update(readFileSync(fEs)).digest("hex").slice(0, 8)
+  : "en") + "|" + POLITICA + "|ix:" + INDICE;
+const HUELLA = huellaPrompt(VARIANTE);
 
 // Gemini free tier no comparte el limite de Groq. El presupuesto de 6.000 TPM
 // es el de D-023 y solo aplica a Groq; para Gemini se usa una ventana holgada y
@@ -70,7 +131,24 @@ const HUELLA = huellaPrompt();
 // la mitad de la capacidad disponible. Se deja configurable y se documenta que
 // es un valor medido por modelo, no una constante del proveedor.
 const TPM = Number(arg("tpm", idProveedor.startsWith("groq") ? "12000" : "60000"));
-const presupuesto = new PresupuestoTpm(TPM);
+/**
+ * Y EL LIMITE DE REQUESTS, que en Gemini es el que muerde. Ver D-086.
+ *
+ * El free tier de `gemini-3.1-flash-lite` da 15 RPM. Los tokens sobran por
+ * lejos, asi que un presupuesto que solo contaba tokens se creia holgado
+ * mientras el proveedor cortaba con 429 — y con la verificacion de citas de
+ * D-082, un caso son hasta tres llamadas.
+ *
+ * Se deja en 12 y no en 15 a proposito: el margen cubre los reintentos que el
+ * propio cliente hace ante un 429, que tambien cuentan como requests.
+ *
+ * VALOR MEDIDO POR MODELO Y CON FECHA, como el TPM y como τ: no es una constante
+ * del proveedor, es lo que este modelo daba el 2026-08-05.
+ */
+// Solo Gemini. En Groq muerde el de tokens y DeepSeek es pago: ahi un tope de
+// requests solo alargaria la corrida sin evitar ningun 429.
+const RPM = Number(arg("rpm", idProveedor.startsWith("gemini") ? "12" : "0"));
+const presupuesto = new PresupuestoTpm(TPM, RPM > 0 ? RPM : Infinity);
 
 // ---- estado ------------------------------------------------------------
 const salida = abrirSalida(`${etiqueta}.jsonl`);
@@ -84,11 +162,11 @@ const salida = abrirSalida(`${etiqueta}.jsonl`);
 // encontro en el juez, en su gemelo del generador.
 const previas = leerJsonl<Resultado>(salida.url);
 const hechos = new Set(
-  previas.filter((r) => r.decision !== "error" && huellaVigente(r.prompt))
+  previas.filter((r) => r.decision !== "error" && huellaVigente(r.prompt, VARIANTE))
     .map((r) => r.id));
 const aReintentar = previas.filter((r) => r.decision === "error").length;
 const dePromptViejo = previas.filter(
-  (r) => r.decision !== "error" && !huellaVigente(r.prompt)).length;
+  (r) => r.decision !== "error" && !huellaVigente(r.prompt, VARIANTE)).length;
 let casos = cargarCasos();
 if (limite > 0) {
   // Piloto de D-064: una muestra que toque las seis categorias, no las primeras N.
@@ -101,7 +179,7 @@ const pendientes = casos.filter((c) => !hechos.has(c.id));
 
 console.log(`# Eval — modo ${modo} · k=${k} · ${idProveedor}`);
 console.log(`  prompt         : ${HUELLA}`);
-console.log(`  presupuesto    : ${TPM} TPM`);
+console.log(`  presupuesto    : ${TPM} TPM · ${RPM > 0 ? `${RPM} RPM` : "RPM sin limite"}`);
 console.log(`  casos          : ${casos.length}`);
 console.log(`  ya hechos      : ${hechos.size}   (se saltean)`);
 if (aReintentar) console.log(`  con error      : ${aReintentar}   (se reintentan)`);
@@ -120,13 +198,26 @@ console.log(`  salida         : ${salida.url.pathname.split("/").pop()}`);
  *
  * TPD del free tier de Groq para llama-3.3-70b-versatile: ~100.000.
  */
-const TPD = Number(arg("tpd", "100000"));
+/**
+ * EL TOPE DIARIO ES POR PROVEEDOR, y el aviso solo tiene sentido donde existe.
+ *
+ * Los 100.000 son de Groq. El aviso los comparaba contra la estimacion fuera
+ * cual fuera el proveedor: en Gemini —donde el limite que muerde son requests
+ * por dia, no tokens— podia dar verde y cortarse igual, y en DeepSeek, que es
+ * pago y no tiene tope diario, anunciaba un corte imposible. Ver D-086 y D-088:
+ * es la misma forma otra vez, un aviso que mide una dimension que no gobierna.
+ *
+ * `0` = sin tope diario conocido, no se avisa nada. Mejor callarse que afirmar
+ * un limite que no rige.
+ */
+const TPD = Number(arg("tpd", idProveedor.startsWith("groq") ? "100000" : "0"));
 const COSTE_CASO = 1400;   // medido: ~1.100 de entrada + ~300 de salida
 const costeEstimado = pendientes.length * COSTE_CASO;
 console.log(`  coste estimado : ~${costeEstimado.toLocaleString()} tokens ` +
             `(${pendientes.length} casos x ~${COSTE_CASO})`);
-if (costeEstimado > TPD) {
-  console.log(`\n  AVISO: la estimacion supera el tope diario (~${TPD.toLocaleString()} tokens).`);
+if (TPD > 0 && costeEstimado > TPD) {
+  console.log(`\n  AVISO: la estimacion supera el tope diario de ${idProveedor} ` +
+              `(~${TPD.toLocaleString()} tokens).`);
   console.log("  La corrida se va a cortar a mitad de camino. Corre por partes, o ajusta --tpd.");
 }
 
@@ -136,8 +227,19 @@ if (!pendientes.length) { console.log("\n  nada que hacer."); process.exit(0); }
 // Los dos modos cargan el motor: la linea de base no usa los pasajes para
 // generar, pero si los registra para que el verificador la juzgue con la misma
 // vara que al RAG.
-const corpus = new Corpus(ART);
-const umbrales = cargarUmbrales(ART);
+/**
+ * UN INDICE POR IDIOMA (D-105 a D-107). El runner tiene que medir lo que el
+ * producto HACE: dejarlo en el indice unico ingles significaria que la proxima
+ * corrida mide una configuracion que ya no existe, y que su numero se compara
+ * despues con el del producto real como si fueran lo mismo.
+ *
+ * OJO AL LEER RESULTADOS VIEJOS: las corridas anteriores a esta linea se hicieron
+ * con el indice ingles para los dos idiomas. La huella del prompt no cubre de que
+ * indice salieron los pasajes —cubre el corpus (D-081), no el indice— asi que
+ * NADA avisa de la diferencia salvo esta nota. Comparar una corrida nueva contra
+ * `voz8` es comparar dos retrievals distintos.
+ */
+const motor = cargarMotor(ART);
 const extractor = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
 
 async function embeber(texto: string): Promise<Float32Array> {
@@ -147,8 +249,15 @@ async function embeber(texto: string): Promise<Float32Array> {
 
 async function generar(system: string, msgs: { role: string; content: string }[]) {
   const estimado = estimarTokens(system + msgs.map((m) => m.content).join("")) + 300;
-  await esperarCapacidad(presupuesto, estimado,
-    (uso) => process.stdout.write(`\n  … esperando ventana de TPM (${uso}/6000)\n`));
+  // El aviso informa las DOS dimensiones y contra los limites que rigen de
+  // verdad. Antes comparaba contra un 6000 cableado que ya no gobernaba nada
+  // (el presupuesto es 12.000 o 60.000): el mensaje decia holgura mientras la
+  // espera era por la otra dimension. Ver D-086.
+  await esperarCapacidad(presupuesto, estimado, () => {
+    const e = presupuesto.estado();
+    const rpm = e.rpm === Infinity ? "sin limite" : `${e.requests}/${e.rpm} req`;
+    process.stdout.write(`\n  … esperando ventana (${e.tokens}/${e.tpm} tok · ${rpm})\n`);
+  });
   let ultimo = "";
   // 3 intentos, 28 s como mucho. La version de 8 intentos con backoff hasta 2
   // min tardaba 8,1 MINUTOS por caso y fallaba igual: estaba esperando a que se
@@ -170,9 +279,34 @@ async function generar(system: string, msgs: { role: string; content: string }[]
       if (cuota) throw Object.assign(e as Error, { cuotaAgotada: cuota });
       ultimo = `${st ?? "sin status"}: ${String(e).slice(0, 160)}`;
       if (st !== 429 && (st ?? 0) < 500) throw e;
-      // 429 o 5xx: backoff. No se pasa al siguiente proveedor a proposito — el
-      // paso 18 compara proveedores, asi que cada corrida mide UNO solo.
-      await new Promise((r) => setTimeout(r, 4000 * 2 ** intento));
+      /**
+       * UN 429 DE RAFAGA SE ESPERA LA VENTANA ENTERA, no un backoff corto.
+       * Ver D-089.
+       *
+       * El backoff era 4+8+16 = 28 segundos, y **una ventana de RPM son 60**:
+       * los tres intentos se agotaban justo antes de que se liberara, asi que un
+       * 429 por ritmo era IMPOSIBLE de sobrevivir por construccion. Tres casos
+       * seguidos asi disparaban el disyuntor y la corrida moria — y el
+       * diagnostico fue "cuota diaria agotada" durante dos dias, cuando el panel
+       * del proveedor mostraba 393 de 500 requests diarios LIBRES y el excedido
+       * era el de por minuto (25/15).
+       *
+       * El 28 no era arbitrario: venia de un caso real en que esperar mas era
+       * inutil porque el limite agotado era el DIARIO. La regla se generalizo a
+       * todos los 429 sin notar que solo valia para uno. Los diarios ya se
+       * detectan aparte y se abortan arriba, asi que lo que llega aca es ritmo:
+       * corresponde esperar la ventana.
+       *
+       * Si el proveedor dice cuanto esperar, se le cree; si no, 60 s.
+       */
+      const dicho = /"?retry(?:Delay|-after)"?[":\s]+"?(\d+(?:\.\d+)?)s?"?/i
+        .exec(String(e))?.[1];
+      const espera = st === 429
+        ? Math.max(Number(dicho ?? 0) * 1000, 60_000)
+        : 4000 * 2 ** intento;
+      process.stdout.write(`\n  … 429: esperando ${Math.round(espera / 1000)} s ` +
+                           `(la ventana por minuto no se acorta insistiendo)\n`);
+      await new Promise((r) => setTimeout(r, espera));
     }
   }
   // El motivo del ultimo fallo va en el mensaje: "agotados los reintentos" a
@@ -194,6 +328,8 @@ async function generar(system: string, msgs: { role: string; content: string }[]
  */
 const MAX_FALLOS_SEGUIDOS = 3;
 let fallosSeguidos = 0;
+let cortado = false;
+let ultimoError = "";
 
 const t0 = Date.now();
 let n = 0;
@@ -211,7 +347,7 @@ for (const c of pendientes) {
       // por definicion— y el numero del README compararia dos varas distintas.
       // Con esto, las dos condiciones se juzgan con la MISMA vara y lo unico
       // que cambia es si el generador vio los pasajes o no.
-      const d = decidir(corpus, umbrales, c.q, await embeber(c.q), c.lang, k);
+      const d = decidirCon(motor, c.q, await embeber(c.q), c.lang, k);
       const pasajes = d.tipo === "responde"
         ? d.pasajes.flatMap((p) => p.chunk.richterNos) : [];
       const { system, messages } = construirPromptSinRag(c.q, [], c.lang);
@@ -222,7 +358,7 @@ for (const c of pendientes) {
         tokensSalida: r.tokensSalida, ms: Date.now() - t,
       } satisfies Resultado);
     } else {
-      const d = decidir(corpus, umbrales, c.q, await embeber(c.q), c.lang, k);
+      const d = decidirCon(motor, c.q, await embeber(c.q), c.lang, k);
       if (d.tipo === "curada") {
         salida.escribir({
           ...base, decision: "curada", cosMax: null, tau: null, pasajes: [],
@@ -236,13 +372,56 @@ for (const c of pendientes) {
           tokensEntrada: 0, tokensSalida: 0, ms: Date.now() - t,
         } satisfies Resultado);
       } else {
-        const { system, messages } = construirPrompt(
-          c.q, d.pasajes.map((p) => ({ ...p.chunk })), [], c.lang);
-        const r = await generar(system, messages);
+        const pasajesPrompt = d.pasajes.map((p) => ({ ...p.chunk }));
+        const { system, messages } = construirPrompt(c.q, pasajesPrompt, [], c.lang);
+        /**
+         * Los textos TAL COMO LOS VIO el modelo, para verificar las citas contra
+         * lo mismo que leyo (idioma correcto, mismo recorte). Ver D-082.
+         */
+        const textosVistos = pasajesPrompt.map(
+          (p) => (c.lang === "es" && p.textoEs) ? p.textoEs : p.text);
+        /**
+         * REINTENTO POR CITA FABRICADA. Tras tres rondas de reglas de prompt, la
+         * cita inventada seguia siendo el ultimo modo de fallo. Comprobarla es un
+         * `string match`, asi que en vez de pedirle al modelo que no invente se
+         * comprueba y se le pide de nuevo. Dos reintentos: si insiste, se guarda
+         * igual y el verificador lo marcara — falsear el numero escondiendo el
+         * caso seria peor que reportarlo.
+         */
+        let r = await generar(system, messages);
+        let reintentosCita = 0;
+        for (let i = 0; i < 2; i++) {
+          if (!r.texto || !citasInvalidas(r.texto, textosVistos).length) break;
+          reintentosCita++;
+          r = await generar(system, messages);
+        }
+        /**
+         * Si tras los reintentos la cita sigue sin verificar, se le quitan las
+         * comillas en vez de guardarla como cita. D-083: el problema no es lo
+         * que dice sino que promete literalidad, asi que se elimina la promesa
+         * falsa y se conserva el contenido, que el juez evalua igual.
+         */
+        let comillasQuitadas = 0;
+        let podadas = 0;
+        if (r.texto) {
+          const limpio = quitarComillasInvalidas(r.texto, textosVistos);
+          comillasQuitadas = limpio.quitadas;
+          /**
+           * Y se poda lo que sigue a una declinacion cuando no trae ninguna
+           * cita. Ver D-093. Dos iteraciones pidiendolo por prompt bajaron la
+           * superficie a la mitad pero no la eliminaron —y una la empeoro—;
+           * cortarla la lleva a cero sin pedirle nada al modelo.
+           */
+          const podado = podarTrasDeclinar(limpio.texto);
+          podadas = podado.podadas;
+          r = { ...r, texto: podado.texto };
+        }
         salida.escribir({
           ...base, decision: "responde", cosMax: d.cosMax, tau: d.tau,
           pasajes: d.pasajes.flatMap((p) => p.chunk.richterNos),
+          textosVistos,
           notasRichter: (d.notas as { id: string }[]).map((x) => x.id),
+          reintentosCita, comillasQuitadas, podadas,
           respuesta: r.texto, tokensEntrada: r.tokensEntrada,
           tokensSalida: r.tokensSalida, ms: Date.now() - t,
         } satisfies Resultado);
@@ -273,16 +452,42 @@ for (const c of pendientes) {
       notasRichter: [], respuesta: "", tokensEntrada: 0, tokensSalida: 0,
       ms: Date.now() - t, error: String(e).slice(0, 300),
     } satisfies Resultado);
-    process.stdout.write(`\n  ! ${c.id}: ${String(e).slice(0, 120)}\n`);
+    ultimoError = String(e);
+    process.stdout.write(`\n  ! ${c.id}: ${ultimoError.slice(0, 120)}\n`);
     if (++fallosSeguidos >= MAX_FALLOS_SEGUIDOS) {
       console.log(`\n\n  CORTE: ${fallosSeguidos} casos seguidos agotaron sus reintentos.`);
-      console.log("  La cuota diaria del proveedor esta agotada — reintentar no la devuelve.");
-      console.log(`  Hechos hasta aca: ${hechos.size + n - fallosSeguidos} de ${casos.length}.`);
-      console.log("  Volve a correr el mismo comando cuando resetee: reanuda donde quedo.");
+      // NO se afirma la causa. Este mensaje decia "la cuota diaria esta agotada"
+      // siempre, y la primera vez que corto de verdad fue por un 404 —faltaba el
+      // modelo en el argumento— mientras anunciaba un problema de cuota. Es la
+      // misma forma que D-086: informar sobre algo que no se midio. Se muestra
+      // el error real y que lo interprete quien lee.
+      console.log(`  Ultimo error: ${ultimoError.slice(0, 160)}`);
+      console.log("  Si es 429, la cuota no vuelve reintentando: espera. Si es 4xx de otro");
+      console.log("  tipo, es la invocacion y reintentar no la va a arreglar nunca.");
+      console.log(`  Hechos hasta aca: ${Math.max(0, hechos.size + n + 1 - fallosSeguidos)} de ${casos.length}.`);
+      cortado = true;
       break;
     }
   }
   progreso(++n, pendientes.length, `${c.id}  ${((Date.now() - t0) / 60000).toFixed(1)} min`);
+}
+
+/**
+ * UNA CORRIDA CORTADA NO DICE "listo". Ver D-086.
+ *
+ * Antes el `break` del disyuntor caia igual en el mensaje final, que anunciaba
+ * "listo en X minutos" debajo del CORTE. Leyendo el final de la salida —que es
+ * como se lee— una corrida que hizo 4 de 62 casos era indistinguible de una que
+ * los hizo todos, y se dio por completa tres veces seguidas.
+ *
+ * Es la misma forma que D-084: un componente que informa algo distinto de lo que
+ * realmente hizo. Aca ni siquiera hacia falta un hash, solo no mentir al final.
+ */
+if (cortado) {
+  const faltan = pendientes.length - n;
+  console.log(`\n  CORRIDA INCOMPLETA: quedaron ${faltan} de ${pendientes.length} pendientes.`);
+  console.log("  NO uses esta salida para medir: reanuda con el mismo comando primero.");
+  process.exit(2);
 }
 
 console.log(`\n  listo en ${((Date.now() - t0) / 60000).toFixed(1)} minutos.`);

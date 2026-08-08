@@ -1,0 +1,252 @@
+{
+  "regla": {
+    "clave1": {
+      "seccion": "Miscellaneous Notes",
+      "titulos": [
+        "List of drawings",
+        "Notes bearing Dates (1369—1378)"
+      ]
+    },
+    "clave2": {
+      "metrica": "longitud media de segmento",
+      "umbral": 5
+    }
+  },
+  "resumen": {
+    "chunksLeonardo": 1431,
+    "candidatos": 102,
+    "excluidos": 38,
+    "palabrasFuera": 1479,
+    "palabrasTotal": 169188
+  },
+  "chunks": {
+    "rt-0680": {
+      "utility": "inventory",
+      "segMedia": 4.51,
+      "titulo": "List of drawings",
+      "muestra": "A head, full face, of a young man with fine flowing hair, Many flowers drawn from nature, A head, full face, with curly "
+    },
+    "rt-1378": {
+      "utility": "inventory",
+      "segMedia": 3.75,
+      "titulo": "Notes bearing Dates (1369—1378)",
+      "muestra": "On the 24th of June, St John's day, 1518 at Amboise, in the palace of…"
+    },
+    "rt-1381": {
+      "utility": "inventory",
+      "segMedia": 2.73,
+      "titulo": "Memoranda before 1500 (1379-l413)",
+      "muestra": "NAMES OF ENGINEERS. Callias of Rhodes, Epimachus the Athenian, Diogenes, a philosopher, of Rhodes, Calcedonius of Thrace"
+    },
+    "rt-1388": {
+      "utility": "inventory",
+      "segMedia": 3.55,
+      "titulo": "Memoranda before 1500 (1379-l413)",
+      "muestra": "Work of … of the stable of Galeazzo; by the road of Brera ; benefice of Stanghe ; benefice of Porta Nuova; benefice of M"
+    },
+    "rt-1403": {
+      "utility": "inventory",
+      "segMedia": 4.91,
+      "titulo": "Memoranda before 1500 (1379-l413)",
+      "muestra": "My dear Alessandro from Parma, by the hand of … S.K.M.II.2 78b Giovannina, has a fantastic face,—is at Santa Caterina, a"
+    },
+    "rt-1408": {
+      "utility": "inventory",
+      "segMedia": 4.36,
+      "titulo": "Memoranda before 1500 (1379-l413)",
+      "muestra": "Antonio de' Risi is at the council of Justice. I.1 28a Paolo said that no machine that moves another … W.P.7. MEMORANDUM"
+    },
+    "rt-1415": {
+      "utility": "inventory",
+      "segMedia": 3.29,
+      "titulo": "Memoranda after 1500 (1414—1434)",
+      "muestra": "Ambrosio Petri, St. Mark, 4 boards for the window, 2 …, 3 the saints of chapels, 5 the Genoese at home. L. Ib"
+    },
+    "rt-1416": {
+      "utility": "inventory",
+      "segMedia": 3.88,
+      "titulo": "Memoranda after 1500 (1414—1434)",
+      "muestra": "Piece of tapestry,-pair of compasses,— Tommaso's book,—the book of Giovanni Benci,—the box in the custom-house,—to cut t"
+    },
+    "rt-1419": {
+      "utility": "inventory",
+      "segMedia": 3.31,
+      "titulo": "Memoranda after 1500 (1414—1434)",
+      "muestra": "Marcello lives in the house of Giacomo da Mengardino. Br. M. 202b Where is Valentino? —boots,—boxes in the custom-house "
+    },
+    "rt-1430": {
+      "utility": "inventory",
+      "segMedia": 4,
+      "titulo": "Memoranda after 1500 (1414—1434)",
+      "muestra": "Alberto da Imola;—Algebra, that is, the demonstration of the equality of one thing to another."
+    },
+    "rt-1434": {
+      "utility": "inventory",
+      "segMedia": 2.62,
+      "titulo": "Memoranda after 1500 (1414—1434)",
+      "muestra": "Have Avicenna's work on useful inventions translated; spectacles with the case, steel and fork and…., charcoal, boards, "
+    },
+    "rt-1435": {
+      "utility": "inventory",
+      "segMedia": 4.5,
+      "titulo": "Undated memoranda (1435-1457)",
+      "muestra": "The book of Piero Crescenze,—studies from the nude by Giovanni Ambrosio,—compasses, —the book of Giovanni Giacomo."
+    },
+    "rt-1438": {
+      "utility": "inventory",
+      "segMedia": 1.85,
+      "titulo": "Undated memoranda (1435-1457)",
+      "muestra": "[Lactantius], [the book of Benozzo], groups, to bind the book,—a lantern,—Ser Pecantino,—Pandolfino.—[Rosso]—a square, —"
+    },
+    "rt-1441": {
+      "utility": "inventory",
+      "segMedia": 4.43,
+      "titulo": "Tinned iron,—pierced iron",
+      "muestra": "See the shop that was formerly Bartolommeo's, the stationer. The first book is by Michele di Francesco Nabini; it treats"
+    },
+    "rt-1444": {
+      "utility": "inventory",
+      "segMedia": 3.26,
+      "titulo": "Tinned iron,—pierced iron",
+      "muestra": "Pandolfino's book ,—knives,—a pen for ruling,—to have the vest dyed,—The library at St.-Mark's,—The library at Santo Spi"
+    },
+    "rt-1446": {
+      "utility": "inventory",
+      "segMedia": 4,
+      "titulo": "Tinned iron,—pierced iron",
+      "muestra": "Salvadore, the matress maker, lives on the Piazza di Sant' Andrea, you enter by the furrier's."
+    },
+    "rt-1454": {
+      "utility": "inventory",
+      "segMedia": 3.15,
+      "titulo": "Tinned iron,—pierced iron",
+      "muestra": "A box, a cage,— A square, to make the bird ,— Pandolfino's book, mortar [?],— Small knives, Venieri for the *1454. *Pen "
+    },
+    "rt-1465": {
+      "utility": "inventory",
+      "segMedia": 4,
+      "titulo": "On the 6th day of October",
+      "muestra": "I left Milan for Rome on the 24th day of September, 1513, with Giovanni [*2], Francesco di Melzi [*3], Salai, Lorenzo an"
+    },
+    "rt-1469": {
+      "utility": "inventory",
+      "segMedia": 2.76,
+      "titulo": "Quotations and notes on books and authors (1469—1508)",
+      "muestra": "Book on Arithmetic 'Flowers of Virtue', Pliny, 'Lives of the Philosophers', The Bible, 'Lapidary', 'On warfare' 'Epistle"
+    },
+    "rt-1477": {
+      "utility": "inventory",
+      "segMedia": 4.43,
+      "titulo": "Quotations and notes on books and authors (1469—1508)",
+      "muestra": "Aristotle, Book 3 of the Physics, and Albertus Magnus, and Thomas Aquinas and the others on the rebound of bodies, in th"
+    },
+    "rt-1488": {
+      "utility": "inventory",
+      "segMedia": 3.2,
+      "titulo": "Quotations and notes on books and authors (1469—1508)",
+      "muestra": "Maestro Stefano Caponi, a physician, lives at the piscina, and has Euclid De Ponderibus. K.2 2a"
+    },
+    "rt-1499": {
+      "utility": "inventory",
+      "segMedia": 4.5,
+      "titulo": "Quotations and notes on books and authors (1469—1508)",
+      "muestra": "Theophrastus on the ebb and flow of the tide, and of eddies, and on water. Ash. II. IIb"
+    },
+    "rt-1500": {
+      "utility": "inventory",
+      "segMedia": 4,
+      "titulo": "Quotations and notes on books and authors (1469—1508)",
+      "muestra": "Tryphon of Alexandria, who spent his life at Apollonia, a city of Albania (163). K.3 29b"
+    },
+    "rt-1501": {
+      "utility": "inventory",
+      "segMedia": 4.25,
+      "titulo": "Quotations and notes on books and authors (1469—1508)",
+      "muestra": "Messer Vincenzio Aliprando, who lives near the Inn of the Bear, has Giacomo Andrea's Vitruvius. L. 53b"
+    },
+    "rt-1512": {
+      "utility": "inventory",
+      "segMedia": 4.89,
+      "titulo": "Inventories and accounts (1509-1545)",
+      "muestra": "The hall towards the court is 126 paces long and 27 braccia wide. 1513 The narrow cornice above the hall lire 30. The co"
+    },
+    "rt-1526": {
+      "utility": "inventory",
+      "segMedia": 4.83,
+      "titulo": "Inventories and accounts (1509-1545)",
+      "muestra": "On the morning of San Peter's day, June 29th, 1504, I took io ducats, of which I gave one to Tommaso my servant to spend"
+    },
+    "rt-1532": {
+      "utility": "inventory",
+      "segMedia": 4.71,
+      "titulo": "Inventories and accounts (1509-1545)",
+      "muestra": "To Salai 4 grossoni, and for one braccio of velvet, 5 lire, and 1/2; viz. 10 soldi for loops of silver; Salai 14 soldi f"
+    },
+    "fn-R81-0": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "The view here refuted by Leonardo was maintained among others by Bramantino, Leonardo's Milanese contemporary. LOMAZZO w"
+    },
+    "fn-R866-0": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "Count GIULIO PORRO, in his valuable contribution to the Archivio Storico Lombardo, Anno VIII, Fasc. IV (31 Dec. 1881): L"
+    },
+    "fn-R1083-0": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "This passage would certainly seem to establish Leonardo's claim to be regarded as the original discoverer of the cause o"
+    },
+    "fn-R1295-7-1": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "le payement des bastiments, ediffices et reparacions que le dit seigneur fait faire en son chastu de Blois, confesse avo"
+    },
+    "fn-R1295-7-2": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "de la mettre nonseulement a ses armes et a ses chiffres mais de la faire representer en divers manieres dans tous les ou"
+    },
+    "fn-R1566-50": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "This letter addressed to the Cardinal Ippolito d'Este is here given from Marchese G. CAMPORI'S publication: Nuovi docume"
+    },
+    "fn-R1566-52": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "1349. Charles d'Amboise, Marechal de Chaumont, was Governor of Milan under Louis XII. Leonardo was in personal communica"
+    },
+    "fn-R1566-53": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "It is clear from the contents of this notes that they refer to Leonardo's residence in Rome in 1513-1515. Nor can there "
+    },
+    "fn-R1566-158": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "\"La Bibia volgare historiata (per Nicolo di Mallermi) Venecia … M.CCCC.LXXI in kalende di Augusto (per Vindelino de Spir"
+    },
+    "fn-R1566-199": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "(Witelo, Vitellion, Vitellon) Vitellione. *E da vedersi su questo ottico prospettico del secolo XIII Luca Pacioli, Paolo"
+    },
+    "intro-R1113-3": {
+      "utility": "no_traducible",
+      "segMedia": 0,
+      "titulo": null,
+      "muestra": "I have been unable to find in the manuscripts any passage whatever which throws any light on Leonardo's great reputation"
+    }
+  }
+}

@@ -33,11 +33,35 @@ export interface Resultado {
   cosMax: number | null;
   tau: number | null;
   pasajes: number[];
+  /**
+   * LOS TEXTOS QUE EL MODELO EFECTIVAMENTE VIO, en el idioma en que los vio.
+   * Ver D-084.
+   *
+   * `pasajes` guarda numeros de Richter, y eso NO ALCANZA para reconstruir la
+   * evidencia: por los chunks partidos de D-055 hay 32 numeros que viven en mas
+   * de un chunk (R-1295 en ocho), y R-300 —que esta en tres— es el
+   * `expected_passages` de A-01, el primer caso del dataset. Quien resolviera
+   * numero->chunk despues elegia uno de varios, y podia terminar juzgando una
+   * cita contra la mitad del pasaje que el modelo nunca leyo: `N` falsos sin
+   * ningun error visible.
+   *
+   * La leccion, que es la misma de toda la fase: **la procedencia se registra
+   * por valor, nunca por una referencia que otro codigo resuelve despues.** Se
+   * guardan los textos y no los ids justamente porque un id sigue siendo una
+   * referencia: si el corpus se regenera, apunta a otra cosa sin avisar.
+   */
+  textosVistos?: string[];
   notasRichter: string[];
   respuesta: string;
   tokensEntrada: number;
   tokensSalida: number;
   ms: number;
+  /** Cuantas veces hubo que regenerar por cita fabricada (D-082). */
+  reintentosCita?: number;
+  /** Citas que quedaron sin verificar y se degradaron a texto plano (D-083). */
+  comillasQuitadas?: number;
+  /** Palabras podadas tras una declinacion sin cita (D-093). */
+  podadas?: number;
   error?: string;
 }
 

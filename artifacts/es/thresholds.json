@@ -1,0 +1,31 @@
+{
+  "provisional": false,
+  "indice": "artifacts/es — índice construido sobre chunks_es.json (D-105). NO CONECTADO todavía.",
+  "fuente": "npm run evals:calibrar -- --artifacts artifacts/es. Ver D-106.",
+  "criterio": "D-108: elegido contra DOS muestras independientes. Eval set (n=28): pierde 0. Prueba de alcance (n=375 temas, sin etiqueta humana): 351 alcanzables (94%), 6 abstenciones. Fuga de C+D 8/17 contra 17/17 del índice inglés. 0,8476 quedó dominado: misma pérdida, 4 temas menos y 6 abstenciones más.",
+  "advertencia": "ESTE τ_es es SÓLO para el índice castellano. Cruzarlo con el índice inglés abre el gate por completo: las distribuciones están desplazadas ~0,06 entre sí (D-105). Es la trampa de D-056.",
+  "tau": {
+    "es": 0.841,
+    "en": 0.8262516856193541
+  },
+  "puntosDeOperacion": {
+    "es": {
+      "0%": 0.841,
+      "5%": 0.8512,
+      "20%": 0.8576
+    },
+    "en": {
+      "0%": 0.8262516856193541,
+      "2%": 0.8279819536209105,
+      "5%": 0.8364083796739578
+    }
+  },
+  "medido": {
+    "conTau": 0.841,
+    "pierdeDe28": 0,
+    "fugaDe17": 8,
+    "temasAlcanzables": 351,
+    "temasAbstenidos": 6
+  },
+  "sobreOverfit": "Fijar τ en el mínimo muestral del eval set era el reparo de D-106. La prueba de alcance ES la validación fuera de muestra que lo despeja: con 0,8410 sólo 6 de 375 temas caen bajo el umbral."
+}

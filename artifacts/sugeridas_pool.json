@@ -1,0 +1,1397 @@
+{
+  "regla": "Plantilla «¿Qué dejaste escrito sobre X?» con X = título de Richter, validada con la regla de D-102: pasa el gate en es y en, y el top-3 trae los pasajes del propio tema. Ver D-109.",
+  "generado": "2026-08-08",
+  "resumen": {
+    "pool": 242,
+    "aceptadas": 231,
+    "descartadas": 11
+  },
+  "preguntas": [
+    {
+      "titulo": "Tricks (1333-1335)",
+      "es": "¿Qué dejaste escrito sobre Trucos?",
+      "en": "What did you set down about Tricks?",
+      "margen": 0.0155
+    },
+    {
+      "titulo": "The Nile (1093-1098)",
+      "es": "¿Qué dejaste escrito sobre el Nilo?",
+      "en": "What did you set down about the Nile?",
+      "margen": 0.0251
+    },
+    {
+      "titulo": "Nonentity",
+      "es": "¿Qué dejaste escrito sobre la nada?",
+      "en": "What did you set down about Nonentity?",
+      "margen": 0.009
+    },
+    {
+      "titulo": "The Alps (1057-1062)",
+      "es": "¿Qué dejaste escrito sobre los Alpes?",
+      "en": "What did you set down about the Alps?",
+      "margen": 0.0288
+    },
+    {
+      "titulo": "Aphorisms",
+      "es": "¿Qué dejaste escrito sobre Aforismos?",
+      "en": "What did you set down about Aphorisms?",
+      "margen": 0.0278
+    },
+    {
+      "titulo": "Psychology (1140-1147)",
+      "es": "¿Qué dejaste escrito sobre Psicología?",
+      "en": "What did you set down about Psychology?",
+      "margen": 0.0181
+    },
+    {
+      "titulo": "The Danube",
+      "es": "¿Qué dejaste escrito sobre el Danubio?",
+      "en": "What did you set down about the Danube?",
+      "margen": 0.0117
+    },
+    {
+      "titulo": "The Appenins (1063-1068)",
+      "es": "¿Qué dejaste escrito sobre los Apeninos?",
+      "en": "What did you set down about the Appenins?",
+      "margen": 0.03
+    },
+    {
+      "titulo": "Of Music (1129. 1130)",
+      "es": "¿Qué dejaste escrito sobre De la música?",
+      "en": "What did you set down about Music?",
+      "margen": 0.011
+    },
+    {
+      "titulo": "The Caspian Sea (1105. 1106)",
+      "es": "¿Qué dejaste escrito sobre el mar Caspio?",
+      "en": "What did you set down about the Caspian Sea?",
+      "margen": 0.0319
+    },
+    {
+      "titulo": "Rules of Life (1188-1202)",
+      "es": "¿Qué dejaste escrito sobre Reglas de Vida?",
+      "en": "What did you set down about Rules of Life?",
+      "margen": 0.0295
+    },
+    {
+      "titulo": "Mottoes and Emblems",
+      "es": "¿Qué dejaste escrito sobre Lemas y Emblemas?",
+      "en": "What did you set down about Mottoes and Emblems?",
+      "margen": 0.0202
+    },
+    {
+      "titulo": "Of Greek fire",
+      "es": "¿Qué dejaste escrito sobre Del fuego griego?",
+      "en": "What did you set down about Greek fire?",
+      "margen": 0.0146
+    },
+    {
+      "titulo": "The function of the eye",
+      "es": "¿Qué dejaste escrito sobre la función del ojo?",
+      "en": "What did you set down about the function of the eye?",
+      "margen": 0.0531
+    },
+    {
+      "titulo": "Of painting battle-pieces",
+      "es": "¿Qué dejaste escrito sobre De pintar batallas?",
+      "en": "What did you set down about painting battle-pieces?",
+      "margen": 0.028
+    },
+    {
+      "titulo": "On riches (1183—1187)",
+      "es": "¿Qué dejaste escrito sobre Sobre las riquezas?",
+      "en": "What did you set down about riches?",
+      "margen": 0.0264
+    },
+    {
+      "titulo": "How to pose figures",
+      "es": "¿Qué dejaste escrito sobre Cómo posar figuras?",
+      "en": "What did you set down about How to pose figures?",
+      "margen": 0.0217
+    },
+    {
+      "titulo": "The theory of Plato",
+      "es": "¿Qué dejaste escrito sobre la teoría de Platón?",
+      "en": "What did you set down about the theory of Plato?",
+      "margen": 0.0299
+    },
+    {
+      "titulo": "On draperies",
+      "es": "¿Qué dejaste escrito sobre Sobre los drapeados?",
+      "en": "What did you set down about draperies?",
+      "margen": 0.0135
+    },
+    {
+      "titulo": "On spirits (1211—1213)",
+      "es": "¿Qué dejaste escrito sobre Sobre los espíritus?",
+      "en": "What did you set down about spirits?",
+      "margen": 0.0072
+    },
+    {
+      "titulo": "On the 6th day of October",
+      "es": "¿Qué dejaste escrito sobre el día 6 de octubre?",
+      "en": "What did you set down about the 6th day of October?",
+      "margen": 0.007
+    },
+    {
+      "titulo": "Variability of the eye",
+      "es": "¿Qué dejaste escrito sobre Variabilidad del ojo?",
+      "en": "What did you set down about Variability of the eye?",
+      "margen": 0.0268
+    },
+    {
+      "titulo": "Of chalk and paper",
+      "es": "¿Qué dejaste escrito sobre Del yeso y del papel?",
+      "en": "What did you set down about chalk and paper?",
+      "margen": 0.0215
+    },
+    {
+      "titulo": "Fables on plants (1275-1279)",
+      "es": "¿Qué dejaste escrito sobre Fábulas sobre plantas?",
+      "en": "What did you set down about Fables on plants?",
+      "margen": 0.0543
+    },
+    {
+      "titulo": "Inventories and accounts (1509-1545)",
+      "es": "¿Qué dejaste escrito sobre Inventarios y cuentas?",
+      "en": "What did you set down about Inventories and accounts?",
+      "margen": 0.0367
+    },
+    {
+      "titulo": "The globe an organism",
+      "es": "¿Qué dejaste escrito sobre el globo un organismo?",
+      "en": "What did you set down about the globe an organism?",
+      "margen": 0.0282
+    },
+    {
+      "titulo": "On naval warfare (1115. 1116)",
+      "es": "¿Qué dejaste escrito sobre Sobre la guerra naval?",
+      "en": "What did you set down about naval warfare?",
+      "margen": 0.0106
+    },
+    {
+      "titulo": "Fables on animals (1265-1270)",
+      "es": "¿Qué dejaste escrito sobre Fábulas sobre animales?",
+      "en": "What did you set down about Fables on animals?",
+      "margen": 0.0477
+    },
+    {
+      "titulo": "Physiological problems (814. 815)",
+      "es": "¿Qué dejaste escrito sobre Problemas fisiológicos?",
+      "en": "What did you set down about Physiological problems?",
+      "margen": 0.0444
+    },
+    {
+      "titulo": "How to acquire practice",
+      "es": "¿Qué dejaste escrito sobre Cómo adquirir práctica?",
+      "en": "What did you set down about How to acquire practice?",
+      "margen": 0.033
+    },
+    {
+      "titulo": "Proportions of the arm",
+      "es": "¿Qué dejaste escrito sobre Proporciones del brazo?",
+      "en": "What did you set down about Proportions of the arm?",
+      "margen": 0.0255
+    },
+    {
+      "titulo": "Doubts about the deluge",
+      "es": "¿Qué dejaste escrito sobre Dudas sobre el diluvio?",
+      "en": "What did you set down about Doubts about the deluge?",
+      "margen": 0.0247
+    },
+    {
+      "titulo": "Of the light on the face",
+      "es": "¿Qué dejaste escrito sobre De la luz en el rostro?",
+      "en": "What did you set down about the light on the face?",
+      "margen": 0.0081
+    },
+    {
+      "titulo": "Proof by experiment",
+      "es": "¿Qué dejaste escrito sobre Prueba por experimento?",
+      "en": "What did you set down about Proof by experiment?",
+      "margen": 0.0078
+    },
+    {
+      "titulo": "Memoranda before 1500 (1379-l413)",
+      "es": "¿Qué dejaste escrito sobre Memoranda antes de 1500?",
+      "en": "What did you set down about Memoranda before 1500?",
+      "margen": 0.0538
+    },
+    {
+      "titulo": "Schemes for prophecies (1324-1329)",
+      "es": "¿Qué dejaste escrito sobre Esquemas para profecías?",
+      "en": "What did you set down about Schemes for prophecies?",
+      "margen": 0.0402
+    },
+    {
+      "titulo": "The movement of the torso",
+      "es": "¿Qué dejaste escrito sobre el movimiento del torso?",
+      "en": "What did you set down about the movement of the torso?",
+      "margen": 0.0255
+    },
+    {
+      "titulo": "The movement of the arm",
+      "es": "¿Qué dejaste escrito sobre el movimiento del brazo?",
+      "en": "What did you set down about the movement of the arm?",
+      "margen": 0.0227
+    },
+    {
+      "titulo": "Canals in the Milanese (1009-1013)",
+      "es": "¿Qué dejaste escrito sobre Canales en el Milanesado?",
+      "en": "What did you set down about Canals in the Milanese?",
+      "margen": 0.0454
+    },
+    {
+      "titulo": "Of appropriate gestures",
+      "es": "¿Qué dejaste escrito sobre De los gestos apropiados?",
+      "en": "What did you set down about appropriate gestures?",
+      "margen": 0.0424
+    },
+    {
+      "titulo": "The straits of Gibraltar (1083-1085)",
+      "es": "¿Qué dejaste escrito sobre el estrecho de Gibraltar?",
+      "en": "What did you set down about the straits of Gibraltar?",
+      "margen": 0.0396
+    },
+    {
+      "titulo": "Different sorts of light",
+      "es": "¿Qué dejaste escrito sobre Diferentes clases de luz?",
+      "en": "What did you set down about Different sorts of light?",
+      "margen": 0.0272
+    },
+    {
+      "titulo": "On Flying machines (1122-1126)",
+      "es": "¿Qué dejaste escrito sobre Sobre máquinas voladoras?",
+      "en": "What did you set down about Flying machines?",
+      "margen": 0.027
+    },
+    {
+      "titulo": "On the origin of the soul",
+      "es": "¿Qué dejaste escrito sobre Sobre el origen del alma?",
+      "en": "What did you set down about the origin of the soul?",
+      "margen": 0.0141
+    },
+    {
+      "titulo": "Memoranda after 1500 (1414—1434)",
+      "es": "¿Qué dejaste escrito sobre Memoranda después de 1500?",
+      "en": "What did you set down about Memoranda after 1500?",
+      "margen": 0.0459
+    },
+    {
+      "titulo": "Light and shade on clouds",
+      "es": "¿Qué dejaste escrito sobre Luz y sombra en las nubes?",
+      "en": "What did you set down about Light and shade on clouds?",
+      "margen": 0.0446
+    },
+    {
+      "titulo": "The insertion of the leaves",
+      "es": "¿Qué dejaste escrito sobre la inserción de las hojas?",
+      "en": "What did you set down about the insertion of the leaves?",
+      "margen": 0.0379
+    },
+    {
+      "titulo": "Decorations for feasts",
+      "es": "¿Qué dejaste escrito sobre Decoraciones para fiestas?",
+      "en": "What did you set down about Decorations for feasts?",
+      "margen": 0.0357
+    },
+    {
+      "titulo": "Proportions of the leg",
+      "es": "¿Qué dejaste escrito sobre Proporciones de la pierna?",
+      "en": "What did you set down about Proportions of the leg?",
+      "margen": 0.0289
+    },
+    {
+      "titulo": "The seat of the common sense",
+      "es": "¿Qué dejaste escrito sobre la sede del sentido común?",
+      "en": "What did you set down about the seat of the common sense?",
+      "margen": 0.0218
+    },
+    {
+      "titulo": "The forms of trees",
+      "es": "¿Qué dejaste escrito sobre las formas de los árboles?",
+      "en": "What did you set down about the forms of trees?",
+      "margen": 0.0151
+    },
+    {
+      "titulo": "The selection of forms",
+      "es": "¿Qué dejaste escrito sobre la selección de las formas?",
+      "en": "What did you set down about the selection of forms?",
+      "margen": 0.0479
+    },
+    {
+      "titulo": "Notes on the Last Supper",
+      "es": "¿Qué dejaste escrito sobre Notas sobre la Última Cena?",
+      "en": "What did you set down about Notes on the Last Supper?",
+      "margen": 0.0372
+    },
+    {
+      "titulo": "Useful games and exercises",
+      "es": "¿Qué dejaste escrito sobre Juegos y ejercicios útiles?",
+      "en": "What did you set down about Useful games and exercises?",
+      "margen": 0.0318
+    },
+    {
+      "titulo": "Experiments with the mirror",
+      "es": "¿Qué dejaste escrito sobre Experimentos con el espejo?",
+      "en": "What did you set down about Experiments with the mirror?",
+      "margen": 0.0311
+    },
+    {
+      "titulo": "How to acquire universality",
+      "es": "¿Qué dejaste escrito sobre Cómo adquirir universalidad?",
+      "en": "What did you set down about How to acquire universality?",
+      "margen": 0.0485
+    },
+    {
+      "titulo": "Of time and its divisions (916-918)",
+      "es": "¿Qué dejaste escrito sobre Del tiempo y sus divisiones?",
+      "en": "What did you set down about time and its divisions?",
+      "margen": 0.0426
+    },
+    {
+      "titulo": "Schemes for fables, etc. (1314-1323)",
+      "es": "¿Qué dejaste escrito sobre Esquemas para fábulas, etc.?",
+      "en": "What did you set down about Schemes for fables, etc.?",
+      "margen": 0.0295
+    },
+    {
+      "titulo": "Allegorical representations",
+      "es": "¿Qué dejaste escrito sobre Representaciones alegóricas?",
+      "en": "What did you set down about Allegorical representations?",
+      "margen": 0.017
+    },
+    {
+      "titulo": "Further researches (989-991)",
+      "es": "¿Qué dejaste escrito sobre Investigaciones adicionales?",
+      "en": "What did you set down about Further researches?",
+      "margen": 0.0076
+    },
+    {
+      "titulo": "Some notes on medicine (851-855)",
+      "es": "¿Qué dejaste escrito sobre Algunas notas sobre medicina?",
+      "en": "What did you set down about Some notes on medicine?",
+      "margen": 0.0481
+    },
+    {
+      "titulo": "The formation of mountains (979-983)",
+      "es": "¿Qué dejaste escrito sobre la formación de las montañas?",
+      "en": "What did you set down about the formation of mountains?",
+      "margen": 0.0478
+    },
+    {
+      "titulo": "On the spots in the moon (903-907)",
+      "es": "¿Qué dejaste escrito sobre Sobre las manchas en la luna?",
+      "en": "What did you set down about the spots in the moon?",
+      "margen": 0.0429
+    },
+    {
+      "titulo": "The intersection of the rays",
+      "es": "¿Qué dejaste escrito sobre la intersección de los rayos?",
+      "en": "What did you set down about the intersection of the rays?",
+      "margen": 0.0396
+    },
+    {
+      "titulo": "The plan of the book on painting",
+      "es": "¿Qué dejaste escrito sobre el plan del libro de pintura?",
+      "en": "What did you set down about the plan of the book on painting?",
+      "margen": 0.0332
+    },
+    {
+      "titulo": "On the motion of air (996—999)",
+      "es": "¿Qué dejaste escrito sobre Sobre el movimiento del aire?",
+      "en": "What did you set down about the motion of air?",
+      "margen": 0.0332
+    },
+    {
+      "titulo": "Definition of perspective",
+      "es": "¿Qué dejaste escrito sobre Definición de la perspectiva?",
+      "en": "What did you set down about Definition of perspective?",
+      "margen": 0.0232
+    },
+    {
+      "titulo": "On natural perspective",
+      "es": "¿Qué dejaste escrito sobre Sobre la perspectiva natural?",
+      "en": "What did you set down about natural perspective?",
+      "margen": 0.0176
+    },
+    {
+      "titulo": "Of representing the emotions",
+      "es": "¿Qué dejaste escrito sobre De representar las emociones?",
+      "en": "What did you set down about representing the emotions?",
+      "margen": 0.0101
+    },
+    {
+      "titulo": "On the management of works",
+      "es": "¿Qué dejaste escrito sobre Sobre el manejo de las obras?",
+      "en": "What did you set down about the management of works?",
+      "margen": 0.0096
+    },
+    {
+      "titulo": "A. General Observations._",
+      "es": "¿Qué dejaste escrito sobre A. Observaciones Generales._?",
+      "en": "What did you set down about A. General Observations._?",
+      "margen": 0.0085
+    },
+    {
+      "titulo": "On the battle of Anghiari",
+      "es": "¿Qué dejaste escrito sobre Sobre la batalla de Anghiari?",
+      "en": "What did you set down about the battle of Anghiari?",
+      "margen": 0.0077
+    },
+    {
+      "titulo": "The direction of growth",
+      "es": "¿Qué dejaste escrito sobre la dirección del crecimiento?",
+      "en": "What did you set down about the direction of growth?",
+      "margen": 0.0064
+    },
+    {
+      "titulo": "The effects of morning light",
+      "es": "¿Qué dejaste escrito sobre los efectos de la luz matinal?",
+      "en": "What did you set down about the effects of morning light?",
+      "margen": 0.0413
+    },
+    {
+      "titulo": "The preparation of oils",
+      "es": "¿Qué dejaste escrito sobre la preparación de los aceites?",
+      "en": "What did you set down about the preparation of oils?",
+      "margen": 0.0386
+    },
+    {
+      "titulo": "That the contrary is impossible",
+      "es": "¿Qué dejaste escrito sobre Que lo contrario es imposible?",
+      "en": "What did you set down about That the contrary is impossible?",
+      "margen": 0.0121
+    },
+    {
+      "titulo": "On chemical materials",
+      "es": "¿Qué dejaste escrito sobre Sobre los materiales químicos?",
+      "en": "What did you set down about chemical materials?",
+      "margen": 0.0081
+    },
+    {
+      "titulo": "The ebb and flow of the tide (955-960)",
+      "es": "¿Qué dejaste escrito sobre el flujo y reflujo de la marea?",
+      "en": "What did you set down about the ebb and flow of the tide?",
+      "margen": 0.0533
+    },
+    {
+      "titulo": "The disorder in the MSS",
+      "es": "¿Qué dejaste escrito sobre el desorden en los manuscritos?",
+      "en": "What did you set down about the disorder in the MSS?",
+      "margen": 0.048
+    },
+    {
+      "titulo": "On the colours of the rainbow",
+      "es": "¿Qué dejaste escrito sobre Sobre los colores del arcoíris?",
+      "en": "What did you set down about the colours of the rainbow?",
+      "margen": 0.0385
+    },
+    {
+      "titulo": "On the best light for painting",
+      "es": "¿Qué dejaste escrito sobre Sobre la mejor luz para pintar?",
+      "en": "What did you set down about the best light for painting?",
+      "margen": 0.0377
+    },
+    {
+      "titulo": "On the colour of the atmosphere",
+      "es": "¿Qué dejaste escrito sobre Sobre el color de la atmósfera?",
+      "en": "What did you set down about the colour of the atmosphere?",
+      "margen": 0.0351
+    },
+    {
+      "titulo": "Fables on lifeless objects (1271—1274)",
+      "es": "¿Qué dejaste escrito sobre Fábulas sobre objetos sin vida?",
+      "en": "What did you set down about Fables on lifeless objects?",
+      "margen": 0.0344
+    },
+    {
+      "titulo": "Of representing the deluge",
+      "es": "¿Qué dejaste escrito sobre De cómo representar el diluvio?",
+      "en": "What did you set down about representing the deluge?",
+      "margen": 0.0325
+    },
+    {
+      "titulo": "On the lighting of the background",
+      "es": "¿Qué dejaste escrito sobre Sobre la iluminación del fondo?",
+      "en": "What did you set down about the lighting of the background?",
+      "margen": 0.0222
+    },
+    {
+      "titulo": "Of preparing the panel",
+      "es": "¿Qué dejaste escrito sobre Sobre la preparación del panel?",
+      "en": "What did you set down about preparing the panel?",
+      "margen": 0.0047
+    },
+    {
+      "titulo": "On the luminousity of the moon (892-901)",
+      "es": "¿Qué dejaste escrito sobre Sobre la luminosidad de la luna?",
+      "en": "What did you set down about the luminousity of the moon?",
+      "margen": 0.04
+    },
+    {
+      "titulo": "Canals in connection with the Arno (1001-1008)",
+      "es": "¿Qué dejaste escrito sobre Canales en relación con el Arno?",
+      "en": "What did you set down about Canals in connection with the Arno?",
+      "margen": 0.0345
+    },
+    {
+      "titulo": "Reflections on Nature (1217-1219)",
+      "es": "¿Qué dejaste escrito sobre Reflexiones sobre la Naturaleza?",
+      "en": "What did you set down about Reflections on Nature?",
+      "margen": 0.0342
+    },
+    {
+      "titulo": "On the history of painting",
+      "es": "¿Qué dejaste escrito sobre Sobre la historia de la pintura?",
+      "en": "What did you set down about the history of painting?",
+      "margen": 0.0275
+    },
+    {
+      "titulo": "Science, its principles and rules (1148—1161)",
+      "es": "¿Qué dejaste escrito sobre Ciencia, sus principios y reglas?",
+      "en": "What did you set down about Science, its principles and rules?",
+      "margen": 0.0607
+    },
+    {
+      "titulo": "How to measure the pyramid of vision",
+      "es": "¿Qué dejaste escrito sobre Cómo medir la pirámide de visión?",
+      "en": "What did you set down about How to measure the pyramid of vision?",
+      "margen": 0.0434
+    },
+    {
+      "titulo": "The difference between light and lustre",
+      "es": "¿Qué dejaste escrito sobre la diferencia entre luz y lustre?",
+      "en": "What did you set down about the difference between light and lustre?",
+      "margen": 0.0405
+    },
+    {
+      "titulo": "OF Of sketching figures and portraits",
+      "es": "¿Qué dejaste escrito sobre DE De dibujar figuras y retratos?",
+      "en": "What did you set down about Of sketching figures and portraits?",
+      "margen": 0.0371
+    },
+    {
+      "titulo": "The use of swimming belts",
+      "es": "¿Qué dejaste escrito sobre el uso de cinturones de natación?",
+      "en": "What did you set down about the use of swimming belts?",
+      "margen": 0.0343
+    },
+    {
+      "titulo": "Of the transparency of leaves",
+      "es": "¿Qué dejaste escrito sobre De la transparencia de las hojas?",
+      "en": "What did you set down about the transparency of leaves?",
+      "margen": 0.0329
+    },
+    {
+      "titulo": "On the human body in action",
+      "es": "¿Qué dejaste escrito sobre Sobre el cuerpo humano en acción?",
+      "en": "What did you set down about the human body in action?",
+      "margen": 0.0319
+    },
+    {
+      "titulo": "Customs of Asiatic Nations (1099. 1100)",
+      "es": "¿Qué dejaste escrito sobre Costumbres de Naciones Asiáticas?",
+      "en": "What did you set down about Customs of Asiatic Nations?",
+      "margen": 0.0067
+    },
+    {
+      "titulo": "Of depicting a tempest",
+      "es": "¿Qué dejaste escrito sobre De cómo representar una tempestad?",
+      "en": "What did you set down about depicting a tempest?",
+      "margen": 0.0635
+    },
+    {
+      "titulo": "The origin of the sand in rivers (977. 978)",
+      "es": "¿Qué dejaste escrito sobre el origen de la arena en los ríos?",
+      "en": "What did you set down about the origin of the sand in rivers?",
+      "margen": 0.0523
+    },
+    {
+      "titulo": "Light and shade on groups of trees",
+      "es": "¿Qué dejaste escrito sobre Luz y sombra en grupos de árboles?",
+      "en": "What did you set down about Light and shade on groups of trees?",
+      "margen": 0.0445
+    },
+    {
+      "titulo": "On the circulation of the blood (848-850)",
+      "es": "¿Qué dejaste escrito sobre Sobre la circulación de la sangre?",
+      "en": "What did you set down about the circulation of the blood?",
+      "margen": 0.0434
+    },
+    {
+      "titulo": "Letter to the Cardinal Ippolito d' Este",
+      "es": "¿Qué dejaste escrito sobre Carta al Cardenal Ippolito d'Este?",
+      "en": "What did you set down about Letter to the Cardinal Ippolito d' Este?",
+      "margen": 0.0347
+    },
+    {
+      "titulo": "The movement of the human figure",
+      "es": "¿Qué dejaste escrito sobre el movimiento de la figura humana?",
+      "en": "What did you set down about the movement of the human figure?",
+      "margen": 0.0311
+    },
+    {
+      "titulo": "On gradation of shadows",
+      "es": "¿Qué dejaste escrito sobre Sobre la gradación de las sombras?",
+      "en": "What did you set down about gradation of shadows?",
+      "margen": 0.0205
+    },
+    {
+      "titulo": "On the construction of windows",
+      "es": "¿Qué dejaste escrito sobre Sobre la construcción de ventanas?",
+      "en": "What did you set down about the construction of windows?",
+      "margen": 0.0178
+    },
+    {
+      "titulo": "On the conditions of sight (834. 835)",
+      "es": "¿Qué dejaste escrito sobre Sobre las condiciones de la vista?",
+      "en": "What did you set down about the conditions of sight?",
+      "margen": 0.0159
+    },
+    {
+      "titulo": "On the reflection of colours",
+      "es": "¿Qué dejaste escrito sobre Sobre la reflexión de los colores?",
+      "en": "What did you set down about the reflection of colours?",
+      "margen": 0.0153
+    },
+    {
+      "titulo": "Against writers of epitomes",
+      "es": "¿Qué dejaste escrito sobre Contra los escritores de epítomes?",
+      "en": "What did you set down about Against writers of epitomes?",
+      "margen": 0.0062
+    },
+    {
+      "titulo": "The rules of aerial perspective",
+      "es": "¿Qué dejaste escrito sobre las reglas de la perspectiva aérea?",
+      "en": "What did you set down about the rules of aerial perspective?",
+      "margen": 0.0595
+    },
+    {
+      "titulo": "On corpulency and leanness (809-811)",
+      "es": "¿Qué dejaste escrito sobre Sobre la corpulencia y la delgadez?",
+      "en": "What did you set down about corpulency and leanness?",
+      "margen": 0.0585
+    },
+    {
+      "titulo": "Tinned iron,—pierced iron",
+      "es": "¿Qué dejaste escrito sobre Hierro estañado, -hierro perforado?",
+      "en": "What did you set down about Tinned iron,—pierced iron?",
+      "margen": 0.0565
+    },
+    {
+      "titulo": "Painting is superior to poetry",
+      "es": "¿Qué dejaste escrito sobre la pintura es superior a la poesía?",
+      "en": "What did you set down about Painting is superior to poetry?",
+      "margen": 0.0467
+    },
+    {
+      "titulo": "The proportions of the whole figure",
+      "es": "¿Qué dejaste escrito sobre las proporciones de toda la figura?",
+      "en": "What did you set down about the proportions of the whole figure?",
+      "margen": 0.0319
+    },
+    {
+      "titulo": "OF Gradations of light and shade",
+      "es": "¿Qué dejaste escrito sobre De las gradaciones de luz y sombra?",
+      "en": "What did you set down about Gradations of light and shade?",
+      "margen": 0.0301
+    },
+    {
+      "titulo": "Of the nature of Sunlight",
+      "es": "¿Qué dejaste escrito sobre De la naturaleza de la luz del sol?",
+      "en": "What did you set down about the nature of Sunlight?",
+      "margen": 0.0141
+    },
+    {
+      "titulo": "The effect of wind on trees",
+      "es": "¿Qué dejaste escrito sobre el efecto del viento en los árboles?",
+      "en": "What did you set down about the effect of wind on trees?",
+      "margen": 0.0495
+    },
+    {
+      "titulo": "On the proportion of light and shadow",
+      "es": "¿Qué dejaste escrito sobre SOBRE LA PROPORCIÓN DE LUZ Y SOMBRA?",
+      "en": "What did you set down about the proportion of light and shadow?",
+      "margen": 0.0455
+    },
+    {
+      "titulo": "Proportions of the head and face",
+      "es": "¿Qué dejaste escrito sobre Proporciones de la cabeza y la cara?",
+      "en": "What did you set down about Proportions of the head and face?",
+      "margen": 0.0425
+    },
+    {
+      "titulo": "The cast shadow of trees",
+      "es": "¿Qué dejaste escrito sobre la sombra proyectada de los árboles?",
+      "en": "What did you set down about the cast shadow of trees?",
+      "margen": 0.0381
+    },
+    {
+      "titulo": "The methods of aerial perspective",
+      "es": "¿Qué dejaste escrito sobre los métodos de la perspectiva aérea?",
+      "en": "What did you set down about the methods of aerial perspective?",
+      "margen": 0.0373
+    },
+    {
+      "titulo": "The characteristics of sea water (948. 949)",
+      "es": "¿Qué dejaste escrito sobre las características del agua de mar?",
+      "en": "What did you set down about the characteristics of sea water?",
+      "margen": 0.0271
+    },
+    {
+      "titulo": "The project of the Trivulzio monument",
+      "es": "¿Qué dejaste escrito sobre el proyecto del monumento Trivulzio?",
+      "en": "What did you set down about the project of the Trivulzio monument?",
+      "margen": 0.0078
+    },
+    {
+      "titulo": "Marcellus and many others praise the sun",
+      "es": "¿Qué dejaste escrito sobre Marcelo y muchos otros alaban el sol?",
+      "en": "What did you set down about Marcellus and many others praise the sun?",
+      "margen": 0.0613
+    },
+    {
+      "titulo": "Quotations and notes on books and authors (1469—1508)",
+      "es": "¿Qué dejaste escrito sobre Citas y notas sobre libros y autores?",
+      "en": "What did you set down about Quotations and notes on books and authors?",
+      "margen": 0.0349
+    },
+    {
+      "titulo": "On the limitations of painting",
+      "es": "¿Qué dejaste escrito sobre Sobre las limitaciones de la pintura?",
+      "en": "What did you set down about the limitations of painting?",
+      "margen": 0.0237
+    },
+    {
+      "titulo": "The distribution of light and shade",
+      "es": "¿Qué dejaste escrito sobre la distribución de la luz y la sombra?",
+      "en": "What did you set down about the distribution of light and shade?",
+      "margen": 0.0473
+    },
+    {
+      "titulo": "Painting is superior to sculpture",
+      "es": "¿Qué dejaste escrito sobre la pintura es superior a la escultura?",
+      "en": "What did you set down about Painting is superior to sculpture?",
+      "margen": 0.0464
+    },
+    {
+      "titulo": "Of depicting night-scenes",
+      "es": "¿Qué dejaste escrito sobre De cómo representar escenas nocturnas?",
+      "en": "What did you set down about depicting night-scenes?",
+      "margen": 0.0409
+    },
+    {
+      "titulo": "Of walking up and down",
+      "es": "¿Qué dejaste escrito sobre De caminar hacia arriba y hacia abajo?",
+      "en": "What did you set down about walking up and down?",
+      "margen": 0.0274
+    },
+    {
+      "titulo": "Different sorts of derived shadows",
+      "es": "¿Qué dejaste escrito sobre DIFERENTES CLASES DE SOMBRAS DERIVADAS?",
+      "en": "What did you set down about Different sorts of derived shadows?",
+      "margen": 0.0583
+    },
+    {
+      "titulo": "The juxtaposition of light and shade",
+      "es": "¿Qué dejaste escrito sobre la yuxtaposición de la luz y la sombra?",
+      "en": "What did you set down about the juxtaposition of light and shade?",
+      "margen": 0.0541
+    },
+    {
+      "titulo": "PERSPECTIVE OF DISAPPEARANCE Definition",
+      "es": "¿Qué dejaste escrito sobre PERSPECTIVA DE DESAPARICIÓN Definición?",
+      "en": "What did you set down about PERSPECTIVE OF DISAPPEARANCE Definition?",
+      "margen": 0.0484
+    },
+    {
+      "titulo": "Ornaments and Decorations for feasts (703-705)",
+      "es": "¿Qué dejaste escrito sobre Ornamentos y Decoraciones para fiestas?",
+      "en": "What did you set down about Ornaments and Decorations for feasts?",
+      "margen": 0.0445
+    },
+    {
+      "titulo": "The production of the pyramid of vision",
+      "es": "¿Qué dejaste escrito sobre la producción de la pirámide de visión?",
+      "en": "What did you set down about the production of the pyramid of vision?",
+      "margen": 0.0344
+    },
+    {
+      "titulo": "Vitruvius' scheme of proportions",
+      "es": "¿Qué dejaste escrito sobre el esquema de proporciones de Vitruvio?",
+      "en": "What did you set down about Vitruvius' scheme of proportions?",
+      "margen": 0.0342
+    },
+    {
+      "titulo": "Observations in support of the hypothesis (963-969)",
+      "es": "¿Qué dejaste escrito sobre Observaciones en apoyo de la hipótesis?",
+      "en": "What did you set down about Observations in support of the hypothesis?",
+      "margen": 0.0147
+    },
+    {
+      "titulo": "How to prove that the earth is a planet (865-867)",
+      "es": "¿Qué dejaste escrito sobre Cómo probar que la tierra es un planeta?",
+      "en": "What did you set down about How to prove that the earth is a planet?",
+      "margen": 0.0629
+    },
+    {
+      "titulo": "The necessity of anatomical knowledge",
+      "es": "¿Qué dejaste escrito sobre la necesidad del conocimiento anatómico?",
+      "en": "What did you set down about the necessity of anatomical knowledge?",
+      "margen": 0.0582
+    },
+    {
+      "titulo": "The course of instruction for an artist",
+      "es": "¿Qué dejaste escrito sobre el curso de instrucción para un artista?",
+      "en": "What did you set down about the course of instruction for an artist?",
+      "margen": 0.0518
+    },
+    {
+      "titulo": "On bronze casting generally (731-740)",
+      "es": "¿Qué dejaste escrito sobre Sobre la fundición de bronce en general?",
+      "en": "What did you set down about bronze casting generally?",
+      "margen": 0.0513
+    },
+    {
+      "titulo": "Drafts of Letters to Lodovico il Moro (1340-1345)",
+      "es": "¿Qué dejaste escrito sobre Borradores de Cartas a Lodovico il Moro?",
+      "en": "What did you set down about Drafts of Letters to Lodovico il Moro?",
+      "margen": 0.047
+    },
+    {
+      "titulo": "Considerations as to the size of the sun (886-891)",
+      "es": "¿Qué dejaste escrito sobre Consideraciones sobre el tamaño del sol?",
+      "en": "What did you set down about Considerations as to the size of the sun?",
+      "margen": 0.0413
+    },
+    {
+      "titulo": "On the shape of derived shadows",
+      "es": "¿Qué dejaste escrito sobre Sobre la forma de las sombras derivadas?",
+      "en": "What did you set down about the shape of derived shadows?",
+      "margen": 0.0351
+    },
+    {
+      "titulo": "G. Description of an unknown Temple",
+      "es": "¿Qué dejaste escrito sobre G. Descripción de un templo desconocido?",
+      "en": "What did you set down about G. Description of an unknown Temple?",
+      "margen": 0.0312
+    },
+    {
+      "titulo": "Draft of Letter to the Governor of Milan",
+      "es": "¿Qué dejaste escrito sobre Borrador de carta al Gobernador de Milán?",
+      "en": "What did you set down about Draft of Letter to the Governor of Milan?",
+      "margen": 0.0632
+    },
+    {
+      "titulo": "The distribution of time for studying",
+      "es": "¿Qué dejaste escrito sobre la distribución del tiempo para estudiar?",
+      "en": "What did you set down about the distribution of time for studying?",
+      "margen": 0.0441
+    },
+    {
+      "titulo": "On instruments for observing the moon (909. 910)",
+      "es": "¿Qué dejaste escrito sobre Sobre instrumentos para observar la luna?",
+      "en": "What did you set down about instruments for observing the moon?",
+      "margen": 0.0355
+    },
+    {
+      "titulo": "The practice of the Prospettiva de' colori",
+      "es": "¿Qué dejaste escrito sobre la práctica de la Prospettiva de' colori?",
+      "en": "What did you set down about the practice of the Prospettiva de' colori?",
+      "margen": 0.0332
+    },
+    {
+      "titulo": "On the preparation and use of colours",
+      "es": "¿Qué dejaste escrito sobre Sobre la preparación y uso de los colores?",
+      "en": "What did you set down about the preparation and use of colours?",
+      "margen": 0.0489
+    },
+    {
+      "titulo": "The fundamental laws of the solar system (859-864)",
+      "es": "¿Qué dejaste escrito sobre las leyes fundamentales del sistema solar?",
+      "en": "What did you set down about the fundamental laws of the solar system?",
+      "margen": 0.0482
+    },
+    {
+      "titulo": "Explanation of the lumen cinereum in the moon",
+      "es": "¿Qué dejaste escrito sobre Explicación del lumen cinereum en la luna?",
+      "en": "What did you set down about Explanation of the lumen cinereum in the moon?",
+      "margen": 0.044
+    },
+    {
+      "titulo": "Proportions of the head seen in front",
+      "es": "¿Qué dejaste escrito sobre Proporciones de la cabeza vista de frente?",
+      "en": "What did you set down about Proportions of the head seen in front?",
+      "margen": 0.037
+    },
+    {
+      "titulo": "ON On the shape of cast shadows",
+      "es": "¿Qué dejaste escrito sobre SOBRE La forma de las sombras proyectadas?",
+      "en": "What did you set down about On the shape of cast shadows?",
+      "margen": 0.0357
+    },
+    {
+      "titulo": "On indistinctness at short distances",
+      "es": "¿Qué dejaste escrito sobre Sobre la indistinción a distancias cortas?",
+      "en": "What did you set down about indistinctness at short distances?",
+      "margen": 0.0202
+    },
+    {
+      "titulo": "Notes on the Sforzesca near Vigevano (1024-1028)",
+      "es": "¿Qué dejaste escrito sobre Notas sobre la Sforzesca cerca de Vigevano?",
+      "en": "What did you set down about Notes on the Sforzesca near Vigevano?",
+      "margen": 0.061
+    },
+    {
+      "titulo": "The angle of sight varies with the distance",
+      "es": "¿Qué dejaste escrito sobre el ángulo de visión varía con la distancia?",
+      "en": "What did you set down about the angle of sight varies with the distance?",
+      "margen": 0.0509
+    },
+    {
+      "titulo": "On the relative density of the atmosphere",
+      "es": "¿Qué dejaste escrito sobre Sobre la densidad relativa de la atmósfera?",
+      "en": "What did you set down about the relative density of the atmosphere?",
+      "margen": 0.0417
+    },
+    {
+      "titulo": "The elements of perspective:--of the point",
+      "es": "¿Qué dejaste escrito sobre los elementos de la perspectiva:—del punto?",
+      "en": "What did you set down about the elements of perspective:--of the point?",
+      "margen": 0.0407
+    },
+    {
+      "titulo": "On the choice of light for a picture",
+      "es": "¿Qué dejaste escrito sobre Sobre la elección de la luz para un cuadro?",
+      "en": "What did you set down about the choice of light for a picture?",
+      "margen": 0.038
+    },
+    {
+      "titulo": "Definition of the nature of shadows",
+      "es": "¿Qué dejaste escrito sobre Definición de la naturaleza de las sombras?",
+      "en": "What did you set down about Definition of the nature of shadows?",
+      "margen": 0.0374
+    },
+    {
+      "titulo": "Methods of staying and moving in water",
+      "es": "¿Qué dejaste escrito sobre Métodos de permanecer y moverse en el agua?",
+      "en": "What did you set down about Methods of staying and moving in water?",
+      "margen": 0.0299
+    },
+    {
+      "titulo": "Appendix:--On shadows in movement",
+      "es": "¿Qué dejaste escrito sobre Apéndice:--Sobre las sombras en movimiento?",
+      "en": "What did you set down about Appendix:--On shadows in movement?",
+      "margen": 0.0263
+    },
+    {
+      "titulo": "On the dispositions of a stable",
+      "es": "¿Qué dejaste escrito sobre Sobre las disposiciones de una caballeriza?",
+      "en": "What did you set down about the dispositions of a stable?",
+      "margen": 0.008
+    },
+    {
+      "titulo": "Occasional references to the Sforza monument (719-724)",
+      "es": "¿Qué dejaste escrito sobre Referencias ocasionales al monumento Sforza?",
+      "en": "What did you set down about Occasional references to the Sforza monument?",
+      "margen": 0.0488
+    },
+    {
+      "titulo": "The proportions vary at different ages",
+      "es": "¿Qué dejaste escrito sobre las proporciones varían a diferentes edades?",
+      "en": "What did you set down about the proportions vary at different ages?",
+      "margen": 0.0431
+    },
+    {
+      "titulo": "Relative proportions of the hand and foot",
+      "es": "¿Qué dejaste escrito sobre Proporciones relativas de la mano y del pie?",
+      "en": "What did you set down about Relative proportions of the hand and foot?",
+      "margen": 0.0388
+    },
+    {
+      "titulo": "Notes on the casting of the Sforza monument (710-715)",
+      "es": "¿Qué dejaste escrito sobre Notas sobre el vaciado del monumento Sforza?",
+      "en": "What did you set down about Notes on the casting of the Sforza monument?",
+      "margen": 0.034
+    },
+    {
+      "titulo": "Of depicting natural phenomena",
+      "es": "¿Qué dejaste escrito sobre De la representación de fenómenos naturales?",
+      "en": "What did you set down about depicting natural phenomena?",
+      "margen": 0.0227
+    },
+    {
+      "titulo": "On the lighting of white objects",
+      "es": "¿Qué dejaste escrito sobre Sobre la iluminación de los objetos blancos?",
+      "en": "What did you set down about the lighting of white objects?",
+      "margen": 0.0226
+    },
+    {
+      "titulo": "The proportions of light and shade in a leaf",
+      "es": "¿Qué dejaste escrito sobre las proporciones de luz y sombra en una hoja?",
+      "en": "What did you set down about the proportions of light and shade in a leaf?",
+      "margen": 0.0691
+    },
+    {
+      "titulo": "The effect of colours in the camera obscura",
+      "es": "¿Qué dejaste escrito sobre el efecto de los colores en la cámara oscura?",
+      "en": "What did you set down about the effect of colours in the camera obscura?",
+      "margen": 0.046
+    },
+    {
+      "titulo": "The appearance of trees in the distance",
+      "es": "¿Qué dejaste escrito sobre la apariencia de los árboles en la distancia?",
+      "en": "What did you set down about the appearance of trees in the distance?",
+      "margen": 0.0426
+    },
+    {
+      "titulo": "On the treatment of light for landscapes",
+      "es": "¿Qué dejaste escrito sobre Sobre el tratamiento de la luz para paisajes?",
+      "en": "What did you set down about the treatment of light for landscapes?",
+      "margen": 0.0411
+    },
+    {
+      "titulo": "A caution against one-sided study",
+      "es": "¿Qué dejaste escrito sobre una advertencia contra el estudio unilateral?",
+      "en": "What did you set down about A caution against one-sided study?",
+      "margen": 0.0084
+    },
+    {
+      "titulo": "Draft of letter to be sent to Piacenza (1346. 1347)",
+      "es": "¿Qué dejaste escrito sobre Borrador de carta para ser enviada a Piacenza?",
+      "en": "What did you set down about Draft of letter to be sent to Piacenza?",
+      "margen": 0.0632
+    },
+    {
+      "titulo": "Different principles and plans of treatment",
+      "es": "¿Qué dejaste escrito sobre Diferentes principios y planes de tratamiento?",
+      "en": "What did you set down about Different principles and plans of treatment?",
+      "margen": 0.033
+    },
+    {
+      "titulo": "The gradations of shade and colour in leaves",
+      "es": "¿Qué dejaste escrito sobre las gradaciones de sombra y color en las hojas?",
+      "en": "What did you set down about the gradations of shade and colour in leaves?",
+      "margen": 0.0541
+    },
+    {
+      "titulo": "Estimates and preparatory studies for canals (1014. 1015)",
+      "es": "¿Qué dejaste escrito sobre Cálculos y estudios preparatorios para canales?",
+      "en": "What did you set down about Estimates and preparatory studies for canals?",
+      "margen": 0.0434
+    },
+    {
+      "titulo": "ON Gradations of strength in the shadows",
+      "es": "¿Qué dejaste escrito sobre SOBRE LAS GRADACIONES DE FUERZA EN LAS SOMBRAS?",
+      "en": "What did you set down about Gradations of strength in the shadows?",
+      "margen": 0.0379
+    },
+    {
+      "titulo": "The proportions of light and shade in trees",
+      "es": "¿Qué dejaste escrito sobre las proporciones de luz y sombra en los árboles?",
+      "en": "What did you set down about the proportions of light and shade in trees?",
+      "margen": 0.0626
+    },
+    {
+      "titulo": "Light and shadow with regard to the position of the eye",
+      "es": "¿Qué dejaste escrito sobre Luz y sombra con respecto a la posición del ojo?",
+      "en": "What did you set down about Light and shadow with regard to the position of the eye?",
+      "margen": 0.0552
+    },
+    {
+      "titulo": "Notes about events observed abroad (1338-1339)",
+      "es": "¿Qué dejaste escrito sobre Notas sobre eventos observados en el extranjero?",
+      "en": "What did you set down about Notes about events observed abroad?",
+      "margen": 0.0105
+    },
+    {
+      "titulo": "The laws of nutrition and the support of life (843-848)",
+      "es": "¿Qué dejaste escrito sobre las leyes de la nutrición y el sostén de la vida?",
+      "en": "What did you set down about the laws of nutrition and the support of life?",
+      "margen": 0.0657
+    },
+    {
+      "titulo": "On the productive power of minor artists",
+      "es": "¿Qué dejaste escrito sobre Sobre el poder productivo de los artistas menores?",
+      "en": "What did you set down about the productive power of minor artists?",
+      "margen": 0.0541
+    },
+    {
+      "titulo": "Industry and thoroughness the first conditions",
+      "es": "¿Qué dejaste escrito sobre Industria y minuciosidad las primeras condiciones?",
+      "en": "What did you set down about Industry and thoroughness the first conditions?",
+      "margen": 0.031
+    },
+    {
+      "titulo": "Miscellaneous drafts of letters and personal records (1356—1368)",
+      "es": "¿Qué dejaste escrito sobre Borradores varios de cartas y registros personales?",
+      "en": "What did you set down about Miscellaneous drafts of letters and personal records?",
+      "margen": 0.0674
+    },
+    {
+      "titulo": "The relative thickness of the branches to the trunk",
+      "es": "¿Qué dejaste escrito sobre el grosor relativo de las ramas respecto al tronco?",
+      "en": "What did you set down about the relative thickness of the branches to the trunk?",
+      "margen": 0.0561
+    },
+    {
+      "titulo": "The function of the eye, as explained by the camera obscura",
+      "es": "¿Qué dejaste escrito sobre la función del ojo, explicada por la cámara oscura?",
+      "en": "What did you set down about the function of the eye, as explained by the camera obscura?",
+      "margen": 0.0549
+    },
+    {
+      "titulo": "Of the surface of the water in relation to the globe (933-936)",
+      "es": "¿Qué dejaste escrito sobre De la superficie del agua en relación con el globo?",
+      "en": "What did you set down about the surface of the water in relation to the globe?",
+      "margen": 0.05
+    },
+    {
+      "titulo": "On various helps in preparing a picture",
+      "es": "¿Qué dejaste escrito sobre Sobre varias ayudas en la preparación de un cuadro?",
+      "en": "What did you set down about various helps in preparing a picture?",
+      "margen": 0.049
+    },
+    {
+      "titulo": "The law of proportion in the growth of the branches",
+      "es": "¿Qué dejaste escrito sobre la ley de proporción en el crecimiento de las ramas?",
+      "en": "What did you set down about the law of proportion in the growth of the branches?",
+      "margen": 0.0668
+    },
+    {
+      "titulo": "The question of the true and of the apparent size of the sun (879-884)",
+      "es": "¿Qué dejaste escrito sobre la cuestión del tamaño verdadero y aparente del sol?",
+      "en": "What did you set down about the question of the true and of the apparent size of the sun?",
+      "margen": 0.0612
+    },
+    {
+      "titulo": "On the relative size of cast shadows",
+      "es": "¿Qué dejaste escrito sobre Sobre el tamaño relativo de las sombras proyectadas?",
+      "en": "What did you set down about the relative size of cast shadows?",
+      "margen": 0.0437
+    },
+    {
+      "titulo": "Further complications in the derived shadows",
+      "es": "¿Qué dejaste escrito sobre Complicaciones adicionales en las sombras derivadas?",
+      "en": "What did you set down about Further complications in the derived shadows?",
+      "margen": 0.0407
+    },
+    {
+      "titulo": "On relative proportion of light and shadows",
+      "es": "¿Qué dejaste escrito sobre Sobre la proporción relativa de la luz y las sombras?",
+      "en": "What did you set down about relative proportion of light and shadows?",
+      "margen": 0.0518
+    },
+    {
+      "titulo": "Drafts of Letters and Reports referring to Armenia (1336. 1337)",
+      "es": "¿Qué dejaste escrito sobre Borradores de cartas e informes referentes a Armenia?",
+      "en": "What did you set down about Drafts of Letters and Reports referring to Armenia?",
+      "margen": 0.0427
+    },
+    {
+      "titulo": "Differences of perception by one eye and by both eyes",
+      "es": "¿Qué dejaste escrito sobre Diferencias de percepción por un ojo y por ambos ojos?",
+      "en": "What did you set down about Differences of perception by one eye and by both eyes?",
+      "margen": 0.0691
+    },
+    {
+      "titulo": "Advantages in the structure of the eye in certain animals (828-831)",
+      "es": "¿Qué dejaste escrito sobre Ventajas en la estructura del ojo en ciertos animales?",
+      "en": "What did you set down about Advantages in the structure of the eye in certain animals?",
+      "margen": 0.0609
+    },
+    {
+      "titulo": "Of the proportion of the mass of water to that of the earth (937. 938)",
+      "es": "¿Qué dejaste escrito sobre De la proporción de la masa de agua a la de la tierra?",
+      "en": "What did you set down about the proportion of the mass of water to that of the earth?",
+      "margen": 0.058
+    },
+    {
+      "titulo": "On the relative intensity of derived shadows",
+      "es": "¿Qué dejaste escrito sobre Sobre la intensidad relativa de las sombras derivadas?",
+      "en": "What did you set down about the relative intensity of derived shadows?",
+      "margen": 0.0548
+    },
+    {
+      "titulo": "On the relation of derived and primary shadow",
+      "es": "¿Qué dejaste escrito sobre Sobre la relación de la sombra derivada y la primaria?",
+      "en": "What did you set down about the relation of derived and primary shadow?",
+      "margen": 0.0476
+    },
+    {
+      "titulo": "The artist's private life and choice of company",
+      "es": "¿Qué dejaste escrito sobre la vida privada del artista y la elección de compañía?",
+      "en": "What did you set down about the artist's private life and choice of company?",
+      "margen": 0.0299
+    },
+    {
+      "titulo": "On the use of dark and light colours in painting",
+      "es": "¿Qué dejaste escrito sobre Sobre el uso de colores oscuros y claros en la pintura?",
+      "en": "What did you set down about the use of dark and light colours in painting?",
+      "margen": 0.0538
+    },
+    {
+      "titulo": "The apparent size of objects denned by calculation",
+      "es": "¿Qué dejaste escrito sobre el tamaño aparente de los objetos definido por cálculo?",
+      "en": "What did you set down about the apparent size of objects denned by calculation?",
+      "margen": 0.0511
+    },
+    {
+      "titulo": "On the treatment of light for views of towns",
+      "es": "¿Qué dejaste escrito sobre Sobre el tratamiento de la luz para vistas de ciudades?",
+      "en": "What did you set down about the treatment of light for views of towns?",
+      "margen": 0.0297
+    },
+    {
+      "titulo": "Theory of the elevation of water within the mountains",
+      "es": "¿Qué dejaste escrito sobre Teoría de la elevación del agua dentro de las montañas?",
+      "en": "What did you set down about Theory of the elevation of water within the mountains?",
+      "margen": 0.0241
+    },
+    {
+      "titulo": "Notes on places in Central Italy, visited in 1502 (1034-1054)",
+      "es": "¿Qué dejaste escrito sobre Notas sobre lugares en Italia central, visitados en 1502?",
+      "en": "What did you set down about Notes on places in Central Italy, visited in 1502?",
+      "margen": 0.0573
+    },
+    {
+      "titulo": "Propositions on Prospettiva de' perdimenti from MS. C",
+      "es": "¿Qué dejaste escrito sobre Proposiciones sobre Prospettiva de' perdimenti del MS. C?",
+      "en": "What did you set down about Propositions on Prospettiva de' perdimenti from MS. C?",
+      "margen": 0.0544
+    },
+    {
+      "titulo": "Allegorical representations referring to the duke of Milan",
+      "es": "¿Qué dejaste escrito sobre Representaciones alegóricas referentes al duque de Milán?",
+      "en": "What did you set down about Allegorical representations referring to the duke of Milan?",
+      "margen": 0.0528
+    },
+    {
+      "titulo": "The perception of the object depends on the direction of the eye",
+      "es": "¿Qué dejaste escrito sobre la percepción del objeto depende de la dirección del ojo?",
+      "en": "What did you set down about the perception of the object depends on the direction of the eye?",
+      "margen": 0.0518
+    },
+    {
+      "titulo": "On the relative depth of cast shadows",
+      "es": "¿Qué dejaste escrito sobre Sobre la profundidad relativa de las sombras proyectadas?",
+      "en": "What did you set down about the relative depth of cast shadows?",
+      "margen": 0.045
+    },
+    {
+      "titulo": "On the luminosity of the Earth in the universal space (874-878)",
+      "es": "¿Qué dejaste escrito sobre Sobre la luminosidad de la Tierra en el espacio universal?",
+      "en": "What did you set down about the luminosity of the Earth in the universal space?",
+      "margen": 0.0386
+    },
+    {
+      "titulo": "The relations of the distance point to the vanishing point",
+      "es": "¿Qué dejaste escrito sobre las relaciones del punto de distancia con el punto de fuga?",
+      "en": "What did you set down about the relations of the distance point to the vanishing point?",
+      "margen": 0.0418
+    },
+    {
+      "titulo": "Remarks on natural phenomena in and near Milan (1021. 1022)",
+      "es": "¿Qué dejaste escrito sobre Observaciones sobre fenómenos naturales en y cerca de Milán?",
+      "en": "What did you set down about Remarks on natural phenomena in and near Milan?",
+      "margen": 0.0497
+    },
+    {
+      "titulo": "Refutation of Pliny's theory as to the saltness of the sea (946. 947)",
+      "es": "¿Qué dejaste escrito sobre Refutación de la teoría de Plinio sobre la salinidad del mar?",
+      "en": "What did you set down about Refutation of Pliny's theory as to the saltness of the sea?",
+      "margen": 0.0677
+    },
+    {
+      "titulo": "The right position of the artist, when painting and of the spectator",
+      "es": "¿Qué dejaste escrito sobre la posición correcta del artista, al pintar y del espectador?",
+      "en": "What did you set down about the right position of the artist, when painting and of the spectator?",
+      "margen": 0.063
+    },
+    {
+      "titulo": "On the intensity of shadows as dependent on the distance from the light",
+      "es": "¿Qué dejaste escrito sobre SOBRE LA INTENSIDAD DE LAS SOMBRAS SEGÚN LA DISTANCIA DE LA LUZ?",
+      "en": "What did you set down about the intensity of shadows as dependent on the distance from the light?",
+      "margen": 0.0636
+    },
+    {
+      "titulo": "Experimental proof of the existence of the pyramid of sight",
+      "es": "¿Qué dejaste escrito sobre Prueba experimental de la existencia de la pirámide de la vista?",
+      "en": "What did you set down about Experimental proof of the existence of the pyramid of sight?",
+      "margen": 0.0449
+    },
+    {
+      "titulo": "The ship's logs of Vitruvius, of Alberti and of Leonardo",
+      "es": "¿Qué dejaste escrito sobre los cuadernos de bitácora de Vitruvio, de Alberti y de Leonardo?",
+      "en": "What did you set down about the ship's logs of Vitruvius, of Alberti and of Leonardo?",
+      "margen": 0.0385
+    },
+    {
+      "titulo": "The comparative size of the image depends on the amount of light",
+      "es": "¿Qué dejaste escrito sobre el tamaño comparativo de la imagen depende de la cantidad de luz?",
+      "en": "What did you set down about the comparative size of the image depends on the amount of light?",
+      "margen": 0.0655
+    },
+    {
+      "titulo": "Demonstration of perspective by means of a vertical glass plane",
+      "es": "¿Qué dejaste escrito sobre Demostración de la perspectiva mediante un plano de vidrio vertical?",
+      "en": "What did you set down about Demonstration of perspective by means of a vertical glass plane?",
+      "margen": 0.0661
+    },
+    {
+      "titulo": "The importance of light and shade in the Prospettiva de' perdimenti",
+      "es": "¿Qué dejaste escrito sobre la importancia de la luz y la sombra en la Prospettiva de' perdimenti?",
+      "en": "What did you set down about the importance of light and shade in the Prospettiva de' perdimenti?",
+      "margen": 0.0788
+    },
+    {
+      "titulo": "The relative size of objects with regard to their distance from the eye",
+      "es": "¿Qué dejaste escrito sobre el tamaño relativo de los objetos con respecto a su distancia del ojo?",
+      "en": "What did you set down about the relative size of objects with regard to their distance from the eye?",
+      "margen": 0.0768
+    },
+    {
+      "titulo": "The relative height of the surface of the sea to that of the land (942-945)",
+      "es": "¿Qué dejaste escrito sobre la altura relativa de la superficie del mar respecto a la de la tierra?",
+      "en": "What did you set down about the relative height of the surface of the sea to that of the land?",
+      "margen": 0.0558
+    },
+    {
+      "titulo": "The distribution of light and shade with reference to the position of the spectator",
+      "es": "¿Qué dejaste escrito sobre la distribución de luz y sombra con referencia a la posición del espectador?",
+      "en": "What did you set down about the distribution of light and shade with reference to the position of the spectator?",
+      "margen": 0.0503
+    },
+    {
+      "titulo": "The effect of light or dark backgrounds on the apparent size of objects",
+      "es": "¿Qué dejaste escrito sobre el efecto de fondos claros u oscuros sobre el tamaño aparente de los objetos?",
+      "en": "What did you set down about the effect of light or dark backgrounds on the apparent size of objects?",
+      "margen": 0.0837
+    },
+    {
+      "titulo": "Experiments on the relation of light and shadow within a room",
+      "es": "¿Qué dejaste escrito sobre Experimentos sobre la relación de la luz y la sombra dentro de una habitación?",
+      "en": "What did you set down about Experiments on the relation of light and shadow within a room?",
+      "margen": 0.0643
+    },
+    {
+      "titulo": "On the alterations, caused in the courses of rivers by their confluence (972-974)",
+      "es": "¿Qué dejaste escrito sobre Sobre las alteraciones, causadas en los cursos de los ríos por su confluencia?",
+      "en": "What did you set down about the alterations, caused in the courses of rivers by their confluence?",
+      "margen": 0.0553
+    },
+    {
+      "titulo": "Comparative study of the structure of bones and of the action of muscles (822-826)",
+      "es": "¿Qué dejaste escrito sobre Estudio comparativo de la estructura de los huesos y de la acción de los músculos?",
+      "en": "What did you set down about Comparative study of the structure of bones and of the action of muscles?",
+      "margen": 0.0648
+    },
+    {
+      "titulo": "THEORY OF COLOURS The reciprocal effects of colours on objects placed opposite each other",
+      "es": "¿Qué dejaste escrito sobre TEORÍA DE LOS COLORES Los efectos recíprocos de los colores sobre objetos colocados uno frente a otro?",
+      "en": "What did you set down about THEORY OF COLOURS The reciprocal effects of colours on objects placed opposite each other?",
+      "margen": 0.0858
+    }
+  ]
+}

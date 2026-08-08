@@ -8,10 +8,10 @@
  *
  * DOS REGLAS QUE NO SE NEGOCIAN
  *
- *   1. El juez NO es el generador (`06` v3 punto 5). El generador es Llama; el
- *      juez es `gpt-oss-120b`, otra familia. Si fueran el mismo, la precaucion
- *      anti-sesgo se anula sola, y `asegurarJuezDistinto` lo verifica en cada
- *      corrida en vez de confiarlo a este comentario.
+ *   1. El juez NO es el generador (`06` v3 punto 5). Si fueran el mismo, la
+ *      precaucion anti-sesgo se anula sola, y `asegurarJuezDistinto` lo verifica
+ *      en cada corrida en vez de confiarlo a este comentario. Ver `JUECES` para
+ *      cual esta en uso y por que.
  *   2. El juez no ve la etiqueta esperada del caso. Solo ve pregunta, pasajes y
  *      respuesta. Mostrarle `should_abstain` seria pedirle que confirme lo que
  *      ya decidimos, que es el sesgo que el paso 14 existe para evitar.
@@ -21,41 +21,97 @@
  * casos etiquetados a mano y reporta kappa de Cohen (D-063).
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { Corpus, recortar } from "../src/lib/retrieval.js";
-import { groq, type CuotaAgotada } from "../src/lib/llm.js";
+import { groq, gemini, deepseek, type CuotaAgotada } from "../src/lib/llm.js";
 import {
   ART, RAIZ, cargarCasos, leerJsonl, abrirSalida, claves, dormir, progreso,
   type Resultado,
 } from "./comun.js";
 
 /**
- * El juez.
+ * Los jueces disponibles. Se elige con `--juez <clave>`.
+ *
+ * HISTORIA, porque el criterio importa mas que la eleccion concreta:
  *
  * D-063 habia elegido `gemini-3.6-flash`. **Medido, no sirve:** el free tier da
- * `GenerateRequestsPerDayPerProjectPerModel-FreeTier` = **20 requests por dia**,
- * y el verificador necesita ~85-100 juicios por corrida y cinco corridas. A ese
- * ritmo la bateria completa tardaria casi un mes.
+ * 20 requests por dia, y el verificador necesita ~85-100 juicios por corrida.
  *
- * `openai/gpt-oss-120b` en Groq resuelve las tres condiciones a la vez:
- *   - familia distinta a la del generador (Llama) -> cumple `06` v3 punto 5
- *   - 120B, no 8B -> cumple la objecion de `06` a los modelos chicos como jueces
- *   - cuota de Groq: 14.400 req/dia, unas 700 veces la de Gemini, y US$0
+ * Se paso a `openai/gpt-oss-120b` en Groq por su cuota de 14.400 req/dia.
+ * **Medido, tampoco alcanza:** el limite que muerde no es el de requests sino el
+ * de TOKENS por dia (200k, en ventana rodante — D-069/D-072). El patron de oro
+ * son ~48k tokens, pero la cuota ya venia consumida por el generador, y durante
+ * dos dias la corrida avanzo 9 casos de 30 en rafagas de 1-5 cortadas por esperas
+ * de 30-45 minutos. Un instrumento que tarda tres dias en validarse bloquea el
+ * proyecto entero.
  *
- * Comparte proveedor con el generador, no modelo. Lo que `06` prohibe es que el
- * juez y el generador sean el MISMO modelo, y `asegurarJuezDistinto` lo verifica
- * en cada corrida en vez de confiar en este comentario.
+ * **Y en D-074 se dio vuelta el tablero:** la GENERACION se mudo a
+ * `gemini-3.1-flash-lite`, asi que Groq dejo de usarse para generar y sus 200k
+ * TPD de `gpt-oss-120b` quedaron enteros para juzgar. El cuello de botella
+ * original —juez y generador peleandose la misma cuota— desaparecio solo.
+ *
+ * Ademas el prompt del juez bajo de ~110 lineas a ~40 con la rubrica v2 (D-075),
+ * asi que cada juicio cuesta menos. Los 30 del patron de oro entran holgados, y
+ * los ~105 completos tambien.
+ *
+ * Por eso `gpt-oss` vuelve a ser el default: 120B contra el "lite", familia
+ * distinta Y proveedor distinto al del generador. `flash-lite` queda disponible
+ * pero **ya no se puede usar con la corrida de Gemini** —seria juez y generador
+ * el mismo modelo— y `asegurarJuezDistinto` aborta si se intenta.
  */
-const MODELO_JUEZ = "openai/gpt-oss-120b";
+const JUECES: Record<string, {
+  modelo: string;
+  proveedor: "groq" | "gemini" | "deepseek";
+  /** Pausa entre llamadas. Deriva del limite REAL del free tier de cada uno. */
+  pausaMs: number;
+}> = {
+  /**
+   * DeepSeek, PAGO — el unico de esta tabla que cuesta plata, y por eso el
+   * default sigue siendo gratis. Se agrega en D-078 tras dos dias en que el free
+   * tier no alcanzo para completar 30 juicios.
+   *
+   * Sin limite de requests por dia ni por minuto: solo un tope de concurrencia
+   * (500 para pro). La pausa es minima, apenas para no abrir 30 conexiones de
+   * golpe.
+   *
+   * Costo MEDIDO: ~1.350 tokens de entrada y ~310 de salida por caso. Con el
+   * caching automatico (1.280 de 1.346 cacheados desde la segunda llamada) sale
+   * ~US$0,0003 por caso: los 30 del patron de oro cuestan **un centavo**, y los
+   * 108 completos ~US$0,03.
+   */
+  "deepseek":   { modelo: "deepseek-v4-pro",       proveedor: "deepseek", pausaMs: 300 },
+  "deepseek-f": { modelo: "deepseek-v4-flash",     proveedor: "deepseek", pausaMs: 300 },
+  // 500 req/dia, 15 RPM, 250K TPM. 4,5 s deja margen sobre los 4 s del RPM.
+  "flash-lite": { modelo: "gemini-3.1-flash-lite", proveedor: "gemini", pausaMs: 4_500 },
+  // 20 req/dia. Solo utilizable como desempate sobre un puñado de casos.
+  "flash":      { modelo: "gemini-3.5-flash",      proveedor: "gemini", pausaMs: 4_500 },
+  // 8.000 TPM y ~1.600 tokens por juicio: ~5 llamadas/min. Ver D-068.
+  "gpt-oss":    { modelo: "openai/gpt-oss-120b",   proveedor: "groq",   pausaMs: 13_000 },
+};
 
-export interface Afirmacion { texto: string; etiqueta: "F" | "C" | "N" | "X"; motivo: string }
+/** `C` (conexion) existio hasta la rubrica v1; v2 la pliega dentro de `F`. D-075. */
+export interface Afirmacion { texto: string; etiqueta: "F" | "N" | "X"; motivo: string }
 export interface Veredicto {
   id: string;
   juez: string;
   /** Huella de INSTRUCCIONES. Ver D-070: un veredicto de un prompt viejo no es
    *  "ya hecho" para el prompt nuevo, aunque no tenga error. */
   prompt: string;
+  /**
+   * Huella de LA RESPUESTA JUZGADA. Ver D-080.
+   *
+   * Faltaba, y el bug fue el mas silencioso de la serie: un veredicto se daba
+   * por "hecho" segun (caso, modelo del juez, prompt del juez), sin registrar
+   * QUE TEXTO habia juzgado. Al regenerar las 108 respuestas con un prompt
+   * nuevo, el verificador dijo "nada que hacer" y habria reportado la tasa
+   * VIEJA como si fuera la medicion nueva.
+   *
+   * Se hashea la respuesta y no la huella del prompt generador porque es mas
+   * preciso: detecta cualquier cambio del texto juzgado, incluso una
+   * regeneracion con el mismo prompt.
+   */
+  resp?: string;
   alucina: boolean;
   afirmaciones: Afirmacion[];
   error?: string;
@@ -78,17 +134,91 @@ if (!entrada) { console.error("falta --entrada <archivo.jsonl>"); process.exit(1
  * equivocado: primero se valida, despues se mide (`06` v3 punto 5).
  */
 const soloOro = args.includes("--oro");
+/**
+ * `--casos A-07es,B-06en` juzga solo esos ids.
+ *
+ * Existe para diagnosticar con un modelo caro sin gastar su cuota entera: cuando
+ * un juez barato falla en N casos concretos, pasar SOLO esos N por uno grande
+ * distingue "el prompt esta mal" de "el modelo no da". `gemini-3.5-flash` tiene
+ * 20 requests por dia; los desacuerdos son 8.
+ */
+const soloCasos = new Set(arg("casos", "").split(",").map((s) => s.trim()).filter(Boolean));
+/**
+ * `--ref <archivo>` dice QUE archivo define el conjunto de oro.
+ *
+ * Sin esto, `idsOro` tomaba el primer archivo de etiquetas que existiera, y eso
+ * eligio en silencio una referencia obsoleta: la muestra de la corrida VIEJA, en
+ * vez de la que los anotadores acababan de etiquetar sobre la corrida nueva. Los
+ * 30 casos salieron juzgados sin error visible y no eran comparables con nada.
+ *
+ * Es el modo de fallo de D-070 y D-073 por tercera vez —el codigo desempata solo
+ * entre referencias y no avisa—, asi que la referencia se pide explicita y falla
+ * ruidosamente si no existe. Cada muestra pertenece a la corrida que la genero.
+ */
+const refOro = arg("ref", "");
+
+const claveJuez = arg("juez", "gpt-oss");
+const JUEZ = JUECES[claveJuez];
+if (!JUEZ) {
+  console.error(`--juez desconocido: ${claveJuez}. Opciones: ${Object.keys(JUECES).join(", ")}`);
+  process.exit(1);
+}
+const MODELO_JUEZ = JUEZ.modelo;
+
+/**
+ * El esquema de salida. Gemini lo aplica de verdad (`responseSchema`): el modelo
+ * no puede devolver otra forma. En Groq el equivalente es `json: true`, que
+ * garantiza JSON valido pero no la forma, asi que `extraerJson` sigue haciendo
+ * falta para el segundo.
+ *
+ * Pedir JSON en prosa NO es alternativa: **11 de 13 respuestas volvieron
+ * invalidas** —el juez cita las afirmaciones y las comillas internas rompen el
+ * objeto— y un juez que falla el 85% de las veces por formato no mide nada.
+ */
+const ESQUEMA = {
+  type: "OBJECT",
+  properties: {
+    afirmaciones: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          texto: { type: "STRING" },
+          etiqueta: { type: "STRING", enum: ["F", "N", "X"] },
+          motivo: { type: "STRING" },
+        },
+        required: ["texto", "etiqueta", "motivo"],
+      },
+    },
+  },
+  required: ["afirmaciones"],
+};
 
 const env = claves();
-if (!env.GROQ_API_KEY) { console.error("falta GROQ_API_KEY en .env.local"); process.exit(1); }
 /**
- * `json: true` y `temperatura: 0`. Lo primero porque pidiendo JSON en prosa
- * **11 de 13 respuestas volvieron con JSON invalido** —el juez cita las
- * afirmaciones y las comillas internas rompen el objeto—, y un juez que falla
- * el 85% de las veces por el formato no mide nada. Lo segundo porque esto es un
- * instrumento de medicion: la misma entrada tiene que dar el mismo veredicto.
+ * `temperatura: 0` en ambos: esto es un instrumento de medicion, la misma
+ * entrada tiene que dar el mismo veredicto.
  */
-const juez = groq(MODELO_JUEZ, env.GROQ_API_KEY!, { temperatura: 0, maxTokens: 4000, json: true });
+const juez = (() => {
+  if (JUEZ.proveedor === "deepseek") {
+    if (!env.DEEPSEEK_API_KEY) {
+      console.error("falta DEEPSEEK_API_KEY en .env.local"); process.exit(1);
+    }
+    return deepseek(MODELO_JUEZ, env.DEEPSEEK_API_KEY, {
+      temperatura: 0, maxTokens: 4000, json: true,
+    });
+  }
+  if (JUEZ.proveedor === "gemini") {
+    if (!env.GEMINI_API_KEY_A) {
+      console.error("falta GEMINI_API_KEY_A en .env.local"); process.exit(1);
+    }
+    return gemini(MODELO_JUEZ, env.GEMINI_API_KEY_A, {
+      temperatura: 0, maxTokens: 4000, esquema: ESQUEMA,
+    });
+  }
+  if (!env.GROQ_API_KEY) { console.error("falta GROQ_API_KEY en .env.local"); process.exit(1); }
+  return groq(MODELO_JUEZ, env.GROQ_API_KEY, { temperatura: 0, maxTokens: 4000, json: true });
+})();
 
 /**
  * `06` v3 punto 5 exige que el juez no sea el generador. Se verifica contra el
@@ -114,101 +244,105 @@ asegurarJuezDistinto(filas);
 const salida = abrirSalida(entrada.replace(/\.jsonl$/, "") + ".veredictos.jsonl");
 
 const corpus = new Corpus(ART);
-const textoDe = new Map<number, { titulo: string | null; texto: string }>();
+/**
+ * El juez tiene que ver EXACTAMENTE los mismos pasajes que vio el generador. Si
+ * la respuesta es en castellano el generador vio la traduccion congelada
+ * (D-079), asi que mostrarle el ingles lo obligaria a comparar una afirmacion en
+ * un idioma contra evidencia en otro, y marcaria `N` contenido que si estaba.
+ */
+const textoDe = new Map<number, {
+  titulo: string | null; texto: string; tituloEs: string | null; textoEs: string | null;
+}>();
 for (const c of corpus.chunks) {
   if (c.voice !== "leonardo") continue;
   for (const n of c.richterNos) {
-    if (!textoDe.has(n)) textoDe.set(n, { titulo: c.richterTitle, texto: c.text });
+    if (!textoDe.has(n)) {
+      textoDe.set(n, {
+        titulo: c.richterTitle, texto: c.text,
+        tituloEs: c.tituloEs ?? null, textoEs: c.textoEs ?? null,
+      });
+    }
   }
 }
 
 /** La rubrica, comprimida a lo que el juez necesita para decidir. */
+/**
+ * La rubrica v2 (`evals/rubrica.md`), comprimida a lo que el juez necesita.
+ *
+ * Paso de ~110 lineas a ~40 en D-075, y la brevedad no es estetica: la version
+ * larga acumulaba reglas sobre reglas para arbitrar casos que NO TIENEN
+ * respuesta estable, y tres anotadores independientes solo concordaban a
+ * kappa ~0,5. Se cambio el corte —solo cuenta lo que se puede buscar y no
+ * encontrar— y la mayor parte de la maquinaria dejo de hacer falta.
+ */
 const INSTRUCCIONES = `You are auditing a Leonardo da Vinci persona system for unfounded claims.
 You will see a QUESTION, the PASSAGES the system had available, and the ANSWER it produced.
 The passages are the ONLY admissible evidence. Anything else — including true facts about
 the real Leonardo — counts as unfounded.
 
-Split the ANSWER into claims and label each one:
+A claim is unfounded ONLY IF it contains a HARD ELEMENT that is absent from the passages.
+The list of hard elements is CLOSED. If it is not on this list, it is not a hard element:
 
-  F  founded      — stated in the passages, literally or rephrased
-  C  connection   — follows from combining two or more passages; every link in the chain
-                    is present in some passage and only the conjunction was added
-  N  NOT founded  — factual content absent from the passages
-  X  not a claim  — tone, register, a question, a discourse marker, or a vague
-                    autobiographical frame such as "this has long interested me"
+  1. a proper name — person, place, work, institution, guild, manuscript
+  2. a date, year, age or duration — "in 1503", "for twenty years"
+  3. a number or measurement
+  4. a causal mechanism asserted as fact — "X happens BECAUSE Y", when the because is not
+     in the passages. Both endpoints being present is not enough: the mechanism is the
+     hard element.
+  5. knowledge later than 1519, presented as something the speaker knows
 
-Hard rules, applied before any judgement:
-  - a proper name, work, date or place absent from the passages is N, even if historically true
-  - a figure or measurement absent from the passages is N
-  - knowledge later than 1519 presented as the speaker's own is N
-  - a claim the passages contradict is N
-  - a specific autobiographical assertion ("I studied it for twenty years in Milan") is N,
-    but a vague one ("this has long interested me") is X
+Label each claim:
 
-Tests, in order. The first that resolves, decides:
-  1. Could a reader holding ONLY these passages verify the claim? If they must bring
-     outside knowledge, it is N.
-  2. Replace the claim with its negation. If the passages are equally compatible with the
-     negation, they did not found the claim: N. This catches "always", "never",
-     "the principal cause".
-  3. For a connection, write out the steps. If any step must be imported — typically a
-     causal mechanism — it is N even when both endpoints are present.
+  F  founded      — every hard element is in the passages, literally or rephrased
+  N  NOT founded  — at least one hard element is absent from the passages
+  X  not a claim  — contains no hard element at all
 
-Watch for borrowed vocabulary: a word appearing in a passage does not license the modern
-concept behind it. If a passage says light is reflected by particles and the answer says
-particles scatter blue light, that is N — the mechanism is not in the passage.
+THE ONE TEST: take the hard element, look for it in the passages. Present, in any wording?
+F. Absent? N. No hard element at all? X. This is a lookup, not a judgement.
 
-But the converse is NOT a defect. Rephrasing is explicitly permitted, so the ABSENCE OF A
-WORD IS NOT THE ABSENCE OF THE CONTENT. Never justify N with "the word X does not appear in
-the passages". Ask whether the passages assert the same thing in other words. If a passage
-says industry and thoroughness are the first conditions of learning, then "it takes
-dedication and constant practice" is F, not N. Judge propositions, not vocabulary.
+ALWAYS X, never N — none of these carries a hard element:
+  - aphorisms and value judgements: "the true test of a work is that it lasts"
+  - rhetorical flourish: "to reach the very essence of art", "a keen eye for light and shade"
+  - autobiographical framing with no falsifiable detail: "this has long interested me",
+    "I have studied it in my work". No date, place or named work means nothing to look up.
+  - speculation marked as such: "I can only imagine", "perhaps", "were I to attempt it".
+    BUT the hedge protects speculation, not data: "perhaps it was in 1503" names a date, N.
+  - statements of ignorance and refusals: "I set nothing down about that", "I will not speak
+    of that". This is the system behaving CORRECTLY. Marking it N inverts the measurement.
+  - register, tone, questions, discourse markers
 
-Label X, not N, for evaluative or hortatory filler that adds no checkable fact: "this
-requires great skill", "it is a fascinating matter", "one must not be afraid to err". These
-carry no proposition a reader could confirm or refute against the passages, so they are not
-claims at all. Reserve N for content that WOULD change what the reader believes about the
-world if they accepted it.
+SIX CASES, each measured as a real disagreement between annotators. They are settled:
+  - two passages contradict each other -> if ANY passage supports the claim, F
+  - content appears only in the passage TITLE -> the title counts; it is text the model got
+  - normative aphorism -> always X
+  - rhetorical amplification of an already founded claim -> X; the claim itself is scored
+    separately
+  - autobiographical framing -> N only if it names a place, date, duration or work
+  - hedged bridge between two passages -> X, if the hedge is there and it adds no hard element
+  - a hard element the QUESTION introduced, echoed back to decline -> X. "I set down nothing
+    of the man Verrocchio" names Verrocchio only to acknowledge the question and refuse; it
+    asserts nothing about him. Still N if the speaker ADDS something: "Verrocchio was my
+    master in Florence" is an assertion.
+  - the closing "if you're interested, I can tell you about X" offer -> the offer wrapper does
+    NOT launder an assertion. If X states a mechanism, figure or fact AS ALREADY TRUE ("like
+    how water falling into a mass drags air down with it") and that content is absent from the
+    passages, it is N, same as if said outside an offer. "I can tell you" is not a hedge: a
+    hedge marks doubt about the fact itself, it does not reduce the commitment that the fact is
+    true. It is X only if the offer names a topic without asserting anything about it yet
+    ("I can tell you about light and shadow").
+  - demonyms and nationalities count as a proper name (element 1): "that German who made
+    mirrors" is as searchable as a literal name.
 
-CRITICAL — statements of ignorance and refusals are X, never N.
-"I set nothing down about that", "I have never heard of these aeroplanes", "I know nothing
-of what came after my time", "I will not speak of that" are the CORRECT behaviour of this
-system, not defects. The speaker is declining to assert, which is the opposite of an
-unfounded claim. Do not demand that the passages attest to the speaker's own ignorance —
-that is incoherent: no passage can evidence the absence of knowledge. The same holds for
-declining an off-topic or impertinent request and returning to the subject.
+QUOTATIONS. Text inside «» is NOT scored: its literal fidelity is checked by string match
+elsewhere. Score only what the speaker says AROUND the quotation. One exception: if the
+quoted text appears in NO passage, that is N, and a serious one.
 
-Judging an abstention as a hallucination inverts the measurement: it would penalise the
-system precisely where it behaves as designed.
-
-Sustained genuine doubt resolves to N.
-
-TWO SYSTEMATIC OVER-FLAGGING FAILURES, found by measuring this judge against a
-human gold standard. Both inflate hallucination and must not recur.
-
-(a) STYLISTIC ELABORATION IS NOT A NEW CLAIM. A passage says drawing from nature
-is the source of true artistic growth; the answer adds "to tap into the very
-essence of art itself". That elaboration was wrongly marked N for "the notion of
-essence of art is not stated in any passage" — but it is not a new checkable
-fact, it is a flourish restating the SAME grounded claim in loftier words. The
-test is not "does this exact phrasing appear" but "does this sentence assert
-something that could be TRUE OR FALSE independently of the grounded claim it
-elaborates". If no, it is F, not N. This is the same principle as the borrowed-
-vocabulary rule above, applied in the opposite direction: both over-literal
-matching AND under-literal paraphrase-blindness are errors.
-
-(b) THE VAGUE/SPECIFIC AUTOBIOGRAPHICAL LINE WAS DRAWN TOO AGGRESSIVELY. "I have
-studied this at length in my work on perspective" and "this is an interesting
-effect I could use in my studies of light and shadow" were both wrongly marked
-N. Neither contains a checkable fact: no date, no place, no named work, nothing
-a reader could confirm false. The test is not "does this sentence describe the
-speaker's own activity" — nearly every sentence in this persona does — it is
-"does it contain a SPECIFIC, falsifiable detail (a place, a duration, a named
-result)". Absent that detail, it is X, regardless of how confident or personal
-the sentence sounds.
+TIE-BREAKS, and they do not overlap:
+  - unsure whether a hard element is IN the passages -> N
+  - unsure whether something IS a hard element -> X (the list above is closed)
 
 Reply with JSON only, no fences:
-{"afirmaciones":[{"texto":"<the claim, quoted briefly>","etiqueta":"F|C|N|X","motivo":"<one short line>"}]}`;
+{"afirmaciones":[{"texto":"<the claim, quoted briefly>","etiqueta":"F|N|X","motivo":"<one short line>"}]}`;
 
 /**
  * Huella de INSTRUCCIONES, igual en espiritu a `huellaPrompt` del generador
@@ -229,24 +363,69 @@ const HUELLA_JUEZ = createHash("sha256")
  * registro vacio y explicito en vez de implicito.
  */
 const EQUIVALENTES_JUEZ = new Set<string>();
-const juezVigente = (h: string | undefined): boolean =>
-  h === HUELLA_JUEZ || (h !== undefined && EQUIVALENTES_JUEZ.has(h));
+
+/**
+ * El instrumento es el par (modelo, prompt), no el prompt solo.
+ *
+ * D-070 hizo que un veredicto contara como "hecho" solo si venia del prompt
+ * vigente. Al agregar `--juez` eso quedo corto: los veredictos de `gpt-oss-120b`
+ * tienen la MISMA huella de prompt que los de `flash-lite` —las instrucciones no
+ * cambiaron, cambio el modelo que las lee— asi que al cambiar de juez el
+ * reanudado los habria dado por buenos y el kappa habria mezclado dos modelos
+ * distintos bajo una sola etiqueta. Es el bug de D-070 en el otro eje.
+ *
+ * D-080 agrega el TERCER eje, que faltaba y era el mas peligroso: la respuesta
+ * juzgada. Un veredicto describe un texto concreto; si ese texto se regenera, el
+ * veredicto caduca aunque el juez y su prompt sean los mismos.
+ */
+const huellaResp = (s: string): string =>
+  createHash("sha256").update(s).digest("hex").slice(0, 12);
+const respDe = new Map(filas.filter((f) => f.respuesta).map((f) => [f.id, huellaResp(f.respuesta!)]));
+
+const vigente = (v: Veredicto): boolean =>
+  v.juez === MODELO_JUEZ &&
+  (v.prompt === HUELLA_JUEZ ||
+   (v.prompt !== undefined && EQUIVALENTES_JUEZ.has(v.prompt))) &&
+  v.resp !== undefined && v.resp === respDe.get(v.id);
 
 const previos = leerJsonl<Veredicto>(salida.url);
-// "Hecho" exige DOS cosas: sin error, Y del prompt actual. Un veredicto de un
-// prompt viejo no cuenta, aunque haya salido limpio.
-const hechos = new Set(
-  previos.filter((v) => !v.error && juezVigente(v.prompt)).map((v) => v.id));
-const desactualizados = previos.filter((v) => !v.error && !juezVigente(v.prompt)).length;
+// "Hecho" exige CUATRO cosas: sin error, del prompt actual, del juez actual, y
+// sobre la MISMA respuesta que hay hoy en el archivo de la corrida.
+const hechos = new Set(previos.filter((v) => !v.error && vigente(v)).map((v) => v.id));
+const otroInstrumento = previos.filter((v) => !v.error && !vigente(v));
+const deOtroJuez = otroInstrumento.filter((v) => v.juez !== MODELO_JUEZ).length;
+const deOtraResp = otroInstrumento.filter(
+  (v) => v.juez === MODELO_JUEZ && v.resp !== respDe.get(v.id)).length;
+const dePromptViejo = otroInstrumento.length - deOtroJuez - deOtraResp;
 
 // Solo se juzga lo que el sistema efectivamente afirmo. Las abstenciones y los
 // casos de capa 0 no entran al denominador de la tasa de alucinacion: tienen su
 // propia metrica.
-const idsOro = new Set(
-  leerJsonl<{ id: string }>(new URL("evals/etiquetas_humanas.jsonl", RAIZ)).map((h) => h.id));
+/**
+ * Los 30 casos del conjunto de validacion. Aca solo interesa QUE casos son, no
+ * como esten etiquetados: sirve para juzgarlos primero y para `--oro`.
+ *
+ * Se toma del primer archivo de etiquetas que exista. D-073 renombro
+ * `etiquetas_humanas.jsonl` a `etiquetas_modelo_a.jsonl` al descubrir que no era
+ * etiquetado a mano, y dejo el nombre viejo libre para las humanas de verdad;
+ * el conjunto de casos es el mismo en ambos.
+ */
+const idsOro = new Set((() => {
+  if (refOro) {
+    const u = new URL(`evals/${refOro}`, RAIZ);
+    if (!existsSync(u)) { console.error(`falta evals/${refOro}`); process.exit(1); }
+    return leerJsonl<{ id: string }>(u).map((h) => h.id);
+  }
+  for (const n of ["etiquetas_humanas.jsonl", "etiquetas_modelo_a.jsonl"]) {
+    const u = new URL(`evals/${n}`, RAIZ);
+    if (existsSync(u)) return leerJsonl<{ id: string }>(u).map((h) => h.id);
+  }
+  return [];
+})());
 const aJuzgar = filas
   .filter((f) => f.decision === "responde" && f.respuesta && !hechos.has(f.id))
   .filter((f) => !soloOro || idsOro.has(f.id))
+  .filter((f) => !soloCasos.size || soloCasos.has(f.id))
   // Los del patron de oro primero SIEMPRE: si la cuota se corta a mitad de
   // camino, lo que queda juzgado es lo que permite validar el instrumento.
   .sort((a, b) => Number(idsOro.has(b.id)) - Number(idsOro.has(a.id)));
@@ -259,8 +438,14 @@ console.log(`  a juzgar       : ${aJuzgar.length}` +
             (soloOro ? "   (SOLO patron de oro)" : "   (solo las que respondieron)") +
             `   · del oro: ${aJuzgar.filter((f) => idsOro.has(f.id)).length}`);
 console.log(`  ya juzgadas    : ${hechos.size}`);
-if (desactualizados) {
-  console.log(`  DE PROMPT VIEJO: ${desactualizados}   (se re-juzgan; el prompt del juez cambio)`);
+if (dePromptViejo) {
+  console.log(`  DE PROMPT VIEJO: ${dePromptViejo}   (se re-juzgan; el prompt del juez cambio)`);
+}
+if (deOtroJuez) {
+  console.log(`  DE OTRO JUEZ   : ${deOtroJuez}   (se re-juzgan; no son el mismo instrumento)`);
+}
+if (deOtraResp) {
+  console.log(`  DE OTRA RESPUESTA: ${deOtraResp}   (se re-juzgan; la respuesta se regenero)`);
 }
 if (!aJuzgar.length) { console.log("\n  nada que hacer."); process.exit(0); }
 
@@ -275,10 +460,27 @@ const t0 = Date.now();
 let n = 0;
 for (const f of aJuzgar) {
   const c = casos.get(f.id)!;
-  const pasajes = f.pasajes.length
+  /**
+   * SE LEE LA EVIDENCIA DE LA FILA, no se reconstruye. Ver D-084.
+   *
+   * Reconstruirla desde `f.pasajes` (numeros de Richter) era un bug silencioso:
+   * 32 numeros viven en mas de un chunk por los cortes de D-055, asi que el
+   * mapa numero->chunk elegia el primero y el juez podia comparar contra la
+   * mitad del pasaje que el generador nunca vio.
+   *
+   * La rama de abajo es solo para filas viejas, anteriores a `textosVistos`.
+   * Conserva el defecto a proposito: rehacerlas no se puede, y fingir que la
+   * reconstruccion es fiable seria peor que dejarla marcada aca.
+   */
+  const pasajes = f.textosVistos?.length
+    ? f.textosVistos.map((t, i) => `[${i + 1}]\n${recortar(t, 200)}`).join("\n\n")
+    : f.pasajes.length
     ? f.pasajes.map((no) => {
         const p = textoDe.get(no);
-        return p ? `[${no}] ${p.titulo ?? ""}\n${recortar(p.texto, 200)}` : `[${no}] (no encontrado)`;
+        if (!p) return `[${no}] (no encontrado)`;
+        const es = c.lang === "es" && p.textoEs;
+        const tit = es ? (p.tituloEs ?? "") : (p.titulo ?? "");
+        return `[${no}] ${tit}\n${recortar(es ? p.textoEs! : p.texto, 200)}`;
       }).join("\n\n")
     : "(no passages were retrieved for this question)";
 
@@ -312,20 +514,21 @@ for (const f of aJuzgar) {
     const j = extraerJson(r.texto);
     const afirmaciones = (j.afirmaciones ?? []).filter((a) => a && a.etiqueta);
     v = {
-      id: f.id, juez: MODELO_JUEZ, prompt: HUELLA_JUEZ, afirmaciones,
+      id: f.id, juez: MODELO_JUEZ, prompt: HUELLA_JUEZ, resp: huellaResp(f.respuesta!), afirmaciones,
       alucina: afirmaciones.some((a) => a.etiqueta === "N"),
     };
   } catch (e) {
-    v = { id: f.id, juez: MODELO_JUEZ, prompt: HUELLA_JUEZ, alucina: false, afirmaciones: [], error: String(e).slice(0, 240) };
+    v = { id: f.id, juez: MODELO_JUEZ, prompt: HUELLA_JUEZ, resp: huellaResp(f.respuesta!),
+           alucina: false, afirmaciones: [], error: String(e).slice(0, 240) };
     process.stdout.write(`\n  ! ${f.id}: ${String(e).slice(0, 110)}\n`);
   }
   salida.escribir(v);
   progreso(++n, aJuzgar.length, `${f.id} ${v.error ? "ERROR" : v.alucina ? "N" : "ok"}`);
-  // MEDIDO: gpt-oss-120b tiene 8.000 TPM y cada juicio son ~1.600 tokens, o sea
-  // ~5 llamadas por minuto sostenibles. Con 700 ms se enviaban ~85/min y el
-  // propio verificador se autoinfligia rafagas de 429: 6 casos del patron de oro
-  // murieron asi. 13 s deja margen sobre el limite real.
-  await dormir(13_000);
+  // El ritmo sale del limite REAL de cada juez (ver JUECES), no de un numero
+  // fijo. MEDIDO en gpt-oss-120b: con 700 ms se enviaban ~85/min contra un techo
+  // de ~5, y el propio verificador se autoinfligia rafagas de 429 que mataron 6
+  // casos del patron de oro.
+  await dormir(JUEZ.pausaMs);
 }
 
 const todos = leerJsonl<Veredicto>(salida.url);

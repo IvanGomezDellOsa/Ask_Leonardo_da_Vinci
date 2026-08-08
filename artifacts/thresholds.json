@@ -1,6 +1,6 @@
 {
-  "provisional": true,
-  "fuente": "190 consultas de investigacion; la Fase 3 recalibra con el eval set",
+  "provisional": false,
+  "fuente": "190 consultas de investigacion (Fase 0.5), CONFIRMADO contra el eval set de 120 casos en D-100",
   "perdidaAceptada": "0%",
   "tau": {
     "es": 0.7807633280754088,
@@ -17,5 +17,6 @@
       "2%": 0.8279819536209105,
       "5%": 0.8364083796739578
     }
-  }
+  },
+  "recalibracion": "Paso 16 hecho el 2026-08-07 con npm run evals:calibrar. Los valores NO se movieron: tau_es cae dentro del IC 95% del eval set y tau_en queda por debajo del minimo observado, que es la posicion conservadora. El hallazgo de esa medicion no fue un tau nuevo sino que las clases se solapan casi del todo (100% es / 78% en) contra el AUC 0,92/0,94 del experimento: las C+D del eval set son negativos duros a proposito. Ver D-100."
 }

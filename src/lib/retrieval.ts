@@ -12,7 +12,7 @@
  * Escrito a mano, sin LangChain ni LlamaIndex (D-004).
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 
 export type Voz = "leonardo" | "richter";
 
@@ -26,9 +26,25 @@ export interface Chunk {
   voice: Voz;
   text: string;
   annotatesPassage: number | null;
+  /**
+   * Para que sirve este texto. Lo pueblan dos fuentes distintas y no se pisan:
+   * el pipeline marca `apparatus` / `substantive` / `absence` sobre las unidades
+   * de Richter (D-053), y `tools/curar_corpus.ts` marca `inventory` sobre las de
+   * Leonardo (D-098).
+   */
   utility?: string;
   url: string | null;
   nWords: number;
+  /**
+   * Traduccion al castellano, de `artifacts/chunks_es.json`. Ver D-079.
+   *
+   * NO participa de la recuperacion: los embeddings y el BM25 siguen siendo los
+   * del ingles, asi que buscar da exactamente lo mismo que antes. Esto es solo
+   * el texto que se le MUESTRA al modelo y al lector cuando la consulta es en
+   * castellano, para que pueda CITAR en vez de traducir al vuelo.
+   */
+  textoEs?: string;
+  tituloEs?: string | null;
 }
 
 export interface Recuperado {
@@ -54,6 +70,9 @@ interface Bm25Artefacto {
 
 const K_RRF = 60;
 
+/** Valores de `utility` que salen del indice de recuperacion. Ver D-098 y D-108. */
+const FUERA_DEL_INDICE = new Set(["inventory", "no_traducible"]);
+
 export class Corpus {
   readonly meta: IndexMeta;
   readonly chunks: Chunk[];
@@ -63,10 +82,41 @@ export class Corpus {
   /** Indices de fila por voz, para poder buscar en un solo indice (D-042). */
   readonly filasPorVoz: Record<Voz, number[]>;
 
-  constructor(dir: URL) {
+  /**
+   * `curar` saca del indice de recuperacion los chunks que la curaduria marco
+   * como `inventory` (D-098). Se deja como opcion, y no como un artefacto
+   * distinto, para que el eval pueda correr las DOS ramas en un solo proceso y
+   * con los mismos vectores de consulta: comparar dos corridas separadas es
+   * como se colaron antes dos cambios a la vez.
+   */
+  constructor(dir: URL, { curar = true, base = dir }: { curar?: boolean; base?: URL } = {}) {
+    /**
+     * `dir` trae lo que es PROPIO del indice —los vectores y su meta— y `base`
+     * lo que es COMPARTIDO entre indices: el corpus, la traduccion, el BM25 y la
+     * curaduria. El indice castellano de D-105 vive en `artifacts/es/` y no
+     * necesita su propia copia de `chunks.json`: son 3,4 MB que ademas
+     * divergirian del original en cuanto alguien regenere uno solo de los dos.
+     *
+     * Es la misma regla que todo lo demas del proyecto: una definicion
+     * compartida, no una copia por consumidor.
+     */
     this.meta = JSON.parse(readFileSync(new URL("index_meta.json", dir), "utf8"));
-    this.chunks = JSON.parse(readFileSync(new URL("chunks.json", dir), "utf8"));
-    this.bm25 = JSON.parse(readFileSync(new URL("bm25.json", dir), "utf8"));
+    this.chunks = JSON.parse(readFileSync(new URL("chunks.json", base), "utf8"));
+    /**
+     * La traduccion es OPCIONAL: si el artefacto no esta, todo funciona como
+     * antes y en ingles. Asi el pipeline no se rompe en un clon recien hecho ni
+     * antes de correr `npm run traducir`.
+     */
+    const fEs = new URL("chunks_es.json", base);
+    if (existsSync(fEs)) {
+      const es: Record<string, { texto: string; titulo: string | null }> =
+        JSON.parse(readFileSync(fEs, "utf8"));
+      for (const c of this.chunks) {
+        const t = es[c.id];
+        if (t) { c.textoEs = t.texto; c.tituloEs = t.titulo; }
+      }
+    }
+    this.bm25 = JSON.parse(readFileSync(new URL("bm25.json", base), "utf8"));
     this.stop = new Set(this.bm25.stopwords);
 
     // int8 -> float32 y renormalizacion, igual que en el pipeline. Sin
@@ -86,8 +136,44 @@ export class Corpus {
       for (let d = 0; d < dims; d++) this.vecs[i * dims + d] /= norma;
     }
 
+    /**
+     * La curaduria es OPCIONAL, igual que la traduccion: sin el artefacto todo
+     * funciona como antes. Ver `tools/curar_corpus.ts` y D-098.
+     *
+     * Se marca el chunk SIEMPRE que el artefacto este, incluso con `curar` en
+     * false, porque `utility` es un dato del corpus y no una decision de
+     * busqueda. Lo que la opcion gobierna es solo si esa fila entra al indice.
+     */
+    const fCur = new URL("curaduria.json", base);
+    if (existsSync(fCur)) {
+      const { chunks: fichas }: { chunks: Record<string, { utility: string }> } =
+        JSON.parse(readFileSync(fCur, "utf8"));
+      for (const c of this.chunks) {
+        const f = fichas[c.id];
+        if (f) c.utility = f.utility;
+      }
+    }
+
+    /**
+     * El unico lugar donde la exclusion tiene efecto. Sacar la fila de aca la
+     * saca del coseno, del BM25 y del top-k de una sola vez, porque `buscar`
+     * arranca de `filasPorVoz` — y de paso baja el `cosMax` que umbraliza el
+     * gate, que es exactamente lo que se quiere para las consultas fuera de
+     * corpus.
+     *
+     * Ojo con la consecuencia, que es matematica y conviene tenerla escrita:
+     * sacar filas solo puede BAJAR el `cosMax`. Asi que la curaduria nunca puede
+     * agregar filtraciones al gate, y solo puede agregar abstenciones. El costo
+     * esta acotado por construccion y es el unico numero que hay que vigilar.
+     */
     this.filasPorVoz = { leonardo: [], richter: [] };
-    this.meta.voice.forEach((v, i) => this.filasPorVoz[v].push(i));
+    this.meta.voice.forEach((v, i) => {
+      // Dos clases distintas, un solo mecanismo: inventarios de Leonardo que no
+      // contestan nada (D-098) y aparato de Richter en otro idioma que no puede
+      // servir de evidencia mostrable (D-108).
+      if (curar && FUERA_DEL_INDICE.has(this.chunks[i].utility ?? "")) return;
+      this.filasPorVoz[v].push(i);
+    });
   }
 
   /** Coseno de la consulta contra cada fila del subconjunto pedido. */
@@ -103,8 +189,22 @@ export class Corpus {
     return out;
   }
 
+  /**
+   * Se despojan los acentos ANTES de partir en tokens. Sin eso la regex
+   * `[a-z]...` no matchea vocales acentuadas ni ñ, y una consulta castellana se
+   * fragmentaba: "cómo" -> "c" + "mo", metiendo el token basura "mo" en el
+   * indice invertido ingles y perturbando el orden de RRF con coincidencias sin
+   * sentido. El corpus es ingles, asi que BM25 aporta poco cross-lingue por
+   * construccion —solo nombres propios compartidos: "Milan", "Ludovico"—, pero
+   * una cosa es aportar poco y otra aportar ruido.
+   *
+   * El indice BM25 esta precomputado con la version anterior; para texto ingles
+   * el despojo es practicamente identidad, asi que el efecto real es del lado de
+   * la consulta, que es donde estaba el defecto.
+   */
   tokenizar(texto: string): string[] {
-    return (texto.toLowerCase().match(/[a-z][a-z'\-]*/g) ?? [])
+    const plano = texto.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
+    return (plano.match(/[a-z][a-z'\-]*/g) ?? [])
       .filter((t) => t.length > 1 && !this.stop.has(t));
   }
 
@@ -169,6 +269,33 @@ export class Corpus {
              nums.has(c.annotatesPassage) && c.utility !== "apparatus");
   }
 }
+
+/**
+ * Los rangos de numeros de Richter que trae una etiqueta entre parentesis y al
+ * final: "(19-20, 40-50)", "(507-508, 585)", "(1120-1131)".
+ *
+ * VIVE ACA, Y NO EN CADA CONSUMIDOR, a proposito. La escriben dos fuentes
+ * distintas —`expected_topic` en `dataset.jsonl` y las entradas del indice de
+ * contenidos en `medir_sugeridas.ts`— y la leen el recall de la categoria B y la
+ * validacion de las preguntas sugeridas. Son cuatro lugares donde podria haber
+ * cuatro copias que se separan en silencio, que es exactamente como dos copias
+ * de `palabras()` reportaron 41,7% de citas inventadas donde habia 0%.
+ */
+export function rangosDeRichter(etiqueta: string): [number, number][] {
+  const par = etiqueta.match(/\(([^)]*)\)\s*$/);
+  if (!par) return [];
+  const out: [number, number][] = [];
+  for (const item of par[1].split(",")) {
+    const t = item.trim();
+    const m = t.match(/^(\d+)\s*[-—]\s*(\d+)$/) ?? t.match(/^(\d+)$/);
+    if (m) out.push([Number(m[1]), Number(m[2] ?? m[1])]);
+  }
+  return out;
+}
+
+/** Si alguno de los numeros cae dentro de alguno de los rangos. */
+export const caeEnRangos = (nums: number[], rangos: [number, number][]): boolean =>
+  nums.some((n) => rangos.some(([a, b]) => n >= a && n <= b));
 
 /** Recorta un pasaje a ~200 palabras. Es presupuesto de capacidad (D-020, D-023). */
 export function recortar(texto: string, maxPalabras = 200): string {

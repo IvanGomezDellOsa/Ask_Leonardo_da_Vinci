@@ -10,7 +10,23 @@
     "evals": "tsx evals/run.ts",
     "evals:juzgar": "tsx evals/verificar_respuestas.ts",
     "evals:muestra": "tsx evals/muestra_para_etiquetar.ts",
-    "evals:acuerdo": "tsx evals/acuerdo.ts"
+    "evals:citas": "tsx evals/fidelidad_cita.ts",
+    "traducir": "tsx tools/traducir_corpus.ts",
+    "evals:citas-corpus": "tsx evals/citas_vs_corpus.ts",
+    "evals:continuacion": "tsx evals/continuacion.ts",
+    "evals:paquete": "tsx evals/paquete_juez.ts",
+    "evals:adjudicar": "tsx evals/adjudicar.ts",
+    "traducir:verificar": "tsx tools/verificar_traduccion.ts",
+    "evals:recall": "tsx evals/recall_k.ts",
+    "evals:compuerta": "tsx evals/compuerta.ts",
+    "curar": "tsx tools/curar_corpus.ts",
+    "indexar": "tsx tools/indexar.ts",
+    "indice": "tsx tools/indice_decisiones.ts",
+    "evals:calibrar": "tsx evals/calibrar_tau.ts",
+    "salud": "tsx evals/salud.ts",
+    "sugeridas": "tsx tools/medir_sugeridas.ts",
+    "alcance": "tsx tools/alcance.ts",
+    "proponer": "tsx tools/proponer.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6"

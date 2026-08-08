@@ -11,8 +11,8 @@
 
 import { readFileSync } from "node:fs";
 import { pipeline } from "@huggingface/transformers";
-import { Corpus, recortar } from "../src/lib/retrieval.js";
-import { cargarUmbrales, decidir, Idioma } from "../src/lib/grounding.js";
+import { recortar } from "../src/lib/retrieval.js";
+import { cargarMotor, decidirCon, Idioma } from "../src/lib/grounding.js";
 import { PresupuestoTpm, construirPrompt, generar, groq } from "../src/lib/llm.js";
 
 const ART = new URL("../artifacts/", import.meta.url);
@@ -51,8 +51,11 @@ const cascada = claveGroq
   ? [groq("llama-3.3-70b-versatile", claveGroq), groq("llama-3.1-8b-instant", claveGroq)]
   : [];
 
-const corpus = new Corpus(ART);
-const umbrales = cargarUmbrales(ART);
+/**
+ * Un motor con un índice por idioma (D-107). Antes era un solo Corpus inglés y
+ * la consulta castellana buscaba cross-lingüe.
+ */
+const motor = cargarMotor(ART);
 const extractor = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
 
 async function embeber(texto: string): Promise<Float32Array> {
@@ -62,7 +65,7 @@ async function embeber(texto: string): Promise<Float32Array> {
 }
 
 async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
-  const d = decidir(corpus, umbrales, texto, await embeber(texto), idioma);
+  const d = decidirCon(motor, texto, await embeber(texto), idioma);
   const etq = esperado ? ` [${esperado}]` : "";
   console.log(`\n${"─".repeat(78)}\n[${idioma}]${etq} ${texto}`);
 

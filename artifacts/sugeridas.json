@@ -1,0 +1,125 @@
+{
+  "regla": "D-088/D-102: pasa el gate en es y en, y el top-3 contesta el tema prometido — por rango de Richter (mecanico) o por lectura adjudicada con motivo. Comprobado con `npm run sugeridas`.",
+  "generado": "2026-08-08",
+  "aceptadas": [
+    {
+      "tema": "cielo azul",
+      "es": "¿Por qué el cielo es azul?",
+      "en": "Why is the sky blue?",
+      "toc": "On the colour of the atmosphere (300-307)",
+      "margenMinimo": 0.0622,
+      "palabras": 107,
+      "via": "rango"
+    },
+    {
+      "tema": "ojo",
+      "es": "¿Cómo funciona el ojo?",
+      "en": "How does the eye work?",
+      "toc": "The function of the eye (19-29)",
+      "margenMinimo": 0.0521,
+      "palabras": 358,
+      "via": "lectura",
+      "motivo": "trae R-51 «IN WHAT WAY THE EYE SEES OBJECTS PLACED IN FRONT OF IT» y R-74 sobre refracción en el ojo: contesta la pregunta, sólo que fuera del 19-29 nominal"
+    },
+    {
+      "tema": "árboles",
+      "es": "¿Cómo crecen las ramas de los árboles?",
+      "en": "How do the branches of trees grow?",
+      "toc": "The law of proportion in the growth of branches (394-411)",
+      "margenMinimo": 0.0448,
+      "palabras": 205,
+      "via": "rango"
+    },
+    {
+      "tema": "batalla",
+      "es": "¿Cómo se pinta una batalla?",
+      "en": "How do you paint a battle?",
+      "toc": "Of painting battle-pieces (601-603)",
+      "margenMinimo": 0.0419,
+      "palabras": 789,
+      "via": "rango"
+    },
+    {
+      "tema": "aprender",
+      "es": "¿Cómo se aprende a pintar?",
+      "en": "How does one learn to paint?",
+      "toc": "The course of instruction for an artist (483-497)",
+      "margenMinimo": 0.0339,
+      "palabras": 373,
+      "via": "rango"
+    },
+    {
+      "tema": "luna",
+      "es": "¿Por qué brilla la luna?",
+      "en": "Why does the moon shine?",
+      "toc": "The Moon (892-918)",
+      "margenMinimo": 0.0291,
+      "palabras": 542,
+      "via": "rango"
+    },
+    {
+      "tema": "diluvio",
+      "es": "¿Cómo se representa un diluvio?",
+      "en": "How is a deluge to be represented?",
+      "toc": "Of representing the deluge (607-609)",
+      "margenMinimo": 0.0267,
+      "palabras": 611,
+      "via": "rango"
+    },
+    {
+      "tema": "sombra",
+      "es": "¿Cómo debe estudiarse la sombra?",
+      "en": "How should shadow be studied?",
+      "toc": "Six books on Light and Shade (110-131)",
+      "margenMinimo": 0.0258,
+      "palabras": 326,
+      "via": "lectura",
+      "motivo": "trae gradación, intensidad y relación entre sombra primaria y derivada; es el tema exacto, fuera del rango de los prolegómenos"
+    },
+    {
+      "tema": "pintura vs escultura",
+      "es": "¿Qué es más difícil, pintar o esculpir?",
+      "en": "Which is harder, painting or sculpture?",
+      "toc": "Painting is superior to sculpture (655-656)",
+      "margenMinimo": 0.025,
+      "palabras": 447,
+      "via": "rango"
+    },
+    {
+      "tema": "proporciones",
+      "es": "¿Cuáles son las proporciones perfectas del cuerpo humano?",
+      "en": "What are the perfect proportions of the human body?",
+      "toc": "The proportions of the whole figure (308-343)",
+      "margenMinimo": 0.0238,
+      "palabras": 512,
+      "via": "rango"
+    },
+    {
+      "tema": "conchas en montañas",
+      "es": "¿Por qué hay conchas marinas en la cima de las montañas?",
+      "en": "Why are sea shells found on mountain tops?",
+      "toc": "Geological problems (985-994)",
+      "margenMinimo": 0.0211,
+      "palabras": 616,
+      "via": "rango"
+    },
+    {
+      "tema": "emociones",
+      "es": "¿Cómo se pintan las emociones en un rostro?",
+      "en": "How are emotions painted on a face?",
+      "toc": "Of representing the emotions (584)",
+      "margenMinimo": 0.0123,
+      "palabras": 228,
+      "via": "rango"
+    },
+    {
+      "tema": "agua",
+      "es": "¿Cómo se mueve el agua?",
+      "en": "How does water move?",
+      "toc": "Of the nature of water (930-960)",
+      "margenMinimo": 0.0111,
+      "palabras": 339,
+      "via": "rango"
+    }
+  ]
+}

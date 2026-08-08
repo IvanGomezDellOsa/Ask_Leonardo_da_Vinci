@@ -1,0 +1,1748 @@
+{
+  "regla": "Se consulta cada título de Richter por su propio nombre y se comprueba que el top-3 traiga sus propios pasajes, en es y en. La verdad son los richterNos del propio tema: no hay etiqueta humana. Ver D-104.",
+  "generado": "2026-08-08",
+  "resumen": {
+    "temas": 375,
+    "ambos": 345,
+    "soloUno": 26,
+    "ninguno": 4
+  },
+  "pool": [
+    {
+      "titulo": "The effect of light or dark backgrounds on the apparent size of objects",
+      "tituloEs": "El efecto de fondos claros u oscuros sobre el tamaño aparente de los objetos",
+      "chunks": 10,
+      "palabras": 980,
+      "margenMinimo": 0.1004
+    },
+    {
+      "titulo": "THEORY OF COLOURS The reciprocal effects of colours on objects placed opposite each other",
+      "tituloEs": "TEORÍA DE LOS COLORES Los efectos recíprocos de los colores sobre objetos colocados uno frente a otro",
+      "chunks": 9,
+      "palabras": 677,
+      "margenMinimo": 0.0953
+    },
+    {
+      "titulo": "Differences of perception by one eye and by both eyes",
+      "tituloEs": "Diferencias de percepción por un ojo y por ambos ojos",
+      "chunks": 4,
+      "palabras": 272,
+      "margenMinimo": 0.0921
+    },
+    {
+      "titulo": "The relative size of objects with regard to their distance from the eye",
+      "tituloEs": "El tamaño relativo de los objetos con respecto a su distancia del ojo",
+      "chunks": 6,
+      "palabras": 296,
+      "margenMinimo": 0.0907
+    },
+    {
+      "titulo": "Demonstration of perspective by means of a vertical glass plane",
+      "tituloEs": "Demostración de la perspectiva mediante un plano de vidrio vertical",
+      "chunks": 3,
+      "palabras": 370,
+      "margenMinimo": 0.0844
+    },
+    {
+      "titulo": "The proportions of light and shade in a leaf",
+      "tituloEs": "Las proporciones de luz y sombra en una hoja",
+      "chunks": 4,
+      "palabras": 380,
+      "margenMinimo": 0.0824
+    },
+    {
+      "titulo": "The law of proportion in the growth of the branches",
+      "tituloEs": "La ley de proporción en el crecimiento de las ramas",
+      "chunks": 6,
+      "palabras": 331,
+      "margenMinimo": 0.0812
+    },
+    {
+      "titulo": "Different sorts of derived shadows",
+      "tituloEs": "DIFERENTES CLASES DE SOMBRAS DERIVADAS",
+      "chunks": 3,
+      "palabras": 505,
+      "margenMinimo": 0.0793
+    },
+    {
+      "titulo": "The importance of light and shade in the Prospettiva de' perdimenti",
+      "tituloEs": "La importancia de la luz y la sombra en la Prospettiva de' perdimenti",
+      "chunks": 5,
+      "palabras": 302,
+      "margenMinimo": 0.0788
+    },
+    {
+      "titulo": "On the relative intensity of derived shadows",
+      "tituloEs": "Sobre la intensidad relativa de las sombras derivadas",
+      "chunks": 5,
+      "palabras": 536,
+      "margenMinimo": 0.0786
+    },
+    {
+      "titulo": "Book 15 of matters worn away by water",
+      "tituloEs": "Libro 15 de las materias desgastadas por el agua",
+      "chunks": 7,
+      "palabras": 792,
+      "margenMinimo": 0.0785
+    },
+    {
+      "titulo": "Definition of the nature of shadows",
+      "tituloEs": "Definición de la naturaleza de las sombras",
+      "chunks": 4,
+      "palabras": 367,
+      "margenMinimo": 0.0782
+    },
+    {
+      "titulo": "The proportions of light and shade in trees",
+      "tituloEs": "Las proporciones de luz y sombra en los árboles",
+      "chunks": 5,
+      "palabras": 592,
+      "margenMinimo": 0.0773
+    },
+    {
+      "titulo": "The necessity of anatomical knowledge",
+      "tituloEs": "La necesidad del conocimiento anatómico",
+      "chunks": 2,
+      "palabras": 254,
+      "margenMinimo": 0.0769
+    },
+    {
+      "titulo": "Of depicting a tempest",
+      "tituloEs": "De cómo representar una tempestad",
+      "chunks": 2,
+      "palabras": 361,
+      "margenMinimo": 0.0764
+    },
+    {
+      "titulo": "The laws of nutrition and the support of life (843-848)",
+      "tituloEs": "Las leyes de la nutrición y el sostén de la vida (843-848)",
+      "chunks": 5,
+      "palabras": 535,
+      "margenMinimo": 0.0762
+    },
+    {
+      "titulo": "Plans for the representation of muscles by drawings (803-809)",
+      "tituloEs": "Planes para la representación de los músculos por dibujos (803-809)",
+      "chunks": 6,
+      "palabras": 576,
+      "margenMinimo": 0.0757
+    },
+    {
+      "titulo": "Proportions of the head and face",
+      "tituloEs": "Proporciones de la cabeza y la cara",
+      "chunks": 7,
+      "palabras": 1028,
+      "margenMinimo": 0.0755
+    },
+    {
+      "titulo": "Refutation of Pliny's theory as to the saltness of the sea (946. 947)",
+      "tituloEs": "Refutación de la teoría de Plinio sobre la salinidad del mar (946. 947)",
+      "chunks": 2,
+      "palabras": 682,
+      "margenMinimo": 0.0749
+    },
+    {
+      "titulo": "Light and shadow with regard to the position of the eye",
+      "tituloEs": "Luz y sombra con respecto a la posición del ojo",
+      "chunks": 5,
+      "palabras": 257,
+      "margenMinimo": 0.0747
+    },
+    {
+      "titulo": "Science, its principles and rules (1148—1161)",
+      "tituloEs": "Ciencia, sus principios y reglas (1148—1161)",
+      "chunks": 10,
+      "palabras": 437,
+      "margenMinimo": 0.0747
+    },
+    {
+      "titulo": "The rules of aerial perspective",
+      "tituloEs": "Las reglas de la perspectiva aérea",
+      "chunks": 3,
+      "palabras": 330,
+      "margenMinimo": 0.0734
+    },
+    {
+      "titulo": "Marcellus and many others praise the sun",
+      "tituloEs": "Marcelo y muchos otros alaban el sol",
+      "chunks": 4,
+      "palabras": 483,
+      "margenMinimo": 0.0733
+    },
+    {
+      "titulo": "The difference between light and lustre",
+      "tituloEs": "La diferencia entre luz y lustre",
+      "chunks": 4,
+      "palabras": 360,
+      "margenMinimo": 0.0729
+    },
+    {
+      "titulo": "On relative proportion of light and shadows",
+      "tituloEs": "Sobre la proporción relativa de la luz y las sombras",
+      "chunks": 6,
+      "palabras": 934,
+      "margenMinimo": 0.0727
+    },
+    {
+      "titulo": "The effect of wind on trees",
+      "tituloEs": "El efecto del viento en los árboles",
+      "chunks": 4,
+      "palabras": 234,
+      "margenMinimo": 0.0726
+    },
+    {
+      "titulo": "How to prove that the earth is a planet (865-867)",
+      "tituloEs": "Cómo probar que la tierra es un planeta (865-867)",
+      "chunks": 8,
+      "palabras": 1248,
+      "margenMinimo": 0.0716
+    },
+    {
+      "titulo": "Proportions of the leg",
+      "tituloEs": "Proporciones de la pierna",
+      "chunks": 3,
+      "palabras": 667,
+      "margenMinimo": 0.071
+    },
+    {
+      "titulo": "The relative thickness of the branches to the trunk",
+      "tituloEs": "El grosor relativo de las ramas respecto al tronco",
+      "chunks": 3,
+      "palabras": 236,
+      "margenMinimo": 0.071
+    },
+    {
+      "titulo": "Of the proportion of the mass of water to that of the earth (937. 938)",
+      "tituloEs": "De la proporción de la masa de agua a la de la tierra (937. 938)",
+      "chunks": 2,
+      "palabras": 203,
+      "margenMinimo": 0.0709
+    },
+    {
+      "titulo": "On the relation of derived and primary shadow",
+      "tituloEs": "Sobre la relación de la sombra derivada y la primaria",
+      "chunks": 3,
+      "palabras": 201,
+      "margenMinimo": 0.0708
+    },
+    {
+      "titulo": "The distribution of light and shade",
+      "tituloEs": "La distribución de la luz y la sombra",
+      "chunks": 5,
+      "palabras": 353,
+      "margenMinimo": 0.0704
+    },
+    {
+      "titulo": "The effects of morning light",
+      "tituloEs": "Los efectos de la luz matinal",
+      "chunks": 5,
+      "palabras": 548,
+      "margenMinimo": 0.07
+    },
+    {
+      "titulo": "Of the surface of the water in relation to the globe (933-936)",
+      "tituloEs": "De la superficie del agua en relación con el globo (933-936)",
+      "chunks": 4,
+      "palabras": 558,
+      "margenMinimo": 0.0699
+    },
+    {
+      "titulo": "The question of the true and of the apparent size of the sun (879-884)",
+      "tituloEs": "La cuestión del tamaño verdadero y aparente del sol (879-884)",
+      "chunks": 2,
+      "palabras": 415,
+      "margenMinimo": 0.0695
+    },
+    {
+      "titulo": "Fables on animals (1265-1270)",
+      "tituloEs": "Fábulas sobre animales (1265-1270)",
+      "chunks": 6,
+      "palabras": 909,
+      "margenMinimo": 0.0695
+    },
+    {
+      "titulo": "Experiments on the relation of light and shadow within a room",
+      "tituloEs": "Experimentos sobre la relación de la luz y la sombra dentro de una habitación",
+      "chunks": 4,
+      "palabras": 438,
+      "margenMinimo": 0.0692
+    },
+    {
+      "titulo": "Suggestions for the arrangement of MSS. treating of particular subjects",
+      "tituloEs": "Sugerencias para la disposición de manuscritos que tratan de asuntos particulares",
+      "chunks": 4,
+      "palabras": 165,
+      "margenMinimo": 0.0691
+    },
+    {
+      "titulo": "Different sorts of light",
+      "tituloEs": "Diferentes clases de luz",
+      "chunks": 2,
+      "palabras": 186,
+      "margenMinimo": 0.0686
+    },
+    {
+      "titulo": "The gradations of shade and colour in leaves",
+      "tituloEs": "Las gradaciones de sombra y color en las hojas",
+      "chunks": 5,
+      "palabras": 506,
+      "margenMinimo": 0.0684
+    },
+    {
+      "titulo": "Comparative study of the structure of bones and of the action of muscles (822-826)",
+      "tituloEs": "Estudio comparativo de la estructura de los huesos y de la acción de los músculos (822-826)",
+      "chunks": 6,
+      "palabras": 518,
+      "margenMinimo": 0.0683
+    },
+    {
+      "titulo": "The course of instruction for an artist",
+      "tituloEs": "El curso de instrucción para un artista",
+      "chunks": 3,
+      "palabras": 163,
+      "margenMinimo": 0.0681
+    },
+    {
+      "titulo": "The comparative size of the image depends on the amount of light",
+      "tituloEs": "El tamaño comparativo de la imagen depende de la cantidad de luz",
+      "chunks": 10,
+      "palabras": 927,
+      "margenMinimo": 0.068
+    },
+    {
+      "titulo": "The production of the pyramid of vision",
+      "tituloEs": "La producción de la pirámide de visión",
+      "chunks": 7,
+      "palabras": 708,
+      "margenMinimo": 0.0677
+    },
+    {
+      "titulo": "The effect of colours in the camera obscura",
+      "tituloEs": "El efecto de los colores en la cámara oscura",
+      "chunks": 2,
+      "palabras": 331,
+      "margenMinimo": 0.0676
+    },
+    {
+      "titulo": "How to measure the pyramid of vision",
+      "tituloEs": "Cómo medir la pirámide de visión",
+      "chunks": 1,
+      "palabras": 226,
+      "margenMinimo": 0.0674
+    },
+    {
+      "titulo": "The right position of the artist, when painting and of the spectator",
+      "tituloEs": "La posición correcta del artista, al pintar y del espectador",
+      "chunks": 8,
+      "palabras": 1413,
+      "margenMinimo": 0.0674
+    },
+    {
+      "titulo": "Proportions of the arm",
+      "tituloEs": "Proporciones del brazo",
+      "chunks": 7,
+      "palabras": 1041,
+      "margenMinimo": 0.067
+    },
+    {
+      "titulo": "On the intensity of shadows as dependent on the distance from the light",
+      "tituloEs": "SOBRE LA INTENSIDAD DE LAS SOMBRAS SEGÚN LA DISTANCIA DE LA LUZ",
+      "chunks": 3,
+      "palabras": 170,
+      "margenMinimo": 0.0669
+    },
+    {
+      "titulo": "The proper distance of objects from the eye",
+      "tituloEs": "La distancia adecuada de los objetos al ojo",
+      "chunks": 2,
+      "palabras": 282,
+      "margenMinimo": 0.0663
+    },
+    {
+      "titulo": "Relative proportions of the hand and foot",
+      "tituloEs": "Proporciones relativas de la mano y del pie",
+      "chunks": 1,
+      "palabras": 390,
+      "margenMinimo": 0.0662
+    },
+    {
+      "titulo": "The movement of the arm",
+      "tituloEs": "El movimiento del brazo",
+      "chunks": 5,
+      "palabras": 410,
+      "margenMinimo": 0.0657
+    },
+    {
+      "titulo": "The angle of sight varies with the distance",
+      "tituloEs": "El ángulo de visión varía con la distancia",
+      "chunks": 3,
+      "palabras": 282,
+      "margenMinimo": 0.0655
+    },
+    {
+      "titulo": "The juxtaposition of light and shade",
+      "tituloEs": "La yuxtaposición de la luz y la sombra",
+      "chunks": 2,
+      "palabras": 218,
+      "margenMinimo": 0.0655
+    },
+    {
+      "titulo": "The apparent size of objects denned by calculation",
+      "tituloEs": "El tamaño aparente de los objetos definido por cálculo",
+      "chunks": 8,
+      "palabras": 903,
+      "margenMinimo": 0.0652
+    },
+    {
+      "titulo": "On the best light for painting",
+      "tituloEs": "Sobre la mejor luz para pintar",
+      "chunks": 8,
+      "palabras": 598,
+      "margenMinimo": 0.0649
+    },
+    {
+      "titulo": "The origin of the sand in rivers (977. 978)",
+      "tituloEs": "El origen de la arena en los ríos (977. 978)",
+      "chunks": 2,
+      "palabras": 449,
+      "margenMinimo": 0.0641
+    },
+    {
+      "titulo": "Advantages in the structure of the eye in certain animals (828-831)",
+      "tituloEs": "Ventajas en la estructura del ojo en ciertos animales (828-831)",
+      "chunks": 4,
+      "palabras": 629,
+      "margenMinimo": 0.0636
+    },
+    {
+      "titulo": "Painting is superior to sculpture",
+      "tituloEs": "La pintura es superior a la escultura",
+      "chunks": 2,
+      "palabras": 275,
+      "margenMinimo": 0.0626
+    },
+    {
+      "titulo": "Proportions of the head seen in front",
+      "tituloEs": "Proporciones de la cabeza vista de frente",
+      "chunks": 3,
+      "palabras": 375,
+      "margenMinimo": 0.0625
+    },
+    {
+      "titulo": "Explanation of the lumen cinereum in the moon",
+      "tituloEs": "Explicación del lumen cinereum en la luna",
+      "chunks": 4,
+      "palabras": 992,
+      "margenMinimo": 0.062
+    },
+    {
+      "titulo": "The movement of the human figure",
+      "tituloEs": "El movimiento de la figura humana",
+      "chunks": 7,
+      "palabras": 510,
+      "margenMinimo": 0.0616
+    },
+    {
+      "titulo": "Miscellaneous drafts of letters and personal records (1356—1368)",
+      "tituloEs": "Borradores varios de cartas y registros personales (1356—1368)",
+      "chunks": 8,
+      "palabras": 582,
+      "margenMinimo": 0.0614
+    },
+    {
+      "titulo": "On the shape of derived shadows",
+      "tituloEs": "Sobre la forma de las sombras derivadas",
+      "chunks": 9,
+      "palabras": 1020,
+      "margenMinimo": 0.061
+    },
+    {
+      "titulo": "The perception of the object depends on the direction of the eye",
+      "tituloEs": "La percepción del objeto depende de la dirección del ojo",
+      "chunks": 1,
+      "palabras": 287,
+      "margenMinimo": 0.061
+    },
+    {
+      "titulo": "Light and shade on clouds",
+      "tituloEs": "Luz y sombra en las nubes",
+      "chunks": 4,
+      "palabras": 461,
+      "margenMinimo": 0.0609
+    },
+    {
+      "titulo": "Light and shade on groups of trees",
+      "tituloEs": "Luz y sombra en grupos de árboles",
+      "chunks": 4,
+      "palabras": 306,
+      "margenMinimo": 0.0608
+    },
+    {
+      "titulo": "On the relative depth of cast shadows",
+      "tituloEs": "Sobre la profundidad relativa de las sombras proyectadas",
+      "chunks": 3,
+      "palabras": 228,
+      "margenMinimo": 0.0608
+    },
+    {
+      "titulo": "The preparation of oils",
+      "tituloEs": "La preparación de los aceites",
+      "chunks": 5,
+      "palabras": 622,
+      "margenMinimo": 0.0607
+    },
+    {
+      "titulo": "Allegorical representations referring to the duke of Milan",
+      "tituloEs": "Representaciones alegóricas referentes al duque de Milán",
+      "chunks": 3,
+      "palabras": 239,
+      "margenMinimo": 0.0606
+    },
+    {
+      "titulo": "General suggestions for historical pictures",
+      "tituloEs": "Sugerencias generales para cuadros históricos",
+      "chunks": 4,
+      "palabras": 166,
+      "margenMinimo": 0.0605
+    },
+    {
+      "titulo": "The function of the eye, as explained by the camera obscura",
+      "tituloEs": "La función del ojo, explicada por la cámara oscura",
+      "chunks": 2,
+      "palabras": 665,
+      "margenMinimo": 0.0602
+    },
+    {
+      "titulo": "On the relative size of cast shadows",
+      "tituloEs": "Sobre el tamaño relativo de las sombras proyectadas",
+      "chunks": 2,
+      "palabras": 278,
+      "margenMinimo": 0.0601
+    },
+    {
+      "titulo": "On the choice of light for a picture",
+      "tituloEs": "Sobre la elección de la luz para un cuadro",
+      "chunks": 6,
+      "palabras": 886,
+      "margenMinimo": 0.06
+    },
+    {
+      "titulo": "The elements of perspective:--of the point",
+      "tituloEs": "Los elementos de la perspectiva:—del punto",
+      "chunks": 4,
+      "palabras": 334,
+      "margenMinimo": 0.0599
+    },
+    {
+      "titulo": "Tinned iron,—pierced iron",
+      "tituloEs": "Hierro estañado, -hierro perforado",
+      "chunks": 4,
+      "palabras": 401,
+      "margenMinimo": 0.0589
+    },
+    {
+      "titulo": "The relative height of the surface of the sea to that of the land (942-945)",
+      "tituloEs": "La altura relativa de la superficie del mar respecto a la de la tierra (942-945)",
+      "chunks": 4,
+      "palabras": 540,
+      "margenMinimo": 0.0588
+    },
+    {
+      "titulo": "The use of swimming belts",
+      "tituloEs": "El uso de cinturones de natación",
+      "chunks": 1,
+      "palabras": 150,
+      "margenMinimo": 0.0586
+    },
+    {
+      "titulo": "The function of the eye",
+      "tituloEs": "La función del ojo",
+      "chunks": 3,
+      "palabras": 275,
+      "margenMinimo": 0.0586
+    },
+    {
+      "titulo": "The movement of the torso",
+      "tituloEs": "El movimiento del torso",
+      "chunks": 7,
+      "palabras": 488,
+      "margenMinimo": 0.0576
+    },
+    {
+      "titulo": "Variability of the eye",
+      "tituloEs": "Variabilidad del ojo",
+      "chunks": 1,
+      "palabras": 172,
+      "margenMinimo": 0.0575
+    },
+    {
+      "titulo": "Propositions on Prospettiva de' perdimenti from MS. C",
+      "tituloEs": "Proposiciones sobre Prospettiva de' perdimenti del MS. C",
+      "chunks": 13,
+      "palabras": 663,
+      "margenMinimo": 0.0574
+    },
+    {
+      "titulo": "On bronze casting generally (731-740)",
+      "tituloEs": "Sobre la fundición de bronce en general (731-740)",
+      "chunks": 21,
+      "palabras": 2093,
+      "margenMinimo": 0.0572
+    },
+    {
+      "titulo": "The forms of trees",
+      "tituloEs": "Las formas de los árboles",
+      "chunks": 4,
+      "palabras": 255,
+      "margenMinimo": 0.0572
+    },
+    {
+      "titulo": "Remarks on natural phenomena in and near Milan (1021. 1022)",
+      "tituloEs": "Observaciones sobre fenómenos naturales en y cerca de Milán (1021. 1022)",
+      "chunks": 2,
+      "palabras": 168,
+      "margenMinimo": 0.0572
+    },
+    {
+      "titulo": "Considerations as to the size of the sun (886-891)",
+      "tituloEs": "Consideraciones sobre el tamaño del sol (886-891)",
+      "chunks": 4,
+      "palabras": 332,
+      "margenMinimo": 0.0569
+    },
+    {
+      "titulo": "Notes on the Sforzesca near Vigevano (1024-1028)",
+      "tituloEs": "Notas sobre la Sforzesca cerca de Vigevano (1024-1028)",
+      "chunks": 4,
+      "palabras": 203,
+      "margenMinimo": 0.0568
+    },
+    {
+      "titulo": "The formation of mountains (979-983)",
+      "tituloEs": "La formación de las montañas (979-983)",
+      "chunks": 7,
+      "palabras": 535,
+      "margenMinimo": 0.0566
+    },
+    {
+      "titulo": "The selection of forms",
+      "tituloEs": "La selección de las formas",
+      "chunks": 6,
+      "palabras": 515,
+      "margenMinimo": 0.0561
+    },
+    {
+      "titulo": "The distribution of time for studying",
+      "tituloEs": "La distribución del tiempo para estudiar",
+      "chunks": 3,
+      "palabras": 342,
+      "margenMinimo": 0.0561
+    },
+    {
+      "titulo": "On the preparation and use of colours",
+      "tituloEs": "Sobre la preparación y uso de los colores",
+      "chunks": 9,
+      "palabras": 388,
+      "margenMinimo": 0.0561
+    },
+    {
+      "titulo": "How to acquire universality",
+      "tituloEs": "Cómo adquirir universalidad",
+      "chunks": 4,
+      "palabras": 425,
+      "margenMinimo": 0.0556
+    },
+    {
+      "titulo": "On corpulency and leanness (809-811)",
+      "tituloEs": "Sobre la corpulencia y la delgadez (809-811)",
+      "chunks": 3,
+      "palabras": 312,
+      "margenMinimo": 0.055
+    },
+    {
+      "titulo": "On the use of dark and light colours in painting",
+      "tituloEs": "Sobre el uso de colores oscuros y claros en la pintura",
+      "chunks": 3,
+      "palabras": 328,
+      "margenMinimo": 0.0546
+    },
+    {
+      "titulo": "The insertion of the leaves",
+      "tituloEs": "La inserción de las hojas",
+      "chunks": 8,
+      "palabras": 1070,
+      "margenMinimo": 0.0546
+    },
+    {
+      "titulo": "On the human body in action",
+      "tituloEs": "Sobre el cuerpo humano en acción",
+      "chunks": 9,
+      "palabras": 782,
+      "margenMinimo": 0.0545
+    },
+    {
+      "titulo": "Estimates and preparatory studies for canals (1014. 1015)",
+      "tituloEs": "Cálculos y estudios preparatorios para canales (1014. 1015)",
+      "chunks": 2,
+      "palabras": 174,
+      "margenMinimo": 0.0544
+    },
+    {
+      "titulo": "The proportions vary at different ages",
+      "tituloEs": "Las proporciones varían a diferentes edades",
+      "chunks": 6,
+      "palabras": 1053,
+      "margenMinimo": 0.0543
+    },
+    {
+      "titulo": "How to pose figures",
+      "tituloEs": "Cómo posar figuras",
+      "chunks": 1,
+      "palabras": 247,
+      "margenMinimo": 0.0543
+    },
+    {
+      "titulo": "On the luminosity of the Earth in the universal space (874-878)",
+      "tituloEs": "Sobre la luminosidad de la Tierra en el espacio universal (874-878)",
+      "chunks": 5,
+      "palabras": 753,
+      "margenMinimo": 0.0541
+    },
+    {
+      "titulo": "On the proportion of light and shadow",
+      "tituloEs": "SOBRE LA PROPORCIÓN DE LUZ Y SOMBRA",
+      "chunks": 5,
+      "palabras": 215,
+      "margenMinimo": 0.0539
+    },
+    {
+      "titulo": "On the treatment of light for landscapes",
+      "tituloEs": "Sobre el tratamiento de la luz para paisajes",
+      "chunks": 7,
+      "palabras": 1025,
+      "margenMinimo": 0.0539
+    },
+    {
+      "titulo": "Definition of perspective",
+      "tituloEs": "Definición de la perspectiva",
+      "chunks": 1,
+      "palabras": 298,
+      "margenMinimo": 0.0538
+    },
+    {
+      "titulo": "On the productive power of minor artists",
+      "tituloEs": "Sobre el poder productivo de los artistas menores",
+      "chunks": 4,
+      "palabras": 362,
+      "margenMinimo": 0.0538
+    },
+    {
+      "titulo": "The distribution of light and shade with reference to the position of the spectator",
+      "tituloEs": "La distribución de luz y sombra con referencia a la posición del espectador",
+      "chunks": 3,
+      "palabras": 339,
+      "margenMinimo": 0.0533
+    },
+    {
+      "titulo": "The methods of aerial perspective",
+      "tituloEs": "Los métodos de la perspectiva aérea",
+      "chunks": 4,
+      "palabras": 593,
+      "margenMinimo": 0.0531
+    },
+    {
+      "titulo": "On the luminousity of the moon (892-901)",
+      "tituloEs": "Sobre la luminosidad de la luna (892-901)",
+      "chunks": 12,
+      "palabras": 2299,
+      "margenMinimo": 0.0531
+    },
+    {
+      "titulo": "General introductions to the book on painting",
+      "tituloEs": "Introducciones generales al libro sobre pintura",
+      "chunks": 5,
+      "palabras": 849,
+      "margenMinimo": 0.0526
+    },
+    {
+      "titulo": "On various helps in preparing a picture",
+      "tituloEs": "Sobre varias ayudas en la preparación de un cuadro",
+      "chunks": 10,
+      "palabras": 1487,
+      "margenMinimo": 0.0524
+    },
+    {
+      "titulo": "Experimental proof of the existence of the pyramid of sight",
+      "tituloEs": "Prueba experimental de la existencia de la pirámide de la vista",
+      "chunks": 3,
+      "palabras": 598,
+      "margenMinimo": 0.0523
+    },
+    {
+      "titulo": "Memoranda after 1500 (1414—1434)",
+      "tituloEs": "Memoranda después de 1500 (1414-1434)",
+      "chunks": 10,
+      "palabras": 353,
+      "margenMinimo": 0.0521
+    },
+    {
+      "titulo": "Notes on the Last Supper",
+      "tituloEs": "Notas sobre la Última Cena",
+      "chunks": 3,
+      "palabras": 182,
+      "margenMinimo": 0.0521
+    },
+    {
+      "titulo": "The fundamental laws of the solar system (859-864)",
+      "tituloEs": "Las leyes fundamentales del sistema solar (859-864)",
+      "chunks": 4,
+      "palabras": 370,
+      "margenMinimo": 0.0519
+    },
+    {
+      "titulo": "The characteristics of sea water (948. 949)",
+      "tituloEs": "Las características del agua de mar (948. 949)",
+      "chunks": 2,
+      "palabras": 198,
+      "margenMinimo": 0.0515
+    },
+    {
+      "titulo": "The proportions of the whole figure",
+      "tituloEs": "Las proporciones de toda la figura",
+      "chunks": 3,
+      "palabras": 237,
+      "margenMinimo": 0.0512
+    },
+    {
+      "titulo": "Physiological problems (814. 815)",
+      "tituloEs": "Problemas fisiológicos (814. 815)",
+      "chunks": 2,
+      "palabras": 156,
+      "margenMinimo": 0.0508
+    },
+    {
+      "titulo": "On the treatment of light for views of towns",
+      "tituloEs": "Sobre el tratamiento de la luz para vistas de ciudades",
+      "chunks": 5,
+      "palabras": 730,
+      "margenMinimo": 0.0508
+    },
+    {
+      "titulo": "On the alterations, caused in the courses of rivers by their confluence (972-974)",
+      "tituloEs": "Sobre las alteraciones, causadas en los cursos de los ríos por su confluencia (972-974)",
+      "chunks": 3,
+      "palabras": 374,
+      "margenMinimo": 0.0505
+    },
+    {
+      "titulo": "Inventories and accounts (1509-1545)",
+      "tituloEs": "Inventarios y cuentas (1509-1545)",
+      "chunks": 15,
+      "palabras": 835,
+      "margenMinimo": 0.0504
+    },
+    {
+      "titulo": "Draft of Letter to the Governor of Milan",
+      "tituloEs": "Borrador de carta al Gobernador de Milán",
+      "chunks": 9,
+      "palabras": 2374,
+      "margenMinimo": 0.0497
+    },
+    {
+      "titulo": "PERSPECTIVE OF DISAPPEARANCE Definition",
+      "tituloEs": "PERSPECTIVA DE DESAPARICIÓN Definición",
+      "chunks": 2,
+      "palabras": 316,
+      "margenMinimo": 0.0497
+    },
+    {
+      "titulo": "Fables on plants (1275-1279)",
+      "tituloEs": "Fábulas sobre plantas (1275-1279)",
+      "chunks": 52,
+      "palabras": 9522,
+      "margenMinimo": 0.0496
+    },
+    {
+      "titulo": "On the spots in the moon (903-907)",
+      "tituloEs": "Sobre las manchas en la luna (903-907)",
+      "chunks": 5,
+      "palabras": 786,
+      "margenMinimo": 0.0494
+    },
+    {
+      "titulo": "Different principles and plans of treatment",
+      "tituloEs": "Diferentes principios y planes de tratamiento",
+      "chunks": 5,
+      "palabras": 302,
+      "margenMinimo": 0.0485
+    },
+    {
+      "titulo": "Further complications in the derived shadows",
+      "tituloEs": "Complicaciones adicionales en las sombras derivadas",
+      "chunks": 4,
+      "palabras": 1240,
+      "margenMinimo": 0.0482
+    },
+    {
+      "titulo": "The straits of Gibraltar (1083-1085)",
+      "tituloEs": "El estrecho de Gibraltar (1083-1085)",
+      "chunks": 7,
+      "palabras": 648,
+      "margenMinimo": 0.0481
+    },
+    {
+      "titulo": "Of appropriate gestures",
+      "tituloEs": "De los gestos apropiados",
+      "chunks": 8,
+      "palabras": 1042,
+      "margenMinimo": 0.0477
+    },
+    {
+      "titulo": "On the colour of the atmosphere",
+      "tituloEs": "Sobre el color de la atmósfera",
+      "chunks": 9,
+      "palabras": 1771,
+      "margenMinimo": 0.0472
+    },
+    {
+      "titulo": "Drafts of Letters to Lodovico il Moro (1340-1345)",
+      "tituloEs": "Borradores de Cartas a Lodovico il Moro (1340-1345)",
+      "chunks": 6,
+      "palabras": 1182,
+      "margenMinimo": 0.0466
+    },
+    {
+      "titulo": "The intersection of the rays",
+      "tituloEs": "La intersección de los rayos",
+      "chunks": 6,
+      "palabras": 1456,
+      "margenMinimo": 0.0463
+    },
+    {
+      "titulo": "Of the light on the face",
+      "tituloEs": "De la luz en el rostro",
+      "chunks": 3,
+      "palabras": 324,
+      "margenMinimo": 0.0461
+    },
+    {
+      "titulo": "Vitruvius' scheme of proportions",
+      "tituloEs": "El esquema de proporciones de Vitruvio",
+      "chunks": 1,
+      "palabras": 384,
+      "margenMinimo": 0.0459
+    },
+    {
+      "titulo": "Experiments with the mirror",
+      "tituloEs": "Experimentos con el espejo",
+      "chunks": 3,
+      "palabras": 313,
+      "margenMinimo": 0.0457
+    },
+    {
+      "titulo": "Reflections on Nature (1217-1219)",
+      "tituloEs": "Reflexiones sobre la Naturaleza (1217-1219)",
+      "chunks": 47,
+      "palabras": 5703,
+      "margenMinimo": 0.0457
+    },
+    {
+      "titulo": "The appearance of trees in the distance",
+      "tituloEs": "La apariencia de los árboles en la distancia",
+      "chunks": 2,
+      "palabras": 475,
+      "margenMinimo": 0.0456
+    },
+    {
+      "titulo": "Memoranda before 1500 (1379-l413)",
+      "tituloEs": "Memoranda antes de 1500 (1379-1413)",
+      "chunks": 12,
+      "palabras": 463,
+      "margenMinimo": 0.0455
+    },
+    {
+      "titulo": "ON Gradations of strength in the shadows",
+      "tituloEs": "SOBRE LAS GRADACIONES DE FUERZA EN LAS SOMBRAS",
+      "chunks": 2,
+      "palabras": 473,
+      "margenMinimo": 0.0449
+    },
+    {
+      "titulo": "The ebb and flow of the tide (955-960)",
+      "tituloEs": "El flujo y reflujo de la marea (955-960)",
+      "chunks": 6,
+      "palabras": 897,
+      "margenMinimo": 0.0449
+    },
+    {
+      "titulo": "How to acquire practice",
+      "tituloEs": "Cómo adquirir práctica",
+      "chunks": 1,
+      "palabras": 256,
+      "margenMinimo": 0.0448
+    },
+    {
+      "titulo": "Canals in connection with the Arno (1001-1008)",
+      "tituloEs": "Canales en relación con el Arno (1001-1008)",
+      "chunks": 7,
+      "palabras": 749,
+      "margenMinimo": 0.0448
+    },
+    {
+      "titulo": "Some notes on medicine (851-855)",
+      "tituloEs": "Algunas notas sobre medicina (851-855)",
+      "chunks": 5,
+      "palabras": 184,
+      "margenMinimo": 0.044
+    },
+    {
+      "titulo": "Of time and its divisions (916-918)",
+      "tituloEs": "Del tiempo y sus divisiones (916-918)",
+      "chunks": 2,
+      "palabras": 187,
+      "margenMinimo": 0.0439
+    },
+    {
+      "titulo": "Canals in the Milanese (1009-1013)",
+      "tituloEs": "Canales en el Milanesado (1009-1013)",
+      "chunks": 5,
+      "palabras": 248,
+      "margenMinimo": 0.0438
+    },
+    {
+      "titulo": "Miscellaneous Records (1354. 1355)-",
+      "tituloEs": "Registros varios (1354. 1355)-",
+      "chunks": 2,
+      "palabras": 480,
+      "margenMinimo": 0.0437
+    },
+    {
+      "titulo": "Schemes for prophecies (1324-1329)",
+      "tituloEs": "Esquemas para profecías (1324-1329)",
+      "chunks": 8,
+      "palabras": 655,
+      "margenMinimo": 0.0433
+    },
+    {
+      "titulo": "Quotations and notes on books and authors (1469—1508)",
+      "tituloEs": "Citas y notas sobre libros y autores (1469—1508)",
+      "chunks": 22,
+      "palabras": 1581,
+      "margenMinimo": 0.0433
+    },
+    {
+      "titulo": "OF Gradations of light and shade",
+      "tituloEs": "De las gradaciones de luz y sombra",
+      "chunks": 1,
+      "palabras": 255,
+      "margenMinimo": 0.0423
+    },
+    {
+      "titulo": "Rules of Life (1188-1202)",
+      "tituloEs": "Reglas de Vida (1188-1202)",
+      "chunks": 10,
+      "palabras": 596,
+      "margenMinimo": 0.0423
+    },
+    {
+      "titulo": "Notes on places in Central Italy, visited in 1502 (1034-1054)",
+      "tituloEs": "Notas sobre lugares en Italia central, visitados en 1502 (1034-1054)",
+      "chunks": 10,
+      "palabras": 523,
+      "margenMinimo": 0.0421
+    },
+    {
+      "titulo": "On gradation of shadows",
+      "tituloEs": "Sobre la gradación de las sombras",
+      "chunks": 1,
+      "palabras": 243,
+      "margenMinimo": 0.0419
+    },
+    {
+      "titulo": "The cast shadow of trees",
+      "tituloEs": "La sombra proyectada de los árboles",
+      "chunks": 2,
+      "palabras": 451,
+      "margenMinimo": 0.0416
+    },
+    {
+      "titulo": "On the lighting of white objects",
+      "tituloEs": "Sobre la iluminación de los objetos blancos",
+      "chunks": 1,
+      "palabras": 195,
+      "margenMinimo": 0.0415
+    },
+    {
+      "titulo": "Painting is superior to poetry",
+      "tituloEs": "La pintura es superior a la poesía",
+      "chunks": 3,
+      "palabras": 842,
+      "margenMinimo": 0.0414
+    },
+    {
+      "titulo": "Ornaments and Decorations for feasts (703-705)",
+      "tituloEs": "Ornamentos y Decoraciones para fiestas (703-705)",
+      "chunks": 4,
+      "palabras": 169,
+      "margenMinimo": 0.0413
+    },
+    {
+      "titulo": "Of walking up and down",
+      "tituloEs": "De caminar hacia arriba y hacia abajo",
+      "chunks": 5,
+      "palabras": 500,
+      "margenMinimo": 0.0413
+    },
+    {
+      "titulo": "Decorations for feasts",
+      "tituloEs": "Decoraciones para fiestas",
+      "chunks": 37,
+      "palabras": 6230,
+      "margenMinimo": 0.041
+    },
+    {
+      "titulo": "ON On the shape of cast shadows",
+      "tituloEs": "SOBRE La forma de las sombras proyectadas",
+      "chunks": 4,
+      "palabras": 355,
+      "margenMinimo": 0.0406
+    },
+    {
+      "titulo": "On the limitations of painting",
+      "tituloEs": "Sobre las limitaciones de la pintura",
+      "chunks": 3,
+      "palabras": 659,
+      "margenMinimo": 0.0401
+    },
+    {
+      "titulo": "Of Greek fire",
+      "tituloEs": "Del fuego griego",
+      "chunks": 1,
+      "palabras": 215,
+      "margenMinimo": 0.0401
+    },
+    {
+      "titulo": "Fables on lifeless objects (1271—1274)",
+      "tituloEs": "Fábulas sobre objetos sin vida (1271—1274)",
+      "chunks": 4,
+      "palabras": 971,
+      "margenMinimo": 0.0399
+    },
+    {
+      "titulo": "On instruments for observing the moon (909. 910)",
+      "tituloEs": "Sobre instrumentos para observar la luna (909. 910)",
+      "chunks": 3,
+      "palabras": 377,
+      "margenMinimo": 0.0398
+    },
+    {
+      "titulo": "On the colours of the rainbow",
+      "tituloEs": "Sobre los colores del arcoíris",
+      "chunks": 2,
+      "palabras": 522,
+      "margenMinimo": 0.0396
+    },
+    {
+      "titulo": "On the history of painting",
+      "tituloEs": "Sobre la historia de la pintura",
+      "chunks": 2,
+      "palabras": 306,
+      "margenMinimo": 0.0393
+    },
+    {
+      "titulo": "Allegorical representations",
+      "tituloEs": "Representaciones alegóricas",
+      "chunks": 5,
+      "palabras": 760,
+      "margenMinimo": 0.0388
+    },
+    {
+      "titulo": "Doubts about the deluge",
+      "tituloEs": "Dudas sobre el diluvio",
+      "chunks": 8,
+      "palabras": 2178,
+      "margenMinimo": 0.0387
+    },
+    {
+      "titulo": "Customs of Asiatic Nations (1099. 1100)",
+      "tituloEs": "Costumbres de Naciones Asiáticas (1099. 1100)",
+      "chunks": 2,
+      "palabras": 210,
+      "margenMinimo": 0.0384
+    },
+    {
+      "titulo": "Psychology (1140-1147)",
+      "tituloEs": "Psicología (1140-1147)",
+      "chunks": 6,
+      "palabras": 316,
+      "margenMinimo": 0.0382
+    },
+    {
+      "titulo": "On the lighting of the background",
+      "tituloEs": "Sobre la iluminación del fondo",
+      "chunks": 4,
+      "palabras": 333,
+      "margenMinimo": 0.0376
+    },
+    {
+      "titulo": "The ship's logs of Vitruvius, of Alberti and of Leonardo",
+      "tituloEs": "Los cuadernos de bitácora de Vitruvio, de Alberti y de Leonardo",
+      "chunks": 1,
+      "palabras": 294,
+      "margenMinimo": 0.0369
+    },
+    {
+      "titulo": "On riches (1183—1187)",
+      "tituloEs": "Sobre las riquezas (1183—1187)",
+      "chunks": 3,
+      "palabras": 173,
+      "margenMinimo": 0.0367
+    },
+    {
+      "titulo": "Plans and suggestions for the arrangement of materials (797-802)",
+      "tituloEs": "Planes y sugerencias para la disposición de los materiales (797-802)",
+      "chunks": 6,
+      "palabras": 1473,
+      "margenMinimo": 0.0365
+    },
+    {
+      "titulo": "On the reflection of colours",
+      "tituloEs": "Sobre la reflexión de los colores",
+      "chunks": 3,
+      "palabras": 264,
+      "margenMinimo": 0.0364
+    },
+    {
+      "titulo": "Notes on the casting of the Sforza monument (710-715)",
+      "tituloEs": "Notas sobre el vaciado del monumento Sforza (710-715)",
+      "chunks": 4,
+      "palabras": 638,
+      "margenMinimo": 0.0358
+    },
+    {
+      "titulo": "On the relative density of the atmosphere",
+      "tituloEs": "Sobre la densidad relativa de la atmósfera",
+      "chunks": 2,
+      "palabras": 363,
+      "margenMinimo": 0.0358
+    },
+    {
+      "titulo": "On indistinctness at short distances",
+      "tituloEs": "Sobre la indistinción a distancias cortas",
+      "chunks": 4,
+      "palabras": 271,
+      "margenMinimo": 0.0357
+    },
+    {
+      "titulo": "Of chalk and paper",
+      "tituloEs": "Del yeso y del papel",
+      "chunks": 6,
+      "palabras": 491,
+      "margenMinimo": 0.0354
+    },
+    {
+      "titulo": "On the construction of windows",
+      "tituloEs": "Sobre la construcción de ventanas",
+      "chunks": 3,
+      "palabras": 170,
+      "margenMinimo": 0.0352
+    },
+    {
+      "titulo": "On the motion of air (996—999)",
+      "tituloEs": "Sobre el movimiento del aire (996—999)",
+      "chunks": 4,
+      "palabras": 213,
+      "margenMinimo": 0.0352
+    },
+    {
+      "titulo": "Aphorisms",
+      "tituloEs": "Aforismos",
+      "chunks": 3,
+      "palabras": 200,
+      "margenMinimo": 0.0349
+    },
+    {
+      "titulo": "Useful games and exercises",
+      "tituloEs": "Juegos y ejercicios útiles",
+      "chunks": 2,
+      "palabras": 387,
+      "margenMinimo": 0.0348
+    },
+    {
+      "titulo": "Theory of the elevation of water within the mountains",
+      "tituloEs": "Teoría de la elevación del agua dentro de las montañas",
+      "chunks": 1,
+      "palabras": 239,
+      "margenMinimo": 0.0343
+    },
+    {
+      "titulo": "The theory of Plato",
+      "tituloEs": "La teoría de Platón",
+      "chunks": 2,
+      "palabras": 416,
+      "margenMinimo": 0.0339
+    },
+    {
+      "titulo": "The relations of the distance point to the vanishing point",
+      "tituloEs": "Las relaciones del punto de distancia con el punto de fuga",
+      "chunks": 2,
+      "palabras": 700,
+      "margenMinimo": 0.0335
+    },
+    {
+      "titulo": "Of depicting night-scenes",
+      "tituloEs": "De cómo representar escenas nocturnas",
+      "chunks": 1,
+      "palabras": 235,
+      "margenMinimo": 0.0335
+    },
+    {
+      "titulo": "The disorder in the MSS",
+      "tituloEs": "El desorden en los manuscritos",
+      "chunks": 1,
+      "palabras": 163,
+      "margenMinimo": 0.0331
+    },
+    {
+      "titulo": "The globe an organism",
+      "tituloEs": "El globo un organismo",
+      "chunks": 1,
+      "palabras": 208,
+      "margenMinimo": 0.0326
+    },
+    {
+      "titulo": "Draft of letter to be sent to Piacenza (1346. 1347)",
+      "tituloEs": "Borrador de carta para ser enviada a Piacenza (1346. 1347)",
+      "chunks": 4,
+      "palabras": 827,
+      "margenMinimo": 0.0325
+    },
+    {
+      "titulo": "The plan of the book on painting",
+      "tituloEs": "El plan del libro de pintura",
+      "chunks": 4,
+      "palabras": 349,
+      "margenMinimo": 0.0325
+    },
+    {
+      "titulo": "Schemes for fables, etc. (1314-1323)",
+      "tituloEs": "Esquemas para fábulas, etc. (1314-1323)",
+      "chunks": 6,
+      "palabras": 430,
+      "margenMinimo": 0.032
+    },
+    {
+      "titulo": "On the circulation of the blood (848-850)",
+      "tituloEs": "Sobre la circulación de la sangre (848-850)",
+      "chunks": 3,
+      "palabras": 216,
+      "margenMinimo": 0.0319
+    },
+    {
+      "titulo": "On natural perspective",
+      "tituloEs": "Sobre la perspectiva natural",
+      "chunks": 3,
+      "palabras": 790,
+      "margenMinimo": 0.0318
+    },
+    {
+      "titulo": "Of painting battle-pieces",
+      "tituloEs": "De pintar batallas",
+      "chunks": 4,
+      "palabras": 1139,
+      "margenMinimo": 0.0316
+    },
+    {
+      "titulo": "Industry and thoroughness the first conditions",
+      "tituloEs": "Industria y minuciosidad las primeras condiciones",
+      "chunks": 2,
+      "palabras": 373,
+      "margenMinimo": 0.0313
+    },
+    {
+      "titulo": "Occasional references to the Sforza monument (719-724)",
+      "tituloEs": "Referencias ocasionales al monumento Sforza (719-724)",
+      "chunks": 5,
+      "palabras": 195,
+      "margenMinimo": 0.0308
+    },
+    {
+      "titulo": "On the origin of the soul",
+      "tituloEs": "Sobre el origen del alma",
+      "chunks": 2,
+      "palabras": 738,
+      "margenMinimo": 0.0308
+    },
+    {
+      "titulo": "Observations in support of the hypothesis (963-969)",
+      "tituloEs": "Observaciones en apoyo de la hipótesis (963-969)",
+      "chunks": 8,
+      "palabras": 1177,
+      "margenMinimo": 0.0301
+    },
+    {
+      "titulo": "An experiment",
+      "tituloEs": "Un experimento",
+      "chunks": 2,
+      "palabras": 158,
+      "margenMinimo": 0.0293
+    },
+    {
+      "titulo": "Drafts of Letters and Reports referring to Armenia (1336. 1337)",
+      "tituloEs": "Borradores de cartas e informes referentes a Armenia (1336. 1337)",
+      "chunks": 6,
+      "palabras": 1897,
+      "margenMinimo": 0.0291
+    },
+    {
+      "titulo": "On the conditions of sight (834. 835)",
+      "tituloEs": "Sobre las condiciones de la vista (834. 835)",
+      "chunks": 2,
+      "palabras": 357,
+      "margenMinimo": 0.029
+    },
+    {
+      "titulo": "The seat of the common sense",
+      "tituloEs": "La sede del sentido común",
+      "chunks": 1,
+      "palabras": 315,
+      "margenMinimo": 0.029
+    },
+    {
+      "titulo": "On the 6th day of October",
+      "tituloEs": "El día 6 de octubre",
+      "chunks": 5,
+      "palabras": 316,
+      "margenMinimo": 0.0282
+    },
+    {
+      "titulo": "Letter to the Cardinal Ippolito d' Este",
+      "tituloEs": "Carta al Cardenal Ippolito d'Este",
+      "chunks": 1,
+      "palabras": 276,
+      "margenMinimo": 0.0281
+    },
+    {
+      "titulo": "Of representing the deluge",
+      "tituloEs": "De cómo representar el diluvio",
+      "chunks": 8,
+      "palabras": 2406,
+      "margenMinimo": 0.028
+    },
+    {
+      "titulo": "ON ON OF Preliminary observations",
+      "tituloEs": "OBSERVACIONES PRELIMINARES",
+      "chunks": 2,
+      "palabras": 183,
+      "margenMinimo": 0.0276
+    },
+    {
+      "titulo": "G. Description of an unknown Temple",
+      "tituloEs": "G. Descripción de un templo desconocido",
+      "chunks": 2,
+      "palabras": 362,
+      "margenMinimo": 0.0275
+    },
+    {
+      "titulo": "The Appenins (1063-1068)",
+      "tituloEs": "Los Apeninos (1063-1068)",
+      "chunks": 14,
+      "palabras": 1344,
+      "margenMinimo": 0.0268
+    },
+    {
+      "titulo": "On Flying machines (1122-1126)",
+      "tituloEs": "Sobre máquinas voladoras (1122-1126)",
+      "chunks": 5,
+      "palabras": 389,
+      "margenMinimo": 0.0268
+    },
+    {
+      "titulo": "On chemical materials",
+      "tituloEs": "Sobre los materiales químicos",
+      "chunks": 11,
+      "palabras": 617,
+      "margenMinimo": 0.0266
+    },
+    {
+      "titulo": "Mottoes and Emblems",
+      "tituloEs": "Lemas y Emblemas",
+      "chunks": 9,
+      "palabras": 412,
+      "margenMinimo": 0.026
+    },
+    {
+      "titulo": "Proof by experiment",
+      "tituloEs": "Prueba por experimento",
+      "chunks": 3,
+      "palabras": 666,
+      "margenMinimo": 0.0257
+    },
+    {
+      "titulo": "The Caspian Sea (1105. 1106)",
+      "tituloEs": "El mar Caspio (1105. 1106)",
+      "chunks": 3,
+      "palabras": 306,
+      "margenMinimo": 0.0249
+    },
+    {
+      "titulo": "A. General Observations._",
+      "tituloEs": "A. Observaciones Generales._",
+      "chunks": 6,
+      "palabras": 674,
+      "margenMinimo": 0.0248
+    },
+    {
+      "titulo": "Methods of staying and moving in water",
+      "tituloEs": "Métodos de permanecer y moverse en el agua",
+      "chunks": 1,
+      "palabras": 324,
+      "margenMinimo": 0.024
+    },
+    {
+      "titulo": "An illustration by experiment",
+      "tituloEs": "Una ilustración por experimento",
+      "chunks": 1,
+      "palabras": 312,
+      "margenMinimo": 0.0239
+    },
+    {
+      "titulo": "Of the transparency of leaves",
+      "tituloEs": "De la transparencia de las hojas",
+      "chunks": 3,
+      "palabras": 251,
+      "margenMinimo": 0.0236
+    },
+    {
+      "titulo": "Of depicting natural phenomena",
+      "tituloEs": "De la representación de fenómenos naturales",
+      "chunks": 2,
+      "palabras": 349,
+      "margenMinimo": 0.0226
+    },
+    {
+      "titulo": "Appendix:--On shadows in movement",
+      "tituloEs": "Apéndice:--Sobre las sombras en movimiento",
+      "chunks": 2,
+      "palabras": 343,
+      "margenMinimo": 0.0225
+    },
+    {
+      "titulo": "The project of the Trivulzio monument",
+      "tituloEs": "El proyecto del monumento Trivulzio",
+      "chunks": 8,
+      "palabras": 1613,
+      "margenMinimo": 0.0225
+    },
+    {
+      "titulo": "Notes about events observed abroad (1338-1339)",
+      "tituloEs": "Notas sobre eventos observados en el extranjero (1338-1339)",
+      "chunks": 2,
+      "palabras": 350,
+      "margenMinimo": 0.0223
+    },
+    {
+      "titulo": "The artist's private life and choice of company",
+      "tituloEs": "La vida privada del artista y la elección de compañía",
+      "chunks": 2,
+      "palabras": 412,
+      "margenMinimo": 0.0222
+    },
+    {
+      "titulo": "On spirits (1211—1213)",
+      "tituloEs": "Sobre los espíritus (1211—1213)",
+      "chunks": 9,
+      "palabras": 2107,
+      "margenMinimo": 0.0214
+    },
+    {
+      "titulo": "Nonentity",
+      "tituloEs": "La nada",
+      "chunks": 1,
+      "palabras": 224,
+      "margenMinimo": 0.0211
+    },
+    {
+      "titulo": "OF Of sketching figures and portraits",
+      "tituloEs": "DE De dibujar figuras y retratos",
+      "chunks": 2,
+      "palabras": 399,
+      "margenMinimo": 0.0206
+    },
+    {
+      "titulo": "The direction of growth",
+      "tituloEs": "La dirección del crecimiento",
+      "chunks": 5,
+      "palabras": 479,
+      "margenMinimo": 0.0204
+    },
+    {
+      "titulo": "Notes on pupils (1458-1468.)",
+      "tituloEs": "Notas sobre discípulos (1458-1468.)",
+      "chunks": 2,
+      "palabras": 429,
+      "margenMinimo": 0.0187
+    },
+    {
+      "titulo": "Tricks (1333-1335)",
+      "tituloEs": "Trucos (1333-1335)",
+      "chunks": 3,
+      "palabras": 329,
+      "margenMinimo": 0.0187
+    },
+    {
+      "titulo": "(1165-1170)",
+      "tituloEs": "(1165-1170)",
+      "chunks": 14,
+      "palabras": 693,
+      "margenMinimo": 0.0181
+    },
+    {
+      "titulo": "Of the nature of Sunlight",
+      "tituloEs": "De la naturaleza de la luz del sol",
+      "chunks": 1,
+      "palabras": 183,
+      "margenMinimo": 0.0176
+    },
+    {
+      "titulo": "Against writers of epitomes",
+      "tituloEs": "Contra los escritores de epítomes",
+      "chunks": 1,
+      "palabras": 436,
+      "margenMinimo": 0.0176
+    },
+    {
+      "titulo": "The Alps (1057-1062)",
+      "tituloEs": "Los Alpes (1057-1062)",
+      "chunks": 5,
+      "palabras": 451,
+      "margenMinimo": 0.016
+    },
+    {
+      "titulo": "On draperies",
+      "tituloEs": "Sobre los drapeados",
+      "chunks": 3,
+      "palabras": 444,
+      "margenMinimo": 0.0154
+    },
+    {
+      "titulo": "That the contrary is impossible",
+      "tituloEs": "Que lo contrario es imposible",
+      "chunks": 1,
+      "palabras": 224,
+      "margenMinimo": 0.0141
+    },
+    {
+      "titulo": "A caution against one-sided study",
+      "tituloEs": "Una advertencia contra el estudio unilateral",
+      "chunks": 1,
+      "palabras": 198,
+      "margenMinimo": 0.0139
+    },
+    {
+      "titulo": "Of Music (1129. 1130)",
+      "tituloEs": "De la música (1129. 1130)",
+      "chunks": 3,
+      "palabras": 220,
+      "margenMinimo": 0.0137
+    },
+    {
+      "titulo": "On naval warfare (1115. 1116)",
+      "tituloEs": "Sobre la guerra naval (1115. 1116)",
+      "chunks": 2,
+      "palabras": 329,
+      "margenMinimo": 0.0136
+    },
+    {
+      "titulo": "Of the line",
+      "tituloEs": "De la línea",
+      "chunks": 2,
+      "palabras": 169,
+      "margenMinimo": 0.0134
+    },
+    {
+      "titulo": "On varnishes",
+      "tituloEs": "Sobre los barnices",
+      "chunks": 3,
+      "palabras": 180,
+      "margenMinimo": 0.0129
+    },
+    {
+      "titulo": "Of preparing the panel",
+      "tituloEs": "Sobre la preparación del panel",
+      "chunks": 1,
+      "palabras": 155,
+      "margenMinimo": 0.0115
+    },
+    {
+      "titulo": "The Nile (1093-1098)",
+      "tituloEs": "El Nilo (1093-1098)",
+      "chunks": 6,
+      "palabras": 299,
+      "margenMinimo": 0.0109
+    },
+    {
+      "titulo": "Of representing the emotions",
+      "tituloEs": "De representar las emociones",
+      "chunks": 1,
+      "palabras": 168,
+      "margenMinimo": 0.0107
+    },
+    {
+      "titulo": "On the management of works",
+      "tituloEs": "Sobre el manejo de las obras",
+      "chunks": 2,
+      "palabras": 372,
+      "margenMinimo": 0.0105
+    },
+    {
+      "titulo": "On the dispositions of a stable",
+      "tituloEs": "Sobre las disposiciones de una caballeriza",
+      "chunks": 1,
+      "palabras": 343,
+      "margenMinimo": 0.0102
+    },
+    {
+      "titulo": "The Danube",
+      "tituloEs": "El Danubio",
+      "chunks": 1,
+      "palabras": 499,
+      "margenMinimo": 0.0075
+    },
+    {
+      "titulo": "Further researches (989-991)",
+      "tituloEs": "Investigaciones adicionales (989-991)",
+      "chunks": 6,
+      "palabras": 1656,
+      "margenMinimo": 0.0066
+    },
+    {
+      "titulo": "On reverberation",
+      "tituloEs": "Sobre reverberación",
+      "chunks": 1,
+      "palabras": 213,
+      "margenMinimo": 0.0049
+    },
+    {
+      "titulo": "The practice of the Prospettiva de' colori",
+      "tituloEs": "La práctica de la Prospettiva de' colori",
+      "chunks": 1,
+      "palabras": 228,
+      "margenMinimo": 0.0027
+    },
+    {
+      "titulo": "On the battle of Anghiari",
+      "tituloEs": "Sobre la batalla de Anghiari",
+      "chunks": 2,
+      "palabras": 591,
+      "margenMinimo": 0.0022
+    },
+    {
+      "titulo": "Politics (1203. 1204)",
+      "tituloEs": "Política (1203. 1204)",
+      "chunks": 2,
+      "palabras": 204,
+      "margenMinimo": 0.0016
+    }
+  ]
+}

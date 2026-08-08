@@ -1,8 +1,22 @@
-// Patron de oro para validar el verificador (`06` v3 punto 5, D-063).
-// Etiquetado a mano con `evals/rubrica.md` a la vista, SIN haber corrido el juez
-// sobre estos casos y sin ver `should_abstain` ni la categoria (ver
-// `evals/muestra_para_etiquetar.ts`). Los 13 del piloto quedan excluidos por
-// contaminacion: sus veredictos ya se habian leido al construir el juez.
+// ETIQUETADO POR MODELO, NO POR UN HUMANO. Ver D-073.
+//
+// Este archivo se llamaba `etiquetas_humanas.jsonl` y su cabecera afirmaba
+// "Etiquetado a mano con `evals/rubrica.md` a la vista". ESO ERA FALSO, y se
+// corrigio el 2026-08-05 cuando el dueño del proyecto aclaro que no habia
+// etiquetado a mano: confio en un modelo para producirlas.
+//
+// Consecuencia: el kappa calculado contra este archivo NO es acuerdo
+// verificador-humano. Es acuerdo entre dos modelos, y no satisface el requisito
+// de `06` v3 §5, que pide validar el juez contra casos etiquetados a mano.
+//
+// Se conserva porque sigue siendo evidencia util: junto con
+// `etiquetas_ciegas.jsonl` (un segundo modelo, ciego) muestra que tres
+// aplicaciones independientes de la rubrica solo concuerdan a kappa ~0,47-0,53,
+// que es la prueba de que la rubrica esta subespecificada.
+//
+// El nombre `etiquetas_humanas.jsonl` queda LIBRE a proposito, para cuando
+// existan etiquetas humanas de verdad. Nada debe volver a pasar etiquetas de
+// modelo por humanas.
 //
 // `alucina` = la respuesta tiene al menos una afirmacion `N`.
 // Corrida: rag-k3-groq_llama-3_3-70b-versatile.jsonl · prompt 2802e5ec87f2

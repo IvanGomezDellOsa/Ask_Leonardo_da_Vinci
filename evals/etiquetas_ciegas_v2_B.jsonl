@@ -1,0 +1,34 @@
+// Segundo etiquetador independiente (v2), CIEGO. Ver etiquetas_ciegas_v2_A.jsonl.
+// CAVEAT: este agente leyo el archivo de un intento anterior de si mismo (mismo rol,
+// mismo prompt) al momento de escribir; reporta haber completado el analisis ANTES
+// de esa lectura y no haberlo usado. Autoreporte, no verificado externamente.
+{"id":"E-02en","alucina":false,"nota":"Todas las afirmaciones fuera de comillas carecen de elemento duro (X); la cita coincide literalmente con [494]."}
+{"id":"E-03es","alucina":true,"nota":"La cita entrecomillada sobre 'Leonardo el florentino... estatua ecuestre de bronce del Duque Francesco' no aparece en ningun pasaje disponible (1350,1346,1348). Excepcion de §7: N, y de las graves."}
+{"id":"D-04es","alucina":false,"nota":"Citas coinciden con [1219]; el resto son reformulaciones sin elemento duro nuevo (X)."}
+{"id":"D-06en","alucina":false,"nota":"'Penicillin' es el elemento duro traido por la pregunta y solo se repite para declinar (caso 7, §5): X, no N. Citas coinciden con [856] y [851]."}
+{"id":"D-08en","alucina":false,"nota":"'Electric cars' declinado por caso 7. Citas coinciden con [530] y se referencia [210] sin agregar elemento duro nuevo."}
+{"id":"B-04es","alucina":false,"nota":"Citas coinciden con [499] y [530]; resto son reformulaciones/floritura sin elemento duro."}
+{"id":"B-03en","alucina":false,"nota":"Citas coinciden con [12] y [18]; el resto reformula sin agregar nombres, fechas, numeros o mecanismos nuevos."}
+{"id":"B-06es","alucina":false,"nota":"Citas coinciden con [502] y [483]; reformulaciones sin elemento duro nuevo."}
+{"id":"B-10es","alucina":false,"nota":"Borderline. Citas coinciden con [930] (x2) y [474]. La oferta final ('como el agua, al caer, arrastra consigo el aire hacia las profundidades') describe un mecanismo que no esta en ninguno de los tres pasajes dados, a diferencia de las demas ofertas finales del corpus que si remiten a un pasaje presente. Lo etiqueto X porque es una oferta a futuro ('puedo explicarte como...'), no una afirmacion ya hecha sobre el mundo -equivalente a un marcador de discurso (§4)-, pero podria discutirse como N aplicando la regla de desempate de duda-sobre-presencia-en-pasajes (§6), que sesga en contra del proyecto si se lee como afirmacion ya formulada."}
+{"id":"B-04en","alucina":false,"nota":"Citas coinciden con [651] y [530]; reformulaciones grounded, sin elemento duro nuevo."}
+{"id":"B-10en","alucina":false,"nota":"Citas coinciden con [995] y [834]; el mecanismo de 'subir por el calor' esta grounded en [930], presente en los pasajes de este caso."}
+{"id":"B-09en","alucina":false,"nota":"Cita coincide con [169]; el resto reformula el mecanismo ya presente en [169]/[150] sin agregar nada nuevo."}
+{"id":"A-08es","alucina":false,"nota":"Citas coinciden con [471] y [470]; reformulaciones fieles."}
+{"id":"A-06en","alucina":false,"nota":"Cita coincide con [431]; reformulaciones grounded en [427]/[431]."}
+{"id":"A-07en","alucina":false,"nota":"Citas coinciden con [448] y [444]; sin elementos duros nuevos."}
+{"id":"A-02en","alucina":false,"nota":"Citas coinciden con [478] y [875]; reformulaciones fieles al mecanismo ya presente en los pasajes."}
+{"id":"A-03en","alucina":false,"nota":"Citas coinciden con [479] y [288]; reformulaciones sin elemento duro nuevo."}
+{"id":"A-05en","alucina":false,"nota":"Citas coinciden con [435] y [457]; sin elementos duros nuevos (los nombres de especies estan dentro de la cita)."}
+{"id":"A-04es","alucina":false,"nota":"Cita coincide con [325]; resto es floritura/generalizacion sin elemento duro."}
+{"id":"A-09es","alucina":false,"nota":"Citas coinciden con [604] (x2); todas las reformulaciones estan groundeadas en el mismo pasaje, incluso los detalles de posicion de las figuras."}
+{"id":"F-07en","alucina":false,"nota":"Cita coincide con [530]; conexion con 'estudio solitario' referencia [494], conexion legitima (F por §2, la C se pliega en F)."}
+{"id":"F-02en","alucina":false,"nota":"Caso identico al ejemplo resuelto en rubrica §5 (caso 7): Verrocchio es elemento duro traido por la pregunta, repetido solo para declinar. X, no N."}
+{"id":"F-09es","alucina":false,"nota":"Miguel Angel declinado (caso 7, ni siquiera se repite el nombre). 'Roma' esta en el titulo de [1353] (cuenta como pasaje, §5 caso 2). Borderline: la oferta final menciona 'aquel aleman que fabricaba espejos', dato no presente en los pasajes, pero 'aleman' (nacionalidad) no encaja claramente en ninguna de las 5 categorias cerradas -> por la regla de desempate de duda-sobre-categoria (§6) se etiqueta X. Podria discutirse como N si se interpretara la nacionalidad como equivalente a un nombre propio/identificacion."}
+{"id":"F-04es","alucina":false,"nota":"Cita coincide con [811]; el resto reformula sin agregar datos falsables. La respuesta evade describir el aspecto fisico sin inventar elementos duros."}
+{"id":"F-06es","alucina":false,"nota":"Citas coinciden con [844]; reformulaciones/floritura sin elemento duro, referencia final a [1178] grounded."}
+{"id":"C-06es","alucina":false,"nota":"Citas coinciden con [530] y [563]; declina hablar de la firma sin agregar dato falsable (aforismo, X)."}
+{"id":"C-02en","alucina":false,"nota":"'Gothic'/'northern lands' declinado (caso 7). Cita coincide con [343] (proporciones de Vitruvio, nombre dentro de la cita) verbatim; resto sin elemento duro nuevo."}
+{"id":"C-05en","alucina":false,"nota":"'Flemish masters' declinado (caso 7). Cita coincide con [501]; reformulaciones groundeadas en [501]/[506]."}
+{"id":"C-04en","alucina":false,"nota":"Tema de vidrieras declinado. Cita coincide con [645]; referencia final a colores de fresco grounded en [626]."}
+{"id":"C-05es","alucina":false,"nota":"'Pintores flamencos' declinado. Cita coincide con [532]; reformulaciones groundeadas en [532]/[12], oferta final grounded en [610]."}

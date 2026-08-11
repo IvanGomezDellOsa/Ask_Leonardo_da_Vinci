@@ -1,7 +1,7 @@
 {
   "regla": "Generadas por el pipeline real y congeladas. NINGUNA se escribe a mano: la tesis del proyecto es que cada cita se comprueba contra el corpus. Una entrada cuya `huella` no coincida con la actual está VENCIDA y hay que regenerarla con `npm run precalcular`. Ver D-112.",
   "huella": "cfbf03a1ca08",
-  "generado": "2026-08-08",
+  "generado": "2026-08-11",
   "respuestas": [
     {
       "id": "cielo",

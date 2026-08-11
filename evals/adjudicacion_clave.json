@@ -1,0 +1,114 @@
+[
+ {
+  "id": "B-06en",
+  "texto": "When one relies solely upon the hand of a predecessor, the s",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "A-07en",
+  "texto": "The orientation of the landscape determines this interplay",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "A-02es",
+  "texto": "Esto sucede porque la visión del objeto real y la imagen que",
+  "deepseek-v4-pro": "F",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "presencia"
+ },
+ {
+  "id": "D-03es",
+  "texto": "mi mano y mi mente, guiadas por la observación de la natural",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "B-02en",
+  "texto": "The necessity of this study is tied to the very nature of wh",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "C-01es",
+  "texto": "Esa luz tamizada, sin estridencias, es la que mejor favorece",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "A-02en",
+  "texto": "When the surface is ruffled, the light is scattered across m",
+  "deepseek-v4-pro": "F",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "presencia"
+ },
+ {
+  "id": "B-01es",
+  "texto": "El camino hacia la maestría no admite atajos y requiere de u",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "C-08es",
+  "texto": "Cuando falta la prudencia en el trato o la diligencia en el ",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "A-02en",
+  "texto": "The movement and form of the water dictate how light reveals",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "B-01es",
+  "texto": "No te encierres en el taller, pues la vida es el mejor maest",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "A-07en",
+  "texto": "the eye of the painter must be mindful of its own vantage po",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "C-02en",
+  "texto": "I have set down nothing regarding the particularities of the",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "E-02en",
+  "texto": "When I sit before my canvas, I am guided by the truth of wha",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "A-07en",
+  "texto": "The appearance of the world is a constant dance of light and",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ },
+ {
+  "id": "B-01es",
+  "texto": "Solo tras comprender la estructura básica y el movimiento es",
+  "deepseek-v4-pro": "X",
+  "openai/gpt-oss-120b": "N",
+  "tipo": "dureza"
+ }
+]

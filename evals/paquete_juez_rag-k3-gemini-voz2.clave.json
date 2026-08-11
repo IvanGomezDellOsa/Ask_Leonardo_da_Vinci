@@ -1,0 +1,106 @@
+{
+ "entrada": "rag-k3-gemini-voz2.jsonl",
+ "generado": "2026-08-06",
+ "casos": [
+  {
+   "id": "B-01es",
+   "resp": "59b6f4dcf077",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "D-04en",
+   "resp": "8f36b9bfc1b7",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "B-02es",
+   "resp": "74590cb42099",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "A-13es",
+   "resp": "1b9503f2ab0b",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "C-02en",
+   "resp": "7746856fbbea",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "A-01en",
+   "resp": "683fda28c385",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "A-01es",
+   "resp": "99e0fa38521e",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "A-08es",
+   "resp": "f7d840234519",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "F-08en",
+   "resp": "e0566d831b15",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "F-09es",
+   "resp": "15fc097630c6",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "B-11en",
+   "resp": "ce8da1bd09f3",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "A-09en",
+   "resp": "3cb9a26f4a38",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "B-13es",
+   "resp": "e069cb8ee92f",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "A-03en",
+   "resp": "7ce3d3661ff5",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "B-10en",
+   "resp": "262ea6f936ce",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "C-05en",
+   "resp": "5e890c8892b4",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "B-06en",
+   "resp": "cbeadd076825",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "C-04es",
+   "resp": "7a65f70cc9e1",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "A-04en",
+   "resp": "9c33e429b7c7",
+   "prompt": "1b68137fbfcb"
+  },
+  {
+   "id": "C-03en",
+   "resp": "d81430f73c9c",
+   "prompt": "1b68137fbfcb"
+  }
+ ]
+}

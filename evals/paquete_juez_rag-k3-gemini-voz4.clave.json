@@ -1,0 +1,106 @@
+{
+ "entrada": "rag-k3-gemini-voz4.jsonl",
+ "generado": "2026-08-06",
+ "casos": [
+  {
+   "id": "B-01es",
+   "resp": "0d97e5f0b16c",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "D-04en",
+   "resp": "806c997033ed",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "B-02es",
+   "resp": "e122ce6e0160",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "A-13es",
+   "resp": "36f0c397086f",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "C-02en",
+   "resp": "231d29790d4d",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "A-01en",
+   "resp": "535845dc04cb",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "A-01es",
+   "resp": "0acd306a4f88",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "A-08es",
+   "resp": "1bfe04f13d60",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "F-08en",
+   "resp": "66eff7e38592",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "F-09es",
+   "resp": "a3cd36a99c0e",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "B-11en",
+   "resp": "3ccb1be71e53",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "A-09en",
+   "resp": "0ef5c0b0d423",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "B-13es",
+   "resp": "6c2fa5a4c6ba",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "A-03en",
+   "resp": "6344843719a7",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "B-10en",
+   "resp": "5f4f25809026",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "C-05en",
+   "resp": "dde5ed60eb55",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "B-06en",
+   "resp": "371df5d6f898",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "C-04es",
+   "resp": "6a4f889ccb6c",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "A-04en",
+   "resp": "549c4807d3bc",
+   "prompt": "1d2333f155f6"
+  },
+  {
+   "id": "C-03en",
+   "resp": "827ae65f4a28",
+   "prompt": "1d2333f155f6"
+  }
+ ]
+}

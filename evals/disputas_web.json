@@ -1,0 +1,182 @@
+[
+ {
+  "i": 1,
+  "id": "D-04en",
+  "texto": "My focus is the clarity of structure and the laws of sight.",
+  "et": {
+   "gemini": "X",
+   "grok": "X",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 2,
+  "id": "B-02es",
+  "texto": "Esta disciplina es esencial para comprender las formas y la estructura de cuanto nos rodea.",
+  "et": {
+   "gemini": "N",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 3,
+  "id": "A-01en",
+  "texto": "To understand the nature of things, one must observe how they receive the radiance of the world.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "N"
+  }
+ },
+ {
+  "i": 4,
+  "id": "A-01es",
+  "texto": "Es una distinción que todo aquel que pretenda capturar la naturaleza sobre una superficie debe comprender con rigor.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "N"
+  }
+ },
+ {
+  "i": 5,
+  "id": "F-08en",
+  "texto": "Whether the hand moves from left to right or the inverse, it is the grace of the action that demands the master's attention.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 6,
+  "id": "F-09es",
+  "texto": "Sobre ese asunto no he dejado nada escrito en mis papeles, pues mi atención siempre estuvo volcada en los trabajos de mi taller y en las dificultades que me causaron aquellos que, con su conducta, solo buscaban estorbar mis ocupaciones.",
+  "et": {
+   "gemini": "F",
+   "grok": "X",
+   "deepseek": "X"
+  }
+ },
+ {
+  "i": 7,
+  "id": "F-09es",
+  "texto": "Mi tiempo siempre ha estado consumido por tales impertinencias y por la necesidad de cumplir con mis labores, no por las relaciones con otros maestros.",
+  "et": {
+   "gemini": "F",
+   "grok": "X",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 8,
+  "id": "B-13es",
+  "texto": "La curiosidad por múltiples disciplinas no es un capricho, sino la forma de dotar a la obra de una solidez que el estudio aislado jamás alcanzaría.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 9,
+  "id": "B-13es",
+  "texto": "La maestría requiere que la mente se alimente de fuentes diversas, pues el conocimiento de las formas naturales y de las estructuras creadas por el hombre se entrelazan.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 10,
+  "id": "B-13es",
+  "texto": "Al observar cómo se comportan los objetos, los edificios y los seres vivos, el artista logra una comprensión profunda que se refleja en su labor.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 11,
+  "id": "B-10en",
+  "texto": "Both air and water are governed by the light of the sun, which dictates their behavior and appearance.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 12,
+  "id": "B-10en",
+  "texto": "Thus, both water and air serve as essential vessels, whether by holding the light that grants us vision or by moving through the heights and depths of the earth.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 13,
+  "id": "C-05en",
+  "texto": "It is a matter of the spirit and the discipline one brings to the work.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 14,
+  "id": "B-06en",
+  "texto": "When a pupil relies solely upon the hand of a master, he produces only a shadow of a shadow, and his own skill withers.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 15,
+  "id": "B-06en",
+  "texto": "Therefore, do not let your brush be guided by the vanity of other men’s style.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 16,
+  "id": "C-04es",
+  "texto": "Observarás que mi experiencia se centra en la aplicación de pigmentos sobre muros o lienzos, y en el dominio de las sombras para dar vida a la obra.",
+  "et": {
+   "gemini": "F",
+   "grok": "X",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 17,
+  "id": "A-04en",
+  "texto": "It is a curious geometry that dictates the structure of our limbs.",
+  "et": {
+   "gemini": "F",
+   "grok": "N",
+   "deepseek": "F"
+  }
+ },
+ {
+  "i": 18,
+  "id": "C-03en",
+  "texto": "I have set down nothing regarding the guild itself, though I have observed the works that grace the city of Florence.",
+  "et": {
+   "gemini": "F",
+   "grok": "X",
+   "deepseek": "X"
+  }
+ }
+]

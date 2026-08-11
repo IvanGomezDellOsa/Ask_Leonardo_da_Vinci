@@ -20,11 +20,11 @@
 import { readFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { pipeline } from "@huggingface/transformers";
-import { citasInvalidas, quitarComillasInvalidas, podarTrasDeclinar } from "../src/lib/citas.js";
+import { responder } from "../src/lib/responder.js";
 import { cargarMotor, decidirCon } from "../src/lib/grounding.js";
 import {
-  PresupuestoTpm, construirPrompt, construirPromptSinRag, estimarTokens,
-  groq, gemini, deepseek, huellaPrompt, huellaVigente, type Proveedor, type CuotaAgotada,
+  PresupuestoTpm, construirPromptSinRag, estimarTokens,
+  huellaPrompt, huellaVigente, proveedorPorId, type Proveedor, type CuotaAgotada,
 } from "../src/lib/llm.js";
 import {
   ART, cargarCasos, leerJsonl, abrirSalida, claves, esperarCapacidad, progreso,
@@ -354,58 +354,31 @@ for (const c of pendientes) {
           tokensEntrada: 0, tokensSalida: 0, ms: Date.now() - t,
         } satisfies Resultado);
       } else {
-        const pasajesPrompt = d.pasajes.map((p) => ({ ...p.chunk }));
-        const { system, messages } = construirPrompt(c.q, pasajesPrompt, [], c.lang);
         /**
-         * Los textos TAL COMO LOS VIO el modelo, para verificar las citas contra
-         * lo mismo que leyo (idioma correcto, mismo recorte). Ver D-082.
+         * TODO ESTE BLOQUE VIVE EN `src/lib/responder.ts` (D-113). Estaba
+         * escrito acá y copiado en `tools/ask.ts` y `tools/precalcular.ts`, y
+         * **que el eval y el producto apliquen exactamente las mismas reglas es
+         * la condición para que el número medido signifique algo**. Con tres
+         * copias, no lo era: `ask.ts` no aplicaba ninguna garantía y
+         * `precalcular.ts` nació sin el limitador de ritmo.
+         *
+         * El runner conserva lo que es SUYO y no del producto: presupuesto de
+         * tokens, tope de requests, reanudado y escritura del JSONL.
          */
-        const textosVistos = pasajesPrompt.map(
-          (p) => (c.lang === "es" && p.textoEs) ? p.textoEs : p.text);
-        /**
-         * REINTENTO POR CITA FABRICADA. Tras tres rondas de reglas de prompt, la
-         * cita inventada seguia siendo el ultimo modo de fallo. Comprobarla es un
-         * `string match`, asi que en vez de pedirle al modelo que no invente se
-         * comprueba y se le pide de nuevo. Dos reintentos: si insiste, se guarda
-         * igual y el verificador lo marcara — falsear el numero escondiendo el
-         * caso seria peor que reportarlo.
-         */
-        let r = await generar(system, messages);
-        let reintentosCita = 0;
-        for (let i = 0; i < 2; i++) {
-          if (!r.texto || !citasInvalidas(r.texto, textosVistos).length) break;
-          reintentosCita++;
-          r = await generar(system, messages);
-        }
-        /**
-         * Si tras los reintentos la cita sigue sin verificar, se le quitan las
-         * comillas en vez de guardarla como cita. D-083: el problema no es lo
-         * que dice sino que promete literalidad, asi que se elimina la promesa
-         * falsa y se conserva el contenido, que el juez evalua igual.
-         */
-        let comillasQuitadas = 0;
-        let podadas = 0;
-        if (r.texto) {
-          const limpio = quitarComillasInvalidas(r.texto, textosVistos);
-          comillasQuitadas = limpio.quitadas;
-          /**
-           * Y se poda lo que sigue a una declinacion cuando no trae ninguna
-           * cita. Ver D-093. Dos iteraciones pidiendolo por prompt bajaron la
-           * superficie a la mitad pero no la eliminaron —y una la empeoro—;
-           * cortarla la lleva a cero sin pedirle nada al modelo.
-           */
-          const podado = podarTrasDeclinar(limpio.texto);
-          podadas = podado.podadas;
-          r = { ...r, texto: podado.texto };
-        }
+        const R = await responder({
+          motor, pregunta: c.q, idioma: c.lang, vector: await embeber(c.q),
+          generar, k,
+        });
         salida.escribir({
-          ...base, decision: "responde", cosMax: d.cosMax, tau: d.tau,
-          pasajes: d.pasajes.flatMap((p) => p.chunk.richterNos),
-          textosVistos,
-          notasRichter: (d.notas as { id: string }[]).map((x) => x.id),
-          reintentosCita, comillasQuitadas, podadas,
-          respuesta: r.texto, tokensEntrada: r.tokensEntrada,
-          tokensSalida: r.tokensSalida, ms: Date.now() - t,
+          ...base, decision: "responde", cosMax: R.cosMax, tau: R.tau,
+          pasajes: R.pasajes.flatMap((p) => p.chunk.richterNos),
+          textosVistos: R.textosVistos,
+          notasRichter: R.notas,
+          reintentosCita: R.reintentosCita,
+          comillasQuitadas: R.comillasQuitadas,
+          podadas: R.podadas,
+          respuesta: R.texto, tokensEntrada: R.tokensEntrada,
+          tokensSalida: R.tokensSalida, ms: Date.now() - t,
         } satisfies Resultado);
       }
     }

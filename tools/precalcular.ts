@@ -48,8 +48,8 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { pipeline } from "@huggingface/transformers";
 import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
-import { citasInvalidas, quitarComillasInvalidas, podarTrasDeclinar } from "../src/lib/citas.js";
-import { construirPrompt, huellaPrompt, proveedorPorId } from "../src/lib/llm.js";
+import { responder } from "../src/lib/responder.js";
+import { huellaPrompt, proveedorPorId } from "../src/lib/llm.js";
 
 const RAIZ = new URL("../", import.meta.url);
 const ART = new URL("artifacts/", RAIZ);
@@ -149,61 +149,49 @@ for (const p of PREGUNTAS) {
     if (yaEsta) { salida.push(yaEsta); console.log(`  = ${clave.padEnd(16)} vigente`); continue; }
 
     const pregunta = p[lang];
-    const d = decidirCon(motor, pregunta, await embeber(pregunta), lang, 3);
-    if (d.tipo !== "responde") {
-      // Una sugerencia que el gate frena no puede estar en la puerta de entrada.
-      rechazadas.push(`${clave} — el gate devolvió «${d.tipo}»`);
-      console.log(`  ✗ ${clave.padEnd(16)} el gate no responde (${d.tipo})`);
-      continue;
-    }
-
-    const pasajesPrompt = d.pasajes.map((x) => ({ ...x.chunk }));
-    const textosVistos = pasajesPrompt.map((x) => (lang === "es" && x.textoEs) ? x.textoEs! : x.text);
-    const { system, messages } = construirPrompt(pregunta, pasajesPrompt, [], lang);
 
     /**
-     * PAUSA ENTRE LLAMADAS. La primera versión copió el bucle de generación del
-     * runner **sin su limitador de ritmo** y se comió un 429 en la segunda
-     * llamada. `run.ts` tiene `PresupuestoTpm` y un tope de requests; este script
-     * no, así que la pausa hace de limitador pobre. Son 10 llamadas: no hace
-     * falta más, pero cero sí era muy poco.
+     * PAUSA ENTRE LLAMADAS. La primera versión copió el bucle del runner sin su
+     * limitador de ritmo y se comió un 429 en la segunda llamada (D-112). Son 10
+     * llamadas: la pausa alcanza como limitador pobre, pero cero era muy poco.
      */
     await new Promise((res) => setTimeout(res, 4000));
 
-    // Mismo bucle de garantías que el runner. Ni una regla distinta.
-    let r = await proveedor.generar(system, messages);
-    let reintentosCita = 0;
-    for (let i = 0; i < 2; i++) {
-      if (!r.texto || !citasInvalidas(r.texto, textosVistos).length) break;
-      reintentosCita++;
-      r = await proveedor.generar(system, messages);
+    const R = await responder({
+      motor, pregunta, idioma: lang, vector: await embeber(pregunta),
+      generar: (sys, msgs) => proveedor.generar(sys, msgs),
+    });
+
+    if (R.decision !== "responde") {
+      // Una sugerencia que el gate frena no puede estar en la puerta de entrada.
+      rechazadas.push(`${clave} — el gate devolvió «${R.decision}»`);
+      console.log(`  ✗ ${clave.padEnd(16)} el gate no responde (${R.decision})`);
+      continue;
     }
-    if (!r.texto) { rechazadas.push(`${clave} — el proveedor no devolvió texto`); console.log(`  ✗ ${clave.padEnd(16)} sin texto`); continue; }
-
-    const limpio = quitarComillasInvalidas(r.texto, textosVistos);
-    const podado = podarTrasDeclinar(limpio.texto);
-
+    if (!R.texto) {
+      rechazadas.push(`${clave} — el proveedor no devolvió texto`);
+      console.log(`  ✗ ${clave.padEnd(16)} sin texto`); continue;
+    }
     /**
-     * LA COMPUERTA DE CONGELADO. Tras los reintentos y el descomillado no puede
-     * quedar NINGUNA cita sin respaldo. En el runner una respuesta así se guarda
-     * igual —esconderla falsearía la tasa— pero acá se serviría mil veces sin
-     * que nadie la vuelva a mirar. Se rechaza y se reporta.
+     * LA COMPUERTA DE CONGELADO, que el runner NO tiene. Si tras los reintentos y
+     * el descomillado queda una cita sin respaldo, no entra al archivo. En el
+     * runner esa respuesta se guarda igual —esconderla falsearía la tasa— pero
+     * acá se serviría mil veces sin que nadie la vuelva a mirar.
      */
-    const restantes = citasInvalidas(podado.texto, textosVistos);
-    if (restantes.length) {
-      rechazadas.push(`${clave} — ${restantes.length} cita(s) sin respaldo tras ${reintentosCita} reintentos`);
+    if (R.citasSinRespaldo.length) {
+      rechazadas.push(`${clave} — ${R.citasSinRespaldo.length} cita(s) sin respaldo tras ${R.reintentosCita} reintentos`);
       console.log(`  ✗ ${clave.padEnd(16)} NO se congela: cita sin respaldo`);
       continue;
     }
 
     salida.push({
-      id: p.id, lang, pregunta, respuesta: podado.texto,
-      pasajes: pasajesPrompt.flatMap((x) => x.richterNos),
-      textosVistos, huella: HUELLA, proveedor: idProveedor,
+      id: p.id, lang, pregunta, respuesta: R.texto,
+      pasajes: R.pasajes.flatMap((x) => x.chunk.richterNos),
+      textosVistos: R.textosVistos, huella: HUELLA, proveedor: idProveedor,
       generado: new Date().toISOString().slice(0, 10),
-      reintentosCita, comillasQuitadas: limpio.quitadas, podadas: podado.podadas,
+      reintentosCita: R.reintentosCita, comillasQuitadas: R.comillasQuitadas, podadas: R.podadas,
     });
-    console.log(`  ✓ ${clave.padEnd(16)} ${podado.texto.replace(/\s+/g, " ").slice(0, 58)}…`);
+    console.log(`  ✓ ${clave.padEnd(16)} ${R.texto.replace(/\s+/g, " ").slice(0, 58)}…`);
   }
 }
 

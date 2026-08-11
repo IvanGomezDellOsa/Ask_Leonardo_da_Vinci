@@ -12,8 +12,9 @@
 import { readFileSync } from "node:fs";
 import { pipeline } from "@huggingface/transformers";
 import { recortar } from "../src/lib/retrieval.js";
-import { cargarMotor, decidirCon, Idioma } from "../src/lib/grounding.js";
-import { PresupuestoTpm, construirPrompt, generar, groq } from "../src/lib/llm.js";
+import { cargarMotor, Idioma } from "../src/lib/grounding.js";
+import { responder } from "../src/lib/responder.js";
+import { PresupuestoTpm, generar, groq } from "../src/lib/llm.js";
 
 const ART = new URL("../artifacts/", import.meta.url);
 
@@ -65,7 +66,26 @@ async function embeber(texto: string): Promise<Float32Array> {
 }
 
 async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
-  const d = decidirCon(motor, texto, await embeber(texto), idioma);
+  /**
+   * SE PASA POR `responder`, NO POR `decidirCon` A SECAS. Ver D-113.
+   *
+   * Hasta acá este CLI generaba directo y **no aplicaba ninguna de las tres
+   * garantías** (D-082, D-083, D-093): la respuesta que se miraba para "ver cómo
+   * anda el producto" no era la que el producto produce. Un banco de pruebas que
+   * muestra otra cosa que el sistema real es peor que no tenerlo.
+   */
+  const R = await responder({
+    motor, pregunta: texto, idioma, vector: await embeber(texto),
+    generar: async (sys, msgs) => {
+      const g = await generar(cascada, presupuesto, sys, msgs);
+      return g ?? { texto: "", tokensEntrada: 0, tokensSalida: 0 };
+    },
+  });
+  const d = R.decision === "curada"
+    ? { tipo: "curada" as const, caso: "", nota: [] }
+    : R.decision === "abstiene"
+      ? { tipo: "abstiene" as const, cosMax: R.cosMax!, tau: R.tau!, evidencia: [] }
+      : { tipo: "responde" as const, cosMax: R.cosMax!, tau: R.tau!, pasajes: R.pasajes, notas: R.notas };
   const etq = esperado ? ` [${esperado}]` : "";
   console.log(`\n${"─".repeat(78)}\n[${idioma}]${etq} ${texto}`);
 
@@ -89,17 +109,17 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
   }
   if (d.notas.length) console.log(`    (${d.notas.length} notas de Richter vinculadas)`);
 
-  if (cascada.length) {
-    const { system, messages } = construirPrompt(
-      texto, d.pasajes.map((p) => ({ ...p.chunk })), [], idioma);
-    const r = await generar(cascada, presupuesto, system, messages);
-    if (!r) {
-      console.log("    [Leonardo descansa] presupuesto de tokens agotado");
-    } else {
-      console.log(`\n  ${r.proveedor} · ${r.tokensEntrada}+${r.tokensSalida} tokens` +
-                  ` · ${presupuesto.usoActual()}/6000 TPM`);
-      console.log(r.texto.split("\n").map((l) => "  │ " + l).join("\n"));
-    }
+  if (!cascada.length) { /* sin clave: sólo se muestra el retrieval */ }
+  else if (!R.texto) console.log("    [Leonardo descansa] presupuesto de tokens agotado");
+  else {
+    const g = [];
+    if (R.reintentosCita) g.push(`${R.reintentosCita} reintento(s) por cita`);
+    if (R.comillasQuitadas) g.push(`${R.comillasQuitadas} comilla(s) quitada(s)`);
+    if (R.podadas) g.push(`${R.podadas} palabra(s) podada(s)`);
+    if (R.citasSinRespaldo.length) g.push(`**${R.citasSinRespaldo.length} CITA(S) SIN RESPALDO**`);
+    console.log(`\n  ${R.tokensEntrada}+${R.tokensSalida} tokens · ${presupuesto.usoActual()}/6000 TPM` +
+                (g.length ? ` · ${g.join(" · ")}` : " · garantías sin intervenir"));
+    console.log(R.texto.split("\n").map((l) => "  │ " + l).join("\n"));
   }
   return d;
 }

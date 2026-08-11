@@ -26,4 +26,15 @@ __pycache__/
 # Node
 /node_modules/
 /.next/
-evals/out/
+# Las corridas del eval no se publican... salvo las DOS que respaldan el
+# titular del README. Ver D-114.
+#
+# La tesis del proyecto es "no me creas, esta medido". Publicar el numero y
+# esconder los datos que lo producen es pedir exactamente la confianza que el
+# proyecto dice no necesitar — y ademas dejaba `evals:citas-corpus` sin nada
+# contra que correr en un clon recien hecho.
+#
+# Con estas dos, un extrano reproduce el 96,9% -> 0% con un comando y sin claves.
+evals/out/*
+!evals/out/baseline-gemini.jsonl
+!evals/out/rag-k3-gemini-voz8.jsonl

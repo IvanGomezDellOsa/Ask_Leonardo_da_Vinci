@@ -779,3 +779,27 @@ export async function generar(
   }
   return null;
 }
+
+/**
+ * Un proveedor a partir de su id (`gemini/gemini-3.1-flash-lite`) y del entorno.
+ *
+ * VIVE ACA Y NO EN EL RUNNER porque ya habia dos copias: `evals/run.ts` resolvia
+ * `GEMINI_API_KEY_A` y una segunda copia en `tools/precalcular.ts` buscaba
+ * `GEMINI_API_KEY` — que no existe— y fallaba con «API key not valid», que es el
+ * mensaje mas enganoso posible para un nombre de variable equivocado.
+ *
+ * Es la misma leccion que las dos copias de `palabras()`: una definicion
+ * compartida, no una por consumidor.
+ */
+export function proveedorPorId(id: string, env: Record<string, string>): Proveedor {
+  const [fam, ...resto] = id.split("/");
+  const modelo = resto.join("/");
+  const exigir = (n: string): string => {
+    if (!env[n]) throw new Error(`falta ${n} en .env.local`);
+    return env[n];
+  };
+  if (fam === "groq") return groq(modelo, exigir("GROQ_API_KEY"));
+  if (fam === "gemini") return gemini(modelo, exigir("GEMINI_API_KEY_A"));
+  if (fam === "deepseek") return deepseek(modelo, exigir("DEEPSEEK_API_KEY"));
+  throw new Error(`proveedor desconocido: ${id}`);
+}

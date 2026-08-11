@@ -45,25 +45,7 @@ const etiqueta = arg("etiqueta", `${modo}-k${k}-${idProveedor.replace(/[/.]/g, "
 
 // ---- proveedor ---------------------------------------------------------
 const env = claves();
-function construirProveedor(id: string): Proveedor {
-  const [fam, ...resto] = id.split("/");
-  const modelo = resto.join("/");
-  if (fam === "groq") {
-    if (!env.GROQ_API_KEY) throw new Error("falta GROQ_API_KEY en .env.local");
-    return groq(modelo, env.GROQ_API_KEY);
-  }
-  if (fam === "gemini") {
-    if (!env.GEMINI_API_KEY_A) throw new Error("falta GEMINI_API_KEY_A en .env.local");
-    return gemini(modelo, env.GEMINI_API_KEY_A);
-  }
-  // DeepSeek pasa a ser el generador por D-088: el free tier de Gemini no da
-  // para una corrida completa y bloqueo la medicion tres dias.
-  if (fam === "deepseek") {
-    if (!env.DEEPSEEK_API_KEY) throw new Error("falta DEEPSEEK_API_KEY en .env.local");
-    return deepseek(modelo, env.DEEPSEEK_API_KEY);
-  }
-  throw new Error(`proveedor desconocido: ${id}`);
-}
+const construirProveedor = (id: string): Proveedor => proveedorPorId(id, env);
 const proveedor = construirProveedor(idProveedor);
 /**
  * De QUE corpus salen los pasajes. Ver D-081.

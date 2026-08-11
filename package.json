@@ -26,7 +26,8 @@
     "salud": "tsx evals/salud.ts",
     "sugeridas": "tsx tools/medir_sugeridas.ts",
     "alcance": "tsx tools/alcance.ts",
-    "proponer": "tsx tools/proponer.ts"
+    "proponer": "tsx tools/proponer.ts",
+    "precalcular": "tsx tools/precalcular.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6"

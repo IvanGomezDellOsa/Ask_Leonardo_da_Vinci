@@ -24,7 +24,8 @@ import { responder } from "../src/lib/responder.js";
 import { cargarMotor, decidirCon } from "../src/lib/grounding.js";
 import {
   PresupuestoTpm, construirPromptSinRag, estimarTokens,
-  huellaPrompt, huellaVigente, proveedorPorId, type Proveedor, type CuotaAgotada,
+  huellaPrompt, huellaVigente, varianteVigente, proveedorPorId,
+  type Proveedor, type CuotaAgotada,
 } from "../src/lib/llm.js";
 import {
   ART, cargarCasos, leerJsonl, abrirSalida, claves, esperarCapacidad, progreso,
@@ -48,58 +49,14 @@ const env = claves();
 const construirProveedor = (id: string): Proveedor => proveedorPorId(id, env);
 const proveedor = construirProveedor(idProveedor);
 /**
- * De QUE corpus salen los pasajes. Ver D-081.
+ * La variante de la huella: corpus visto + politica de generacion + los dos
+ * indices, umbrales y curaduria. Ver D-081, D-082, D-093, D-107.
  *
- * El prompt no es solo la plantilla: son la plantilla MAS los pasajes. Al
- * conectar la traduccion (D-079) el modelo paso a ver castellano en vez de
- * ingles sin que cambiara una palabra de la plantilla, la huella no se movio y
- * el reanudado se salteo la corrida entera diciendo "pendientes: 0".
- *
- * Se hashea el contenido de `chunks_es.json`, que es lo que decide el texto
- * mostrado. Si no existe, la variante es "en" y la huella vuelve a ser la
- * historica.
+ * La cuenta VIVE EN `llm.ts` desde D-122: estaba duplicada aca y en
+ * `precalcular.ts`, y si las dos copias se separaban la cache N0 quedaba
+ * vencida o —peor— vigente sin serlo.
  */
-const fEs = new URL("chunks_es.json", ART);
-/**
- * `cv1` = verificacion de cita activa (D-082).
- *
- * Se agrega porque el reintento por cita fabricada cambia la RESPUESTA sin
- * cambiar ni la plantilla ni el corpus, y la huella volvio a no moverse: octava
- * vez que el mismo error aparece. El principio, ya sin excusa: **todo lo que
- * altera la salida va en la huella**, incluida la politica de generacion y no
- * solo el texto del prompt. Si manana se cambian los reintentos o el criterio,
- * este sufijo cambia con ellos.
- */
-const POLITICA = "cv3";   // cv3 = ademas poda la continuacion sin cita tras declinar (D-093)
-
-/**
- * DE QUE INDICE SALEN LOS PASAJES. Novena vez que el mismo error aparece, y la
- * primera que se ataja antes de que cueste una corrida.
- *
- * D-081 metio el CORPUS en la huella y eso alcanzaba mientras hubiera un solo
- * indice. Desde D-105 hay dos —ingles y castellano— y **cual se usa cambia los
- * pasajes que el modelo ve sin cambiar una palabra del prompt ni un byte del
- * corpus**: exactamente la forma del bug de D-079, con otra causa.
- *
- * Se hashean los DOS `index.bin` y los umbrales, que son lo que decide que
- * pasajes entran y si entra alguno. Si manana se reindexa con otro modelo, o se
- * mueve tau, la huella se mueve sola: no hay que acordarse de nada. Es la cura
- * estructural que el proyecto viene nombrando —identidad por CONTENIDO en la
- * frontera de E/S— en vez de enumerar a mano que importa.
- */
-const huellaDeArchivo = (u: URL): string =>
-  existsSync(u) ? createHash("sha256").update(readFileSync(u)).digest("hex").slice(0, 8) : "-";
-const INDICE = [
-  huellaDeArchivo(new URL("index.bin", ART)),
-  huellaDeArchivo(new URL("es/index.bin", ART)),
-  huellaDeArchivo(new URL("thresholds.json", ART)),
-  huellaDeArchivo(new URL("es/thresholds.json", ART)),
-  huellaDeArchivo(new URL("curaduria.json", ART)),
-].join(".");
-
-const VARIANTE = (existsSync(fEs)
-  ? "es:" + createHash("sha256").update(readFileSync(fEs)).digest("hex").slice(0, 8)
-  : "en") + "|" + POLITICA + "|ix:" + INDICE;
+const VARIANTE = varianteVigente(ART);
 const HUELLA = huellaPrompt(VARIANTE);
 
 // Gemini free tier no comparte el limite de Groq. El presupuesto de 6.000 TPM

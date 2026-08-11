@@ -16,6 +16,7 @@
  */
 
 import { createHash } from "node:crypto";
+import { readFileSync, existsSync } from "node:fs";
 import { recortar } from "./retrieval.js";
 
 export type Idioma = "es" | "en";
@@ -462,6 +463,39 @@ const EQUIVALENTES = new Set<string>([
  */
 export function huellaVigente(h: string | undefined, variante = ""): boolean {
   return h === undefined || h === huellaPrompt(variante) || EQUIVALENTES.has(h);
+}
+
+/**
+ * LA VARIANTE VIGENTE, calculada de los artefactos en disco. Ver D-122.
+ *
+ * ESTABA ESCRITA DOS VECES —`evals/run.ts` y `tools/precalcular.ts`— con el
+ * mismo contenido y distinta forma (una con `POLITICA` en constante, la otra con
+ * `"cv3"` incrustado). Mientras coincidieran, todo bien; el dia que una cambie y
+ * la otra no, el runner y la cache calcularian huellas distintas y **la cache
+ * quedaria vencida o, peor, vigente cuando no lo esta**. Es el mismo defecto que
+ * D-113 saco de `responder()` y que D-089 saco de `proveedorPorId`: una
+ * definicion por consumidor.
+ *
+ * `app/api/chat` es el tercer consumidor y el que fuerza la extraccion: sirve la
+ * cache N0 y necesita saber si esta vencida, o sea la misma cuenta.
+ *
+ * QUE ENTRA, y por que cada cosa (D-081, D-082, D-093, D-107):
+ *   - el corpus que el modelo VE (la traduccion, si esta)
+ *   - la POLITICA de generacion, que cambia la salida sin tocar la plantilla
+ *   - los DOS indices, los DOS umbrales y la curaduria, que deciden que pasajes
+ *     entran y si entra alguno
+ */
+const POLITICA = "cv3";   // cv3 = poda la continuacion sin cita tras declinar (D-093)
+
+export function varianteVigente(art: URL): string {
+  const h = (u: URL): string =>
+    existsSync(u) ? createHash("sha256").update(readFileSync(u)).digest("hex").slice(0, 8) : "-";
+  const fEs = new URL("chunks_es.json", art);
+  return (existsSync(fEs) ? "es:" + h(fEs) : "en") + "|" + POLITICA + "|ix:" + [
+    h(new URL("index.bin", art)), h(new URL("es/index.bin", art)),
+    h(new URL("thresholds.json", art)), h(new URL("es/thresholds.json", art)),
+    h(new URL("curaduria.json", art)),
+  ].join(".");
 }
 
 /**

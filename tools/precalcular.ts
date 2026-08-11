@@ -49,7 +49,7 @@ import { createHash } from "node:crypto";
 import { pipeline } from "@huggingface/transformers";
 import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
 import { responder } from "../src/lib/responder.js";
-import { huellaPrompt, proveedorPorId } from "../src/lib/llm.js";
+import { huellaPrompt, varianteVigente, proveedorPorId } from "../src/lib/llm.js";
 
 const RAIZ = new URL("../", import.meta.url);
 const ART = new URL("artifacts/", RAIZ);
@@ -101,17 +101,8 @@ const env = claves();
 const idProveedor = arg("proveedor") || "deepseek/deepseek-v4-flash";
 const proveedor = proveedorPorId(idProveedor, env);
 
-/** La misma huella que el runner, para que una entrada vencida se detecte sola. */
-const h = (u: URL): string =>
-  existsSync(u) ? createHash("sha256").update(readFileSync(u)).digest("hex").slice(0, 8) : "-";
-const VARIANTE =
-  (existsSync(new URL("chunks_es.json", ART))
-    ? "es:" + h(new URL("chunks_es.json", ART)) : "en")
-  + "|cv3|ix:" + [
-    h(new URL("index.bin", ART)), h(new URL("es/index.bin", ART)),
-    h(new URL("thresholds.json", ART)), h(new URL("es/thresholds.json", ART)),
-    h(new URL("curaduria.json", ART)),
-  ].join(".");
+/** La misma huella que el runner — la MISMA cuenta, no una copia. Ver D-122. */
+const VARIANTE = varianteVigente(ART);
 const HUELLA = huellaPrompt(VARIANTE);
 
 const motor = cargarMotor(ART);

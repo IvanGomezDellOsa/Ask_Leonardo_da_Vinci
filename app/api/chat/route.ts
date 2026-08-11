@@ -1,5 +1,5 @@
 /**
- * Ruta del chat. Ver D-119 y D-120.
+ * Ruta del chat. Ver D-119, D-120 y D-122.
  *
  * NO EMBEBE (D-118, D-022): el cliente calcula el vector en el navegador con
  * Transformers.js y lo manda ya hecho. Este handler sólo lo reconstruye.
@@ -13,59 +13,116 @@
  * arriba corren DESPUES de tener el texto completo — no se puede verificar una
  * cita a mitad de generar. Transmitir tokens crudos mostraría al usuario texto
  * que después se corrige o desaparece, que es exactamente lo que este proyecto
- * existe para no hacer. Se devuelve la respuesta completa YA VERIFICADA; la
- * sensación de streaming (si se quiere) es responsabilidad del cliente,
- * revelando ese texto de a poco.
+ * existe para no hacer.
  *
- * Ninguna clave sale de acá (D-035): las tres viven en variables de entorno del
- * servidor, Next.js las carga solo de `.env.local`.
+ * Ninguna clave sale de acá (D-035): viven en variables de entorno del servidor.
  */
 
-// ".js" explícito por el mismo motivo que las líneas de abajo: bajo
-// "nodenext" (necesario para que Turbopack resuelva los imports de
-// `src/lib`, ver más abajo), un import ESM sin extensión de un paquete sin
-// mapa de "exports" — el caso de "next"— no resuelve; con ".js" sí.
+// ".js" explícito: bajo "nodenext" —necesario para que Turbopack resuelva los
+// imports de `src/lib`, ver D-121— un import ESM sin extensión de un paquete
+// sin mapa de "exports" (el caso de "next") no resuelve.
 import { NextRequest, NextResponse } from "next/server.js";
+import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-// Extensión ".js" a propósito, igual que el resto del proyecto (Node/tsx en
-// modo ESM la exige). `tsconfig.json` en "nodenext" le enseña a Turbopack a
-// resolverla contra el ".ts" real.
-import { cargarMotor, type Idioma } from "../../../src/lib/grounding.js";
+import { cargarMotor, type Motor, type Idioma } from "../../../src/lib/grounding.js";
 import { responder } from "../../../src/lib/responder.js";
-import { PresupuestoTpm, generar, proveedorPorId, type Proveedor } from "../../../src/lib/llm.js";
+import {
+  PresupuestoTpm, generar, proveedorPorId, huellaPrompt, varianteVigente,
+  type Proveedor,
+} from "../../../src/lib/llm.js";
+import type { Chunk } from "../../../src/lib/retrieval.js";
 
 export const runtime = "nodejs";
 
 /**
+ * El default de una función serverless suele ser 10s. Una respuesta puede
+ * costar hasta TRES llamadas al proveedor: la verificación de cita reintenta
+ * dos veces ante una cita fabricada (D-082). Con 10s el reintento se cortaría a
+ * la mitad y el usuario vería un error justo en el caso que la garantía existe
+ * para cubrir.
+ */
+export const maxDuration = 60;
+
+/**
  * `process.cwd()`, no `new URL("../../../artifacts/", import.meta.url)`.
  *
- * Todo el resto del proyecto (`evals/comun.ts`, `tools/ask.ts`) usa la forma
- * relativa a `import.meta.url` porque corre bajo tsx y ese archivo SÍ vive
- * donde el disco dice. Acá no: Turbopack empaqueta esta ruta, `import.meta.url`
- * apunta al artefacto compilado, no al código fuente, y además Turbopack
+ * El resto del proyecto usa la forma relativa a `import.meta.url` porque corre
+ * bajo tsx y ese archivo SÍ vive donde el disco dice. Acá no: Turbopack
+ * empaqueta la ruta, `import.meta.url` apunta al artefacto compilado, y además
  * analiza ese patrón en build time para decidir qué empaquetar — falla porque
- * `artifacts/` es una carpeta de datos, no un módulo. `process.cwd()` es la
- * raíz del proceso de Next tanto en `next dev` como en `next start`, y evita
- * el análisis estático. Ver `outputFileTracingIncludes` en `next.config.ts`
- * para que un despliegue serverless empaquete `artifacts/` igual.
+ * `artifacts/` es una carpeta de datos, no un módulo. Ver D-121 y el
+ * `outputFileTracingIncludes` de `next.config.ts`.
  */
 const ART = pathToFileURL(join(process.cwd(), "artifacts") + "/");
 
-// Carga una vez por instancia del servidor, no por request — igual que
-// `evals/run.ts` y `tools/ask.ts` (D-113).
-const motor = cargarMotor(ART);
+// ---------------------------------------------------------------------------
+// Carga perezosa y memoizada
+// ---------------------------------------------------------------------------
+
+/**
+ * SE CARGA EN EL PRIMER PEDIDO, NO AL IMPORTAR EL MODULO.
+ *
+ * Con `const motor = cargarMotor(ART)` al tope, un artefacto faltante hacía
+ * explotar el módulo entero al importarse: Next devuelve 500 sin cuerpo útil y
+ * el log dice «failed to load route», que no nombra la causa. Memoizado acá, el
+ * fallo se convierte en un 503 que dice qué archivo falta y en qué carpeta lo
+ * buscó. Se sigue cargando UNA sola vez por instancia, que era el punto.
+ */
+let cargado: { motor: Motor; fijas: Map<string, Fija>; huella: string } | null = null;
+let fallo: string | null = null;
+
+interface Fija {
+  id: string; lang: Idioma; pregunta: string; respuesta: string;
+  pasajes: number[]; textosVistos: string[]; huella: string;
+}
+
+const normalizar = (s: string): string => s.trim().toLowerCase().replace(/\s+/g, " ");
+
+function cargar(): { motor: Motor; fijas: Map<string, Fija>; huella: string } | null {
+  if (cargado || fallo) return cargado;
+  try {
+    const motor = cargarMotor(ART);
+    const huella = huellaPrompt(varianteVigente(ART));
+
+    /**
+     * LA CACHE N0 (D-112). Estaba escrita y NADIE LA LEIA: la ruta generaba
+     * las cinco preguntas de la portada con el LLM en cada clic, que es
+     * exactamente lo que esa decisión existe para evitar — cuota, latencia y
+     * sobre todo varianza (a temperatura 0,7 dos clics daban dos respuestas).
+     *
+     * Sólo entran las entradas cuya huella coincide con la vigente. Una entrada
+     * vencida se ignora y la pregunta cae al camino vivo: servir algo viejo
+     * creyéndolo nuevo es el bug que el proyecto lleva nueve entradas nombrando.
+     */
+    const fijas = new Map<string, Fija>();
+    const f = new URL("respuestas_fijas.json", ART);
+    if (existsSync(f)) {
+      const j = JSON.parse(readFileSync(f, "utf8")) as { respuestas?: Fija[] };
+      for (const r of j.respuestas ?? []) {
+        if (r.huella === huella) fijas.set(`${r.lang}:${normalizar(r.pregunta)}`, r);
+      }
+    }
+    cargado = { motor, fijas, huella };
+    return cargado;
+  } catch (e) {
+    fallo = `no se pudieron cargar los artefactos desde ${ART.pathname}: ${(e as Error).message}`;
+    console.error("[api/chat]", fallo);
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Proveedores y presupuesto
+// ---------------------------------------------------------------------------
 
 /**
  * `gemini-3.1-flash-lite` es el generador de producción (D-089: la mitad de
- * D-088 que quedó vigente). Groq queda de resguardo por su cuota
- * independiente (D-023) — DeepSeek NO entra acá: D-089 lo reasignó a juez,
- * instrumental, y dejarlo en la cascada de operación repetiría el error que
- * esa entrada revocó.
+ * D-088 que quedó vigente). Groq queda de resguardo por su cuota independiente
+ * (D-023) — DeepSeek NO entra: D-089 lo reasignó a juez, y dejarlo en la
+ * cascada de operación repetiría el error que esa entrada revocó.
  *
- * Cada proveedor se agrega sólo si su clave está presente, para que faltar
- * una no tumbe el servidor entero — degrada, no rompe (mismo criterio que
- * `cargarMotor` con el índice en castellano, D-107).
+ * Cada proveedor entra sólo si su clave está: faltar una degrada, no rompe.
  */
 function cascadaDeProduccion(env: Record<string, string | undefined>): Proveedor[] {
   const p: Proveedor[] = [];
@@ -77,23 +134,91 @@ function cascadaDeProduccion(env: Record<string, string | undefined>): Proveedor
   return p;
 }
 
-const presupuesto = new PresupuestoTpm(6000);
+/**
+ * 60.000 TPM y 12 RPM — LOS VALORES DE GEMINI, no los de Groq. Ver D-086.
+ *
+ * Esto decía `new PresupuestoTpm(6000)` y estaba mal en las dos dimensiones,
+ * reintroduciendo el defecto exacto que D-086 documentó:
+ *
+ *   - 6.000 TPM es el límite que D-023 leyó de la documentación de GROQ, y que
+ *     D-086 midió mal por la mitad (son 12.000). Aplicado a Gemini, cuyo tier
+ *     da ~60.000, estrangulaba a un décimo de la capacidad real.
+ *   - `rpm` quedaba en `Infinity`, o sea **el presupuesto no miraba la
+ *     dimensión que efectivamente muerde en Gemini**: 15 requests por minuto.
+ *     Con la verificación de cita de D-082 un pedido son hasta tres requests,
+ *     así que cinco usuarios concurrentes bastaban para un 429 que el limitador
+ *     creía imposible.
+ *
+ * 12 y no 15 a propósito, igual que en el runner: el margen cubre los reintentos
+ * que el propio cliente hace ante un 429. Valor medido por modelo y con fecha
+ * (2026-08-05), no una constante del proveedor.
+ */
+const presupuesto = new PresupuestoTpm(60_000, 12);
 
-interface CuerpoPedido {
-  pregunta: string;
-  idioma: Idioma;
-  vector: number[];
-}
+// ---------------------------------------------------------------------------
+// Forma pública de la respuesta
+// ---------------------------------------------------------------------------
 
 /**
- * 384 = las dims de `Xenova/multilingual-e5-small` (D-097). Sin este chequeo
- * un vector vacío pasaba la validación entera —`[].every(...)` es `true` por
- * vacuidad— y se coló hasta `Corpus.buscar`, donde el coseno contra un vector
- * de norma 0 da `cos: null` en los tres pasajes pero IGUAL generó con Gemini:
+ * LA RESPUESTA NO ES `Respondido` TAL CUAL.
+ *
+ * `responder()` devuelve el `Chunk` entero por pasaje, y eso mandaba al cliente
+ * el mismo texto TRES veces —`chunk.text`, `chunk.embedText` (que es
+ * título + texto concatenados) y `textosVistos`— más campos que sólo importan
+ * adentro (`nWords`, `part`, `sourceManuscript`, `annotatesPassage`). Medido:
+ * ~2,9 KB de chunks crudos por respuesta, un tercio pura duplicación.
+ *
+ * Mandar eso contradice de frente la razón por la que 19-bis existió: si los
+ * 129 MB de la primera carga preocupan en móvil, regalar kilobytes por turno no
+ * se justifica con «es sólo JSON».
+ *
+ * Se manda EL TEXTO QUE VIO EL MODELO (`textosVistos`), no `chunk.text`: son
+ * distintos en castellano —el modelo ve la traducción (D-079)— y el que hay que
+ * mostrar junto a una cita es el que se verificó contra ella (D-084).
+ */
+interface PasajePublico {
+  richterNo: number | null;
+  titulo: string | null;
+  texto: string;
+  url: string | null;
+}
+
+interface RespuestaPublica {
+  decision: "curada" | "abstiene" | "responde";
+  texto: string;
+  pasajes: PasajePublico[];
+  /** Ids de notas de Richter vinculadas, para la tarjeta de citación. */
+  notas: string[];
+  /** `cache` = congelada por `npm run precalcular` (D-112). `vivo` = generada ahora. */
+  origen: "cache" | "vivo";
+  /**
+   * Se publica a propósito: `citasSinRespaldo` es el estado de la garantía que
+   * sostiene la tesis del proyecto. Esconderlo sería pedir la confianza que el
+   * proyecto dice no necesitar.
+   */
+  diagnostico: {
+    cosMax: number | null; tau: number | null;
+    reintentosCita: number; comillasQuitadas: number; podadas: number;
+    citasSinRespaldo: string[];
+  };
+}
+
+const tituloDe = (c: Chunk, idioma: Idioma): string | null =>
+  (idioma === "es" && c.tituloEs !== undefined ? c.tituloEs : c.richterTitle) ?? null;
+
+// ---------------------------------------------------------------------------
+// Validación de entrada
+// ---------------------------------------------------------------------------
+
+/**
+ * 384 = las dims de `Xenova/multilingual-e5-small` (D-097). Sin este chequeo un
+ * vector vacío pasaba entero —`[].every(...)` es `true` por vacuidad— y llegaba
+ * a `Corpus.buscar`, que da `cos: null` en los tres pasajes pero IGUAL generaba:
  * una llamada real y facturable disparada por un pedido degenerado.
- * Descubierto probando este mismo endpoint.
  */
 const DIMS_EMBEDDING = 384;
+
+interface CuerpoPedido { pregunta: string; idioma: Idioma; vector: number[] }
 
 function validar(cuerpo: unknown): CuerpoPedido | null {
   if (!cuerpo || typeof cuerpo !== "object") return null;
@@ -105,6 +230,8 @@ function validar(cuerpo: unknown): CuerpoPedido | null {
   return { pregunta: c.pregunta.trim(), idioma: c.idioma, vector: c.vector as number[] };
 }
 
+// ---------------------------------------------------------------------------
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
   let cuerpo: unknown;
   try {
@@ -114,31 +241,95 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
   const pedido = validar(cuerpo);
   if (!pedido) {
-    return NextResponse.json({ error: "faltan o son inválidos: pregunta, idioma, vector" }, { status: 400 });
+    return NextResponse.json(
+      { error: "faltan o son inválidos: pregunta, idioma, vector" }, { status: 400 });
   }
 
+  const ctx = cargar();
+  if (!ctx) return NextResponse.json({ error: fallo }, { status: 503 });
+
+  // --- N0: la respuesta congelada, si existe y está vigente (D-112) ---------
+  const fija = ctx.fijas.get(`${pedido.idioma}:${normalizar(pedido.pregunta)}`);
+  if (fija) {
+    const corpus = ctx.motor.por[pedido.idioma].corpus;
+    const pasajes: PasajePublico[] = fija.pasajes.map((n, i) => {
+      // `textosVistos[i]` es la autoridad sobre el texto: 32 números de Richter
+      // viven en más de un chunk (D-084), así que resolver el número sólo sirve
+      // para la metadata de la tarjeta, no para el texto que se muestra.
+      const c = corpus.chunks.find((x) => x.richterNos.includes(n));
+      return {
+        richterNo: n,
+        titulo: c ? tituloDe(c, pedido.idioma) : null,
+        texto: fija.textosVistos[i] ?? "",
+        url: c?.url ?? null,
+      };
+    });
+    const r: RespuestaPublica = {
+      decision: "responde", texto: fija.respuesta, pasajes, notas: [], origen: "cache",
+      diagnostico: {
+        cosMax: null, tau: null,
+        reintentosCita: 0, comillasQuitadas: 0, podadas: 0, citasSinRespaldo: [],
+      },
+    };
+    return NextResponse.json(r);
+  }
+
+  // --- camino vivo ---------------------------------------------------------
   const cascada = cascadaDeProduccion(process.env);
   if (cascada.length === 0) {
-    // No es un 500: es una configuración incompleta del servidor, distinguible
-    // de un error del pedido. `decidirCon` (capa 0/1) sigue funcionando sin
-    // esto, pero acá se corta antes por honestidad: sin generador no hay
-    // respuesta que dar, y silenciarlo detrás de un 500 genérico ocultaría la
-    // causa real (falta configurar `.env.local`).
-    return NextResponse.json({ error: "el servidor no tiene generador configurado" }, { status: 503 });
+    return NextResponse.json(
+      { error: "el servidor no tiene generador configurado" }, { status: 503 });
   }
 
   try {
+    /**
+     * SIN CUOTA NO ES UNA RESPUESTA VACIA. Bug encontrado auditando, y visto en
+     * vivo durante las pruebas de D-120 sin reconocerlo.
+     *
+     * `generar()` devuelve `null` cuando el presupuesto se agotó o todos los
+     * proveedores dieron 429 (D-023). Esto lo convertía en `{ texto: "" }`, que
+     * `responder()` procesa sin objetar y devuelve como `decision: "responde"`
+     * con texto vacío — un **200 con Leonardo mudo**, indistinguible de una
+     * respuesta legítima. Es el «modo Leonardo descansa» del paso 25 del
+     * roadmap, que merece decirse, no disfrazarse de éxito.
+     */
+    let sinCuota = false;
     const R = await responder({
-      motor,
+      motor: ctx.motor,
       pregunta: pedido.pregunta,
       idioma: pedido.idioma,
       vector: new Float32Array(pedido.vector),
       generar: async (system, messages) => {
         const g = await generar(cascada, presupuesto, system, messages);
-        return g ?? { texto: "", tokensEntrada: 0, tokensSalida: 0 };
+        if (!g) { sinCuota = true; return { texto: "", tokensEntrada: 0, tokensSalida: 0 }; }
+        return g;
       },
     });
-    return NextResponse.json(R);
+
+    if (sinCuota) {
+      return NextResponse.json({ error: "sin cuota", descansa: true }, { status: 503 });
+    }
+
+    const r: RespuestaPublica = {
+      decision: R.decision,
+      texto: R.texto,
+      pasajes: R.pasajes.map((p, i) => ({
+        richterNo: p.chunk.richterNo,
+        titulo: tituloDe(p.chunk, pedido.idioma),
+        texto: R.textosVistos[i] ?? "",
+        url: p.chunk.url ?? null,
+      })),
+      notas: R.notas,
+      origen: "vivo",
+      diagnostico: {
+        cosMax: R.cosMax, tau: R.tau,
+        reintentosCita: R.reintentosCita,
+        comillasQuitadas: R.comillasQuitadas,
+        podadas: R.podadas,
+        citasSinRespaldo: R.citasSinRespaldo,
+      },
+    };
+    return NextResponse.json(r);
   } catch (e) {
     console.error("[api/chat]", e);
     return NextResponse.json({ error: "fallo interno" }, { status: 500 });

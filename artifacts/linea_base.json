@@ -1,0 +1,51 @@
+{
+  "regla": "Números offline, deterministas y sin juez. `npm run regresion` los recalcula y falla si alguno se movió. Ver D-115.",
+  "fijado": "2026-08-11",
+  "parcial": true,
+  "puntos": {
+    "recall.A.k3.fallos": {
+      "valor": 2,
+      "decision": "D-096",
+      "nota": "Conteo duro: el pasaje está en el top-3 o no está. Si sube, es una regresión real."
+    },
+    "recall.B.k3.fallos": {
+      "valor": 9,
+      "decision": "D-099",
+      "nota": "PANTALLA. Un cambio acá pide LEER los casos antes de llamarlo regresión: puede ser un casi-empate o una etiqueta angosta."
+    },
+    "gate.aciertos": {
+      "valor": 77,
+      "decision": "D-100"
+    },
+    "gate.filtraciones": {
+      "valor": 43,
+      "decision": "D-100",
+      "nota": "Alta por diseño: τ está en el punto de 0% de pérdida y quien juzga lo dudoso es el LLM (D-039)."
+    },
+    "gate.sobreAbstenciones": {
+      "valor": 0,
+      "decision": "D-041",
+      "nota": "El número que hay que vigilar: la sobre-abstención no es gratis."
+    },
+    "curaduria.inventory": {
+      "valor": 27,
+      "decision": "D-098"
+    },
+    "curaduria.no_traducible": {
+      "valor": 11,
+      "decision": "D-108"
+    },
+    "indice.chunksLeonardo": {
+      "valor": 1404,
+      "decision": "D-098"
+    },
+    "tau.en": {
+      "valor": 0.8262516856193541,
+      "decision": "D-100"
+    },
+    "tau.es": {
+      "valor": 0.841,
+      "decision": "D-108"
+    }
+  }
+}

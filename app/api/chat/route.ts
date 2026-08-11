@@ -31,6 +31,10 @@ import {
   PresupuestoTpm, generar, proveedorPorId, huellaPrompt, varianteVigente,
   type Proveedor,
 } from "../../../src/lib/llm.js";
+import {
+  Limitador, contadorDelEntorno, limitesDelEntorno, ipDe, identidad, sal,
+  verificarTurnstile, type Veredicto,
+} from "../../../src/lib/limites.js";
 import type { Chunk } from "../../../src/lib/retrieval.js";
 
 export const runtime = "nodejs";
@@ -155,6 +159,35 @@ function cascadaDeProduccion(env: Record<string, string | undefined>): Proveedor
  */
 const presupuesto = new PresupuestoTpm(60_000, 12);
 
+/**
+ * Control de abuso (paso 25, R6, R17). Ver `src/lib/limites.ts` y D-123.
+ *
+ * Una sola instancia por proceso: el contador en memoria no sirve de nada si se
+ * construye por pedido, y el de Upstash no necesita reconstruirse.
+ */
+const limitador = new Limitador(contadorDelEntorno(process.env), limitesDelEntorno(process.env));
+
+/**
+ * EL SERVIDOR NO ESCRIBE PROSA DE LEONARDO, NI SIQUIERA PARA UN ERROR.
+ *
+ * `04-costos-y-limites.md` pide presentar el modo degradado en personaje —«el
+ * día se acaba y debo volver a mis estudios»— y tiene razón como producto. Pero
+ * esa frase no sale de ningún pasaje del corpus, y la tesis del proyecto es que
+ * lo que Leonardo dice se comprueba contra sus cuadernos (D-112 lo dice para
+ * las respuestas congeladas: ninguna se escribe a mano, nunca).
+ *
+ * Entonces la API devuelve un CODIGO, y la redacción es del cliente. Así el
+ * texto en personaje vive donde se ve que es interfaz y no una cita, el
+ * servidor no queda con frases atribuibles a Leonardo, y de paso la redacción
+ * queda del lado de quien decide el diseño.
+ */
+function rechazo(v: Veredicto, status: number): NextResponse {
+  const cuerpo: Record<string, unknown> = { error: "limite", motivo: v.motivo, descansa: true };
+  const h = new Headers();
+  if (v.esperaSegundos) h.set("retry-after", String(v.esperaSegundos));
+  return NextResponse.json(cuerpo, { status, headers: h });
+}
+
 // ---------------------------------------------------------------------------
 // Forma pública de la respuesta
 // ---------------------------------------------------------------------------
@@ -218,16 +251,27 @@ const tituloDe = (c: Chunk, idioma: Idioma): string | null =>
  */
 const DIMS_EMBEDDING = 384;
 
-interface CuerpoPedido { pregunta: string; idioma: Idioma; vector: number[] }
+interface CuerpoPedido {
+  pregunta: string; idioma: Idioma; vector: number[];
+  /** Nº de turno declarado por el cliente, y token de Turnstile. Los dos opcionales. */
+  turno?: number; turnstile?: string;
+}
 
 function validar(cuerpo: unknown): CuerpoPedido | null {
   if (!cuerpo || typeof cuerpo !== "object") return null;
   const c = cuerpo as Record<string, unknown>;
+  // 500 caracteres: el punto 4 del control de abuso de `04-costos-y-limites.md`.
+  // Corta la inyección de prompt larga y el vaciado de cuota con contextos enormes.
   if (typeof c.pregunta !== "string" || !c.pregunta.trim() || c.pregunta.length > 500) return null;
   if (c.idioma !== "es" && c.idioma !== "en") return null;
   if (!Array.isArray(c.vector) || c.vector.length !== DIMS_EMBEDDING) return null;
   if (!c.vector.every((x) => typeof x === "number" && Number.isFinite(x))) return null;
-  return { pregunta: c.pregunta.trim(), idioma: c.idioma, vector: c.vector as number[] };
+  if (c.turno !== undefined && (typeof c.turno !== "number" || !Number.isFinite(c.turno))) return null;
+  if (c.turnstile !== undefined && typeof c.turnstile !== "string") return null;
+  return {
+    pregunta: c.pregunta.trim(), idioma: c.idioma, vector: c.vector as number[],
+    turno: c.turno as number | undefined, turnstile: c.turnstile as string | undefined,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -243,6 +287,32 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!pedido) {
     return NextResponse.json(
       { error: "faltan o son inválidos: pregunta, idioma, vector" }, { status: 400 });
+  }
+
+  /**
+   * EL ORDEN DE LAS COMPROBACIONES ES LA MITAD DEL DISEÑO. De lo más barato a
+   * lo más caro, y lo que no cuesta cuota no la descuenta:
+   *
+   *   1. turnos      — un `if`, sin E/S
+   *   2. cupo por IP — una operación de contador
+   *   3. Turnstile   — una llamada de red a Cloudflare (sólo si hay clave)
+   *   4. caché N0    — lectura de memoria, **no toca el presupuesto diario**
+   *   5. presupuesto — se descuenta recién cuando se va a generar de verdad
+   *
+   * Si el presupuesto diario se comprobara acá arriba, una respuesta cacheada
+   * gastaría cuota que no consume y D-112 quedaría anulada por su propio
+   * guardián.
+   */
+  const vTurnos = limitador.limiteDeTurnos(pedido.turno);
+  if (!vTurnos.permite) return rechazo(vTurnos, 429);
+
+  const ip = ipDe(req.headers);
+  const quien = identidad(ip, sal(process.env));
+  const vIp = await limitador.porVisitante(quien);
+  if (!vIp.permite) return rechazo(vIp, 429);
+
+  if (!await verificarTurnstile(pedido.turnstile, process.env.TURNSTILE_SECRET_KEY, ip)) {
+    return rechazo({ permite: false, motivo: "turnstile" }, 403);
   }
 
   const ctx = cargar();
@@ -294,20 +364,39 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
      * roadmap, que merece decirse, no disfrazarse de éxito.
      */
     let sinCuota = false;
+    let sinPresupuesto: Veredicto | null = null;
     const R = await responder({
       motor: ctx.motor,
       pregunta: pedido.pregunta,
       idioma: pedido.idioma,
       vector: new Float32Array(pedido.vector),
+      /**
+       * EL PRESUPUESTO DIARIO SE DESCUENTA ACA ADENTRO, no en el handler.
+       *
+       * Esta función la llama `responder()` **sólo si el gate decidió
+       * responder**: una abstención o un caso curado de capa 0 nunca llegan
+       * hasta acá, y por eso no descuentan cuota que no gastan. Es el único
+       * lugar del código donde «se va a llamar al LLM» es un hecho y no una
+       * predicción.
+       *
+       * Y se descuenta UNA VEZ POR LLAMADA, no una por pregunta: la
+       * verificación de cita reintenta hasta dos veces (D-082) y cada reintento
+       * es un request real contra la cuota del proveedor. Contar uno por
+       * pregunta subestimaría el consumo justo en los casos difíciles.
+       */
       generar: async (system, messages) => {
+        const v = await limitador.presupuestoDiario();
+        if (!v.permite) { sinPresupuesto = v; return { texto: "", tokensEntrada: 0, tokensSalida: 0 }; }
         const g = await generar(cascada, presupuesto, system, messages);
         if (!g) { sinCuota = true; return { texto: "", tokensEntrada: 0, tokensSalida: 0 }; }
         return g;
       },
     });
 
+    if (sinPresupuesto) return rechazo(sinPresupuesto, 503);
     if (sinCuota) {
-      return NextResponse.json({ error: "sin cuota", descansa: true }, { status: 503 });
+      return NextResponse.json(
+        { error: "limite", motivo: "cuota_proveedor", descansa: true }, { status: 503 });
     }
 
     const r: RespuestaPublica = {

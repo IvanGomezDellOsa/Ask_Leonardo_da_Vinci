@@ -38,3 +38,6 @@ __pycache__/
 evals/out/*
 !evals/out/baseline-gemini.jsonl
 !evals/out/rag-k3-gemini-voz8.jsonl
+
+# Indices de experimento: se regeneran con `tools/indexar.ts --dtype q8`
+artifacts/q8/

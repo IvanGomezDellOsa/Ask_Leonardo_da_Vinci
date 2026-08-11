@@ -66,7 +66,19 @@ if (idioma === "es") {
 console.log(`\nmodelo : ${modelo}`);
 console.log(`chunks : ${chunks.length}`);
 
-const extractor = await pipeline("feature-extraction", modelo);
+/**
+ * `--dtype q8` construye el indice con los pesos CUANTIZADOS, que son los que
+ * bajaria un navegador. Ver D-116, D-117.
+ *
+ * POR QUE HACE FALTA. Todo lo que este proyecto midio uso fp32, porque es el
+ * default de la libreria y el warning que lo dice se filtraba del output por
+ * ruidoso. Medido, una consulta q8 contra un indice fp32 cambia el top-3 en 70
+ * de 120 casos y mueve 6 decisiones del gate: **consulta e indice tienen que
+ * hablar el mismo idioma.** Este flag existe para poder construir el par.
+ */
+const dtype = arg("dtype", "fp32") as "fp32" | "q8";
+console.log(`dtype  : ${dtype}`);
+const extractor = await pipeline("feature-extraction", modelo, { dtype });
 
 /**
  * SE EMBEBE `richterTitle + ". " + text`, no el texto solo. Ver D-025.

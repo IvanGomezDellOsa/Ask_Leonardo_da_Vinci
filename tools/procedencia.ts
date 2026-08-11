@@ -117,15 +117,36 @@ const conAtribucion = chunks.filter((c) => c.url && /gutenberg\.org/i.test(c.url
 bien(`${conAtribucion} chunks enlazan la fuente en gutenberg.org (atribución, no marca)`);
 
 // ---------------------------------------------------------------------------
-console.log(`\n## 4 · Lo que este chequeo NO cubre\n`);
-const hayLicencia = ["LICENSE", "LICENSE.md", "LICENSE.txt", "LICENCIA.md"]
-  .some((n) => existsSync(new URL(n, RAIZ)));
-console.log(`  ${hayLicencia ? "·" : "⚠️ "} Licencia del código del repositorio: ` +
-            `${hayLicencia ? "presente" : "**NO HAY ARCHIVO DE LICENCIA**"}`);
-console.log(`     Es la otra mitad de R20 y es una decisión del dueño, no una comprobación.`);
-console.log(`     Sin archivo de licencia, un repo público **no** concede permiso de uso: el`);
-console.log(`     default legal es «todos los derechos reservados», que probablemente no es`);
-console.log(`     lo que un proyecto de portfolio quiere decir.`);
+console.log(`\n## 4 · La licencia del repositorio (D-130)\n`);
+
+/**
+ * SON DOS ARCHIVOS Y LOS DOS TIENEN QUE ESTAR.
+ *
+ * `LICENSE` es MIT puro —sin una linea agregada— para que el detector de
+ * GitHub lo reconozca y muestre el badge; un preambulo o una nota al pie
+ * pueden hacer que falle y el repo aparezca como "sin licencia", que es
+ * justo lo que este paso vino a arreglar.
+ *
+ * Por eso la aclaracion de alcance vive aparte, en `LICENSE-CORPUS.md`: sin
+ * ella, un MIT en la raiz se lee como si reclamara derechos sobre el texto de
+ * Richter y sobre los crudos de Gutenberg, que no son de este proyecto.
+ */
+const licencia = new URL("LICENSE", RAIZ);
+if (!existsSync(licencia)) {
+  mal(`no hay LICENSE — un repo público sin licencia es «todos los derechos reservados»`);
+} else {
+  const t = readFileSync(licencia, "utf8");
+  if (!/^MIT License/.test(t.trim())) mal(`LICENSE no arranca con "MIT License" — ¿cambió la licencia?`);
+  else if (!/Copyright \(c\) \d{4}/.test(t)) mal(`LICENSE sin línea de copyright con año`);
+  else bien(`LICENSE · MIT · ${(t.match(/Copyright \(c\) .+/) ?? [""])[0]}`);
+}
+
+const corpus = new URL("LICENSE-CORPUS.md", RAIZ);
+if (!existsSync(corpus)) {
+  mal(`no hay LICENSE-CORPUS.md — MIT en la raíz se leería como si cubriera el texto de Richter`);
+} else {
+  bien(`LICENSE-CORPUS.md presente · delimita qué cubre MIT y qué no`);
+}
 
 console.log(`\n${fallos === 0 ? "OK — la procedencia del corpus es verificable" : `${fallos} FALLO(S)`}\n`);
 process.exit(fallos ? 1 : 0);

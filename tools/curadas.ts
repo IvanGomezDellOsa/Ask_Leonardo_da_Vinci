@@ -31,12 +31,17 @@
  * Sale con codigo 1 si algo falla, para poder colgarlo de la guarda de regresion.
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { LISTA_CURADA, capaCurada } from "../src/lib/grounding.js";
 
 const RAIZ = new URL("../", import.meta.url);
 const chunks: { id: string; voice: string; text: string; richterNo: number | null }[] =
   JSON.parse(readFileSync(new URL("artifacts/chunks.json", RAIZ), "utf8"));
+
+/** La traducción congelada (D-079, D-125), para verificar `citaEs`. */
+const fEs = new URL("artifacts/chunks_es.json", RAIZ);
+const textosEs: Record<string, { texto: string }> =
+  existsSync(fEs) ? JSON.parse(readFileSync(fEs, "utf8")) : {};
 
 interface Caso { id: string; q: string; lang: string; category: string }
 const casos: Caso[] = readFileSync(new URL("evals/dataset.jsonl", RAIZ), "utf8")
@@ -74,10 +79,29 @@ for (const c of LISTA_CURADA) {
   // Normalizado sólo en espacios: el contenido tiene que coincidir carácter a carácter.
   const norm = (s: string) => s.replace(/\s+/g, " ").trim();
   if (!norm(nota.text).includes(norm(c.cita))) {
-    mal(`${c.caso}: la cita NO aparece en ${c.notaDeRichter}\n       buscaba: «${c.cita}»`);
+    mal(`${c.caso}: la cita (en) NO aparece en ${c.notaDeRichter}\n       buscaba: «${c.cita}»`);
     continue;
   }
-  bien(`${c.caso} → ${c.notaDeRichter} · cita verificada (${c.cita.length} car.)`);
+  bien(`${c.caso} → ${c.notaDeRichter} · cita (en) verificada (${c.cita.length} car.)`);
+
+  /**
+   * `citaEs` CONTRA `textoEs`, NO CONTRA `cita` TRADUCIDA AL VUELO. Sin nota
+   * traducida, el fallback documentado es mostrar `cita` en inglés — así que
+   * `citaEs` ausente no es un fallo, es D-125 sin llegar todavía a esa nota.
+   */
+  const traducida = textosEs[c.notaDeRichter]?.texto;
+  if (!c.citaEs) {
+    if (traducida) mal(`${c.caso}: la nota SÍ está traducida pero falta 'citaEs' — un usuario en` +
+                        ` castellano vería la cita en inglés sin necesidad`);
+    else console.log(`  ⚠️  ${c.caso}: sin 'citaEs' — la nota ${c.notaDeRichter} no está traducida` +
+                      ` todavía, cae a inglés (correcto por ahora)`);
+  } else if (!traducida) {
+    mal(`${c.caso}: tiene 'citaEs' pero ${c.notaDeRichter} no está en chunks_es.json`);
+  } else if (!norm(traducida).includes(norm(c.citaEs))) {
+    mal(`${c.caso}: la cita (es) NO aparece en la traducción de ${c.notaDeRichter}\n       buscaba: «${c.citaEs}»`);
+  } else {
+    bien(`${c.caso} → ${c.notaDeRichter} · cita (es) verificada (${c.citaEs.length} car.)`);
+  }
 }
 
 // ---------------------------------------------------------------------------

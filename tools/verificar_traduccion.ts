@@ -95,38 +95,64 @@ function sobrevive(nombre: string, pajar: string): boolean {
   return n.length >= 5 && pajar.includes(n.slice(0, 5));
 }
 
-let conTraduccion = 0;
-const faltanNumeros: { id: string; falta: string[] }[] = [];
-const faltanNombres: { id: string; falta: string[] }[] = [];
-const vacios: string[] = [];
-const sinTraducir: string[] = [];
+/**
+ * LAS DOS VOCES, POR SEPARADO. Ver D-125.
+ *
+ * Mezclar los conteos escondería un problema real: si la traducción de Richter
+ * saliera peor que la de Leonardo, un promedio único lo disimularía. Cada voz
+ * tiene su propia fila y su propio veredicto.
+ */
+const VOCES = ["leonardo", "richter"] as const;
+const args = process.argv.slice(2);
+const soloVoz = args.includes("--voz") ? args[args.indexOf("--voz") + 1] : null;
+const voces = soloVoz ? VOCES.filter((v) => v === soloVoz) : VOCES;
 
-for (const c of chunks) {
-  if (c.voice !== "leonardo") continue;
-  if (!c.textoEs) { sinTraducir.push(c.id); continue; }
-  if (!c.textoEs.trim()) { vacios.push(c.id); continue; }
-  conTraduccion++;
+interface Resultado {
+  voz: string; conTraduccion: number; sinTraducir: string[]; vacios: string[];
+  faltanNumeros: { id: string; falta: string[] }[]; faltanNombres: { id: string; falta: string[] }[];
+}
 
-  const es = plano(c.textoEs);
-  const fn = numerosDe(c.text).filter((n) => !c.textoEs!.includes(n));
-  if (fn.length) faltanNumeros.push({ id: c.id, falta: fn });
+function medir(voz: string): Resultado {
+  const r: Resultado = { voz, conTraduccion: 0, sinTraducir: [], vacios: [], faltanNumeros: [], faltanNombres: [] };
+  for (const c of chunks) {
+    if (c.voice !== voz) continue;
+    if (!c.textoEs) { r.sinTraducir.push(c.id); continue; }
+    if (!c.textoEs.trim()) { r.vacios.push(c.id); continue; }
+    r.conTraduccion++;
 
-  const fnom = nombresDe(c.text).filter((n) => !sobrevive(n, es));
-  if (fnom.length) faltanNombres.push({ id: c.id, falta: fnom });
+    const es = plano(c.textoEs);
+    const fn = numerosDe(c.text).filter((n) => !c.textoEs!.includes(n));
+    if (fn.length) r.faltanNumeros.push({ id: c.id, falta: fn });
+
+    const fnom = nombresDe(c.text).filter((n) => !sobrevive(n, es));
+    if (fnom.length) r.faltanNombres.push({ id: c.id, falta: fnom });
+  }
+  return r;
 }
 
 const pct = (a: number, b: number): string => b ? `${((a / b) * 100).toFixed(1)}%` : "n/a";
 
-console.log(`\n# Control de la traduccion congelada (D-079)\n`);
-console.log(`Chunks de Leonardo con traduccion : ${conTraduccion}`);
-console.log(`Sin traduccion (caen al ingles)   : ${sinTraducir.length}`);
-console.log(`Traduccion vacia                  : ${vacios.length}`);
-console.log(`\n| chequeo | chunks limpios | con faltantes |`);
-console.log(`|---|---:|---:|`);
-console.log(`| numeros sobreviven | ${conTraduccion - faltanNumeros.length} ` +
-            `(${pct(conTraduccion - faltanNumeros.length, conTraduccion)}) | ${faltanNumeros.length} |`);
-console.log(`| nombres propios sobreviven | ${conTraduccion - faltanNombres.length} ` +
-            `(${pct(conTraduccion - faltanNombres.length, conTraduccion)}) | ${faltanNombres.length} |`);
+console.log(`\n# Control de la traducción congelada (D-079, D-125)\n`);
+
+const resultados = voces.map(medir);
+for (const r of resultados) {
+  console.log(`## voz: ${r.voz}\n`);
+  console.log(`Con traducción                 : ${r.conTraduccion}`);
+  console.log(`Sin traducción (cae al inglés)  : ${r.sinTraducir.length}`);
+  console.log(`Traducción vacía                : ${r.vacios.length}`);
+  console.log(`\n| chequeo | chunks limpios | con faltantes |`);
+  console.log(`|---|---:|---:|`);
+  console.log(`| números sobreviven | ${r.conTraduccion - r.faltanNumeros.length} ` +
+              `(${pct(r.conTraduccion - r.faltanNumeros.length, r.conTraduccion)}) | ${r.faltanNumeros.length} |`);
+  console.log(`| nombres propios sobreviven | ${r.conTraduccion - r.faltanNombres.length} ` +
+              `(${pct(r.conTraduccion - r.faltanNombres.length, r.conTraduccion)}) | ${r.faltanNombres.length} |\n`);
+}
+
+// El resto del reporte (listas detalladas) usa la voz con más faltantes, o la
+// única pedida por --voz. Evita un reporte doble cuando sólo interesa una.
+const { conTraduccion, faltanNumeros, faltanNombres, vacios, sinTraducir } =
+  resultados.reduce((a, b) => (a.faltanNumeros.length + a.faltanNombres.length >=
+                                b.faltanNumeros.length + b.faltanNombres.length ? a : b));
 
 if (faltanNumeros.length) {
   console.log(`\n## Numeros que no sobrevivieron (${faltanNumeros.length})\n`);

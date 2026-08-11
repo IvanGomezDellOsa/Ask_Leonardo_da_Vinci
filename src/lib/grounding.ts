@@ -117,8 +117,17 @@ export interface CasoCurado {
   caso: string;
   patrones: RegExp[];
   notaDeRichter: string | null;
-  /** Fragmento exacto de la nota. Verificado por `npm run curadas`. */
+  /** Fragmento exacto de la nota, en inglés. Verificado por `npm run curadas`. */
   cita?: string;
+  /**
+   * El MISMO fragmento, en la traducción congelada (D-125). Verificado contra
+   * `textoEs`, no contra `cita` traducida al vuelo — mismo principio que D-079:
+   * el modelo (y el usuario) cita la traducción congelada, nunca una
+   * improvisada. Si falta, D-125 no llegó a cubrir esa nota y el fallback es
+   * mostrar `cita` en inglés (mejor una cita real en el idioma que no toca que
+   * inventar una traducción sin congelar).
+   */
+  citaEs?: string;
   /**
    * Preguntas que este caso DEBE atrapar. No es documentacion: `npm run curadas`
    * comprueba que cada una caiga en ESTE caso y no en otro.
@@ -151,6 +160,7 @@ export const LISTA_CURADA: CasoCurado[] = [
     patrones: [/mona\s*lisa/i, /gioconda/i, /joconde/i],
     notaDeRichter: "intro-R663-5",
     cita: "no sketches are known for the portrait of \"Mona Lisa\", nor do the MS. notes ever allude to it",
+    citaEs: "no se conocen bocetos para el retrato de \"Mona Lisa\", ni las notas del MS. aluden jamás a él",
     ejemplos: ["¿Cuánto tiempo te llevó pintar la Mona Lisa?", "How long did it take you to paint the Mona Lisa?",
                "¿Quién fue la Gioconda?"],
   },
@@ -159,6 +169,7 @@ export const LISTA_CURADA: CasoCurado[] = [
     patrones: [/vegetarian/i, /com[íi]as?\s+carne/i, /eat(ing)?\s+meat/i, /dieta/i],
     notaDeRichter: "fn-R988-1",
     cita: "We are led to believe that Leonardo himself was a vegetarian",
+    citaEs: "Se nos lleva a creer que el propio Leonardo era vegetariano",
     ejemplos: ["¿Es cierto que eras vegetariano?", "Is it true that you were a vegetarian?",
                "¿Comías carne?"],
   },
@@ -167,6 +178,7 @@ export const LISTA_CURADA: CasoCurado[] = [
     patrones: [/sin\s+termin/i, /inacabad/i, /unfinished/i, /left.{0,20}incomplete/i],
     notaDeRichter: "fn-R745-0-1",
     cita: "in the absence of all allusion to it in the MSS",
+    citaEs: "en ausencia de toda alusión a él en los manuscritos",
     ejemplos: ["¿Por qué dejaste tantas obras sin terminar?", "Why did you leave so many works unfinished?"],
   },
   {
@@ -175,6 +187,7 @@ export const LISTA_CURADA: CasoCurado[] = [
                /tus?\s+padres/i, /hijo\s+(natural|ileg[íi]timo)/i],
     notaDeRichter: "fn-R1566-65",
     cita: "Leonardo never mentions her in the Manuscripts",
+    citaEs: "Leonardo nunca la menciona en los Manuscritos",
     ejemplos: ["¿Quién era tu madre?", "Who was your mother?", "¿Cómo era tu familia?"],
   },
   {
@@ -183,6 +196,7 @@ export const LISTA_CURADA: CasoCurado[] = [
                /how\s+did\s+you\s+die/i, /your\s+death/i, /cu[áa]ndo\s+moriste/i],
     notaDeRichter: "fn-R1566-138",
     cita: "Fr. Melzi, writing from Amboise, announces Leonardo's death",
+    citaEs: "Fr. Melzi, escribiendo desde Amboise, anuncia la muerte de Leonardo",
     ejemplos: ["¿Cómo fue tu muerte?", "How did you die?", "¿Cuándo moriste?"],
   },
   /**
@@ -256,7 +270,14 @@ export function decidir(
           .filter(({ c }) => c.id === curado.notaDeRichter)
           .map(({ c, i }) => ({ chunk: c, cos: 1, rankDenso: 1, rankBm25: null, rrf: 1 }))
       : [];
-    return { tipo: "curada", caso: curado.caso, nota, cita: curado.cita ?? null };
+    /**
+     * LA CITA EN EL IDIOMA DE LA CONSULTA (D-125). `citaEs` viaja verificada
+     * contra la traduccion congelada (`npm run curadas`); si falta —D-125 no
+     * llego a cubrir esa nota— se cae al ingles en vez de traducir al vuelo,
+     * mismo criterio que D-079 con el resto del corpus.
+     */
+    const cita = (idioma === "es" && curado.citaEs) ? curado.citaEs : (curado.cita ?? null);
+    return { tipo: "curada", caso: curado.caso, nota, cita };
   }
 
   const tau = umbrales.tau[idioma];

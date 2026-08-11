@@ -15,6 +15,7 @@
     "evals:muestra": "tsx evals/muestra_para_etiquetar.ts",
     "evals:citas": "tsx evals/fidelidad_cita.ts",
     "traducir": "tsx tools/traducir_corpus.ts",
+    "traducir:richter": "tsx tools/traducir_corpus.ts --voz richter",
     "evals:citas-corpus": "tsx evals/citas_vs_corpus.ts",
     "evals:continuacion": "tsx evals/continuacion.ts",
     "evals:paquete": "tsx evals/paquete_juez.ts",

@@ -93,7 +93,18 @@ export async function responder(opciones: {
               * «intro-R663-5» y no tenia con que dibujar la tarjeta: la nota que
               * D-027 puso como el mejor momento del producto no llegaba a verse.
               */
-             pasajes: d.nota, textosVistos: d.nota.map((x) => x.chunk.text),
+             /**
+              * `textosVistos` RESPETA EL IDIOMA. Bug encontrado auditando el
+              * propio D-124 recién cerrado: esto mandaba `x.chunk.text`
+              * siempre en inglés, sin mirar `idioma` — la nota curada de
+              * Richter aparecía en inglés aunque la respuesta de Leonardo
+              * fuera en castellano fluido. Mismo criterio que D-084 aplica al
+              * camino "responde": el texto que se muestra es el que se
+              * verificó, y en castellano eso es `textoEs`.
+              */
+             pasajes: d.nota,
+             textosVistos: d.nota.map((x) =>
+               (idioma === "es" && x.chunk.textoEs) ? x.chunk.textoEs : x.chunk.text),
              notas: d.nota.map((x) => x.chunk.id) };
   }
   if (d.tipo === "abstiene") {

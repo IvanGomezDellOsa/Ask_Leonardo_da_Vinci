@@ -1,8 +1,15 @@
 /**
- * Traduce al castellano los pasajes de Leonardo, UNA SOLA VEZ. Ver D-079.
+ * Traduce al castellano los pasajes del corpus, UNA SOLA VEZ. Ver D-079, D-125.
  *
  *   npm run traducir -- --modelo deepseek-v4-flash
  *   npm run traducir -- --limite 20        (muestra, para revisar calidad)
+ *   npm run traducir:richter               (las notas de Richter, D-125)
+ *
+ * `--voz leonardo` (default) o `--voz richter`. Son DOS INSTRUCCIONES DISTINTAS,
+ * no la misma con otro filtro: Leonardo escribe en primera persona, notas para
+ * si mismo, artesano del Renacimiento; Richter escribe en 1888, tercera persona,
+ * aparato academico. Traducir la nota de un editor con el registro de un
+ * artesano seria inventar una voz que ninguno de los dos tiene.
  *
  * POR QUE EXISTE
  *
@@ -49,6 +56,8 @@ const arg = (n: string, def: string): string => {
 };
 const modelo = arg("modelo", "deepseek-v4-flash");
 const limite = Number(arg("limite", "0"));
+const voz = arg("voz", "leonardo") as "leonardo" | "richter";
+if (voz !== "leonardo" && voz !== "richter") { console.error(`--voz tiene que ser 'leonardo' o 'richter', vino '${voz}'`); process.exit(1); }
 /** Palabras por lote. Con ~118 de promedio, 1.200 son ~10 chunks por llamada. */
 const LOTE_PALABRAS = Number(arg("lote", "1200"));
 
@@ -78,8 +87,39 @@ Input is a json array of objects with "id", "title" and "text". Output json with
 
 {"traducciones":[{"id":"<the same id>","titulo":"<translated title, or null if the input title was null>","texto":"<translated text>"}]}`;
 
+/**
+ * LA VOZ DE RICHTER. Editor academico, 1888, tercera persona: describe
+ * manuscritos, fecha dibujos, discute atribuciones, cita fuentes en italiano o
+ * frances DENTRO del ingles.
+ *
+ * DOS DIFERENCIAS DE FONDO CON LA INSTRUCCION DE LEONARDO, y las dos importan:
+ *
+ *   - **Sin "tu".** Richter no le habla a nadie: describe. Traducirlo en
+ *     segunda persona inventaria una direccionalidad que el texto no tiene.
+ *   - **Las citas en italiano o frances NO SE TOCAN.** Richter mismo las deja
+ *     en el idioma original dentro de su ingles —Arluno narra que...,
+ *     documentos de archivo— porque son la fuente primaria, no su prosa. Si
+ *     este traductor las pasara a castellano, estaria traduciendo una fuente
+ *     que ni Richter tradujo: exactamente la superficie de invencion que D-079
+ *     existe para cerrar, ahora en la mitad academica del corpus.
+ */
+const INSTRUCCIONES_RICHTER = `You translate J.P. Richter's own 1888 scholarly notes and introductions (NOT Leonardo's words — Richter's editorial commentary about the manuscripts) into Spanish. Reply with json only.
+
+RULES, in order of importance:
+1. THIRD PERSON, ACADEMIC REGISTER. Richter describes and annotates; he does not address a reader. Do not use "tú" or any second person.
+2. FAITHFUL, NOT BEAUTIFUL. Same rule as always: do not improve, modernise, complete or explain. If a sentence is dense 1888 scholarly prose, the Spanish is dense 1888 scholarly prose.
+3. LEAVE QUOTED ITALIAN OR FRENCH EXACTLY AS IS. Richter frequently quotes archival documents, Vasari, or other primary sources in their original Italian or French, embedded inside his English commentary. Do NOT translate those quoted passages — copy them verbatim, unchanged, in the output. Only translate Richter's own English.
+4. Keep bracketed editorial insertions, plate/figure references (Pl. XCVI No. 2), manuscript numbers and dates exactly as they appear.
+5. Keep proper names, place names and manuscript sigla as they appear. Do not add titles or honorifics that are not there.
+6. Translate every word of Richter's own English text. Never leave English prose untranslated — only the embedded foreign-language quotations stay as-is.
+
+Input is a json array of objects with "id", "title" and "text". Output json with this exact shape, one entry per input id, in the same order:
+
+{"traducciones":[{"id":"<the same id>","titulo":"<translated title, or null if the input title was null>","texto":"<translated text>"}]}`;
+
 const chunks: Chunk[] = JSON.parse(readFileSync(new URL("chunks.json", ART), "utf8"));
-const leo = chunks.filter((c) => c.voice === "leonardo");
+const objetivo = chunks.filter((c) => c.voice === voz);
+const instrucciones = voz === "richter" ? INSTRUCCIONES_RICHTER : INSTRUCCIONES;
 
 const salida = new URL("chunks_es.jsonl", ART);
 const hechos = new Set<string>();
@@ -89,7 +129,7 @@ if (existsSync(salida)) {
   }
 }
 
-let pendientes = leo.filter((c) => !hechos.has(c.id));
+let pendientes = objetivo.filter((c) => !hechos.has(c.id));
 if (limite) pendientes = pendientes.slice(0, limite);
 
 // Lotes por presupuesto de palabras, no por cantidad fija: los chunks van de 8 a
@@ -105,7 +145,8 @@ if (actual.length) lotes.push(actual);
 const palabras = pendientes.reduce((s, c) => s + c.nWords, 0);
 console.log(`# Traduccion del corpus al castellano`);
 console.log(`  modelo      : ${modelo}`);
-console.log(`  chunks leo  : ${leo.length}`);
+console.log(`  voz         : ${voz}`);
+console.log(`  chunks      : ${objetivo.length}`);
 console.log(`  ya hechos   : ${hechos.size}`);
 console.log(`  pendientes  : ${pendientes.length}   (${palabras.toLocaleString()} palabras, ${lotes.length} lotes)`);
 console.log(`  coste aprox : ~US$${(palabras * 1.35 * 0.14 / 1e6 + palabras * 1.6 * 0.28 / 1e6).toFixed(3)}`);
@@ -137,7 +178,7 @@ async function traducirLote(lote: Chunk[]): Promise<void> {
   const entrada = JSON.stringify(lote.map((c) => ({ id: c.id, title: c.richterTitle, text: c.text })));
   for (let intento = 0; intento < 4; intento++) {
     try {
-      const r = await proveedor.generar(INSTRUCCIONES, [{ role: "user", content: entrada }]);
+      const r = await proveedor.generar(instrucciones, [{ role: "user", content: entrada }]);
       const j = extraerJson(r.texto);
       /**
        * Se aceptan `texto`/`text` y `titulo`/`title` indistintamente.

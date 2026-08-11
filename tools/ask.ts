@@ -96,7 +96,10 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
     console.log(`  CAPA 0 — caso curado "${d.caso}", no se llama al retrieval`);
     if (d.cita) console.log(`    cita verificada: «${d.cita}»`);
     else console.log(`    sin nota: el corpus calla y Richter no comenta el silencio`);
-    for (const n of d.nota) console.log(`    nota ${n.chunk.id}: ${recortar(n.chunk.text, 40)}`);
+    for (const n of d.nota) {
+      const t = (idioma === "es" && n.chunk.textoEs) ? n.chunk.textoEs : n.chunk.text;
+      console.log(`    nota ${n.chunk.id}: ${recortar(t, 40)}`);
+    }
     return d;
   }
   const rel = ((d.cosMax - d.tau) >= 0 ? "+" : "") + (d.cosMax - d.tau).toFixed(4);

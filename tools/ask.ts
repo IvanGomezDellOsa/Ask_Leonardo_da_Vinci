@@ -82,7 +82,10 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
     },
   });
   const d = R.decision === "curada"
-    ? { tipo: "curada" as const, caso: "", nota: [] }
+    // `caso`, `cita` y los pasajes de la nota salen de `responder()` desde
+    // D-124: antes se reconstruía un curada vacío y el CLI no mostraba la nota,
+    // que es justo lo que hay que poder inspeccionar de este camino.
+    ? { tipo: "curada" as const, caso: R.caso ?? "", cita: R.cita ?? null, nota: R.pasajes }
     : R.decision === "abstiene"
       ? { tipo: "abstiene" as const, cosMax: R.cosMax!, tau: R.tau!, evidencia: [] }
       : { tipo: "responde" as const, cosMax: R.cosMax!, tau: R.tau!, pasajes: R.pasajes, notas: R.notas };
@@ -91,15 +94,17 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
 
   if (d.tipo === "curada") {
     console.log(`  CAPA 0 — caso curado "${d.caso}", no se llama al retrieval`);
-    for (const n of d.nota) console.log(`    nota: ${recortar(n.chunk.text, 40)}`);
+    if (d.cita) console.log(`    cita verificada: «${d.cita}»`);
+    else console.log(`    sin nota: el corpus calla y Richter no comenta el silencio`);
+    for (const n of d.nota) console.log(`    nota ${n.chunk.id}: ${recortar(n.chunk.text, 40)}`);
     return d;
   }
   const rel = ((d.cosMax - d.tau) >= 0 ? "+" : "") + (d.cosMax - d.tau).toFixed(4);
   if (d.tipo === "abstiene") {
     console.log(`  ABSTIENE — cos_max ${d.cosMax.toFixed(4)} < τ_${idioma} ${d.tau.toFixed(4)} (${rel})`);
-    for (const e of d.evidencia) {
-      console.log(`    evidencia de Richter (${e.cos.toFixed(4)}): ${recortar(e.chunk.text, 30)}`);
-    }
+    // Sin evidencia que mostrar: D-110 eliminó la nota de Richter recuperada,
+    // porque medida sobre 23 abstenciones casi nunca probaba nada. Lo único que
+    // puede acompañar una abstención es la nota de un caso curado (D-124).
     return d;
   }
   console.log(`  RESPONDE — cos_max ${d.cosMax.toFixed(4)} ≥ τ_${idioma} ${d.tau.toFixed(4)} (${rel})`);

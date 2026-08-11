@@ -14,11 +14,11 @@
       "nota": "PANTALLA. Un cambio acá pide LEER los casos antes de llamarlo regresión: puede ser un casi-empate o una etiqueta angosta."
     },
     "gate.aciertos": {
-      "valor": 77,
+      "valor": 89,
       "decision": "D-100"
     },
     "gate.filtraciones": {
-      "valor": 43,
+      "valor": 31,
       "decision": "D-100",
       "nota": "Alta por diseño: τ está en el punto de 0% de pérdida y quien juzga lo dudoso es el LLM (D-039)."
     },

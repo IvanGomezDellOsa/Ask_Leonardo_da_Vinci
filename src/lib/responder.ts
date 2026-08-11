@@ -39,6 +39,9 @@ export interface Generador {
 export interface Respondido {
   decision: "curada" | "abstiene" | "responde";
   texto: string;
+  /** Sólo en `curada`: el id del caso (D-124) y el fragmento exacto de la nota. */
+  caso?: string;
+  cita?: string | null;
   /** Los pasajes recuperados, con su score. Vacío si no se respondió. */
   pasajes: Recuperado[];
   /**
@@ -83,6 +86,14 @@ export async function responder(opciones: {
   const d = decidirCon(motor, pregunta, vector, idioma, k);
   if (d.tipo === "curada") {
     return { ...VACIO, decision: "curada", texto: "", cosMax: null, tau: null,
+             caso: d.caso, cita: d.cita,
+             /**
+              * SE DEVUELVEN LOS PASAJES DE LA NOTA, no solo su id. Hasta D-124
+              * esto mandaba `notas: [id]` y nada mas, asi que el cliente recibia
+              * «intro-R663-5» y no tenia con que dibujar la tarjeta: la nota que
+              * D-027 puso como el mejor momento del producto no llegaba a verse.
+              */
+             pasajes: d.nota, textosVistos: d.nota.map((x) => x.chunk.text),
              notas: d.nota.map((x) => x.chunk.id) };
   }
   if (d.tipo === "abstiene") {

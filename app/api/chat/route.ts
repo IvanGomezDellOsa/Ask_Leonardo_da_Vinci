@@ -219,6 +219,14 @@ interface PasajePublico {
 interface RespuestaPublica {
   decision: "curada" | "abstiene" | "responde";
   texto: string;
+  /**
+   * Sólo en `curada` (D-124): qué caso disparó y **el fragmento exacto de la
+   * nota de Richter que documenta el silencio**, ya verificado por
+   * `npm run curadas` contra el texto de la nota. `cita: null` es una posición
+   * honesta: el corpus calla y Richter tampoco lo comenta.
+   */
+  caso?: string;
+  cita?: string | null;
   pasajes: PasajePublico[];
   /** Ids de notas de Richter vinculadas, para la tarjeta de citación. */
   notas: string[];
@@ -409,6 +417,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         url: p.chunk.url ?? null,
       })),
       notas: R.notas,
+      caso: R.caso,
+      cita: R.cita,
       origen: "vivo",
       diagnostico: {
         cosMax: R.cosMax, tau: R.tau,

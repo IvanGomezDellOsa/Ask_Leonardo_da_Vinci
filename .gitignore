@@ -41,3 +41,6 @@ evals/out/*
 
 # Indices de experimento: se regeneran con `tools/indexar.ts --dtype q8`
 artifacts/q8/
+
+# Cache incremental de tsc/Next, se regenera sola
+*.tsbuildinfo

@@ -35,7 +35,7 @@
  * el archivo dice medir.
  */
 
-import { pipeline } from "@huggingface/transformers";
+import { pipeline, type ProgressCallback } from "@huggingface/transformers";
 
 export type Dtype = "fp32" | "q8";
 
@@ -50,9 +50,16 @@ export const MODELO_PRODUCCION = "Xenova/multilingual-e5-small";
  * explota en "union type too complex" apenas se lo compara estructuralmente
  * contra una anotacion independiente. Dejando que TS infiera, el llamador sigue
  * viendo el mismo tipo callable que si hubiera llamado a `pipeline` directo.
+ *
+ * `progressCallback` es opcional y no lo usa ningun consumidor de Node (evals,
+ * tools): ahi la carga es instantanea, desde disco. Existe para
+ * `useEmbedder.ts` (D-127), que SI necesita reportar progreso de una descarga
+ * real de ~133 MB.
  */
-export async function cargarExtractor(dtype: Dtype = DTYPE_PRODUCCION, modelo = MODELO_PRODUCCION) {
-  return pipeline("feature-extraction", modelo, { dtype });
+export async function cargarExtractor(
+  dtype: Dtype = DTYPE_PRODUCCION, modelo = MODELO_PRODUCCION, progressCallback?: ProgressCallback,
+) {
+  return pipeline("feature-extraction", modelo, { dtype, progress_callback: progressCallback });
 }
 
 /** `query: <texto>` embebido y normalizado — la forma que `Corpus.buscar` espera. */

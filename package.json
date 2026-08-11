@@ -33,7 +33,8 @@
     "proponer": "tsx tools/proponer.ts",
     "precalcular": "tsx tools/precalcular.ts",
     "regresion": "tsx evals/regresion.ts",
-    "curadas": "tsx tools/curadas.ts"
+    "curadas": "tsx tools/curadas.ts",
+    "procedencia": "tsx tools/procedencia.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",

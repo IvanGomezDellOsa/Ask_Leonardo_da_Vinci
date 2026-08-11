@@ -23,7 +23,7 @@
  */
 
 import { readFileSync } from "node:fs";
-import { pipeline } from "@huggingface/transformers";
+import { cargarExtractor } from "../src/lib/embed.js";
 import { Corpus, recortar } from "../src/lib/retrieval.js";
 import { cargarUmbrales, Idioma } from "../src/lib/grounding.js";
 
@@ -162,7 +162,7 @@ async function main(): Promise<number> {
 
   // ---- 6. abstenciones contra el corpus --------------------------------
   const umbrales = cargarUmbrales(ART);
-  const extractor = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+  const extractor = await cargarExtractor();
   const aAbstener = casos.filter((c) => c.should_abstain);
 
   console.log(`\n## Abstenciones medidas contra el corpus (${aAbstener.length} casos)\n`);

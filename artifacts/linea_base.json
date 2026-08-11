@@ -4,7 +4,7 @@
   "parcial": true,
   "puntos": {
     "recall.A.k3.fallos": {
-      "valor": 2,
+      "valor": 1,
       "decision": "D-096",
       "nota": "Conteo duro: el pasaje está en el top-3 o no está. Si sube, es una regresión real."
     },

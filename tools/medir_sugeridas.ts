@@ -33,7 +33,7 @@
  */
 
 import { writeFileSync } from "node:fs";
-import { pipeline } from "@huggingface/transformers";
+import { cargarExtractor } from "../src/lib/embed.js";
 import { Corpus, rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
 import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
 
@@ -76,7 +76,7 @@ const CANDIDATAS: { tema: string; es: string; en: string; toc: string }[] = [
 /** Un índice por idioma (D-107): se mide lo que el producto hace de verdad. */
 const motor = cargarMotor(ART);
 const corpus = motor.por.en.corpus;
-const extractor = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+const extractor = await cargarExtractor();
 
 const embeber = async (t: string): Promise<Float32Array> =>
   (await extractor("query: " + t, { pooling: "mean", normalize: true })).data as Float32Array;

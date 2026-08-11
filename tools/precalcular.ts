@@ -46,7 +46,7 @@
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { pipeline } from "@huggingface/transformers";
+import { cargarExtractor } from "../src/lib/embed.js";
 import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
 import { responder } from "../src/lib/responder.js";
 import { huellaPrompt, varianteVigente, proveedorPorId } from "../src/lib/llm.js";
@@ -106,7 +106,7 @@ const VARIANTE = varianteVigente(ART);
 const HUELLA = huellaPrompt(VARIANTE);
 
 const motor = cargarMotor(ART);
-const extractor = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+const extractor = await cargarExtractor();
 const embeber = async (t: string): Promise<Float32Array> =>
   (await extractor("query: " + t, { pooling: "mean", normalize: true })).data as Float32Array;
 

@@ -19,7 +19,7 @@
 
 import { readFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { pipeline } from "@huggingface/transformers";
+import { cargarExtractor } from "../src/lib/embed.js";
 import { responder } from "../src/lib/responder.js";
 import { cargarMotor, decidirCon } from "../src/lib/grounding.js";
 import {
@@ -179,7 +179,7 @@ if (!pendientes.length) { console.log("\n  nada que hacer."); process.exit(0); }
  * `voz8` es comparar dos retrievals distintos.
  */
 const motor = cargarMotor(ART);
-const extractor = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+const extractor = await cargarExtractor();
 
 async function embeber(texto: string): Promise<Float32Array> {
   const s = await extractor("query: " + texto, { pooling: "mean", normalize: true });

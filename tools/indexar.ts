@@ -22,6 +22,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { pipeline } from "@huggingface/transformers";
+import { DTYPE_PRODUCCION } from "../src/lib/embed.js";
 
 const arg = (n: string, d = ""): string => {
   const i = process.argv.indexOf(`--${n}`);
@@ -75,8 +76,15 @@ console.log(`chunks : ${chunks.length}`);
  * ruidoso. Medido, una consulta q8 contra un indice fp32 cambia el top-3 en 70
  * de 120 casos y mueve 6 decisiones del gate: **consulta e indice tienen que
  * hablar el mismo idioma.** Este flag existe para poder construir el par.
+ *
+ * EL DEFAULT ES `DTYPE_PRODUCCION` (`src/lib/embed.ts`), no "fp32" a secas.
+ * Ver D-126: el navegador baja los pesos cuantizados por defecto (D-097), asi
+ * que una consulta real siempre es q8 — el indice de produccion tiene que
+ * serlo tambien, o cada consulta real es el par desparejado que D-116 midio
+ * como dañino. `--dtype fp32` sigue disponible para reconstruir el par de
+ * comparacion si hace falta remedir.
  */
-const dtype = arg("dtype", "fp32") as "fp32" | "q8";
+const dtype = arg("dtype", DTYPE_PRODUCCION) as "fp32" | "q8";
 console.log(`dtype  : ${dtype}`);
 const extractor = await pipeline("feature-extraction", modelo, { dtype });
 

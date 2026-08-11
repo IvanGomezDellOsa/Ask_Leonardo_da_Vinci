@@ -10,7 +10,7 @@
  */
 
 import { readFileSync } from "node:fs";
-import { pipeline } from "@huggingface/transformers";
+import { cargarExtractor } from "../src/lib/embed.js";
 import { recortar } from "../src/lib/retrieval.js";
 import { cargarMotor, Idioma } from "../src/lib/grounding.js";
 import { responder } from "../src/lib/responder.js";
@@ -57,7 +57,7 @@ const cascada = claveGroq
  * la consulta castellana buscaba cross-lingüe.
  */
 const motor = cargarMotor(ART);
-const extractor = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+const extractor = await cargarExtractor();
 
 async function embeber(texto: string): Promise<Float32Array> {
   // El prefijo `query: ` no es decorativo: e5 se entreno con el (D-022)

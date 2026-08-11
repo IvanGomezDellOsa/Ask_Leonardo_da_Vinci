@@ -34,12 +34,12 @@
  * con el motor de verdad.
  */
 
-import { pipeline } from "@huggingface/transformers";
+import { cargarExtractor } from "../src/lib/embed.js";
 import { cargarMotor, decidirCon, type Decision } from "../src/lib/grounding.js";
 import { ART, cargarCasos } from "./comun.js";
 
 const motor = cargarMotor(ART);
-const embed = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+const embed = await cargarExtractor();
 const casos = cargarCasos();
 
 console.log(`\n# Decisiones del gate — motor real, un índice por idioma\n`);

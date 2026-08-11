@@ -28,7 +28,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { pipeline } from "@huggingface/transformers";
+import { cargarExtractor } from "../src/lib/embed.js";
 import { Corpus, rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
 import { cargarMotor, decidirCon, capaCurada, type Idioma } from "../src/lib/grounding.js";
 import { ART, cargarCasos } from "./comun.js";
@@ -40,7 +40,7 @@ const lento = process.argv.includes("--lento");
 interface Punto { valor: number | string; decision: string; nota?: string }
 
 const motor = cargarMotor(ART);
-const embed = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+const embed = await cargarExtractor();
 const emb = async (t: string) =>
   (await embed("query: " + t, { pooling: "mean", normalize: true })).data as Float32Array;
 

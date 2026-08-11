@@ -34,7 +34,7 @@
  * viejo no es un hallazgo: es la misma medicion con menos datos.
  */
 
-import { pipeline } from "@huggingface/transformers";
+import { cargarExtractor } from "../src/lib/embed.js";
 import { Corpus } from "../src/lib/retrieval.js";
 import { cargarUmbrales } from "../src/lib/grounding.js";
 import { capaCurada } from "../src/lib/grounding.js";
@@ -58,7 +58,7 @@ const dirArg = arg("artifacts");
 const DIR = dirArg ? new URL("../" + dirArg + "/", import.meta.url) : ART;
 const corpus = new Corpus(DIR, { curar: true });
 const viejos = cargarUmbrales(ART);
-const embed = await pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+const embed = await cargarExtractor();
 
 /**
  * Los casos de la capa 0 se excluyen: `decidir` los resuelve por regla ANTES del

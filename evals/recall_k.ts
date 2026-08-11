@@ -56,6 +56,7 @@
 
 import { pipeline } from "@huggingface/transformers";
 import { Corpus, rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
+import { DTYPE_PRODUCCION, type Dtype } from "../src/lib/embed.js";
 import { ART, cargarCasos } from "./comun.js";
 
 const KS = [3, 5, 8];
@@ -76,7 +77,15 @@ const ramas = [
   { nombre: 'con curaduría', corpus: new Corpus(DIR, { curar: true }) },
 ];
 const MODELO = arg0('modelo') || 'Xenova/multilingual-e5-small';
-const embed = await pipeline("feature-extraction", MODELO);
+/**
+ * `--dtype` aparte de `--modelo`: este script existe para poder cambiar el
+ * MODELO de embedding (una pregunta de arquitectura), y `dtype` es una
+ * pregunta distinta —qué pesos del mismo modelo— que D-126 fija en
+ * `DTYPE_PRODUCCION` por default. Si el modelo cambia, puede que ni tenga
+ * variante cuantizada; por eso queda como flag separado y no atado al de arriba.
+ */
+const dtype = (arg0('dtype') || DTYPE_PRODUCCION) as Dtype;
+const embed = await pipeline("feature-extraction", MODELO, { dtype });
 
 async function vector(q: string): Promise<Float32Array> {
   const s = await embed(`query: ${q}`, { pooling: "mean", normalize: true });

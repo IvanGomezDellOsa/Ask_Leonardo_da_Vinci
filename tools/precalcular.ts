@@ -70,17 +70,26 @@ const forzar = process.argv.includes("--forzar");
  * El criterio del reparto: que un visitante reconozca a Leonardo en el conjunto.
  * Ciencia observacional, geología, anatomía, práctica de taller y pedagogía.
  */
+/**
+ * Set del 2026-08-11 (D-131), reemplaza al de D-112. Elegido a mano por el
+ * dueño del proyecto sobre candidatas medidas contra el índice real —no la
+ * plantilla mecánica de `proponer.ts`— y verificado en los dos idiomas antes
+ * de congelar: ninguna cae cerca del umbral de abstención. Detalle completo
+ * del proceso, incluidas las descartadas y por qué, en D-131.
+ */
 const PREGUNTAS: { id: string; es: string; en: string }[] = [
-  { id: "cielo",       es: "¿Por qué el cielo es azul?",
-                       en: "Why is the sky blue?" },
-  { id: "conchas",     es: "¿Por qué hay conchas marinas en la cima de las montañas?",
-                       en: "Why are sea shells found on mountain tops?" },
-  { id: "proporciones", es: "¿Cuáles son las proporciones perfectas del cuerpo humano?",
-                       en: "What are the perfect proportions of the human body?" },
-  { id: "batalla",     es: "¿Cómo se pinta una batalla?",
-                       en: "How do you paint a battle?" },
-  { id: "aprender",    es: "¿Cómo se aprende a pintar?",
-                       en: "How does one learn to paint?" },
+  { id: "pintura",     es: "¿Por qué crees que la pintura es superior a las demás artes?",
+                       en: "Why do you think painting is superior to the other arts?" },
+  { id: "teoria",      es: "¿Cuál es el objetivo de aprender sin haber estudiado primero la teoría?",
+                       en: "What is the purpose of learning without first studying theory?" },
+  { id: "maxima",      es: "¿Qué máxima te repetías cada noche para dormir en paz y aprovechar la vida?",
+                       en: "What maxim did you repeat to yourself each night to sleep in peace and make the most of life?" },
+  { id: "estudiar",    es: "¿Por qué dices que estudiar sin ganas arruina la memoria?",
+                       en: "Why do you say that studying without desire ruins the memory?" },
+  { id: "agua",        es: "¿Por qué te niegas a publicar tus diseños para respirar bajo el agua?",
+                       en: "Why do you refuse to publish your designs for breathing underwater?" },
+  { id: "noche",       es: "¿Por qué te despiertas en medio de la noche para repasar tus ideas en la oscuridad?",
+                       en: "Why do you wake up in the middle of the night to go over your ideas in the dark?" },
 ];
 
 const claves = (): Record<string, string> => {
@@ -119,9 +128,23 @@ interface Fija {
 
 const previo: { huella?: string; respuestas?: Fija[] } =
   existsSync(SALIDA) ? JSON.parse(readFileSync(SALIDA, "utf8")) : {};
+/**
+ * `id` SOLO, SIN EL TEXTO, NO ALCANZA COMO CLAVE DE VIGENCIA. Encontrado en
+ * D-131 antes de que mordiera: la huella no cambia si sólo cambia QUÉ pregunta
+ * va bajo un `id` — cubre el corpus, el prompt y los índices, no `PREGUNTAS`.
+ * Reusar un `id` de un set anterior (pasó acá: "aprender" cambió de pregunta
+ * entre D-112 y D-131) habría servido la respuesta VIEJA bajo el enunciado
+ * NUEVO, en silencio. Por eso la vigencia exige también que el texto de la
+ * pregunta coincida — no sólo `id` y `huella`.
+ */
 const vigentes = new Map<string, Fija>();
 if (!forzar && previo.respuestas) {
-  for (const r of previo.respuestas) if (r.huella === HUELLA) vigentes.set(`${r.id}:${r.lang}`, r);
+  const preguntaEsperada = new Map<string, string>(
+    PREGUNTAS.flatMap((p) => [[`${p.id}:es`, p.es], [`${p.id}:en`, p.en]]));
+  for (const r of previo.respuestas) {
+    const clave = `${r.id}:${r.lang}`;
+    if (r.huella === HUELLA && r.pregunta === preguntaEsperada.get(clave)) vigentes.set(clave, r);
+  }
 }
 
 console.log(`\n# Caché N0 — respuestas fijas de la puerta de entrada\n`);

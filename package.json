@@ -34,7 +34,8 @@
     "precalcular": "tsx tools/precalcular.ts",
     "regresion": "tsx evals/regresion.ts",
     "curadas": "tsx tools/curadas.ts",
-    "procedencia": "tsx tools/procedencia.ts"
+    "procedencia": "tsx tools/procedencia.ts",
+    "exportar:portada": "tsx tools/exportar_portada.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",

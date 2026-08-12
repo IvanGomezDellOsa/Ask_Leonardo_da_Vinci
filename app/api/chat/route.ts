@@ -36,6 +36,7 @@ import {
   verificarTurnstile, type Veredicto,
 } from "../../../src/lib/limites.js";
 import type { Chunk } from "../../../src/lib/retrieval.js";
+import type { PasajePublico, RespuestaPublica } from "../../../src/lib/respuesta.js";
 
 export const runtime = "nodejs";
 
@@ -193,13 +194,19 @@ function rechazo(v: Veredicto, status: number): NextResponse {
 // ---------------------------------------------------------------------------
 
 /**
- * LA RESPUESTA NO ES `Respondido` TAL CUAL.
+ * `PasajePublico`/`RespuestaPublica` viven en `src/lib/respuesta.ts` (D-132),
+ * compartidas con `tools/exportar_portada.ts` — el bundle que el cliente
+ * importa directo para las 6 preguntas de portada, sin pasar por acá. Que las
+ * dos formas salgan del mismo tipo es lo que evita que diverjan sin que nadie
+ * lo note, la misma razón por la que `responder()` es una sola definición
+ * (D-113).
  *
- * `responder()` devuelve el `Chunk` entero por pasaje, y eso mandaba al cliente
- * el mismo texto TRES veces —`chunk.text`, `chunk.embedText` (que es
- * título + texto concatenados) y `textosVistos`— más campos que sólo importan
- * adentro (`nWords`, `part`, `sourceManuscript`, `annotatesPassage`). Medido:
- * ~2,9 KB de chunks crudos por respuesta, un tercio pura duplicación.
+ * LA RESPUESTA NO ES `Respondido` TAL CUAL. `responder()` devuelve el `Chunk`
+ * entero por pasaje, y eso mandaba al cliente el mismo texto TRES veces
+ * —`chunk.text`, `chunk.embedText` (que es título + texto concatenados) y
+ * `textosVistos`— más campos que sólo importan adentro (`nWords`, `part`,
+ * `sourceManuscript`, `annotatesPassage`). Medido: ~2,9 KB de chunks crudos
+ * por respuesta, un tercio pura duplicación.
  *
  * Mandar eso contradice de frente la razón por la que 19-bis existió: si los
  * 129 MB de la primera carga preocupan en móvil, regalar kilobytes por turno no
@@ -208,41 +215,13 @@ function rechazo(v: Veredicto, status: number): NextResponse {
  * Se manda EL TEXTO QUE VIO EL MODELO (`textosVistos`), no `chunk.text`: son
  * distintos en castellano —el modelo ve la traducción (D-079)— y el que hay que
  * mostrar junto a una cita es el que se verificó contra ella (D-084).
+ *
+ * Notas sobre dos campos del tipo importado:
+ *   - `caso`/`cita`: sólo en `curada` (D-124); `cita: null` es una posición
+ *     honesta cuando el corpus calla y Richter tampoco lo comenta.
+ *   - `diagnostico.citasSinRespaldo` se publica a propósito: es el estado de
+ *     la garantía que sostiene la tesis del proyecto.
  */
-interface PasajePublico {
-  richterNo: number | null;
-  titulo: string | null;
-  texto: string;
-  url: string | null;
-}
-
-interface RespuestaPublica {
-  decision: "curada" | "abstiene" | "responde";
-  texto: string;
-  /**
-   * Sólo en `curada` (D-124): qué caso disparó y **el fragmento exacto de la
-   * nota de Richter que documenta el silencio**, ya verificado por
-   * `npm run curadas` contra el texto de la nota. `cita: null` es una posición
-   * honesta: el corpus calla y Richter tampoco lo comenta.
-   */
-  caso?: string;
-  cita?: string | null;
-  pasajes: PasajePublico[];
-  /** Ids de notas de Richter vinculadas, para la tarjeta de citación. */
-  notas: string[];
-  /** `cache` = congelada por `npm run precalcular` (D-112). `vivo` = generada ahora. */
-  origen: "cache" | "vivo";
-  /**
-   * Se publica a propósito: `citasSinRespaldo` es el estado de la garantía que
-   * sostiene la tesis del proyecto. Esconderlo sería pedir la confianza que el
-   * proyecto dice no necesitar.
-   */
-  diagnostico: {
-    cosMax: number | null; tau: number | null;
-    reintentosCita: number; comillasQuitadas: number; podadas: number;
-    citasSinRespaldo: string[];
-  };
-}
 
 const tituloDe = (c: Chunk, idioma: Idioma): string | null =>
   (idioma === "es" && c.tituloEs !== undefined ? c.tituloEs : c.richterTitle) ?? null;

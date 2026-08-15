@@ -48,8 +48,9 @@ const LOTE: [Idioma, string, string][] = [
 const claveGroq = (readFileSync(new URL("../.env.local", import.meta.url), "utf8")
   .match(/^GROQ_API_KEY=(.+)$/m) ?? [])[1]?.trim();
 const presupuesto = new PresupuestoTpm(6000);
+// Llama 3.3 70B / 3.1 8B decomisionados por Groq el 16/8/2026 (ver D-133).
 const cascada = claveGroq
-  ? [groq("llama-3.3-70b-versatile", claveGroq), groq("llama-3.1-8b-instant", claveGroq)]
+  ? [groq("openai/gpt-oss-120b", claveGroq), groq("openai/gpt-oss-20b", claveGroq)]
   : [];
 
 /**

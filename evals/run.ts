@@ -40,7 +40,8 @@ const arg = (n: string, def: string): string => {
 };
 const modo = arg("modo", "rag") as "rag" | "baseline";
 const k = Number(arg("k", "3"));
-const idProveedor = arg("proveedor", "groq/llama-3.3-70b-versatile");
+// llama-3.3-70b-versatile decomisionado por Groq el 16/8/2026 (D-133).
+const idProveedor = arg("proveedor", "groq/openai/gpt-oss-120b");
 const limite = Number(arg("limite", "0"));
 const etiqueta = arg("etiqueta", `${modo}-k${k}-${idProveedor.replace(/[/.]/g, "_")}`);
 

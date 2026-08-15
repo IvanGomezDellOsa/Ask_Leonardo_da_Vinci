@@ -127,6 +127,10 @@ function cargar(): { motor: Motor; fijas: Map<string, Fija>; huella: string } | 
  * (D-023) — DeepSeek NO entra: D-089 lo reasignó a juez, y dejarlo en la
  * cascada de operación repetiría el error que esa entrada revocó.
  *
+ * `openai/gpt-oss-120b` y no `llama-3.3-70b-versatile`: Groq decomisionó ese
+ * modelo el 16 de agosto de 2026 (aviso propio, ver D-133). Verificado con el
+ * pipeline real antes de migrar: mismas garantías (D-082/083/093) intactas.
+ *
  * Cada proveedor entra sólo si su clave está: faltar una degrada, no rompe.
  */
 function cascadaDeProduccion(env: Record<string, string | undefined>): Proveedor[] {
@@ -135,7 +139,7 @@ function cascadaDeProduccion(env: Record<string, string | undefined>): Proveedor
     try { p.push(proveedorPorId(id, env as Record<string, string>)); } catch { /* falta la clave */ }
   };
   intentar("gemini/gemini-3.1-flash-lite");
-  intentar("groq/llama-3.3-70b-versatile");
+  intentar("groq/openai/gpt-oss-120b");
   return p;
 }
 

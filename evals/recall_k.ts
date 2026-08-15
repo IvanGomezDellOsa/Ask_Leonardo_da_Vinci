@@ -54,9 +54,11 @@
  * MIRAR. No dice cuantos fallos hay.
  */
 
+import { existsSync } from "node:fs";
 import { pipeline } from "@huggingface/transformers";
 import { Corpus, rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
 import { DTYPE_PRODUCCION, type Dtype } from "../src/lib/embed.js";
+import type { Idioma } from "../src/lib/grounding.js";
 import { ART, cargarCasos } from "./comun.js";
 
 const KS = [3, 5, 8];
@@ -72,9 +74,40 @@ const DIR = dirIdx ? new URL('../' + dirIdx + '/', import.meta.url) : ART;
  * imprimen juntas y con el mismo vector de consulta para que no haya nada que
  * recordar mal.
  */
+/**
+ * UN INDICE POR IDIOMA, IGUAL QUE PRODUCCION. Ver D-107.
+ *
+ * Este script se escribio antes de que existiera el indice castellano y nunca se
+ * actualizo: construia UN `Corpus` sobre `artifacts/` —el ingles— y buscaba ahi
+ * las 120 consultas, las castellanas incluidas. `decidirCon` (y con el
+ * `npm run regresion`, y la ruta del API) rutea por `c.lang` desde D-107.
+ *
+ * O sea que el instrumento medía el retrieval de un sistema que ya no existe, y
+ * no fallaba: devolvia "2 fallos de 30", perfectamente plausible, contra el 1 que
+ * tiene el sistema real. Es el patron de la seccion 1 de `17-continuacion.md` una
+ * vez mas —el componente mide una dimension distinta de la que gobierna el
+ * resultado— y por eso los dos numeros discrepaban sin que nada lo dijera.
+ *
+ * `--indice en|es` fuerza un solo indice para las dos mitades del dataset. NO es
+ * el modo por defecto: existe para comparar MODELOS de embedding con `--modelo`
+ * y `--artifacts`, donde el directorio alternativo puede no tener su `es/`, y ahi
+ * lo correcto es fijar el indice a proposito —igual que hacen `compuerta.ts` y
+ * `alcance.ts`— en vez de rutear.
+ */
+const forzado = arg0('indice') as Idioma | '';
+const dirEs = new URL('es/', DIR);
+const hayEs = existsSync(new URL('index.bin', dirEs));
+
+function porIdioma(curar: boolean): Record<Idioma, Corpus> {
+  const en = new Corpus(DIR, { curar });
+  if (forzado === 'en' || !hayEs) return { en, es: en };
+  const es = new Corpus(dirEs, { base: DIR, curar });
+  return forzado === 'es' ? { en: es, es } : { en, es };
+}
+
 const ramas = [
-  { nombre: 'sin curaduría', corpus: new Corpus(DIR, { curar: false }) },
-  { nombre: 'con curaduría', corpus: new Corpus(DIR, { curar: true }) },
+  { nombre: 'sin curaduría', corpus: porIdioma(false) },
+  { nombre: 'con curaduría', corpus: porIdioma(true) },
 ];
 const MODELO = arg0('modelo') || 'Xenova/multilingual-e5-small';
 /**
@@ -103,7 +136,7 @@ console.log(`\n# Recall de recuperación`);
 console.log(`\n  ${casosPasaje.length} casos con pasajes exactos (categoría A)`);
 console.log(`  ${casosTema.length} casos con tema esperado (categoría B)`);
 for (const r of ramas) {
-  console.log(`  ${r.nombre}: ${r.corpus.filasPorVoz.leonardo.length} chunks de Leonardo en el índice`);
+  console.log(`  ${r.nombre}: ${r.corpus.en.filasPorVoz.leonardo.length} chunks de Leonardo en el índice`);
 }
 console.log();
 
@@ -123,7 +156,7 @@ function anotar(f: Fila, id: string, n: number, total: number): void {
 for (const c of casosPasaje) {
   const v = await vector(c.q);
   ramas.forEach((r, ri) => KS.forEach((k, ki) => {
-    const { top } = r.corpus.buscar(v, c.q, "leonardo", k);
+    const { top } = r.corpus[c.lang].buscar(v, c.q, "leonardo", k);
     const traidos = new Set(top.flatMap((t) => t.chunk.richterNos));
     const esperados = c.expected_passages!;
     anotar(porPasaje[ri][ki], c.id, esperados.filter((e) => traidos.has(e)).length, esperados.length);
@@ -133,7 +166,7 @@ for (const c of casosPasaje) {
 for (const c of casosTema) {
   const v = await vector(c.q);
   ramas.forEach((r, ri) => KS.forEach((k, ki) => {
-    const { top } = r.corpus.buscar(v, c.q, "leonardo", k);
+    const { top } = r.corpus[c.lang].buscar(v, c.q, "leonardo", k);
     // "Completo" no aplica a un tema: alcanza con traer UN pasaje del rango.
     // Se anota sobre 1 para que la columna que importa siga siendo la ultima.
     const dentro = caeEnRangos(top.flatMap((t) => t.chunk.richterNos), c.rangos);

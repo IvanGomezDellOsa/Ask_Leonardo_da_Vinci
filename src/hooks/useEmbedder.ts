@@ -29,8 +29,10 @@
  */
 
 import { useCallback, useEffect, useSyncExternalStore } from "react";
-import { cargarExtractor, embeberConsulta } from "../lib/embed.js";
+import { cargarExtractor, embeberConsulta, modeloEnCache } from "../lib/embed.js";
 import type { ProgressInfo } from "@huggingface/transformers";
+
+export { modeloEnCache };
 
 export type EstadoEmbedder = "inactivo" | "cargando" | "listo" | "error";
 
@@ -152,7 +154,20 @@ function cargar(): Promise<Extractor> {
 
 // ---------------------------------------------------------------------------
 
-export function useEmbedder(): UseEmbedderResultado {
+export interface OpcionesEmbedder {
+  /**
+   * En `false`, el hook NO dispara la carga — sólo mira el estado. Ver D-140.
+   *
+   * NO CONTRADICE D-118: la descarga sigue arrancando sola, sin botón. Lo que
+   * esto permite es **elegir el momento**, que es distinto de ponerla detrás de
+   * un click. El único que lo usa es el hero, para no armar la sesión ONNX
+   * encima de la intro. Por omisión es `true`, así que quien no sepa de esto
+   * —`Codice`, por ejemplo— se comporta igual que siempre.
+   */
+  arrancar?: boolean;
+}
+
+export function useEmbedder({ arrancar = true }: OpcionesEmbedder = {}): UseEmbedderResultado {
   const vista = useSyncExternalStore(suscribir, () => instantanea, () => INSTANTANEA_SSR);
 
   /**
@@ -165,7 +180,10 @@ export function useEmbedder(): UseEmbedderResultado {
    * es exactamente lo que un efecto de arranque debe hacer con un fallo que ya
    * está representado en el estado.
    */
-  useEffect(() => { cargar().catch(() => { /* ya está en `estado: "error"` */ }); }, []);
+  useEffect(() => {
+    if (!arrancar) return;
+    cargar().catch(() => { /* ya está en `estado: "error"` */ });
+  }, [arrancar]);
 
   const embed = useCallback(async (texto: string): Promise<Float32Array> => {
     const ex = extractor ?? await cargar();

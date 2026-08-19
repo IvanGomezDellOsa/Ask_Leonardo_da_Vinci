@@ -56,6 +56,31 @@ export const MODELO_PRODUCCION = "Xenova/multilingual-e5-small";
  * `useEmbedder.ts` (D-127), que SI necesita reportar progreso de una descarga
  * real de ~133 MB.
  */
+/**
+ * Si los bytes del modelo ya están en el navegador. Ver D-140.
+ *
+ * SIRVE PARA SABER SI CARGARLO VA A TRABAR EL HILO PRINCIPAL YA MISMO. Con el
+ * caché frío, `cargarExtractor` pasa ~15 s bajando (red, fuera del hilo
+ * principal) y recién al final arma la sesión ONNX. Con el caché caliente no
+ * hay espera: compila el WASM y arma la sesión **de entrada**, y eso son
+ * cientos de ms de hilo bloqueado.
+ *
+ * Se mira la Cache API directamente en vez de preguntarle a Transformers.js
+ * porque su API no expone «¿está?» sin empezar a cargar, que es justo lo que
+ * hay que evitar. Si el nombre del caché o la URL cambiaran, esto devuelve
+ * `false` y todo sigue funcionando como antes: se carga enseguida.
+ */
+export async function modeloEnCache(modelo = MODELO_PRODUCCION): Promise<boolean> {
+  if (typeof caches === "undefined") return false;
+  try {
+    const c = await caches.open("transformers-cache");
+    const url = `https://huggingface.co/${modelo}/resolve/main/onnx/model_quantized.onnx`;
+    return (await c.match(url)) !== undefined;
+  } catch {
+    return false;
+  }
+}
+
 export async function cargarExtractor(
   dtype: Dtype = DTYPE_PRODUCCION, modelo = MODELO_PRODUCCION, progressCallback?: ProgressCallback,
 ) {

@@ -51,7 +51,16 @@ const motor = cargarMotor(ART);
 const tituloDe = (c: { tituloEs?: string | null; richterTitle: string | null }, idioma: Idioma) =>
   (idioma === "es" && c.tituloEs !== undefined ? c.tituloEs : c.richterTitle) ?? null;
 
-const bundle: Record<string, RespuestaPublica & { id: string }> = {};
+/**
+ * `pregunta` VIAJA CON LA RESPUESTA. La portada tiene que rotular cada botón
+ * con el texto exacto que produjo esa respuesta; tipearlo en el componente
+ * habría abierto la única grieta que D-131 cierra —una pregunta mostrada que
+ * no es la que se verificó contra el motor— y encima en silencio, porque nada
+ * compara las dos copias. Sale de `respuestas_fijas.json`, igual que el resto.
+ */
+export type EntradaPortada = RespuestaPublica & { id: string; pregunta: string };
+
+const bundle: Record<string, EntradaPortada> = {};
 
 for (const r of j.respuestas) {
   const corpus = motor.por[r.lang].corpus;
@@ -68,6 +77,7 @@ for (const r of j.respuestas) {
   });
   bundle[`${r.id}:${r.lang}`] = {
     id: r.id,
+    pregunta: r.pregunta,
     decision: "responde",
     texto: r.respuesta,
     pasajes,
@@ -98,7 +108,9 @@ writeFileSync(salida, `\
  */
 import type { RespuestaPublica } from "../lib/respuesta.js";
 
-export const PORTADA: Record<string, RespuestaPublica & { id: string }> =
+export type EntradaPortada = RespuestaPublica & { id: string; pregunta: string };
+
+export const PORTADA: Record<string, EntradaPortada> =
 ${JSON.stringify(bundle, null, 2)};
 `, "utf8");
 

@@ -1,0 +1,235 @@
+/*
+ * Lo único que NO puede vivir en `style={{}}`: keyframes, scrollbars y las
+ * pseudo-clases. El resto del diseño va inline en los componentes, tal como
+ * salió de Claude Design — no hay Tailwind ni CSS Modules acá, y no se agrega
+ * uno sólo para esto.
+ */
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  font-optical-sizing: auto;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: oklch(13% 0.02 45);
+  color: oklch(95% 0.01 85);
+  font-family: var(--fuente-titulo), Georgia, serif;
+}
+
+/*
+ * ALTO REAL DE LA VENTANA EN UN TELEFONO. `100vh` en móvil es el alto CON la
+ * barra del navegador retraída: la escena queda más alta que la pantalla y los
+ * botones caen abajo del pliegue hasta que el usuario scrollea. `dvh` es el
+ * alto que hay ahora. Se declaran las dos: el que no entienda `dvh` se queda
+ * con `vh`, que es lo que había.
+ *
+ * Va acá y no inline porque una misma propiedad no se puede declarar dos veces
+ * en `style={{}}` — que es justamente el mecanismo del fallback en CSS.
+ */
+.alv-hero {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.alv-panel {
+  height: 94vh;
+  height: min(92dvh, 100dvh - 24px);
+}
+
+/*
+ * En teléfono el códice es la pantalla, no una hoja apoyada sobre el hero: a
+ * 375 px de ancho, el margen y las esquinas redondeadas sólo restan lugar de
+ * lectura. `dvh` es lo que hace que llegue justo hasta el borde vivo y ni un
+ * píxel más — con `vh` se pasaba por debajo de la barra del navegador.
+ */
+@media (max-width: 640px) {
+  .alv-panel {
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+a {
+  color: oklch(58% 0.13 85);
+}
+
+a:hover {
+  color: oklch(45% 0.12 85);
+}
+
+/*
+ * LA ESCRITURA A MANO. El barrido lo hace `clip-path`, no `width` ni `opacity`:
+ * la letra se descubre de izquierda a derecha como si la pluma la estuviera
+ * trazando, y el `inset` derecho arranca en 101% para que ni el antialiasing
+ * del primer píxel se filtre antes de tiempo. El `text-shadow` cálido del 1%
+ * es la tinta fresca bajo la luz del fuego; a los 100% ya se apagó y sólo queda
+ * la sombra que despega el texto del video.
+ *
+ * El CUANDO de cada letra no está acá: llega como `animation-delay` calculado
+ * en `src/lib/intro.ts`. Este keyframe sólo sabe cómo aparece una letra, nunca
+ * cuál ni en qué orden.
+ */
+@keyframes alv-ink {
+  0% {
+    clip-path: inset(-0.14em 101% -0.36em 0);
+    opacity: 0;
+    text-shadow: none;
+  }
+  1% {
+    clip-path: inset(-0.14em 100% -0.36em 0);
+    opacity: 0.4;
+    text-shadow: 0 0 16px oklch(90% 0.16 74 / 0.95), 0 0 5px oklch(97% 0.1 82 / 0.9);
+  }
+  55% {
+    opacity: 1;
+    text-shadow: 0 0 12px oklch(90% 0.16 74 / 0.5), 0 2px 12px oklch(6% 0.02 40 / 0.85);
+  }
+  100% {
+    clip-path: inset(-0.14em -0.16em -0.36em -0.05em);
+    opacity: 1;
+    text-shadow: 0 2px 14px oklch(6% 0.02 40 / 0.9), 0 0 44px oklch(6% 0.02 40 / 0.7);
+  }
+}
+
+/*
+ * El estado de reposo de cada letra: invisible y recortada. Sin esto, entre el
+ * primer pintado y el arranque de su animación la línea entera destella.
+ */
+.alv-ch {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  clip-path: inset(-0.14em 101% -0.36em 0);
+}
+
+@keyframes alv-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes alv-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.86;
+  }
+}
+
+@keyframes alv-blink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.alv-in {
+  animation: alv-fadein 0.35s ease both;
+}
+
+.alv-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(38% 0.006 70) transparent;
+  scrollbar-gutter: stable;
+}
+
+.alv-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.alv-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.alv-scroll::-webkit-scrollbar-thumb {
+  background: oklch(34% 0.006 70);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.alv-scroll::-webkit-scrollbar-thumb:hover {
+  background: oklch(46% 0.006 70);
+  background-clip: content-box;
+}
+
+/*
+ * Los `:hover` que el diseño traía como `style-hover` —un atributo del editor
+ * de Claude Design que no existe en el navegador. Se traducen a clases en vez
+ * de a `onMouseEnter`/`onMouseLeave` con estado: un hover no debería costar un
+ * re-render, y en un panel con muchas filas de sugerencias se nota.
+ */
+.alv-btn-primario:hover {
+  background: oklch(99% 0.02 85);
+  box-shadow: 0 10px 28px oklch(5% 0.02 40 / 0.45);
+}
+
+.alv-btn-fantasma:hover {
+  border-color: oklch(92% 0.05 85 / 0.55);
+  color: oklch(99% 0.02 85);
+  background: oklch(18% 0.02 40 / 0.38);
+}
+
+.alv-btn-texto:hover {
+  color: oklch(99% 0.03 85);
+}
+
+.alv-fila:hover {
+  background: oklch(20% 0.005 70);
+  color: oklch(95% 0.005 75);
+}
+
+.alv-pasaje-toggle:hover {
+  background: oklch(21% 0.006 70);
+  color: oklch(90% 0.005 75);
+}
+
+.alv-cerrar:hover {
+  color: oklch(95% 0.005 75);
+  border-color: oklch(46% 0.008 70);
+  background: oklch(88% 0.005 75 / 0.09);
+}
+
+.alv-enviar:not(:disabled):hover {
+  filter: brightness(1.06);
+}
+
+/*
+ * ACA IBA EL BLOQUE `@media (prefers-reduced-motion: reduce)`. Se sacó junto
+ * con `RESPETAR_MOVIMIENTO_REDUCIDO = false` (`src/lib/intro.ts`, D-139): con
+ * la perilla apagada pero el bloque puesto, la máquina de fases corría igual
+ * pero las letras aparecían todas juntas y los velos cortaban de golpe — la
+ * intro quedaba a medio andar, que es peor que las dos alternativas.
+ *
+ * Para volver a respetar la preferencia hay que reponer las dos mitades:
+ *
+ *   @media (prefers-reduced-motion: reduce) {
+ *     .alv-ch { animation: none !important; opacity: 1 !important; clip-path: none !important; }
+ *     .alv-in { animation: none; }
+ *     *, *::before, *::after {
+ *       animation-duration: .01ms !important;
+ *       animation-iteration-count: 1 !important;
+ *       transition-duration: .01ms !important;
+ *     }
+ *   }
+ */

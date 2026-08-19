@@ -91,7 +91,6 @@ const COPY = {
     enviar: "Consultar",
     limite: `Llegaste al máximo de ${MAX_CARACTERES} caracteres.`,
     cargando: "Preparando el modelo en tu navegador",
-    volver: "Volver",
     cerrar: "Cerrar",
     cuaderno: "cuaderno de Leonardo",
     leerEn: "Leer en gutenberg.org ↗",
@@ -116,7 +115,6 @@ const COPY = {
     enviar: "Ask",
     limite: `You have reached the ${MAX_CARACTERES}-character limit.`,
     cargando: "Preparing the model in your browser",
-    volver: "Back",
     cerrar: "Close",
     cuaderno: "Leonardo's notebook",
     leerEn: "Read on gutenberg.org ↗",
@@ -447,59 +445,38 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           overflow: "hidden",
         }}
       >
+        {/*
+          EL ENCABEZADO ES UNA FILA FLEX, NO UNA CAJA CON BOTONES ABSOLUTOS.
+          Con posicionamiento absoluto el botón no cuenta para el alto del
+          encabezado: el título medía ~19 px y el relleno daba 43, pero el
+          botón son 34 px arrancando en 11 — o sea que terminaba **2 px por
+          debajo** del borde inferior y quedaba pegado a la línea. En una fila
+          flex el alto lo pone el elemento más alto y `align-items: center`
+          reparte el aire solo.
+
+          El hueco de la izquierda es el contrapeso del botón de cerrar: sin él
+          el título queda centrado en el espacio que sobra y no en el panel.
+        */}
         <div
           style={{
             boxSizing: "border-box",
-            // El claro lateral tiene que despejar los dos botones absolutos.
-            // En escritorio el de la izquierda dice «← Volver» y ocupa ~124 px;
-            // en un teléfono eso se come el título, así que ahí queda la flecha
-            // sola y alcanza con 52.
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
             padding: angosto
-              ? "calc(13px + env(safe-area-inset-top)) 52px 11px"
-              : "19px clamp(126px,15vw,170px) 17px",
-            textAlign: "center",
-            position: "relative",
+              ? "calc(10px + env(safe-area-inset-top)) 12px 10px"
+              : "14px 16px",
             borderBottom: `1px solid ${T.headerLinea}`,
             flexShrink: 0,
           }}
         >
-          {!sinMensajes && (
-            <button
-              type="button"
-              className="alv-cerrar"
-              onClick={() => {
-                setMensajes([]);
-                setHechas([]);
-                setSugAbiertas(true);
-              }}
-              aria-label={t.volver}
-              title={t.volver}
-              style={{
-                position: "absolute",
-                top: angosto ? "calc(11px + env(safe-area-inset-top))" : 14,
-                left: angosto ? 12 : 16,
-                height: 34,
-                width: angosto ? 34 : undefined,
-                padding: angosto ? 0 : "0 14px",
-                boxSizing: "border-box",
-                borderRadius: 8,
-                border: "1px solid oklch(34% 0.006 70)",
-                background: "none",
-                cursor: "pointer",
-                fontFamily: FUENTE.lectura,
-                fontSize: 13,
-                letterSpacing: ".04em",
-                color: T.cuerpo,
-                transition: "color .2s ease, border-color .2s ease, background .2s ease",
-              }}
-            >
-              {angosto ? "←" : `← ${t.volver}`}
-            </button>
-          )}
+          <span aria-hidden="true" style={{ flex: "0 0 34px" }} />
 
           <h2
             style={{
+              flex: "1 1 auto",
               margin: 0,
+              textAlign: "center",
               fontFamily: FUENTE.manuscrita,
               fontSize: angosto ? 16 : 20,
               fontWeight: 400,
@@ -517,9 +494,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             aria-label={t.cerrar}
             title={t.cerrar}
             style={{
-              position: "absolute",
-              top: angosto ? "calc(11px + env(safe-area-inset-top))" : 14,
-              right: angosto ? 12 : 16,
+              flex: "0 0 34px",
               width: 34,
               height: 34,
               boxSizing: "border-box",
@@ -538,7 +513,6 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             ×
           </button>
         </div>
-
         <div
           className="alv-scroll"
           style={{

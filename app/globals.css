@@ -233,3 +233,908 @@ a:hover {
  *     }
  *   }
  */
+
+/* ===========================================================================
+ * LA BIBLIOTECA
+ *
+ * Todo lo que no puede vivir en `style={{}}`: pseudo-elementos, pseudo-clases
+ * y los estados por atributo. El resto del diseño va inline en
+ * `src/components/Biblioteca.tsx`, como en el resto del proyecto.
+ *
+ * La sección va en CLARO mientras el hero sigue de noche. No es gusto: las
+ * veinte láminas son papel crema envejecido, y sobre fondo oscuro quedaban
+ * veinte rectángulos claros flotando. Sobre pergamino se apoyan.
+ * ======================================================================== */
+
+/* El grano del papel: dos tramas de puntitos en `multiply`. Es lo que saca el
+   fondo de «color plano» y lo vuelve una superficie. */
+.alv-bib::after {
+  content: "";
+  position: absolute;
+  z-index: 14;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  background-image:
+    radial-gradient(circle at 12% 31%, oklch(30% 0.03 60 / 0.12) 0 0.7px, transparent 0.8px),
+    radial-gradient(circle at 73% 69%, oklch(100% 0 0 / 0.9) 0 0.6px, transparent 0.7px);
+  background-size: 7px 9px, 11px 13px;
+}
+
+/* ---- El estante ----------------------------------------------------------
+ *
+ * LO QUE HACE QUE SE LEA COMO MADERA ES LA PERSPECTIVA, NO LA TEXTURA.
+ *
+ * Un rectángulo marrón con vetas sigue siendo un rectángulo marrón: se ve como
+ * una raya de color pegada al fondo. Acá la cara de arriba se ACUESTA con
+ * `rotateX` y se va hacia el fondo, así que se ve la superficie sobre la que
+ * los libros se apoyan, y el canto de adelante le da el espesor. Con esas dos
+ * caras, el ojo entiende que hay una tabla y no una línea.
+ *
+ * La veta corre a lo largo del estante en las dos caras, que es como se corta
+ * un tablón; en la cara acostada, eso quiere decir líneas que se van juntando
+ * hacia el fondo — la perspectiva las aprieta sola, no hay que dibujarlas.
+ */
+/*
+ * EL ESTANTE ES UNA LÍNEA DE ALTO CERO, y todo cuelga de ella: la cara de
+ * arriba sube y se va al fondo, el canto baja, y los libros se apoyan justo
+ * encima. Con una caja de alto real, la fila se iba al piso de esa caja y los
+ * tomos quedaban apoyados por DEBAJO del canto, flotando en el aire.
+ */
+.alv-bib-estante {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+/* La cara de arriba: se acuesta sobre su borde delantero y se va al fondo. */
+.alv-bib-tabla-sup {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: 0;
+  height: 340px;
+  transform-origin: bottom center;
+  transform: rotateX(74deg);
+  background:
+    /* la sombra del fondo del estante */
+    linear-gradient(0deg, transparent 0 38%, oklch(22% 0.03 42 / 0.42) 100%),
+    /* juntas entre tablones */
+    repeating-linear-gradient(0deg, oklch(18% 0.03 40 / 0.22) 0 2px, transparent 2px 86px),
+    /* veta fina */
+    repeating-linear-gradient(
+      0deg,
+      oklch(20% 0.04 42 / 0.14) 0 1px,
+      transparent 1px 5px,
+      oklch(80% 0.06 62 / 0.07) 5px 6px,
+      transparent 6px 13px
+    ),
+    /* veta ancha */
+    repeating-linear-gradient(0deg, oklch(18% 0.035 40 / 0.1) 0 8px, transparent 8px 34px),
+    linear-gradient(180deg, oklch(30% 0.045 45), oklch(41% 0.06 47) 62%, oklch(47% 0.065 48));
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* El canto de adelante: es el espesor, y lo que hace que la tabla pese. */
+.alv-bib-tabla-canto {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  top: 0;
+  height: 34px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      oklch(20% 0.04 42 / 0.16) 0 1px,
+      transparent 1px 6px,
+      oklch(78% 0.06 62 / 0.06) 6px 7px,
+      transparent 7px 16px
+    ),
+    linear-gradient(
+      180deg,
+      oklch(52% 0.07 50) 0 2px,
+      oklch(38% 0.055 47) 3px 42%,
+      oklch(27% 0.045 44) 78%,
+      oklch(20% 0.035 42)
+    );
+  box-shadow: 0 16px 30px oklch(22% 0.03 42 / 0.34);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* El filo donde pega la luz: la línea viva entre la cara de arriba y el canto.
+   Sin esto las dos caras se funden y vuelve a leerse como una sola mancha. */
+.alv-bib-tabla-canto::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: oklch(86% 0.07 66 / 0.62);
+}
+
+.alv-bib-fila {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  transform-style: preserve-3d;
+}
+
+/*
+ * SIN INCLINACIÓN. Se probó recostar cada tomo unos grados para que la fila no
+ * quedara a plomo, y con lomos de este ancho y pegados entre sí lo que pasaba
+ * era que se atravesaban: el canto de uno entraba en la tapa del vecino. Una
+ * fila derecha se lee peor en una foto y mejor acá.
+ */
+.alv-bib-ranura {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+/* La sombra de contacto: lo que apoya el libro en la tabla en vez de dejarlo
+   flotando un píxel por encima. */
+.alv-bib-ranura::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  bottom: -5px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(50% 100% at 50% 0%, oklch(16% 0.025 40 / 0.55), transparent 72%);
+  pointer-events: none;
+}
+
+/*
+ * EL TOMO ES UNA CAJA CON BISAGRA EN EL LOMO.
+ *
+ * Con `transform-origin` en el borde izquierdo, a 90° la cara que mira al
+ * frente es el lomo y el tomo ocupa su grosor; a 0° es la tapa y ocupa su
+ * ancho. El giro entre esas dos posiciones ES el movimiento de sacar el libro
+ * del estante, y por eso vale hacerlo en 3D y no con dos elementos que se
+ * cruzan por opacidad.
+ */
+/*
+ * EL ORIGEN VA EN LA BASE DEL LOMO, no en su centro.
+ *
+ * Con `0 50%`, la escala del tomo presentado (1.06) lo hacía crecer para los
+ * dos lados por igual, así que la tapa terminaba colgando unos píxeles por
+ * DEBAJO de la línea de la madera mientras los lomos guardados se apoyaban
+ * bien. Un libro no crece desde el aire: crece desde donde está apoyado.
+ *
+ * Para el `rotateY` no cambia nada —el eje sigue siendo la vertical que pasa
+ * por el lomo—, así que la bisagra se mantiene.
+ */
+.alv-bib-tomo {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transform-style: preserve-3d;
+  transform-origin: 0 100%;
+  will-change: transform;
+}
+
+/*
+ * UNA CARA QUE MIRA PARA EL OTRO LADO NO RECIBE CLICKS.
+ *
+ * `backface-visibility` esconde los píxeles, no el área sensible: la tapa de
+ * un tomo guardado sigue estando ahí para el navegador aunque no se vea. Con
+ * `pointer-events` atado al estado, sólo la cara que se está mostrando es la
+ * que se puede tocar.
+ */
+.alv-bib-tomo[data-on="no"] .alv-bib-cara-tapa,
+.alv-bib-tomo[data-on="si"] .alv-bib-cara-lomo {
+  pointer-events: none;
+}
+
+.alv-bib-cara-lomo,
+.alv-bib-cara-tapa {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  backface-visibility: hidden;
+  border-radius: 2px 3px 3px 2px;
+  box-shadow: 0 20px 34px oklch(14% 0.03 42 / 0.5), 0 3px 7px oklch(14% 0.03 42 / 0.45);
+}
+
+/* El lomo vive rotado hacia atrás; cuando el tomo gira a 90° queda de frente. */
+.alv-bib-cara-lomo {
+  transform: rotateY(-90deg);
+  transform-origin: 0 50%;
+}
+
+/* El volumen del lomo: luz en un borde y sombra en el otro. */
+.alv-bib-cara-lomo::before,
+.alv-bib-cara-tapa::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.alv-bib-cara-lomo::before {
+  background: linear-gradient(
+    90deg,
+    oklch(100% 0 0 / 0.16) 0 3%,
+    oklch(0% 0 0 / 0) 22% 74%,
+    oklch(0% 0 0 / 0.32) 100%
+  );
+}
+
+.alv-bib-cara-tapa::before {
+  background: linear-gradient(104deg, oklch(100% 0 0 / 0.13), transparent 34%);
+}
+
+.alv-bib-filete {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  height: 1px;
+  opacity: 0.5;
+  background: currentColor;
+}
+
+/* Vertical y de abajo hacia arriba, como se lee un lomo apoyado en un estante. */
+.alv-bib-lomo-texto {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 44px;
+  bottom: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: 0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.alv-bib-lomo-pie {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  text-align: center;
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  opacity: 0.6;
+}
+
+/* El filete ciego de la tapa: dos hilos hundidos, como el gofrado del cuero. */
+.alv-bib-tapa-marco {
+  position: absolute;
+  inset: 17px;
+  border: 1px solid currentColor;
+  border-radius: 1px;
+  opacity: 0.3;
+}
+
+.alv-bib-tapa-marco::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid currentColor;
+  opacity: 0.55;
+}
+
+.alv-bib-tapa-dentro {
+  position: absolute;
+  inset: 44px 40px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.alv-bib-tapa-firma {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.alv-bib-tapa-titulo {
+  margin-top: 15px;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+.alv-bib-tapa-motivo {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.46;
+}
+
+.alv-bib-tapa-pie {
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.66;
+}
+
+/* Cuando el tomo ya se posó, la tapa acusa el hover: es lo que dice que se
+   puede tocar. Mientras la coreografía corre, nada reacciona. */
+.alv-bib-tomo[data-asentado="si"] .alv-bib-cara-tapa:hover {
+  filter: brightness(1.07);
+}
+
+/* ---- La invitación a abrir -----------------------------------------------
+   Un volumen presentado no dice por sí solo que se abre. El punto que late es
+   lo único que se mueve en la pantalla una vez que el tomo se asentó, así que
+   el ojo va ahí — y se apaga cuando el usuario pasa por encima, que es la
+   señal de que ya entendió. */
+.alv-bib-invita {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 420ms ease 180ms, transform 420ms cubic-bezier(0.22, 1, 0.36, 1) 180ms;
+}
+
+.alv-bib-invita[data-on="si"] {
+  opacity: 1;
+  transform: none;
+}
+
+.alv-bib-punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: oklch(48% 0.11 38);
+  box-shadow: 0 0 0 0 oklch(48% 0.11 38 / 0.5);
+  animation: alv-bib-latido 2.6s ease-out 3;
+}
+
+.alv-bib-invita:hover .alv-bib-punto {
+  animation: none;
+}
+
+@keyframes alv-bib-latido {
+  0%,
+  70%,
+  100% {
+    box-shadow: 0 0 0 0 oklch(48% 0.11 38 / 0.45);
+  }
+  35% {
+    box-shadow: 0 0 0 7px oklch(48% 0.11 38 / 0);
+  }
+}
+
+/*
+ * El velo que despega la ficha del mueble.
+ *
+ * Muere ANTES de llegar al tomo presentado. Cuando llegaba hasta el final, el
+ * velo le pasaba una mano de pergamino por encima a la tapa y el cuero salía
+ * lavado — el mismo color se veía oscuro en el lomo y rosa viejo en la tapa.
+ */
+.alv-bib-ficha::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -42px -30px -38px -92px;
+  background: linear-gradient(
+    90deg,
+    oklch(93.2% 0.014 84 / 0.96) 0%,
+    oklch(93.2% 0.014 84 / 0.8) 44%,
+    oklch(93.2% 0.014 84 / 0) 72%
+  );
+}
+
+/* ---- El libro abierto ---------------------------------------------------- */
+
+.alv-bib-hoja {
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+  background: radial-gradient(
+    125% 100% at 50% 0%,
+    oklch(97.4% 0.009 86) 0%,
+    oklch(94% 0.015 84) 100%
+  );
+  box-shadow: inset 0 0 60px oklch(78% 0.03 74 / 0.34);
+}
+
+/* El papel verjurado: rayas finísimas, casi invisibles. Es lo que separa «un
+   rectángulo claro» de «una hoja». */
+.alv-bib-hoja::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    repeating-linear-gradient(90deg, oklch(60% 0.03 70 / 0.045) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(0deg, oklch(60% 0.03 70 / 0.028) 0 1px, transparent 1px 26px);
+}
+
+.alv-bib-hoja.izq {
+  border-radius: 5px 1px 1px 5px;
+}
+
+.alv-bib-hoja.der {
+  border-radius: 1px 5px 5px 1px;
+}
+
+/* La sombra del canal, mirando cada hoja a su lado. */
+.alv-bib-canal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 62px;
+  pointer-events: none;
+}
+
+.alv-bib-canal.izq {
+  right: 0;
+  background: linear-gradient(to right, transparent, oklch(52% 0.035 60 / 0.3));
+}
+
+.alv-bib-canal.der {
+  left: 0;
+  background: linear-gradient(to left, transparent, oklch(52% 0.035 60 / 0.3));
+}
+
+/* `flex: 1` con `min-height: 0` es lo que deja que la lámina se achique cuando
+   la hoja además tiene que alojar el botón de «verlo andar». Sin `min-height`
+   una imagen no baja de su tamaño de contenido y se desborda la página. */
+.alv-bib-lamina {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  box-shadow: 0 2px 5px oklch(40% 0.03 60 / 0.2), 0 12px 28px oklch(40% 0.03 60 / 0.17);
+}
+
+.alv-bib-folio {
+  position: absolute;
+  bottom: 20px;
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  color: oklch(40% 0.02 62 / 0.6);
+}
+
+/* El canto del block: las hojas que quedan de cada lado. */
+.alv-bib-canto {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  width: 9px;
+  background: repeating-linear-gradient(
+    90deg,
+    oklch(92% 0.014 84) 0 1px,
+    oklch(82% 0.02 78) 1px 2px
+  );
+}
+
+/* ---- La hoja que gira ----------------------------------------------------
+   La cadena de tiras la arma `biblioteca-motor.ts`; acá está lo que no cambia
+   por frame. */
+.alv-bib-pliegue {
+  position: absolute;
+  top: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.alv-bib-tira {
+  position: absolute;
+  top: 0;
+  transform-style: preserve-3d;
+}
+
+.alv-bib-cara {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+
+.alv-bib-cara > .alv-bib-contenido {
+  position: absolute;
+  top: 0;
+}
+
+.alv-bib-vidrio {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ---- La lupa -------------------------------------------------------------
+ * El vidrio es hermano del libro, no hijo: por eso no hereda ninguna
+ * transformación de la página y el cursor le cae 1:1 encima. Lo que se ve
+ * adentro lo coloca `colocarLupa()`.
+ */
+.alv-bib-copia {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.alv-bib-copia-interior {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+
+.alv-bib-lupa {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  will-change: transform;
+  transition: opacity 0.25s ease;
+}
+
+/* El bisel es un ANILLO de verdad —no un disco con borde— para que el vidrio
+   sea realmente transparente. De ahí la máscara radial. */
+.alv-bib-aro {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 5.8%;
+  cursor: grab;
+  box-shadow:
+    0 1px 2px oklch(30% 0.03 55 / 0.3),
+    0 10px 18px oklch(30% 0.03 55 / 0.24),
+    0 26px 40px oklch(30% 0.03 55 / 0.2),
+    0 48px 66px oklch(30% 0.03 55 / 0.13);
+}
+
+.alv-bib-aro:active {
+  cursor: grabbing;
+}
+
+.alv-bib-aro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: linear-gradient(
+    146deg,
+    oklch(97% 0.03 88) 0%,
+    oklch(88% 0.06 85) 14%,
+    oklch(70% 0.07 78) 32%,
+    oklch(50% 0.06 72) 50%,
+    oklch(79% 0.05 82) 66%,
+    oklch(94% 0.03 86) 80%,
+    oklch(60% 0.06 76) 100%
+  );
+  box-shadow:
+    inset 0 1px 1px oklch(100% 0 0 / 0.8),
+    inset 0 -2px 3px oklch(35% 0.05 60 / 0.5);
+  -webkit-mask-image: radial-gradient(
+    circle closest-side at 50% 50%,
+    transparent 0 88.2%,
+    #000 89.8% 100%
+  );
+  mask-image: radial-gradient(
+    circle closest-side at 50% 50%,
+    transparent 0 88.2%,
+    #000 89.8% 100%
+  );
+}
+
+/* El mango, dibujado antes que el aro para que el anillo le tape la punta. */
+.alv-bib-mango {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 74%;
+  height: 12.5%;
+  transform-origin: 0 50%;
+  transform: rotate(40deg) translate(33%, -50%);
+  border-radius: 6px;
+  cursor: grab;
+  background:
+    linear-gradient(
+      180deg,
+      oklch(100% 0 0 / 0.46) 0 13%,
+      oklch(100% 0 0 / 0) 44%,
+      oklch(0% 0 0 / 0.26) 100%
+    ),
+    linear-gradient(
+      90deg,
+      oklch(83% 0.07 82) 0 14%,
+      oklch(65% 0.08 76) 14% 20%,
+      oklch(43% 0.06 62) 20% 62%,
+      oklch(37% 0.05 60) 62% 92%,
+      oklch(48% 0.06 64 / 0.5) 92% 100%
+    );
+  box-shadow: 0 8px 15px oklch(30% 0.03 55 / 0.26), 0 18px 26px oklch(30% 0.03 55 / 0.14);
+}
+
+.alv-bib-mango:active {
+  cursor: grabbing;
+}
+
+.alv-bib-vidrio-lupa {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px oklch(35% 0.04 58 / 0.55),
+    inset 0 4px 12px oklch(28% 0.03 55 / 0.28),
+    inset 0 -7px 16px oklch(98% 0.02 88 / 0.14);
+}
+
+/* El vidrio se curva y se oscurece hacia el borde, con una franja de color. */
+.alv-bib-vidrio-lupa::before,
+.alv-bib-vidrio-lupa::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.alv-bib-vidrio-lupa::before {
+  z-index: 1;
+  background: radial-gradient(
+    circle at 50% 50%,
+    oklch(0% 0 0 / 0) 54%,
+    oklch(30% 0.03 55 / 0.1) 76%,
+    oklch(25% 0.03 52 / 0.34) 100%
+  );
+  box-shadow:
+    inset 0 0 0 2px oklch(68% 0.05 250 / 0.26),
+    inset 0 0 0 4px oklch(76% 0.07 60 / 0.15);
+}
+
+/* La cúpula: un especular ancho y una medialuna apretada del lado opuesto. */
+.alv-bib-vidrio-lupa::after {
+  z-index: 2;
+  background:
+    radial-gradient(36% 26% at 29% 19%, oklch(100% 0 0 / 0.3), oklch(100% 0 0 / 0) 76%),
+    radial-gradient(24% 16% at 74% 86%, oklch(100% 0 0 / 0.12), oklch(100% 0 0 / 0) 80%),
+    linear-gradient(150deg, oklch(100% 0 0 / 0.06) 0 18%, oklch(100% 0 0 / 0) 42%);
+}
+
+/* ---- El video ------------------------------------------------------------ */
+
+.alv-bib-andar {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 15px 8px 11px;
+  border-radius: 999px;
+  border: 1px solid oklch(24% 0.008 70 / 0.19);
+  background: oklch(96.4% 0.01 86 / 0.8);
+  color: oklch(24% 0.008 70);
+  cursor: pointer;
+  font-family: var(--fuente-lectura), Georgia, serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.alv-bib-andar:hover {
+  background: oklch(98% 0.008 86);
+  border-color: oklch(24% 0.008 70 / 0.38);
+}
+
+.alv-bib-marco-video {
+  position: relative;
+  border-radius: 3px;
+  overflow: hidden;
+  background: oklch(18% 0.01 60);
+  box-shadow: 0 10px 26px oklch(30% 0.03 50 / 0.28);
+}
+
+/* El respaldo vive DEBAJO del reproductor: si el iframe no pinta —red caída,
+   extensión de privacidad— queda un camino al video y no un rectángulo negro. */
+.alv-bib-respaldo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: oklch(90% 0.03 84);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.alv-bib-marco-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---- Controles ----------------------------------------------------------- */
+
+.alv-bib-flecha:hover:not(:disabled) {
+  background: oklch(96.4% 0.01 86 / 0.94);
+  transform: scale(1.06);
+}
+
+.alv-bib-flecha:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.alv-bib-linea span:last-child {
+  transition: transform 0.22s ease;
+}
+
+.alv-bib-linea:hover span:last-child {
+  transform: translate3d(2px, -2px, 0);
+}
+
+.alv-bib-pastilla:hover {
+  color: oklch(24% 0.008 70);
+  border-color: oklch(24% 0.008 70 / 0.4);
+}
+
+.alv-bib-mini {
+  position: relative;
+  height: 58px;
+  width: 46px;
+  padding: 3px;
+  cursor: pointer;
+  border: 1px solid oklch(24% 0.008 70 / 0.19);
+  border-radius: 2px;
+  background: oklch(96.4% 0.01 86);
+  overflow: hidden;
+  opacity: 0.52;
+  transition: opacity 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+
+.alv-bib-mini:hover {
+  opacity: 0.88;
+  transform: translateY(-3px);
+}
+
+.alv-bib-mini[data-on="si"] {
+  opacity: 1;
+  border-color: oklch(48% 0.11 38 / 0.6);
+  box-shadow: 0 0 0 1px oklch(48% 0.11 38 / 0.3), 0 6px 14px oklch(30% 0.03 50 / 0.18);
+}
+
+.alv-bib-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ---- Los dos planos de la sección ----------------------------------------
+ * Leer no es irse a otra pantalla: es abrir el volumen en la misma biblioteca.
+ * El mueble retrocede —se achica, se desenfoca y baja de opacidad— y el libro
+ * se abre delante. El modo lo dice React una vez; el movimiento lo hace el CSS
+ * (`19-bocetos-biblioteca.md` §4.10).
+ */
+.alv-bib-escena-estante {
+  position: absolute;
+  inset: 0;
+  transition:
+    opacity 520ms ease,
+    transform 640ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 520ms ease;
+}
+
+.alv-bib-escena-estante[data-modo="lectura"] {
+  opacity: 0.16;
+  filter: blur(4px) saturate(0.75);
+  transform: scale(0.93);
+  pointer-events: none;
+}
+
+.alv-bib-escena-libro {
+  animation: alv-bib-entra 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes alv-bib-entra {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* NADA SE SELECCIONA. Arrastrar una hoja con el dedo o el mouse no puede
+   dejar media página remarcada en azul: el libro es un objeto, no un texto
+   para copiar. Los pasajes que sí se citan viven en el códice, no acá. */
+.alv-bib,
+.alv-bib * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.alv-bib img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/*
+ * LA BIBLIOTECA ES LA SEGUNDA PANTALLA, no una ventana encima del hero. Mismo
+ * alto que el hero, y por eso se llega scrolleando: la página mide dos
+ * pantallas. `dvh` por lo mismo que el hero — en un teléfono `vh` cuenta la
+ * barra del navegador retraída y la sección quedaría más alta que la pantalla.
+ */
+.alv-bib {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/*
+ * LA SEÑAL DE QUE HAY MÁS ABAJO.
+ *
+ * Una portada que ocupa la pantalla entera no dice por sí sola que sigue. La
+ * flecha aparece cuando la escena terminó de abrirse —antes competiría con la
+ * intro— y se apaga apenas el visitante scrollea: ya entendió, no hace falta
+ * seguir avisándole.
+ */
+.alv-hero-scroll {
+  position: absolute;
+  z-index: 8;
+  bottom: calc(clamp(30px, 5vh, 54px) + env(safe-area-inset-bottom));
+  left: 50%;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  color: oklch(90% 0.03 85 / 0.55);
+  transform: translateX(-50%);
+  transition: opacity 600ms ease, color 260ms ease;
+}
+
+.alv-hero-scroll:hover {
+  color: oklch(97% 0.03 85 / 0.9);
+}
+
+.alv-hero-scroll svg {
+  animation: alv-bajar 2.4s ease-in-out infinite;
+}
+
+@keyframes alv-bajar {
+  0%,
+  100% {
+    transform: translateY(-3px);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(3px);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "anatomia/craneo": {
+    "ancho": 327,
+    "alto": 456,
+    "bytes": 27412
+  },
+  "anatomia/feto": {
+    "ancho": 530,
+    "alto": 739,
+    "bytes": 88300
+  },
+  "anatomia/sistema-cardiovascular": {
+    "ancho": 1010,
+    "alto": 1440,
+    "bytes": 236966
+  },
+  "anatomia/columna-vertebral": {
+    "ancho": 1010,
+    "alto": 1010,
+    "bytes": 88332
+  },
+  "anatomia/corazon": {
+    "ancho": 1010,
+    "alto": 568,
+    "bytes": 147780
+  },
+  "anatomia/pie-de-oso": {
+    "ancho": 616,
+    "alto": 738,
+    "bytes": 70544
+  },
+  "maquinas/mecanismo-01": {
+    "ancho": 534,
+    "alto": 725,
+    "bytes": 70810
+  },
+  "maquinas/mecanismo-02": {
+    "ancho": 535,
+    "alto": 724,
+    "bytes": 73012
+  },
+  "maquinas/mecanismo-03": {
+    "ancho": 533,
+    "alto": 726,
+    "bytes": 92480
+  },
+  "maquinas/mecanismo-04": {
+    "ancho": 533,
+    "alto": 725,
+    "bytes": 86232
+  },
+  "obras/mona-lisa": {
+    "ancho": 671,
+    "alto": 1000,
+    "bytes": 71102
+  },
+  "obras/ultima-cena": {
+    "ancho": 1600,
+    "alto": 833,
+    "bytes": 229254
+  },
+  "obras/dama-del-armino": {
+    "ancho": 1190,
+    "alto": 1600,
+    "bytes": 82236
+  },
+  "obras/ginevra-de-benci": {
+    "ancho": 1540,
+    "alto": 1600,
+    "bytes": 368442
+  },
+  "obras/virgen-de-las-rocas": {
+    "ancho": 1002,
+    "alto": 1600,
+    "bytes": 153240
+  },
+  "obras/virgen-nino-santa-ana": {
+    "ancho": 1047,
+    "alto": 1600,
+    "bytes": 176876
+  },
+  "obras/hombre-de-vitruvio": {
+    "ancho": 1260,
+    "alto": 1600,
+    "bytes": 122634
+  },
+  "obras/cabeza-de-mujer": {
+    "ancho": 1374,
+    "alto": 1600,
+    "bytes": 535052
+  },
+  "obras/volto-di-fanciulla": {
+    "ancho": 1506,
+    "alto": 1600,
+    "bytes": 181070
+  },
+  "dibujos/plano-de-ciudad": {
+    "ancho": 1600,
+    "alto": 1186,
+    "bytes": 190294
+  },
+  "dibujos/cabeza-de-mujer-cabellera": {
+    "ancho": 1349,
+    "alto": 1600,
+    "bytes": 340812
+  },
+  "dibujos/cabeza-en-perfil": {
+    "ancho": 1187,
+    "alto": 1600,
+    "bytes": 341002
+  },
+  "dibujos/diluvio": {
+    "ancho": 1600,
+    "alto": 1315,
+    "bytes": 384372
+  },
+  "dibujos/hoja-de-estudios": {
+    "ancho": 1600,
+    "alto": 1234,
+    "bytes": 210226
+  },
+  "dibujos/rayos-y-perfil": {
+    "ancho": 1122,
+    "alto": 1600,
+    "bytes": 347570
+  },
+  "dibujos/monumento-ecuestre": {
+    "ancho": 590,
+    "alto": 824,
+    "bytes": 60814
+  },
+  "dibujos/cesar-borgia": {
+    "ancho": 1600,
+    "alto": 629,
+    "bytes": 144574
+  }
+}

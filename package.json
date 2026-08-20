@@ -35,7 +35,8 @@
     "regresion": "tsx evals/regresion.ts",
     "curadas": "tsx tools/curadas.ts",
     "procedencia": "tsx tools/procedencia.ts",
-    "exportar:portada": "tsx tools/exportar_portada.ts"
+    "exportar:portada": "tsx tools/exportar_portada.ts",
+    "biblioteca": "tsx tools/optimizar_biblioteca.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",

@@ -44,3 +44,6 @@ artifacts/q8/
 
 # Cache incremental de tsc/Next, se regenera sola
 *.tsbuildinfo
+
+# Configuracion local del agente (rutas de la maquina, no del proyecto)
+.claude/

@@ -39,6 +39,7 @@ import { elegirEncuadre, focoEnPantalla, type Encuadre } from "../lib/encuadre.j
 import type { Idioma } from "../lib/cliente-chat.js";
 import { FUENTE } from "./estilos.js";
 import { Biblioteca } from "./Biblioteca.js";
+import { Museo } from "./Museo.js";
 import { Codice } from "./Codice.js";
 import { Explainer } from "./Explainer.js";
 
@@ -966,6 +967,14 @@ export function Hero() {
         se abre un volumen.
       */}
       <Biblioteca lang={lang} />
+
+      {/*
+        EL MUSEO VA DESPUES DE LA BIBLIOTECA, y montarlo tampoco cuesta nada:
+        hasta que alguien toca «Entrar a la sala» esto es una portada de texto.
+        Three.js y las nueve texturas viven detrás de un `import()` dinámico
+        dentro del handler del botón (D-162).
+      */}
+      <Museo lang={lang} />
     </>
   );
 }

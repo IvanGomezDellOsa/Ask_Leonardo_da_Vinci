@@ -1601,3 +1601,239 @@ a:hover {
 .alv-bib-colofon a:hover {
   color: oklch(32% 0.1 40);
 }
+
+/* ===========================================================================
+ * EL MUSEO (D-162)
+ *
+ * La sala va en CLARO como la biblioteca, y por una razón distinta: un museo
+ * es luz. El piso, el fondo y la niebla comparten el mismo blanco cálido, así
+ * que el pasillo no termina en un borde — se desvanece.
+ * ======================================================================== */
+
+.alv-museo {
+  isolation: isolate;
+}
+
+.alv-museo-portada,
+.alv-museo-capa {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+/* La capa de pausa deja ver la sala detrás: no se salió, se soltó el mouse. */
+.alv-museo-capa {
+  background: oklch(96% 0.006 85 / 0.82);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+.alv-museo-firma {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.185em;
+  text-transform: uppercase;
+  color: oklch(24% 0.008 70 / 0.62);
+}
+
+.alv-museo-titulo {
+  max-width: 22.7em;
+  margin: 0;
+  font-size: clamp(23px, 6.8vw, 26px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: oklch(22% 0.01 66);
+}
+
+.alv-museo-nota {
+  max-width: 34em;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.62;
+  color: oklch(24% 0.008 70 / 0.72);
+}
+
+.alv-museo-controles {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: oklch(24% 0.008 70 / 0.5);
+}
+
+/* El mismo relleno de 22 px de los botones del hero: una sola gramática de
+   botón en todo el sitio (D-161). */
+.alv-museo-boton {
+  height: 46px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: oklch(24% 0.012 66);
+  color: oklch(97% 0.006 85);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  box-shadow: 0 8px 22px oklch(24% 0.008 70 / 0.22);
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.2s ease;
+}
+
+.alv-museo-boton:hover {
+  box-shadow: 0 10px 28px oklch(24% 0.008 70 / 0.3);
+}
+
+/* El mismo micro-gesto que usa Apple en todo su sistema. */
+.alv-museo-boton:active {
+  transform: scale(0.96);
+}
+
+.alv-museo-linea {
+  padding: 0 0 6px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  cursor: pointer;
+  color: oklch(24% 0.008 70 / 0.66);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.alv-museo-linea:hover {
+  color: oklch(24% 0.008 70);
+}
+
+/* La barra de carga de las nueve texturas. */
+.alv-museo-barra {
+  width: min(260px, 60vw);
+  height: 2px;
+  background: oklch(24% 0.008 70 / 0.14);
+  overflow: hidden;
+}
+
+.alv-museo-barra span {
+  display: block;
+  height: 100%;
+  background: oklch(38% 0.09 42);
+  transition: width 0.3s ease;
+}
+
+/* ---- La cartela ----------------------------------------------------------
+ *
+ * Es la ficha que un museo pone al lado del cuadro, y acá aparece sola cuando
+ * el visitante se acerca. Abajo a la izquierda: fuera del centro de la vista,
+ * que es donde está el telón, y donde el ojo la busca sin que le tape nada.
+ */
+.alv-museo-cartela {
+  position: absolute;
+  z-index: 5;
+  left: 40px;
+  bottom: 40px;
+  max-width: 340px;
+  padding: 16px 20px;
+  border-left: 2px solid oklch(38% 0.09 42 / 0.7);
+  background: oklch(97% 0.006 85 / 0.8);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  text-align: left;
+  pointer-events: none;
+  animation: alv-museo-entra 0.42s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes alv-museo-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.alv-museo-cartela-titulo {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: oklch(20% 0.012 66);
+}
+
+.alv-museo-cartela-nota {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: oklch(24% 0.008 70 / 0.76);
+}
+
+.alv-museo-salir {
+  position: absolute;
+  z-index: 5;
+  top: 28px;
+  right: 32px;
+  height: 34px;
+  padding: 0 15px;
+  border: 1px solid oklch(24% 0.008 70 / 0.2);
+  border-radius: 999px;
+  cursor: pointer;
+  background: oklch(97% 0.006 85 / 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: oklch(24% 0.008 70 / 0.78);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.alv-museo-salir:hover {
+  color: oklch(24% 0.008 70);
+  border-color: oklch(24% 0.008 70 / 0.4);
+}
+
+/* La mira: un punto mínimo en el centro. Sin él no se sabe qué se está
+   mirando, y con una cruz de videojuego esto dejaría de parecer un museo. */
+.alv-museo-lienzo + .alv-museo-cartela::after {
+  content: none;
+}
+
+.alv-museo:has(.alv-museo-salir)::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: oklch(24% 0.008 70 / 0.34);
+  pointer-events: none;
+}
+
+/* Para lo que existe para un lector de pantalla y no para la vista. */
+.alv-visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

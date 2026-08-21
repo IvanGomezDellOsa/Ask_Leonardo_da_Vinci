@@ -41,6 +41,25 @@ dos idiomas).
 pasaje dice lo que este sistema afirma que dice. Es el mecanismo central del proyecto, no un
 formalismo.
 
+## El volumen de contexto de la biblioteca, que NO es corpus
+
+`public/biblioteca/wikipedia.json` lo genera `npm run wikipedia` a partir del artículo **«Leonardo
+da Vinci»** de Wikipedia en castellano y en inglés. Es el quinto tomo de la estantería (D-155).
+
+| | |
+|---|---|
+| **Términos** | **CC BY-SA 4.0** — <https://creativecommons.org/licenses/by-sa/4.0/> |
+| **Autor** | Los colaboradores de Wikipedia |
+| **Atribución** | Viaja **dentro del JSON**: título, autor colectivo, número de revisión, fecha de consulta y enlace al artículo. No hay forma de servir el texto sin ella. En pantalla se imprime en el **colofón**, la última hoja del tomo, que es donde un libro pone quién lo hizo (D-157) |
+
+**No es MIT y no puede serlo**: CC BY-SA es una licencia recíproca. El resto del repositorio sigue
+siendo MIT; lo que está bajo CC BY-SA es ese archivo y nada más.
+
+**Y no es corpus.** No se indexa, no se recupera, `responder()` no lo ve y ninguna cita sale de
+ahí. El «0% de citas inventadas» se mide contra Richter y sólo contra Richter (D-018, D-026): este
+tomo es material que se mira en la biblioteca, como las 27 láminas. El propio volumen lo dice en su
+portadilla, antes de la primera línea de texto.
+
 ## La cadena de traducción, declarada
 
 El italiano de Leonardo → el inglés de Richter (1888) → el castellano de este proyecto. **Son tres

@@ -474,22 +474,77 @@ a:hover {
   background: linear-gradient(104deg, oklch(100% 0 0 / 0.13), transparent 34%);
 }
 
-.alv-bib-filete {
+/* ---- Los nervios del lomo ------------------------------------------------
+ *
+ * LO QUE HACE QUE UN RECTANGULO DE COLOR SE LEA COMO UN LIBRO.
+ *
+ * Antes acá había dos filetes: dos hilos de un píxel, planos, del color de la
+ * tinta. Un lomo de la época no tiene hilos pintados, tiene BANDAS LEVANTADAS
+ * —los cordeles de la costura pasan por debajo del cuero y lo empujan hacia
+ * afuera—, y una banda levantada no es una línea: es una superficie curva que
+ * agarra la luz arriba, la pierde en el vértice y deja sombra abajo. Eso son
+ * las cinco paradas del degradé, y es lo único que hay que hacer bien: sin la
+ * sombra de abajo el nervio se ve pintado, y sin el filo de arriba no se ve.
+ *
+ * Las sombras son negro y blanco transparentes y no colores propios, así que
+ * el mismo nervio funciona sobre el tafilete rojo, sobre la badana clara y
+ * sobre la tela azul del tomo ajeno sin una variante por tomo.
+ */
+.alv-bib-nervio {
   position: absolute;
-  left: 9px;
-  right: 9px;
-  height: 1px;
-  opacity: 0.5;
-  background: currentColor;
+  left: 0;
+  right: 0;
+  height: 9px;
+  margin-top: -4px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    oklch(0% 0 0 / 0.3) 0 1px,
+    oklch(100% 0 0 / 0.19) 1px 3px,
+    oklch(100% 0 0 / 0.06) 3px 5px,
+    oklch(0% 0 0 / 0.13) 5px 8px,
+    oklch(0% 0 0 / 0.27) 8px 9px
+  );
 }
 
-/* Vertical y de abajo hacia arriba, como se lee un lomo apoyado en un estante. */
+/* La cofia: el cuero que se dobla sobre la cabeza y el pie del tomo y queda
+   más tenso, así que ahí brilla más. Son los dos extremos del lomo, y sin
+   ellos el lomo termina de golpe, como cortado con tijera. */
+.alv-bib-cofia {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 7px;
+  pointer-events: none;
+}
+
+.alv-bib-cofia[data-donde="alta"] {
+  top: 0;
+  border-radius: 2px 3px 0 0;
+  background: linear-gradient(180deg, oklch(100% 0 0 / 0.16), transparent);
+}
+
+.alv-bib-cofia[data-donde="baja"] {
+  bottom: 0;
+  border-radius: 0 0 3px 2px;
+  background: linear-gradient(0deg, oklch(0% 0 0 / 0.26), transparent);
+}
+
+/* Vertical y de abajo hacia arriba, como se lee un lomo apoyado en un estante.
+ *
+ * VA EN EL ENTREPAÑO, NO EN TODO EL LOMO. Los nervios parten el lomo en cinco
+ * paños y el título ocupa el largo del medio —entre el segundo nervio y el
+ * tercero—, que es donde lo pone un encuadernador. En porcentaje y no en
+ * píxeles porque los lomos no miden lo mismo: el grosor sale de cuántas hojas
+ * tiene el tomo, y el título tiene que caer entre los mismos dos nervios en
+ * todos. Esto es, además, lo que obliga a que los títulos sean cortos.
+ */
 .alv-bib-lomo-texto {
   position: absolute;
   left: 0;
   right: 0;
-  top: 44px;
-  bottom: 48px;
+  top: 27%;
+  bottom: 27%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -502,11 +557,13 @@ a:hover {
   overflow: hidden;
 }
 
+/* El paño del pie, debajo del último nervio: ahí va el número, como el tomo
+   en una colección. */
 .alv-bib-lomo-pie {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 16px;
+  bottom: 5%;
   text-align: center;
   font-size: 7.5px;
   font-weight: 600;
@@ -1137,4 +1194,406 @@ a:hover {
     transform: translateY(3px);
     opacity: 1;
   }
+}
+
+/* ---- El volumen de texto (D-155) -----------------------------------------
+ *
+ * LA CAJA TIPOGRAFICA ES LA MISMA QUE MIDE `paginarTexto()`, Y ESO NO ES UNA
+ * COINCIDENCIA QUE HAYA QUE CUIDAR: ES LA MISMA CLASE.
+ *
+ * El molde que pagina se construye con `className = "alv-bib-texto"` y el
+ * mismo `font-size` que la hoja. Si mañana alguien cambia el interlineado acá
+ * y no allá, no hay nada que sincronizar —allá no hay ningún número que
+ * cambiar—. Es la cura estructural del patrón que el proyecto se comió quince
+ * veces: una sola definición compartida en vez de dos copias que coinciden
+ * hoy.
+ *
+ * Todo va en `em` por la misma razón: el único número que viaja entre React y
+ * el CSS es el cuerpo de letra.
+ */
+.alv-bib-texto {
+  font-family: var(--fuente-lectura), Georgia, serif;
+  line-height: 1.62;
+  color: oklch(26% 0.012 66);
+  text-align: justify;
+  hyphens: auto;
+  /* Los cuadernos son castellanos o ingleses según el tomo; el corte de
+     palabra lo decide el idioma del documento, que `layout.tsx` ya declara. */
+  overflow-wrap: break-word;
+}
+
+.alv-bib-texto p {
+  margin: 0 0 0.72em;
+}
+
+/* Un párrafo que sigue de la hoja anterior no arranca: continúa. Sin esto, la
+   cola de un párrafo partido se lee como un párrafo nuevo, y el corte —que es
+   una consecuencia del tamaño de la hoja y no del texto— se vuelve visible. */
+.alv-bib-texto p[data-sigue="si"] {
+  text-indent: 0;
+}
+
+.alv-bib-texto p + p {
+  text-indent: 1.15em;
+}
+
+.alv-bib-texto p[data-sigue="si"] + p {
+  text-indent: 1.15em;
+}
+
+.alv-bib-texto h2 {
+  margin: 0 0 0.9em;
+  font-size: 1.62em;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-align: left;
+  color: oklch(22% 0.014 62);
+}
+
+.alv-bib-texto h3 {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  color: oklch(30% 0.016 60);
+}
+
+.alv-bib-texto h2:first-child,
+.alv-bib-texto h3:first-child {
+  margin-top: 0;
+}
+
+
+/* ---- El interruptor de la lupa (D-156) -----------------------------------
+ *
+ * ANTES ERA UNA PASTILLA QUE SE RELLENABA, y una pastilla rellena es un botón
+ * que quedó apretado: hay que acordarse de qué significaba el relleno. Un
+ * interruptor no se recuerda, se ve — la perilla está de un lado o del otro.
+ *
+ * Los tres detalles que hacen que se sienta bien:
+ *   · La perilla se APLASTA un poco mientras viaja (`scaleX`), como una gota.
+ *     Es lo que le da masa; sin eso el círculo se teletransporta.
+ *   · La curva del riel y la de la perilla son la MISMA, así que el color y el
+ *     movimiento llegan juntos. Curvas distintas se notan aunque no se sepa.
+ *   · La sombra de la perilla es corta y baja, no un halo: está apoyada sobre
+ *     el riel, no flotando encima.
+ */
+.alv-bib-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 4px 0 2px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: oklch(24% 0.008 70 / 0.62);
+  font-family: inherit;
+  transition: color 0.22s ease;
+}
+
+.alv-bib-switch:hover {
+  color: oklch(24% 0.008 70 / 0.9);
+}
+
+.alv-bib-switch-nombre {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.alv-bib-switch-riel {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  background: oklch(24% 0.008 70 / 0.16);
+  box-shadow: inset 0 1px 2px oklch(24% 0.008 70 / 0.18);
+  transition: background 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.alv-bib-switch[aria-checked="true"] .alv-bib-switch-riel {
+  background: oklch(42% 0.09 42);
+  box-shadow: inset 0 1px 2px oklch(24% 0.008 70 / 0.22);
+}
+
+.alv-bib-switch-perilla {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: oklch(99% 0.004 86);
+  box-shadow: 0 1px 2px oklch(24% 0.008 70 / 0.34), 0 0 1px oklch(24% 0.008 70 / 0.2);
+  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.alv-bib-switch[aria-checked="true"] .alv-bib-switch-perilla {
+  transform: translateX(14px);
+}
+
+/* El aplastado del viaje: sólo mientras el dedo está abajo. */
+.alv-bib-switch:active .alv-bib-switch-perilla {
+  transform: scaleX(1.18);
+}
+
+.alv-bib-switch[aria-checked="true"]:active .alv-bib-switch-perilla {
+  transform: translateX(11px) scaleX(1.18);
+}
+
+.alv-bib-switch:focus-visible {
+  outline: 2px solid oklch(42% 0.09 42 / 0.6);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---- El índice plegable del tomo de texto (D-156) ------------------------
+ *
+ * SE ABRE HACIA ARRIBA Y DESDE EL BOTON. El botón vive al pie, donde los otros
+ * tomos ponen sus miniaturas, así que el panel sale de ahí: `bottom: 100%` y
+ * `transform-origin` abajo. Un panel que crece desde el punto que tocaste se
+ * lee como consecuencia del toque; uno que aparece centrado, como una alerta.
+ */
+.alv-bib-indice-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 34px;
+  padding: 0 13px;
+  cursor: pointer;
+  border: 1px solid oklch(24% 0.008 70 / 0.19);
+  border-radius: 9px;
+  background: oklch(96.4% 0.01 86);
+  color: oklch(24% 0.008 70 / 0.78);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.alv-bib-indice-boton:hover {
+  color: oklch(24% 0.008 70);
+  border-color: oklch(24% 0.008 70 / 0.34);
+}
+
+.alv-bib-indice-boton[data-on="si"] {
+  color: oklch(24% 0.008 70);
+  border-color: oklch(24% 0.008 70 / 0.42);
+  box-shadow: 0 2px 10px oklch(24% 0.008 70 / 0.12);
+}
+
+/*
+ * LA FLECHA APUNTA A DONDE VA EL PANEL, no a donde está.
+ *
+ * Cerrada apunta ARRIBA, que es de donde va a salir el panel; abierta apunta
+ * ABAJO, que es hacia donde se va a plegar. Estaba al revés —apuntaba al
+ * estado actual en vez de a la acción— y una flecha que describe en vez de
+ * anunciar no sirve para nada: el estado ya se ve, la acción no.
+ */
+.alv-bib-indice-chevron {
+  display: inline-flex;
+  transform: rotate(0deg);
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  opacity: 0.6;
+}
+
+.alv-bib-indice-boton[data-on="si"] .alv-bib-indice-chevron {
+  transform: rotate(180deg);
+}
+
+.alv-bib-indice-panel {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  z-index: 30;
+  width: min(390px, calc(100vw - 32px));
+  padding: 7px 7px 0;
+  border: 1px solid oklch(24% 0.008 70 / 0.13);
+  border-radius: 15px;
+  /* El vidrio de verdad: se adivina la hoja de abajo, y eso es lo que dice
+     que el panel está ENCIMA del libro y no en otra pantalla. */
+  background: oklch(97% 0.008 86 / 0.82);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  box-shadow:
+    0 1px 1px oklch(24% 0.008 70 / 0.04),
+    0 12px 34px oklch(24% 0.008 70 / 0.17),
+    0 2px 8px oklch(24% 0.008 70 / 0.08);
+  transform-origin: bottom center;
+  /* Cerrado: apenas escalado y corrido, no colapsado. Colapsar a cero hace que
+     el contenido se estire al abrir, y eso se ve barato. */
+  transform: translate(-50%, 8px) scale(0.965);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform 0.34s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.2s ease,
+    visibility 0s linear 0.34s;
+}
+
+.alv-bib-indice-panel[data-on="si"] {
+  transform: translate(-50%, 0) scale(1);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    transform 0.42s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.24s ease,
+    visibility 0s;
+}
+
+.alv-bib-indice-lista {
+  max-height: min(46vh, 340px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: oklch(24% 0.008 70 / 0.22) transparent;
+}
+
+.alv-bib-indice-lista::-webkit-scrollbar {
+  width: 8px;
+}
+
+.alv-bib-indice-lista::-webkit-scrollbar-thumb {
+  background: oklch(24% 0.008 70 / 0.2);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
+.alv-bib-indice-fila {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  cursor: pointer;
+  color: oklch(24% 0.008 70);
+  font-family: var(--fuente-lectura), Georgia, serif;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.alv-bib-indice-fila:hover {
+  background: oklch(24% 0.008 70 / 0.06);
+}
+
+.alv-bib-indice-fila:active {
+  background: oklch(24% 0.008 70 / 0.1);
+}
+
+/* La jerarquía se lee sin leer: el capítulo en versalitas y con peso, la
+   subsección sangrada, más chica y más clara. */
+.alv-bib-indice-fila[data-nivel="h2"] .alv-bib-indice-texto {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.alv-bib-indice-fila[data-nivel="h3"] {
+  padding-left: 26px;
+}
+
+.alv-bib-indice-fila[data-nivel="h3"] .alv-bib-indice-texto {
+  font-size: 13px;
+  font-weight: 400;
+  color: oklch(24% 0.008 70 / 0.76);
+}
+
+/* Una separación fina antes de cada capítulo, salvo el primero: agrupa sin
+   dibujar cajas. */
+.alv-bib-indice-fila[data-nivel="h2"]:not(:first-child) {
+  margin-top: 7px;
+  border-top: 1px solid oklch(24% 0.008 70 / 0.09);
+  padding-top: 15px;
+}
+
+.alv-bib-indice-fila[data-on="si"] {
+  background: oklch(42% 0.09 42 / 0.11);
+}
+
+.alv-bib-indice-fila[data-on="si"] .alv-bib-indice-texto {
+  color: oklch(38% 0.1 40);
+  font-weight: 700;
+}
+
+.alv-bib-indice-texto {
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.alv-bib-indice-folio {
+  flex: none;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: oklch(24% 0.008 70 / 0.42);
+}
+
+
+/* ---- El colofón: la última hoja del tomo de texto (D-157) ----------------
+ *
+ * DONDE VA UNA ATRIBUCION EN UN LIBRO. Estuvo en la portadilla y estuvo al pie
+ * del índice, y los dos lugares estaban mal por la misma razón: interrumpían
+ * algo. Un colofón es la nota del final —quién lo hizo, con qué, bajo qué
+ * términos—, existe desde los incunables y siempre estuvo al dar vuelta la
+ * última hoja. Ahí no interrumpe nada porque ya no queda nada que interrumpir.
+ *
+ * Se mantiene el cuerpo de 9,5 px que tenía en el panel de índice: no es texto
+ * de lectura, es la firma de la imprenta.
+ */
+.alv-bib-colofon {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  font-family: var(--fuente-lectura), Georgia, serif;
+  font-size: 9.5px;
+  line-height: 1.62;
+  color: oklch(26% 0.012 66 / 0.62);
+}
+
+/* El hoja-y-tallo del final. Es el remate que usa un colofón impreso, y acá
+   además avisa —sin una palabra— que el libro se terminó. */
+.alv-bib-colofon-adorno {
+  font-size: 17px;
+  line-height: 1;
+  opacity: 0.42;
+}
+
+.alv-bib-colofon p {
+  margin: 0;
+  max-width: 30em;
+}
+
+.alv-bib-colofon-enlaces {
+  margin-top: 2px;
+}
+
+.alv-bib-colofon a {
+  color: oklch(38% 0.09 42 / 0.9);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.alv-bib-colofon a:hover {
+  color: oklch(32% 0.1 40);
 }

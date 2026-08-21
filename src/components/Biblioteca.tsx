@@ -37,9 +37,11 @@ import type { Idioma } from "../lib/cliente-chat.js";
 import { FUENTE } from "./estilos.js";
 import {
   acercarLupa, aplicarGiro, apartarLupa, colocarLupa, construirPliegue,
-  cssDePose, pasoResorte, poseDelRelevo, posePresentada, suavizar,
+  cssDePose, indiceDe, paginarTexto, pasoResorte, poseDelRelevo, posePresentada, suavizar,
   ARRASTRE, POSE_GUARDADO, RESORTE_CANCELA, RESORTE_COMPROMISO,
-  type CajaLibro, type EstadoLupa, type Geometria, type Pliegue, type Pose, type Resorte,
+  type BloqueTexto, type CajaLibro, type EntradaIndice, type EstadoLupa, type Geometria,
+  type HojaTexto,
+  type Pliegue, type Pose, type Resorte,
 } from "./biblioteca-motor.js";
 
 /**
@@ -80,14 +82,34 @@ const DURACION_RELEVO = 1500;
 const ALTO_MUEBLE = 470;
 
 /** El radio del vidrio, como fracción del alto de la hoja. */
-const RADIO_LUPA = 0.261;
+/*
+ * EL RADIO DEL VIDRIO, como fracción del alto de la hoja. Bajó un 20% en
+ * D-156: a 0.261 el vidrio tapaba casi un tercio de la lámina, y una lupa que
+ * cubre lo que uno quiere comparar deja de ser una lupa.
+ */
+const RADIO_LUPA = 0.209;
 
 const COPY = {
-  firma: { es: "La biblioteca", en: "The library" },
-  firma2: { es: "Los cuadernos y la obra", en: "The notebooks and the work" },
+  firma: { es: "Biblioteca", en: "Library" },
   laminas: { es: "láminas", en: "plates" },
+  capitulos: { es: "capítulos", en: "chapters" },
+  cargando: { es: "Abriendo el volumen…", en: "Opening the volume…" },
+  sinTexto: {
+    es: "El texto de este volumen no cargó. Se puede leer en Wikipedia.",
+    en: "This volume’s text did not load. It can be read on Wikipedia.",
+  },
+  irAlArticulo: { es: "Leerlo en Wikipedia", en: "Read it on Wikipedia" },
+  /*
+   * LA ADVERTENCIA DEL VOLUMEN DE CONTEXTO. Va en la portadilla, que es la
+   * primera hoja que se ve al abrirlo, y dice lo único que importa: este tomo
+   * no es de Leonardo y no es de donde sale lo que el chat responde.
+   */
+  ajeno: {
+    es: "Este volumen no es de Leonardo. Es contexto de una enciclopedia, y no forma parte de lo que Leonardo lee para responder.",
+    en: "This volume is not Leonardo’s. It is context from an encyclopaedia, and it is no part of what Leonardo reads in order to answer.",
+  },
   abrir: { es: "Abrir el volumen", en: "Open the volume" },
-  volver: { es: "La estantería", en: "The shelf" },
+  volver: { es: "Biblioteca", en: "Library" },
   anteriorVol: { es: "Volumen anterior", en: "Previous volume" },
   siguienteVol: { es: "Volumen siguiente", en: "Next volume" },
   anteriorHoja: { es: "Hoja anterior", en: "Previous leaf" },
@@ -99,15 +121,35 @@ const COPY = {
   andar: { es: "Verlo andar", en: "See it run" },
   enYoutube: { es: "Ver en YouTube", en: "Watch on YouTube" },
   lupa: { es: "Lupa", en: "Loupe" },
+  indice: { es: "Índice", en: "Contents" },
+  verArticulo: { es: "Ver el original", en: "See the original" },
 } as const;
 
 type Vista = "estanteria" | "lectura";
 type Pagina =
   | { tipo: "portadilla" }
   | { tipo: "vacia" }
-  | { tipo: "lamina"; lamina: Lamina; n: number };
+  | { tipo: "lamina"; lamina: Lamina; n: number }
+  | { tipo: "texto"; hoja: HojaTexto; n: number }
+  | { tipo: "colofon" };
 
-/** Las páginas de un volumen: portadilla y una lámina por hoja. */
+/**
+ * El volumen de texto, tal como lo escribe `npm run wikipedia`. Se baja del
+ * `public/` recién al abrir el tomo; ver el porqué en `tools/wikipedia.ts`.
+ */
+type VolumenTexto = {
+  titulo: string;
+  revision: number;
+  consultado: string;
+  url: string;
+  credito: string;
+  licencia: { nombre: string; url: string };
+  bloques: BloqueTexto[];
+  capitulos: string[];
+  palabras: number;
+};
+
+/** Las páginas de un volumen de láminas: portadilla y una lámina por hoja. */
 function paginasDe(libro: Libro, porPliego: number): Pagina[] {
   const p: Pagina[] = [{ tipo: "portadilla" }];
   libro.laminas.forEach((lamina, i) => p.push({ tipo: "lamina", lamina, n: i + 1 }));
@@ -115,31 +157,196 @@ function paginasDe(libro: Libro, porPliego: number): Pagina[] {
   return p;
 }
 
-/** El cuero de un tomo: un solo hue, tres paradas. */
-function cuero(l: Libro, claro = 0): string {
-  const { hue, croma } = l.tinte;
-  const luz = 30 + (hue - 28) * 0.105 + claro;
-  return (
-    `linear-gradient(96deg, oklch(${luz + 6}% ${croma} ${hue}) 0%, ` +
-    `oklch(${luz}% ${croma} ${hue - 4}) 52%, ` +
-    `oklch(${luz - 7}% ${(croma * 0.82).toFixed(3)} ${hue - 8}) 100%)`
-  );
+/**
+ * Lo mismo para el volumen de texto: portadilla, una hoja por rebanada, y el
+ * colofón al final.
+ *
+ * EL COLOFON ES LA ULTIMA HOJA, y es exactamente donde va (D-157). Un colofón
+ * es la nota del final de un libro que dice quién lo hizo y bajo qué términos
+ * — existe desde los incunables y siempre estuvo al dar vuelta la última hoja.
+ * La atribución CC BY-SA es literalmente eso, así que dejó de ser un cartel
+ * pegado en algún lado y pasó a ser la parte del libro que le corresponde.
+ */
+function paginasDeTexto(hojas: HojaTexto[], porPliego: number): Pagina[] {
+  const p: Pagina[] = [{ tipo: "portadilla" }];
+  hojas.forEach((hoja, i) => p.push({ tipo: "texto", hoja, n: i + 1 }));
+  if (hojas.length) p.push({ tipo: "colofon" });
+  while (p.length % porPliego) p.push({ tipo: "vacia" });
+  return p;
 }
 
-const tintaSobreCuero = (l: Libro) => `oklch(93% 0.03 ${l.tinte.hue + 4} / .9)`;
+/**
+ * EL AREA DE TEXTO DE UNA HOJA, Y EL CUERPO DE LETRA.
+ *
+ * Las dos cosas salen del alto de la hoja y de nada más, así que la caja de
+ * texto es la misma proporción a cualquier tamaño de ventana: lo que cambia es
+ * la escala, no cuántos renglones entran. Es lo que hace que agrandar la
+ * ventana no repagine el tomo entero de otra manera.
+ *
+ * El cuerpo es `0.0295 × alto`: a la hoja de escritorio le da ~17 px de Source
+ * Serif sobre una columna de ~360 px, que son unos 48 caracteres por renglón —
+ * la medida de lectura de un libro, no la de una pantalla.
+ */
+const cajaTexto = (w: number, h: number) => ({
+  padX: Math.round(w * 0.115),
+  padY: Math.round(h * 0.095),
+  ancho: w - Math.round(w * 0.115) * 2,
+  alto: h - Math.round(h * 0.095) * 2,
+  cuerpo: Math.max(11, Math.round(h * 0.0295)),
+});
 
 /**
- * El ancho del lomo sale de cuántas láminas tiene adentro — la estantería
+ * EL RUIDO DEL CUERO: UNA TEXTURA FRACTAL, NO UNA REJILLA DE PUNTOS.
+ *
+ * LO QUE FALLABA. La primera versión sembraba el poro con dos
+ * `radial-gradient` repetidas cada 5×7 y 7×5 px. La idea —dos períodos primos
+ * entre sí no coinciden— es correcta y ES la que usa el fondo de papel de la
+ * sección. Pero el papel se ve a través de un `multiply` al 18% y detrás de
+ * todo, y la tapa de un tomo es una superficie grande, plana y bien iluminada
+ * en primer plano. Ahí los puntos dejan de leerse como poro y se leen como lo
+ * que son: puntos, en filas y columnas. El ojo encuentra la grilla enseguida.
+ *
+ * Y el problema no se arregla bajándoles la opacidad. Una rejilla tenue sigue
+ * siendo una rejilla: lo que está mal no es cuánto se ven, es que estén
+ * alineados. El cuero no tiene nada alineado.
+ *
+ * LO QUE HAY AHORA. `feTurbulence` de SVG, que es ruido de Perlin fractal
+ * —justamente el modelo matemático de una superficie orgánica— embebido como
+ * `data:` URI. Con `stitchTiles="stitch"` el mosaico cierra sin costura, así
+ * que se puede repetir sobre cualquier tamaño de tapa sin que aparezca el
+ * borde del azulejo. Tres octavas: la primera da las manchas grandes del
+ * curtido, las otras dos el grano fino.
+ *
+ * ¿SIGUE SIENDO «CERO BYTES DE ARTE»? Sí. Son ~200 caracteres de marcado que
+ * el navegador rasteriza solo — no hay archivo, no hay descarga, no hay nada
+ * que versionar. Es la misma idea de §4.7 del doc 19 (lo procedural sembrado
+ * gana a los assets), sólo que con el generador de ruido correcto en vez de
+ * con el que había a mano.
+ *
+ * ES UNO SOLO PARA LOS CINCO TOMOS. El ruido va en blanco y negro y se tiñe
+ * después con `background-blend-mode: overlay`, que es lo que hace que el
+ * mismo grano funcione sobre el tafilete rojo, sobre la badana clara y sobre
+ * la tela azul. Una textura por tomo serían cinco rasterizaciones distintas
+ * para el mismo material.
+ */
+const RUIDO_CUERO =
+  `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E` +
+  // `color-interpolation-filters='sRGB'` NO ES OPCIONAL, y es invisible hasta
+  // que se mide. El default de SVG es linearRGB: el filtro trabaja en lineal y
+  // el resultado se convierte a sRGB al pintarlo, así que el gris medio que
+  // esta matriz produce (128) sale por pantalla como 187. En `overlay` el
+  // neutro es 128, y 187 no modula: aclara. Los cinco cueros salían lavados y
+  // ninguno de los dos valores es "un error" en ningún lado — se ve midiendo
+  // el data URI en un canvas, no leyendo el código.
+  `%3Cfilter id='n' color-interpolation-filters='sRGB'%3E` +
+  `%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E` +
+  // El ruido crudo va de negro a blanco y en `overlay` eso es un golpe. Esta
+  // matriz lo aplasta a [0.435, 0.565] alrededor del gris medio —que en
+  // `overlay` es el valor neutro—, así que lo que llega es una modulación
+  // suave y no una capa de suciedad. Bajar el 0.13 lo hace más liso; subirlo,
+  // más gastado. La última fila fija el alfa en 1: `feTurbulence` también
+  // genera ruido en el canal alfa, y sin esto la textura queda agujereada.
+  `%3CfeColorMatrix type='matrix' values='` +
+  `0.13 0 0 0 0.435  0 0.13 0 0 0.435  0 0 0.13 0 0.435  0 0 0 0 1'/%3E` +
+  `%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")`;
+
+/**
+ * LA MANCHA DEL CURTIDO. Debajo del grano, tres claros anchos y descentrados:
+ * un cuero no se tiñe parejo, tiene zonas donde el tinte agarró más. Son
+ * gradientes de radio grande —nada de bordes— y es lo que impide que la tapa
+ * vuelva a leerse como un rectángulo de un solo color con textura encima.
+ */
+function cuero(l: Libro, claro = 0): string {
+  const { hue, croma, luz } = l.tinte;
+  const L = luz + claro;
+  const sombra = (a: number) => `oklch(${Math.max(8, L - 15)}% ${croma} ${hue - 10} / ${a})`;
+  const brillo = (a: number) =>
+    `oklch(${Math.min(96, L + 24)}% ${(croma * 0.7).toFixed(3)} ${hue + 6} / ${a})`;
+  return [
+    `${RUIDO_CUERO} 0 0 / 140px 140px`,
+    `radial-gradient(120% 80% at 18% 12%, ${brillo(0.15)}, transparent 60%)`,
+    `radial-gradient(100% 70% at 82% 74%, ${sombra(0.22)}, transparent 62%)`,
+    // La veta del prensado, muy suave: le da dirección al material sin
+    // dibujar una sola línea nítida.
+    `repeating-linear-gradient(81deg, ${sombra(0.07)} 0 2px, transparent 2px 9px)`,
+    `linear-gradient(96deg, oklch(${(L + 6).toFixed(1)}% ${croma} ${hue}) 0%, ` +
+      `oklch(${L.toFixed(1)}% ${croma} ${hue - 4}) 52%, ` +
+      `oklch(${Math.max(6, L - 7).toFixed(1)}% ${(croma * 0.82).toFixed(3)} ${hue - 8}) 100%)`,
+  ].join(", ");
+}
+
+/**
+ * COMO SE MEZCLA CADA CAPA DEL CUERO. El ruido en `overlay` —que es lo que lo
+ * tiñe con el color de abajo en vez de pintar gris encima—, y todo lo demás
+ * normal. El orden es el mismo de `cuero()`; si se agrega una capa allá hay
+ * que agregar su modo acá.
+ */
+const MEZCLA_CUERO = "overlay, normal, normal, normal, normal";
+
+/**
+ * LA TINTA DEL LOMO SIGUE AL CUERO, NO AL REVES.
+ *
+ * Sobre un cuero oscuro se estampa en dorado o en blanco; sobre uno claro, en
+ * marrón oscuro, porque el dorado sobre badana clara no se lee. El umbral está
+ * en 44% de luz, que es donde el contraste con una tinta de 93% cae por debajo
+ * de lo legible. Hoy lo cruza un solo tomo —Obras— y por eso es el único con
+ * el título en oscuro; es la misma razón por la que un encuadernador le pega
+ * un tejuelo de otro color.
+ */
+const tintaSobreCuero = (l: Libro) =>
+  l.tinte.luz > 44
+    ? `oklch(24% 0.03 ${l.tinte.hue - 6} / .92)`
+    : `oklch(93% 0.03 ${l.tinte.hue + 4} / .9)`;
+
+/**
+ * LOS NERVIOS DEL LOMO: cuatro, y a estas alturas.
+ *
+ * Es lo que faltaba para que un rectángulo de color se leyera como un libro.
+ * Un lomo de la época no es liso: los cordeles de la costura pasan por debajo
+ * del cuero y lo levantan en bandas que cruzan de lado a lado, y cada banda
+ * agarra la luz arriba y deja sombra abajo. Sin eso, el mejor cuero del mundo
+ * sigue siendo una tira de color.
+ *
+ * Van en porcentaje y no en píxeles porque los lomos no miden lo mismo: el
+ * grosor sale de cuántas hojas tiene el tomo. Los dos de adentro dejan el
+ * entrepaño largo del medio libre, que es donde va el título — es el reparto
+ * de un lomo de verdad, y es también lo que hizo falta para que los títulos
+ * fueran de una palabra.
+ */
+const NERVIOS = [14, 26, 74, 86];
+
+/**
+ * CUANTAS HOJAS TIENE EL TOMO, A LOS EFECTOS DE SU GROSOR.
+ *
+ * En los tomos de láminas es literal: una lámina, una hoja. El de texto no
+ * tiene láminas y sus hojas no se saben hasta paginarlo contra la ventana, así
+ * que lleva un número fijo — y ese número no es una afirmación sobre el
+ * contenido (para eso está `capitulos`, que el pipeline verifica), es una
+ * medida de layout. Está en 13 porque el artículo entero pagina en unas 45
+ * hojas y es el tomo más gordo de la fila; 45 daría un lomo de 326 px que se
+ * come el estante.
+ */
+const GROSOR_TEXTO = 13;
+const hojasDe = (l: Libro) => (l.texto ? GROSOR_TEXTO : l.laminas.length);
+
+/**
+ * El ancho del lomo sale de cuántas hojas tiene adentro — la estantería
  * informa antes de que la toques. En teléfono la base es más angosta: ahí el
  * lomo sólo sostiene un título vertical, y con la medida de escritorio la fila
  * se comía el ancho que necesita la tapa para salir.
  */
 const anchoLomo = (l: Libro, angosto: boolean) =>
-  (angosto ? 40 : 56) + l.laminas.length * (angosto ? 4 : 6);
+  (angosto ? 40 : 56) + hojasDe(l) * (angosto ? 4 : 6);
 /** La tapa, en proporción de folio sobre el alto del tomo. */
 const anchoTapa = (l: Libro, angosto: boolean) =>
   Math.round(altoLomo(l) * (angosto ? 0.62 : 0.68));
-const altoLomo = (l: Libro) => 384 + l.laminas.length * 6;
+const altoLomo = (l: Libro) => 384 + hojasDe(l) * 6;
+
+/** Lo que cuenta el pie del lomo y la tapa: láminas, o capítulos. */
+const cuenta = (l: Libro, lang: Idioma) =>
+  l.texto
+    ? { n: l.texto.capitulos[lang], que: COPY.capitulos[lang] }
+    : { n: l.laminas.length, que: COPY.laminas[lang] };
 /** Lo que se aparta la tapa del mueble. En teléfono, lo mínimo que se lee. */
 const separacionTapa = (angosto: boolean) => (angosto ? 24 : SEPARACION_TAPA);
 /** Aire a los costados de la escena. */
@@ -163,15 +370,92 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
   // Abierta de entrada: es la herramienta de la sección, no un extra.
   const [lupaOn, setLupaOn] = useState(true);
   const [videoEn, setVideoEn] = useState<number | null>(null);
+  /**
+   * El volumen de texto, una vez bajado. `null` mientras viaja, `"falla"` si
+   * no llegó — y esa distinción importa: la hoja no puede mostrar el mismo
+   * cartel para «esperá» que para «no vino».
+   */
+  const [texto, setTexto] = useState<VolumenTexto | "falla" | null>(null);
+  const [indiceAbierto, setIndiceAbierto] = useState(false);
 
   // En un teléfono la hoja se lee sola: un pliego de dos páginas a 375 px deja
   // cada lámina en 170 px, que no es ver un dibujo, es adivinarlo.
   const porPliego = angosto ? 1 : 2;
 
   const libro = BIBLIOTECA[libroIdx]!;
-  const paginas = useMemo(() => paginasDe(libro, porPliego), [libro, porPliego]);
+
+  /* ---- El volumen de texto ------------------------------------------------
+     Se baja recién al abrirlo, como las láminas (D-154 §6): la estantería no
+     pide un byte. `abortado` corta la carrera si el lector cierra el tomo
+     antes de que llegue. */
+  useEffect(() => {
+    const fuente = libro.texto;
+    if (vista !== "lectura" || !fuente) return;
+    let vivo = true;
+    setTexto(null);
+    fetch(`/biblioteca/${fuente.archivo}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((j: Record<string, VolumenTexto>) => {
+        if (vivo) setTexto(j[lang] ?? j.es ?? "falla");
+      })
+      .catch(() => {
+        if (vivo) setTexto("falla");
+      });
+    return () => {
+      vivo = false;
+    };
+  }, [vista, libro, lang]);
+
+  /*
+   * LA PAGINACION, MEDIDA CONTRA LA HOJA DE VERDAD.
+   *
+   * Depende del tamaño de la hoja, así que se rehace al cambiar de ventana —y
+   * eso es correcto: en una ventana más chica el artículo ocupa más hojas—.
+   * Rehacerla cuesta ~400 lecturas de `scrollHeight` sobre un molde fuera de
+   * pantalla; el `useMemo` es lo que impide que eso pase en cada render.
+   */
+  const hojasTexto = useMemo(() => {
+    if (!libro.texto || typeof texto !== "object" || !texto || !medida) return [];
+    const caja = cajaTexto(medida.w, medida.h);
+    return paginarTexto({
+      bloques: texto.bloques,
+      ancho: caja.ancho,
+      alto: caja.alto,
+      cuerpo: caja.cuerpo,
+    });
+  }, [libro, texto, medida]);
+
+  const paginas = useMemo(
+    () => (libro.texto ? paginasDeTexto(hojasTexto, porPliego) : paginasDe(libro, porPliego)),
+    [libro, porPliego, hojasTexto],
+  );
   const pliegos = Math.ceil(paginas.length / porPliego);
   const base = pliego * porPliego;
+
+  /** El índice del tomo de texto: sale de la paginación, no del artículo. */
+  const indice = useMemo(() => indiceDe(hojasTexto), [hojasTexto]);
+
+  /**
+   * Qué título se está leyendo, para marcarlo en el índice. Es el último que
+   * quedó ATRAS de la hoja visible, no el que está en ella: un índice que
+   * sólo se ilumina en la hoja donde arranca el capítulo se apaga en cuanto
+   * pasás una página, que es justo cuando hace falta saber dónde estás.
+   */
+  const tituloALaVista = useMemo(() => {
+    const hojaVisible = (() => {
+      for (let i = base + porPliego - 1; i >= base; i--) {
+        const p = paginas[i];
+        if (p?.tipo === "texto") return p.n - 1;
+      }
+      return -1;
+    })();
+    if (hojaVisible < 0) return -1;
+    let cual = -1;
+    indice.forEach((e, i) => {
+      if (e.hoja <= hojaVisible) cual = i;
+    });
+    return cual;
+  }, [paginas, base, porPliego, indice]);
 
   const seccionRef = useRef<HTMLElement | null>(null);
   const escenarioRef = useRef<HTMLDivElement | null>(null);
@@ -202,6 +486,7 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
   // El pliego vuelve a 0 al cambiar de volumen o de formato de página.
   useEffect(() => setPliego(0), [libroIdx, porPliego]);
   useEffect(() => setVideoEn(null), [pliego, libroIdx]);
+  useEffect(() => setIndiceAbierto(false), [libroIdx, vista]);
 
   /* ---- La medida del libro ------------------------------------------------
      Se recalcula en cada `resize` y no una sola vez al montar: agrandar la
@@ -506,6 +791,16 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
       // hero, las flechas no tienen por qué estar moviendo libros.
       const caja = seccionRef.current?.getBoundingClientRect();
       if (!caja || caja.bottom < window.innerHeight * 0.5 || caja.top > window.innerHeight * 0.5) return;
+      /*
+       * ESCAPE CIERRA UNA CAPA POR VEZ, Y ESA ES LA UNICA REGLA.
+       *
+       * Con el índice abierto, un Escape cerraba las dos cosas a la vez —el
+       * panel y el volumen— porque los dos escuchan en `document` y ahí la
+       * propagación no separa a nadie. El panel es la capa de arriba: mientras
+       * esté abierto, Escape es suyo. Lo mismo con las flechas, que si no
+       * pasarían hojas por debajo de un panel abierto.
+       */
+      if (indiceAbierto) return;
       // Escape vuelve al estante. Ya no cierra nada: la biblioteca es una
       // sección de la página, no una ventana encima.
       if (ev.key === "Escape" && vista === "lectura") {
@@ -525,7 +820,7 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
     };
     window.addEventListener("keydown", alTeclado);
     return () => window.removeEventListener("keydown", alTeclado);
-  }, [vista, girar]);
+  }, [vista, girar, indiceAbierto]);
 
   /* ---- Lo que se ve en cada lado mientras gira ----------------------------
      En un libro de verdad, cuando el recto se levanta, abajo ya está el recto
@@ -609,13 +904,15 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
               lineHeight: 1,
             }}
           >
+            {/*
+              SIN BAJADA (D-156). Decía «Los cuadernos y la obra», y los
+              cuadernos no están acá: están del otro lado, en el chat, que es
+              todo el punto del proyecto. Se probaron reemplazos —«Lo que
+              dibujó y lo que pintó», «Veintisiete láminas y un compendio»— y
+              todos explicaban algo que cinco lomos con su título ya dicen
+              mejor. Una línea que explica lo evidente es una línea de más.
+            */}
             <span>{COPY.firma[lang]}</span>
-            {!angosto && (
-              <>
-                <span style={{ width: 28, height: 1, background: "currentColor", opacity: 0.4 }} />
-                <span style={{ fontWeight: 400 }}>{COPY.firma2[lang]}</span>
-              </>
-            )}
           </div>
         )}
 
@@ -676,15 +973,27 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
         )}
 
         <div style={{ display: "flex", gap: 10, alignItems: "center", pointerEvents: "auto" }}>
+          {/*
+            LA LUPA SE PRENDE CON UN INTERRUPTOR, NO CON UNA PASTILLA (D-156).
+            Una pastilla que se rellena es un botón que quedó apretado: hay que
+            acordarse de qué significaba el relleno. Un interruptor no se
+            recuerda, se ve — la perilla está de un lado o del otro, y eso ya
+            es el estado. Se usa `role="switch"`, que es lo que un lector de
+            pantalla anuncia como «activado / desactivado» en vez de «botón».
+          */}
           {hayLupa && (
             <button
               type="button"
-              className="alv-bib-pastilla"
-              aria-pressed={lupaOn}
+              role="switch"
+              className="alv-bib-switch"
+              aria-checked={lupaOn}
+              aria-label={COPY.lupa[lang]}
               onClick={() => setLupaOn((v) => !v)}
-              style={{ ...estiloPastilla, ...(lupaOn ? estiloPastillaOn : null) }}
             >
-              {COPY.lupa[lang]}
+              <span className="alv-bib-switch-nombre">{COPY.lupa[lang]}</span>
+              <span className="alv-bib-switch-riel" aria-hidden="true">
+                <span className="alv-bib-switch-perilla" />
+              </span>
             </button>
           )}
         </div>
@@ -719,6 +1028,52 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
             paddingBottom: angosto ? 92 : 112,
           }}
         >
+          {/*
+            EL TOMO DE TEXTO MIENTRAS VIAJA, Y SI NO LLEGA.
+            Son 120 KB: en una conexión decente esto no se ve. En una mala sí,
+            y entonces un libro abierto en blanco no dice nada. Si además no
+            llega, el cartel lleva al artículo — el texto es de Wikipedia y
+            está allá, no hay razón para dejar al lector sin nada.
+          */}
+          {libro.texto && !paginas.some((p) => p.tipo === "texto") && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "0 32px",
+                color: paleta.tintaSuave,
+                fontSize: 13,
+                letterSpacing: ".04em",
+              }}
+            >
+              {texto === "falla" ? (
+                <>
+                  <span style={{ maxWidth: 380, lineHeight: 1.6 }}>{COPY.sinTexto[lang]}</span>
+                  <a
+                    className="alv-bib-linea"
+                    href={`https://${lang}.wikipedia.org/wiki/Leonardo_da_Vinci`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ ...estiloLinea, pointerEvents: "auto", textDecoration: "none" }}
+                  >
+                    {COPY.irAlArticulo[lang]}
+                    <span style={{ fontSize: 14, fontWeight: 400 }} aria-hidden="true">
+                      ↗
+                    </span>
+                  </a>
+                </>
+              ) : (
+                <span>{COPY.cargando[lang]}</span>
+              )}
+            </div>
+          )}
+
           {medida && (
             <div
               style={{
@@ -766,6 +1121,7 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
                       h={medida.h}
                       videoActivo={videoEn === i}
                       onVideo={() => setVideoEn(i)}
+                      volumen={texto}
                     />
                   </div>
                 ))}
@@ -837,6 +1193,7 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
                     h={medida.h}
                     videoActivo={false}
                     onVideo={() => {}}
+                    volumen={texto}
                   />
                 </div>
               ))}
@@ -871,7 +1228,13 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
             <Flecha hacia="der" />
           </button>
 
-          {/* El índice de láminas. */}
+          {/*
+            EL INDICE. En un tomo de láminas es la lámina misma en miniatura:
+            un dibujo se reconoce de un vistazo y no hay nada mejor que
+            mostrarlo. En el tomo de texto no hay nada que mirar, así que el
+            índice es lo que un libro de texto tiene: los capítulos. Cuarenta y
+            pico de hojas sin un índice serían cuarenta y pico de flechazos.
+          */}
           <div
             style={{
               position: "absolute",
@@ -886,6 +1249,21 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
               padding: "0 16px",
             }}
           >
+            {libro.texto && !!indice.length && (
+              <Indice
+                entradas={indice}
+                lang={lang}
+                enLaVista={tituloALaVista}
+                abierto={indiceAbierto}
+                onAbrir={setIndiceAbierto}
+                onIr={(hoja) => {
+                  if (vuelo) return;
+                  setPliego(Math.floor((hoja + 1) / porPliego));
+                  setIndiceAbierto(false);
+                }}
+              />
+            )}
+
             {libro.laminas.map((lamina, i) => {
               const destino = Math.floor((i + 1) / porPliego);
               const activa = destino === pliego;
@@ -1191,21 +1569,27 @@ function Estanteria({
                     type="button"
                     className="alv-bib-cara-lomo"
                     onClick={() => (i === idx ? onAbrir() : onElegir(i))}
-                    aria-label={`${l.titulo[lang]} — ${l.laminas.length} ${COPY.laminas[lang]}`}
+                    aria-label={`${l.titulo[lang]} — ${cuenta(l, lang).n} ${cuenta(l, lang).que}`}
                     aria-current={i === idx ? "true" : undefined}
                     style={{
                       width: anchoLomo(l, angosto),
                       height: altoLomo(l),
                       background: cuero(l),
+                      backgroundBlendMode: MEZCLA_CUERO,
                       color: tintaSobreCuero(l),
                     }}
                   >
-                    <span className="alv-bib-filete" style={{ top: 28 }} />
+                    {/* Los cordeles de la costura, levantando el cuero. */}
+                    {NERVIOS.map((y) => (
+                      <span key={y} className="alv-bib-nervio" style={{ top: `${y}%` }} />
+                    ))}
+                    {/* La cofia: el cuero doblado sobre la cabeza y el pie. */}
+                    <span className="alv-bib-cofia" data-donde="alta" />
+                    <span className="alv-bib-cofia" data-donde="baja" />
                     <span className="alv-bib-lomo-texto" style={{ fontFamily: FUENTE.titulo }}>
-                      {l.titulo[lang]}
+                      {(l.tituloLomo ?? l.titulo)[lang]}
                     </span>
-                    <span className="alv-bib-filete" style={{ bottom: 36 }} />
-                    <span className="alv-bib-lomo-pie">{l.laminas.length}</span>
+                    <span className="alv-bib-lomo-pie">{cuenta(l, lang).n}</span>
                   </button>
 
                   {/* LA TAPA. A 0° es la que mira al frente. */}
@@ -1219,12 +1603,19 @@ function Estanteria({
                       width: anchoTapa(l, angosto),
                       height: altoLomo(l),
                       background: cuero(l),
+                      backgroundBlendMode: MEZCLA_CUERO,
                       color: tintaSobreCuero(l),
                     }}
                   >
                     <span className="alv-bib-tapa-marco" />
                     <span className="alv-bib-tapa-dentro">
-                      <span className="alv-bib-tapa-firma">{COPY.firma[lang]}</span>
+                      {/*
+                        ACA IBA «LA BIBLIOTECA» EN VERSALITAS. Se fue en D-156:
+                        es el nombre de la sección donde el tomo ya está, y
+                        repetirlo cinco veces —una por tapa— no le dice nada a
+                        nadie. La tapa lleva el título y el recuento, que es lo
+                        que distingue un tomo del de al lado.
+                      */}
                       <span className="alv-bib-tapa-titulo" style={{ fontFamily: FUENTE.titulo }}>
                         {l.titulo[lang]}
                       </span>
@@ -1232,7 +1623,7 @@ function Estanteria({
                         <Motivo id={l.id} />
                       </span>
                       <span className="alv-bib-tapa-pie">
-                        {l.laminas.length} {COPY.laminas[lang]}
+                        {cuenta(l, lang).n} {cuenta(l, lang).que}
                       </span>
                     </span>
                   </button>
@@ -1291,19 +1682,14 @@ function Estanteria({
         >
           {activo.titulo[lang]}
         </h2>
-        <p
-          style={{
-            margin: "18px 0 0",
-            maxWidth: "100%",
-            color: paleta.tintaSuave,
-            fontFamily: FUENTE.titulo,
-            fontSize: angosto ? 17 : 19,
-            fontStyle: "italic",
-            lineHeight: 1.3,
-          }}
-        >
-          {activo.bajada[lang]}
-        </p>
+        {/*
+          ACA IBA UNA BAJADA POR TOMO («Los folios mecánicos, y el mismo
+          mecanismo andando»). Se fue en D-156: con los títulos de una palabra
+          de D-155, la frase explicaba lo que el título ya decía y lo que las
+          láminas iban a mostrar en dos clicks. El campo `bajada` se sacó del
+          catálogo entero, no se dejó sin usar — un dato que no pinta nada es
+          un dato que alguien va a mantener para nada.
+        */}
 
         {/*
           LA INVITACIÓN. Un volumen presentado no dice por sí solo que se
@@ -1360,9 +1746,163 @@ function Estanteria({
 
 /* ------------------------------------------------------------------------- */
 
+/**
+ * EL INDICE PLEGABLE DEL TOMO DE TEXTO.
+ *
+ * POR QUE NO SON PASTILLAS. La primera versión ponía los capítulos como una
+ * fila de pastillas, ahí donde el resto de los tomos pone las miniaturas de
+ * sus láminas. Funcionaba con cuatro; con los títulos de nivel 3 son
+ * veintitantos, y veintitantas pastillas envueltas en tres renglones no son un
+ * índice: son una pared. Un libro de texto no lista sus capítulos al pie de
+ * cada página, los guarda en una hoja aparte a la que se va cuando hace falta.
+ *
+ * LO QUE HACE QUE SE SIENTA BIEN, y no es el redondeo de las esquinas:
+ *
+ *   · SE ABRE DESDE ABAJO Y HACIA ARRIBA, anclado al botón que lo abrió, así
+ *     que el panel sale del lugar que tocaste en vez de aparecer en el medio.
+ *   · LA CURVA ES `cubic-bezier(.32,.72,0,1)`: arranca rápido y frena largo.
+ *     Es la diferencia entre un panel que aparece y uno que se despliega.
+ *   · EL VIDRIO ES REAL: `backdrop-filter` con saturación, no un gris opaco.
+ *     Debajo hay una lámina o una hoja de texto, y que se adivine es lo que
+ *     dice que el panel está ENCIMA del libro y no en otra pantalla.
+ *   · LA JERARQUIA SE LEE SIN LEER: los capítulos en versalitas, las
+ *     subsecciones sangradas y más claras. Se distingue de un vistazo.
+ *   · CIERRA CON `Escape` Y TOCANDO AFUERA, porque un panel que se abre
+ *     tocando tiene que cerrarse igual de barato.
+ *
+ * El foco vuelve al botón al cerrar: quien navega con teclado no se queda
+ * parado en un elemento que ya no existe.
+ */
+function Indice({
+  entradas, lang, enLaVista, abierto, onAbrir, onIr,
+}: {
+  entradas: EntradaIndice[];
+  lang: Idioma;
+  /** Cuál de las entradas corresponde a lo que se está leyendo. */
+  enLaVista: number;
+  abierto: boolean;
+  onAbrir: (v: boolean) => void;
+  onIr: (hoja: number) => void;
+}) {
+  const botonRef = useRef<HTMLButtonElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const activoRef = useRef<HTMLButtonElement | null>(null);
+
+  // Escape cierra, y el click de afuera también. Los dos devuelven el foco.
+  useEffect(() => {
+    if (!abierto) return;
+    const cerrar = () => {
+      onAbrir(false);
+      botonRef.current?.focus();
+    };
+    const tecla = (e: KeyboardEvent) => {
+      if (e.key === "Escape") cerrar();
+    };
+    const afuera = (e: PointerEvent) => {
+      const t = e.target as Node;
+      if (!panelRef.current?.contains(t) && !botonRef.current?.contains(t)) cerrar();
+    };
+    document.addEventListener("keydown", tecla);
+    // En `capture`: si no, un click sobre la hoja lo atrapa el arrastre antes.
+    document.addEventListener("pointerdown", afuera, true);
+    return () => {
+      document.removeEventListener("keydown", tecla);
+      document.removeEventListener("pointerdown", afuera, true);
+    };
+  }, [abierto, onAbrir]);
+
+  /*
+   * Al abrir, la entrada de donde estás leyendo tiene que estar A LA VISTA. Con
+   * veintitantos títulos y el panel scrolleado arriba, abrir el índice en el
+   * capítulo 7 mostraba el capítulo 1. `block: "center"` y sin animación: el
+   * panel todavía se está desplegando y dos movimientos a la vez se pelean.
+   */
+  useLayoutEffect(() => {
+    if (!abierto) return;
+    activoRef.current?.scrollIntoView({ block: "center", behavior: "auto" });
+  }, [abierto]);
+
+  return (
+    <div style={{ position: "relative", pointerEvents: "auto" }}>
+      <button
+        ref={botonRef}
+        type="button"
+        className="alv-bib-indice-boton"
+        data-on={abierto ? "si" : "no"}
+        aria-expanded={abierto}
+        aria-haspopup="true"
+        onClick={() => onAbrir(!abierto)}
+      >
+        <svg width="13" height="11" viewBox="0 0 13 11" aria-hidden="true">
+          {[0, 1, 2].map((i) => (
+            <g key={i}>
+              <circle cx="1.2" cy={1.4 + i * 4.1} r="1.2" fill="currentColor" />
+              <path
+                d={`M4.6 ${1.4 + i * 4.1} H${i === 2 ? 9 : 12.4}`}
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+              />
+            </g>
+          ))}
+        </svg>
+        {COPY.indice[lang]}
+        <span className="alv-bib-indice-chevron" aria-hidden="true">
+          <svg width="9" height="6" viewBox="0 0 9 6">
+            <path
+              d="M1 4.6 L4.5 1.2 L8 4.6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      </button>
+
+      <div
+        ref={panelRef}
+        className="alv-bib-indice-panel"
+        data-on={abierto ? "si" : "no"}
+        role="menu"
+        aria-label={COPY.indice[lang]}
+        aria-hidden={!abierto}
+      >
+        <div className="alv-bib-indice-lista">
+          {entradas.map((e, i) => (
+            <button
+              key={`${e.hoja}-${e.x}`}
+              ref={i === enLaVista ? activoRef : undefined}
+              type="button"
+              role="menuitem"
+              className="alv-bib-indice-fila"
+              data-nivel={e.t}
+              data-on={i === enLaVista ? "si" : "no"}
+              tabIndex={abierto ? 0 : -1}
+              onClick={() => onIr(e.hoja)}
+            >
+              <span className="alv-bib-indice-texto">{e.x}</span>
+              <span className="alv-bib-indice-folio">{e.hoja + 1}</span>
+            </button>
+          ))}
+        </div>
+
+        {/*
+          ACA ESTUVO LA ATRIBUCION UN RATO (D-156). Se fue al colofón, que es la
+          última hoja del tomo: un panel de navegación no es donde un libro
+          pone quién lo escribió. Ver `paginasDeTexto`.
+        */}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------------- */
+
 /** Una hoja del libro. Es lo que se clona para el pliegue y para la lupa. */
 function HojaPagina({
-  pagina, libro, lang, lado, w, h, videoActivo, onVideo,
+  pagina, libro, lang, lado, w, h, videoActivo, onVideo, volumen,
 }: {
   pagina: Pagina | undefined;
   libro: Libro;
@@ -1372,11 +1912,14 @@ function HojaPagina({
   h: number;
   videoActivo: boolean;
   onVideo: () => void;
+  /** Sólo el volumen de texto: lo bajado, o el estado en que está. */
+  volumen?: VolumenTexto | "falla" | null;
 }) {
   const T = paleta;
   // Proporcional y no un margen fijo: con 84 px de aire a cada lado, en una
   // ventana baja la hoja queda de 152 px y el reproductor terminaba en 68.
   const anchoVideo = Math.round(w * 0.82);
+  const caja = cajaTexto(w, h);
 
   return (
     <div className={`alv-bib-hoja ${lado}`} style={{ width: w, height: h }}>
@@ -1427,9 +1970,81 @@ function HojaPagina({
               color: "oklch(40% .02 62 / .74)",
             }}
           >
-            {libro.laminas.length} {COPY.laminas[lang]}
+            {cuenta(libro, lang).n} {cuenta(libro, lang).que}
           </div>
+
+          {/*
+            LA PORTADILLA DEL VOLUMEN AJENO DICE DOS COSAS Y LAS DICE ACA.
+            Que no es de Leonardo, y de quién es. La primera es la advertencia
+            —la hoja que se ve sí o sí al abrir el tomo—; la segunda es la
+            atribución que pide CC BY-SA, y viene redactada dentro del JSON
+            para que no exista una copia del texto sin ella.
+          */}
+          {libro.texto && (
+            <div style={{ marginTop: 30, maxWidth: "94%" }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontFamily: FUENTE.lectura,
+                  fontSize: Math.max(10, Math.round(h * 0.023)),
+                  fontStyle: "italic",
+                  lineHeight: 1.5,
+                  color: "oklch(34% .02 62 / .86)",
+                }}
+              >
+                {COPY.ajeno[lang]}
+              </p>
+              {/*
+                LA ATRIBUCION SE FUE DE ACA (D-156), Y NO SE FUE DEL PRODUCTO.
+                En la portadilla eran tres renglones de aparato legal encima
+                del título, y competían con lo único que esa hoja tiene que
+                decir. Ahora vive al pie del panel de índice: se llega desde
+                cualquier hoja, con un toque, en vez de sólo desde la primera.
+                CC BY-SA pide que la atribución acompañe a la obra, no que
+                interrumpa la portada — y sigue estando adentro del JSON, que
+                es lo que hace imposible servir el texto sin ella.
+              */}
+            </div>
+          )}
         </div>
+      )}
+
+      {pagina?.tipo === "texto" && (
+        <>
+          <div
+            className="alv-bib-texto"
+            style={{
+              position: "absolute",
+              inset: `${caja.padY}px ${caja.padX}px`,
+              fontSize: caja.cuerpo,
+              // El molde de `paginarTexto` mide con este mismo recorte, así que
+              // lo que se corta acá es lo que allá ya no entró: nada.
+              overflow: "hidden",
+            }}
+          >
+            {pagina.hoja.bloques.map((b, i) =>
+              b.t === "p" ? (
+                <p key={i} data-sigue={b.sigue ? "si" : undefined}>
+                  {b.x}
+                </p>
+              ) : b.t === "h2" ? (
+                <h2 key={i} style={{ fontFamily: FUENTE.titulo }}>
+                  {b.x}
+                </h2>
+              ) : (
+                <h3 key={i} style={{ fontFamily: FUENTE.titulo }}>
+                  {b.x}
+                </h3>
+              ),
+            )}
+          </div>
+          <div
+            className="alv-bib-folio"
+            style={{ [lado === "izq" ? "left" : "right"]: 30 } as React.CSSProperties}
+          >
+            {String(pagina.n).padStart(2, "0")}
+          </div>
+        </>
       )}
 
       {pagina?.tipo === "lamina" && (
@@ -1501,6 +2116,31 @@ function HojaPagina({
         </>
       )}
 
+      {/*
+        EL COLOFON: la última hoja, y la única del tomo que no es del artículo.
+        Va centrada y chica, como se imprime un colofón — no es contenido, es la
+        firma de quién puso el contenido ahí. El enlace al original y el de la
+        licencia son lo que CC BY-SA pide de verdad; el texto ya viene redactado
+        adentro del JSON, así que no hay forma de servir uno sin el otro.
+      */}
+      {pagina?.tipo === "colofon" && typeof volumen === "object" && volumen && (
+        <div className="alv-bib-colofon" style={{ inset: `${caja.padY}px ${caja.padX}px` }}>
+          <span className="alv-bib-colofon-adorno" aria-hidden="true">
+            ❦
+          </span>
+          <p>{volumen.credito}</p>
+          <p className="alv-bib-colofon-enlaces">
+            <a href={volumen.url} target="_blank" rel="noopener noreferrer">
+              {COPY.verArticulo[lang]} ↗
+            </a>
+            <span aria-hidden="true"> · </span>
+            <a href={volumen.licencia.url} target="_blank" rel="noopener noreferrer">
+              {volumen.licencia.nombre}
+            </a>
+          </p>
+        </div>
+      )}
+
       <div className={`alv-bib-canal ${lado}`} />
     </div>
   );
@@ -1539,6 +2179,29 @@ function Motivo({ id }: { id: Libro["id"] }) {
         <circle {...t} cx="80" cy="56" r="38" />
         <circle {...t} cx="80" cy="56" r="23" />
         <circle {...t} cx="80" cy="56" r="8" />
+      </svg>
+    );
+  }
+  if (id === "wikipedia") {
+    /*
+     * RENGLONES, Y NINGUN DIBUJO. Los otros cuatro motivos son figuras que
+     * Leonardo trazó —arcos anatómicos, una rueda dentada, la espiral del
+     * agua, los rectángulos áureos—. Este tomo no es de él, así que su tapa no
+     * lleva ninguna: lleva lo único que tiene adentro, que es texto. La
+     * diferencia se ve sin leer una palabra, que es todo el punto.
+     */
+    const renglones = [0, 1, 2, 3, 4, 5, 6];
+    const anchos = [1, 0.94, 1, 0.88, 1, 0.97, 0.52];
+    return (
+      <svg width="160" height="112" viewBox="0 0 160 112" aria-hidden="true">
+        {renglones.map((i) => (
+          <path
+            key={i}
+            {...t}
+            strokeWidth={1}
+            d={`M34 ${(24 + i * 11).toFixed(0)} H${(34 + 92 * anchos[i]!).toFixed(1)}`}
+          />
+        ))}
       </svg>
     );
   }
@@ -1622,37 +2285,6 @@ const estiloFlecha: React.CSSProperties = {
   backdropFilter: "blur(10px)",
   cursor: "pointer",
   color: paleta.tinta,
-};
-
-/*
- * El borde va DESGLOSADO, no como atajo.
- *
- * Con `border` acá y `borderColor` en el estado encendido, React tiene que
- * sacar una propiedad larga mientras la corta sigue puesta, y avisa —con
- * razón— de que eso lleva a bugs de estilo. Se declaran los tres pedazos por
- * separado y el estado encendido pisa sólo el color.
- */
-const estiloPastilla: React.CSSProperties = {
-  height: 30,
-  padding: "0 14px",
-  borderRadius: 999,
-  borderWidth: 1,
-  borderStyle: "solid",
-  borderColor: paleta.pelo,
-  background: "transparent",
-  cursor: "pointer",
-  color: paleta.tintaSuave,
-  fontFamily: FUENTE.lectura,
-  fontSize: 9,
-  fontWeight: 700,
-  letterSpacing: ".15em",
-  textTransform: "uppercase",
-};
-
-const estiloPastillaOn: React.CSSProperties = {
-  background: paleta.tinta,
-  color: "oklch(96.4% 0.010 86)",
-  borderColor: "transparent",
 };
 
 const rutaHoja = (l: Libro, m: Lamina) => `/biblioteca/${l.destino}/${m.slug}.webp`;

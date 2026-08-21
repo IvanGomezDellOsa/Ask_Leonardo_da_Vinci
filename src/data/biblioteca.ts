@@ -18,21 +18,83 @@
 /** Un libro de la estantería. */
 export type Libro = {
   id: LibroId;
-  /** Carpeta de origen dentro de `contenido biblioteca/`. */
-  carpeta: string;
-  /** Carpeta de destino dentro de `public/biblioteca/`. */
-  destino: string;
+  /**
+   * Carpeta de origen dentro de `contenido biblioteca/`, y de destino dentro
+   * de `public/biblioteca/`. Las dos faltan en el volumen de texto, que no
+   * tiene láminas que optimizar: por eso son opcionales y por eso existe
+   * `esDeLaminas()` — el pipeline de imágenes tiene que saltearlo, y que el
+   * tipo lo obligue a decidirlo es mejor que un `if` que alguien puede omitir.
+   */
+  carpeta?: string;
+  destino?: string;
   titulo: Bilingue;
-  /** La línea que se lee bajo el título cuando el libro está elegido. */
-  bajada: Bilingue;
-  /** El color del lomo y de la tapa. Un solo hue por libro; ver §Tapas. */
-  tinte: { hue: number; croma: number };
+  /**
+   * EL TITULO ABREVIADO DEL LOMO, cuando el largo no entra.
+   *
+   * El lomo escribe en vertical dentro de un solo entrepaño —entre el segundo
+   * nervio y el tercero— y ahí caben unos veinte caracteres a cuerpo legible.
+   * Un libro de verdad hace exactamente esto: la tapa lleva el título entero y
+   * el lomo lleva la forma corta, porque el lomo tiene el ancho que tiene.
+   * Si falta, el lomo usa `titulo`.
+   */
+  tituloLomo?: Bilingue;
+  /** El cuero del tomo. Ver §EL CUERO. */
+  tinte: Tinte;
   laminas: Lamina[];
+  /**
+   * Sólo el volumen de texto (D-155). El cuerpo no vive acá: se baja de
+   * `public/biblioteca/<archivo>` recién cuando se abre el tomo, igual que las
+   * láminas. Acá queda lo que hace falta para pintarlo cerrado.
+   */
+  texto?: {
+    /** El JSON generado, dentro de `public/biblioteca/`. */
+    archivo: string;
+    /**
+     * Cuántos capítulos tiene, POR IDIOMA — y son distintos, porque son dos
+     * artículos escritos por gente distinta y no una traducción.
+     *
+     * Un solo número acá lo destapó la primera corrida contra el navegador: el
+     * lomo decía «4 chapters» con el sitio en inglés y el índice de abajo
+     * listaba ocho. Es otra vez el patrón de 00-README §Las lecciones, 1 —un
+     * componente informando sobre una dimensión distinta de la que gobierna lo
+     * que se ve— y el número era perfectamente plausible: es el correcto, del
+     * artículo equivocado.
+     *
+     * Se escriben a mano y `npm run wikipedia` FALLA si alguno no coincide con
+     * lo que trajo el artículo.
+     */
+    capitulos: Bilingue<number>;
+  };
 };
 
-export type LibroId = "anatomia" | "maquinas" | "obras" | "dibujos";
+export type LibroId = "anatomia" | "maquinas" | "obras" | "dibujos" | "wikipedia";
 
-export type Bilingue = { es: string; en: string };
+/**
+ * EL CUERO DE UN TOMO, EN TRES NUMEROS.
+ *
+ * `luz` es explícita y no derivada del `hue`. Antes salía de una cuenta
+ * —`30 + (hue - 28) * 0.105`— y esa cuenta es exactamente lo que hacía que los
+ * cuatro tomos se leyeran como el mismo libro teñido cuatro veces: con los
+ * hues apretados en la ventana cálida, las luces caían todas entre 30% y 36%.
+ * Una estantería de verdad no varía de tono, varía de MATERIAL: hay un becerro
+ * casi negro al lado de un tafilete rojo al lado de una badana color miel. Eso
+ * se dice moviendo la luz y el croma, no el hue.
+ */
+export type Tinte = { hue: number; croma: number; luz: number };
+
+/** Un volumen con láminas en disco: los que pasa `npm run biblioteca`. */
+export type LibroLaminas = Libro & { carpeta: string; destino: string };
+
+/** Si este tomo tiene láminas que optimizar. Ver el comentario de `carpeta`. */
+export const esDeLaminas = (l: Libro): l is LibroLaminas =>
+  l.carpeta !== undefined && l.destino !== undefined;
+
+/**
+ * Lo mismo en los dos idiomas. Casi siempre es texto —de ahí el `string` por
+ * defecto—, pero el volumen de contexto necesita un par de números: los dos
+ * artículos de Wikipedia no tienen la misma cantidad de capítulos.
+ */
+export type Bilingue<T = string> = { es: T; en: T };
 
 /** Una lámina: una hoja del libro. */
 export type Lamina = {
@@ -71,11 +133,40 @@ export type Lamina = {
 
 /**
  * LAS TAPAS NO SON IMAGENES. Cada lomo y cada tapa se dibujan con gradientes
- * y tipografía sobre este par de números — es la lección de §4.7 del doc 19
+ * y tipografía sobre estos tres números — es la lección de §4.7 del doc 19
  * («lo procedural sembrado gana a los assets»), y acá no es una preferencia
  * estética: la primera carga del sitio ya cuesta ~133 MB por el modelo de
- * embeddings, así que tres portadas en PNG serían tres megas que compiten con
- * eso. Los hues son los tres del ambiente cálido del hero (40-85).
+ * embeddings, así que cinco portadas en PNG serían cinco megas que compiten
+ * con eso.
+ *
+ * LOS TITULOS DICEN LO QUE HAY ADENTRO, Y NADA MAS (D-155).
+ *
+ * «Obras destacadas» afirmaba algo —que son las destacadas— que nadie midió;
+ * «Dibujos» nombraba ocho hojas de trabajo con la misma palabra que ya
+ * describía a dos de las nueve láminas del tomo vecino (el Vitruvio y el
+ * rostro de muchacha son dibujos y viven en Obras); y «Máquinas y mecanismos»
+ * llamaba máquinas a cuatro folios que son piezas sueltas —un trinquete, unos
+ * resortes, una batería de husillos, unas vigas telescópicas—, con dos
+ * palabras casi sinónimas para decir una sola cosa.
+ *
+ * Quedaron cuatro nombres de una palabra, sin adjetivos y sin solapamiento:
+ *
+ *   Anatomía   el cuerpo
+ *   Mecánica   las piezas de máquina
+ *   Obras      lo que existe como obra terminada, pintada o dibujada
+ *   Estudios   la hoja de trabajo: lo que dibujó para pensar
+ *
+ * Obras / Estudios es el corte real —obra frente a apunte— y es el par que
+ * usa cualquier catálogo razonado. Además caben: el lomo escribe el título en
+ * vertical dentro de un solo entrepaño, y «Máquinas y mecanismos» no entraba
+ * ahí sin recortarse.
+ *
+ * LOS CUEROS. Cinco materiales distintos, no cinco tintes del mismo. Ver
+ * `Tinte`: la luz manda más que el hue. El único que se sale de la ventana
+ * cálida del hero (40-85) es el oliva de Estudios, y se sale a propósito —una
+ * estantería toda del mismo tono se lee como un render—; con croma 0.045 no
+ * llega a leerse verde, llega a leerse encuadernación vieja. Volverlo a la
+ * ventana es cambiar un número.
  */
 export const BIBLIOTECA: Libro[] = [
   {
@@ -83,11 +174,8 @@ export const BIBLIOTECA: Libro[] = [
     carpeta: "Anatomia",
     destino: "anatomia",
     titulo: { es: "Anatomía", en: "Anatomy" },
-    bajada: {
-      es: "El cuerpo abierto y dibujado desde adentro.",
-      en: "The body opened and drawn from within.",
-    },
-    tinte: { hue: 28, croma: 0.055 },
+    // Tafilete rojo oscuro: el tomo más saturado de la fila.
+    tinte: { hue: 32, croma: 0.082, luz: 30 },
     laminas: [
       {
         slug: "craneo",
@@ -158,12 +246,9 @@ export const BIBLIOTECA: Libro[] = [
     id: "maquinas",
     carpeta: "Máquinas y mecanismos",
     destino: "maquinas",
-    titulo: { es: "Máquinas y mecanismos", en: "Machines and mechanisms" },
-    bajada: {
-      es: "Los folios mecánicos, y el mismo mecanismo andando.",
-      en: "The mechanical folios, and the same mechanism running.",
-    },
-    tinte: { hue: 62, croma: 0.05 },
+    titulo: { es: "Mecánica", en: "Mechanics" },
+    // Becerro casi negro: el ancla oscura de la fila.
+    tinte: { hue: 58, croma: 0.028, luz: 24 },
     laminas: [
       {
         slug: "mecanismo-01",
@@ -217,12 +302,9 @@ export const BIBLIOTECA: Libro[] = [
     id: "obras",
     carpeta: "Pinturas",
     destino: "obras",
-    titulo: { es: "Obras destacadas", en: "Selected works" },
-    bajada: {
-      es: "Lo que terminó, y lo que dejó a medio terminar.",
-      en: "What he finished, and what he left half-finished.",
-    },
-    tinte: { hue: 85, croma: 0.045 },
+    titulo: { es: "Obras", en: "Works" },
+    // Badana color miel: el único tomo claro, y el único con tinta oscura.
+    tinte: { hue: 74, croma: 0.068, luz: 52 },
     laminas: [
       {
         slug: "mona-lisa",
@@ -317,12 +399,9 @@ export const BIBLIOTECA: Libro[] = [
     id: "dibujos",
     carpeta: "Dibujos",
     destino: "dibujos",
-    titulo: { es: "Dibujos", en: "Drawings" },
-    bajada: {
-      es: "La hoja suelta: lo que dibujaba para pensar.",
-      en: "The loose sheet: what he drew in order to think.",
-    },
-    tinte: { hue: 46, croma: 0.05 },
+    titulo: { es: "Estudios", en: "Studies" },
+    // Oliva apagado: el que rompe la fila de marrones. Ver §LOS CUEROS.
+    tinte: { hue: 108, croma: 0.045, luz: 34 },
     laminas: [
       {
         slug: "plano-de-ciudad",
@@ -388,23 +467,83 @@ export const BIBLIOTECA: Libro[] = [
         },
       },
       {
-        slug: "cesar-borgia",
+        /*
+         * El archivo llegó como «Cesar Borgia.jpg» y el slug repetía esa
+         * atribución en una URL que se ve en el DOM. Son tres cabezas de
+         * hombres barbados y mayores; quien las dibujó no las nombró. Nombrar
+         * al retratado en la ruta del archivo es la misma afirmación sin
+         * respaldo que la hoja evita en pantalla, así que el slug dice lo que
+         * se ve y el nombre original queda en `origen`, que es un dato de
+         * archivo y no una afirmación.
+         */
+        slug: "tres-cabezas",
         origen: "Cesar Borgia.jpg",
-        titulo: { es: "Estudios de cabezas de perfil", en: "Profile head studies" },
+        titulo: { es: "Tres cabezas barbadas", en: "Three bearded heads" },
         nota: {
-          es: "Una hoja con varios estudios de cabezas masculinas de perfil, trazadas a lápiz sobre el mismo papel.",
-          en: "A sheet of several male heads studied in profile, drawn in pencil on the same paper.",
+          es: "Tres cabezas de hombres barbados a sanguina sobre una misma hoja: dos de perfil —una con gorro— y la tercera casi de frente.",
+          en: "Three bearded men's heads in red chalk on a single sheet: two in profile — one wearing a cap — and the third nearly frontal.",
         },
       },
     ],
   },
+  /*
+   * EL VOLUMEN DE CONTEXTO (D-155). El único que no es de Leonardo.
+   *
+   * QUE PROBLEMA RESUELVE. El corpus son los cuadernos y nada más (D-018), así
+   * que la pregunta más obvia que va a llegar —quién fue este tipo— es
+   * exactamente la que el chat NO contesta, y contesta bien al abstenerse. Ese
+   * hueco no se tapa aflojando la compuerta: se tapa poniendo la biografía en
+   * otro lado, donde se lea como lo que es. La biblioteca ya era ese otro lado.
+   *
+   * POR QUE NO ENSUCIA LA TESIS. No entra al corpus, no se indexa, no se
+   * recupera y `responder()` no lo ve. Es un tomo de la estantería, como las
+   * láminas: material que se mira, no material que Leonardo cita. Y el tomo lo
+   * dice de dos maneras: el aviso de la portadilla, que es la primera hoja que
+   * se ve, y el cuero —es el único tomo frío de una fila de cueros cálidos—.
+   * El riesgo acá no es técnico: es que alguien crea que el chat lee de una
+   * enciclopedia.
+   *
+   * POR QUE NO SE LLAMA «WIKIPEDIA» (D-156). Se llamó así un rato, con el
+   * argumento de que el nombre de la fuente en el lomo es la advertencia más
+   * barata que existe. Pero un lomo que dice «Wikipedia» en una estantería de
+   * Leonardo nombra al editor y no al contenido, que es lo único que hacen los
+   * otros cuatro. El título dice de qué trata el tomo; la procedencia la dicen
+   * la portadilla y el índice, que es donde corresponde.
+   *
+   * LA LICENCIA NO ES LA DEL REPO. El texto es CC BY-SA 4.0 y el repo es MIT.
+   * El alcance está en `LICENSE-CORPUS.md` y la atribución viaja DENTRO del
+   * JSON generado —autor, revisión, fecha y enlace— para que no haya forma de
+   * servir el texto sin ella.
+   */
+  {
+    id: "wikipedia",
+    titulo: {
+      es: "Sobre Leonardo (Vida y Obras)",
+      en: "About Leonardo (Life and Works)",
+    },
+    /*
+     * El lomo lleva la forma corta. El paréntesis es lo primero que sobra
+     * cuando hay que elegir: dice lo mismo que el título entero ya dice más
+     * abajo, en la tapa, donde sí hay lugar.
+     */
+    tituloLomo: { es: "Sobre Leonardo", en: "About Leonardo" },
+    /*
+     * TELA GRIS AZULADA, Y ES EL UNICO FRIO DE LA FILA.
+     *
+     * Los cuatro tomos de Leonardo son cueros cálidos sobre un estante cálido.
+     * Este es de otro material y de otra temperatura, y esa diferencia hace
+     * sola el trabajo que si no habría que hacer con un cartel: se ve, antes
+     * de leer nada, que este tomo no pertenece a la misma mano.
+     */
+    tinte: { hue: 250, croma: 0.032, luz: 33 },
+    laminas: [],
+    texto: { archivo: "wikipedia.json", capitulos: { es: 4, en: 8 } },
+  },
 ];
 
-/** Todas las láminas, aplanadas — para índices y precarga. */
-export const LAMINAS = BIBLIOTECA.flatMap((libro) =>
-  libro.laminas.map((lamina) => ({ libro: libro.id, ...lamina })),
-);
-
-/** La ruta pública de una lámina ya optimizada. */
-export const rutaLamina = (libro: Libro, lamina: Lamina, variante: "hoja" | "indice" = "hoja") =>
-  `/biblioteca/${libro.destino}/${lamina.slug}${variante === "indice" ? "-indice" : ""}.webp`;
+/*
+ * `LAMINAS` y `rutaLamina()` vivían acá y no los usaba nadie: `Biblioteca.tsx`
+ * arma sus rutas con `rutaHoja`/`rutaIndice`. Se fueron en D-155 en vez de
+ * arrastrarlos al tipo nuevo — `rutaLamina` habría necesitado un `destino` que
+ * el volumen de texto no tiene, y eso es adaptar código muerto.
+ */

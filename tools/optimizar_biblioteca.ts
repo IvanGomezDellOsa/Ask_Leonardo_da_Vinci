@@ -39,7 +39,12 @@ import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { BIBLIOTECA, type Lamina, type Libro } from "../src/data/biblioteca.js";
+import {
+  BIBLIOTECA,
+  esDeLaminas,
+  type Lamina,
+  type LibroLaminas,
+} from "../src/data/biblioteca.js";
 
 const RAIZ = path.resolve(import.meta.dirname, "..");
 const ORIGEN = path.join(RAIZ, "contenido biblioteca");
@@ -92,7 +97,7 @@ type Medida = {
   bytesOrigen: number;
 };
 
-async function procesar(libro: Libro, lamina: Lamina): Promise<Medida> {
+async function procesar(libro: LibroLaminas, lamina: Lamina): Promise<Medida> {
   const entrada = path.join(ORIGEN, libro.carpeta, lamina.origen);
   const carpetaSalida = path.join(DESTINO, libro.destino);
   await mkdir(carpetaSalida, { recursive: true });
@@ -178,12 +183,22 @@ async function procesar(libro: Libro, lamina: Lamina): Promise<Medida> {
 }
 
 async function main() {
-  // Que las 20 entradas del catálogo existan de verdad, ANTES de convertir
+  /*
+   * ESTE PIPELINE ES EL DE LAS LAMINAS, Y DESDE D-155 EL CATALOGO TIENE UN
+   * TOMO QUE NO TIENE NINGUNA. Se filtra una vez, acá arriba, y no con un
+   * `continue` adentro de cada uno de los cuatro recorridos: la primera vez
+   * que alguien agregue un quinto recorrido y se olvide del `continue`, el
+   * tomo de texto va a entrar a un `path.join` con `undefined`. Filtrado en un
+   * solo lugar, el tipo `LibroLaminas` hace que eso ni compile.
+   */
+  const conLaminas = BIBLIOTECA.filter(esDeLaminas);
+
+  // Que las 27 entradas del catálogo existan de verdad, ANTES de convertir
   // ninguna: un slug mal escrito tiene que fallar acá y no dejar la carpeta
   // de salida a medio llenar.
   const faltantes: string[] = [];
   const usados = new Set<string>();
-  for (const libro of BIBLIOTECA) {
+  for (const libro of conLaminas) {
     for (const lamina of libro.laminas) {
       const entrada = path.join(ORIGEN, libro.carpeta, lamina.origen);
       try {
@@ -205,7 +220,7 @@ async function main() {
   // Y al revés: archivos en la carpeta que el catálogo no menciona. No es un
   // error —el bloc de notas de los videos vive ahí— pero se avisa, porque una
   // lámina nueva que nadie agregó al catálogo es invisible en el sitio.
-  for (const libro of BIBLIOTECA) {
+  for (const libro of conLaminas) {
     const enDisco = await readdir(path.join(ORIGEN, libro.carpeta));
     const enCatalogo = new Set(libro.laminas.map((l) => l.origen));
     for (const f of enDisco) {
@@ -215,7 +230,7 @@ async function main() {
   }
 
   const medidas: Medida[] = [];
-  for (const libro of BIBLIOTECA) {
+  for (const libro of conLaminas) {
     console.log(`\n${libro.titulo.es}`);
     for (const lamina of libro.laminas) {
       const m = await procesar(libro, lamina);

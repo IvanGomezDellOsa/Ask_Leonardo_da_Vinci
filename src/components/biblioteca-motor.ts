@@ -471,3 +471,246 @@ export const ARRASTRE = {
   /** O si se la tiró con esta velocidad, aunque no haya llegado. */
   velocidad: 1.1,
 } as const;
+
+// ---------------------------------------------------------------------------
+// LA PAGINACION DEL VOLUMEN DE TEXTO (D-155)
+// ---------------------------------------------------------------------------
+
+/** Un bloque del artículo, tal como lo escribe `npm run wikipedia`. */
+export type BloqueTexto = {
+  t: "h2" | "h3" | "p";
+  x: string;
+  /** `true` si es la cola de un párrafo que arrancó en la hoja anterior. */
+  sigue?: boolean;
+};
+
+/** Una hoja del volumen de texto: los bloques que le tocan, y de qué capítulo. */
+export type HojaTexto = {
+  bloques: BloqueTexto[];
+  /** El índice del `h2` al que pertenece. −1 antes del primero. */
+  capitulo: number;
+};
+
+export type OpcionesPaginado = {
+  bloques: BloqueTexto[];
+  /** El área de texto de una hoja, en píxeles. Sin los márgenes. */
+  ancho: number;
+  alto: number;
+  /** El cuerpo de letra, en px. La hoja usa el mismo. */
+  cuerpo: number;
+};
+
+/**
+ * DE UN ARTICULO A UNA PILA DE HOJAS, MIDIENDO Y NO ESTIMANDO.
+ *
+ * POR QUE NO SE PAGINA EN EL BUILD. Porque no hay UNA hoja: la hoja es
+ * responsiva —proporción de folio en escritorio, más alta en teléfono— y su
+ * tamaño en píxeles sale de la ventana. Un corte calculado contra una medida
+ * inventada es el patrón que este proyecto ya se comió quince veces
+ * (00-README §Las lecciones, 1): medir una dimensión distinta de la que
+ * gobierna el resultado, y recibir un número plausible. Acá el número plausible
+ * sería «entran 180 palabras» y el resultado sería un renglón cortado por la
+ * mitad en el borde de la hoja.
+ *
+ * POR QUE NO SE USA `columns` DE CSS. Porque paginaría gratis y perfecto, pero
+ * cada hoja tendría el artículo ENTERO adentro, y el pliegue clona la hoja 28
+ * veces por giro (14 tiras × 2 caras). Serían 280.000 palabras clonadas para
+ * pasar una página. La paginación devuelve rebanadas, y cada hoja monta la
+ * suya y nada más.
+ *
+ * COMO CORTA. Un `h2` siempre empieza hoja —un capítulo que arranca a media
+ * página no se lee como capítulo—; un `h3` que no entra se baja entero, para
+ * que ningún título quede solo al pie; y un párrafo que no entra se parte por
+ * palabra, buscando por bisección el último punto que todavía cabe. La cola
+ * sigue en la hoja próxima marcada con `sigue`, que es lo que le saca la
+ * sangría de párrafo nuevo.
+ *
+ * CUANTO CUESTA. Una medición por bloque más ~9 por párrafo partido: unas 400
+ * lecturas de `scrollHeight` sobre un div chico y fuera de pantalla, una sola
+ * vez por volumen y por tamaño de hoja. El `overflow: hidden` del molde le da
+ * su propio contexto de formato, así que los márgenes de los hijos no se
+ * escapan y lo medido es lo que se ve.
+ */
+export function paginarTexto(o: OpcionesPaginado): HojaTexto[] {
+  const { bloques, ancho, alto, cuerpo } = o;
+  if (!bloques.length || ancho < 40 || alto < 40) return [];
+
+  const molde = document.createElement("div");
+  molde.className = "alv-bib-texto";
+  molde.setAttribute("aria-hidden", "true");
+  molde.style.cssText =
+    `position:absolute;left:-99999px;top:0;overflow:hidden;` +
+    `width:${ancho}px;font-size:${cuerpo}px;`;
+  document.body.appendChild(molde);
+
+  /** Pinta un bloque en el molde, igual que lo pinta la hoja. */
+  const pintar = (b: BloqueTexto): HTMLElement => {
+    const el = document.createElement(b.t === "p" ? "p" : b.t === "h2" ? "h2" : "h3");
+    if (b.sigue) el.dataset.sigue = "si";
+    el.textContent = b.x;
+    return el;
+  };
+
+  const cabe = () => molde.scrollHeight <= alto;
+
+  /**
+   * SI DEBAJO DE ESTE TITULO ENTRA ALGO DE SU TEXTO.
+   *
+   * Se le prueba una sonda —las primeras palabras del bloque que sigue— y se
+   * la saca enseguida. No hace falta que entre el párrafo: alcanza con que
+   * entren dos renglones, que es lo que separa «un capítulo que arranca» de
+   * «un título perdido al pie de la hoja anterior».
+   */
+  const PALABRAS_SONDA = 16;
+  const cabeConSuEntrada = (titulo: HTMLElement, actualEnLista: BloqueTexto): boolean => {
+    const i = bloques.indexOf(actualEnLista);
+    const siguiente = bloques[i + 1];
+    if (!siguiente || siguiente.t !== "p") return true;
+    const sonda = document.createElement("p");
+    sonda.textContent = siguiente.x.split(" ").slice(0, PALABRAS_SONDA).join(" ");
+    titulo.after(sonda);
+    const entra = cabe();
+    sonda.remove();
+    return entra;
+  };
+
+  const hojas: HojaTexto[] = [];
+  let actual: BloqueTexto[] = [];
+  let capitulo = -1;
+  let capituloDeLaHoja = -1;
+
+  const cerrar = () => {
+    if (actual.length) hojas.push({ bloques: actual, capitulo: capituloDeLaHoja });
+    actual = [];
+    molde.textContent = "";
+    capituloDeLaHoja = capitulo;
+  };
+
+  for (const bloque of bloques) {
+    // Un capítulo nuevo abre hoja. El primero no abre una hoja vacía adelante.
+    if (bloque.t === "h2") {
+      capitulo += 1;
+      if (actual.length) cerrar();
+      capituloDeLaHoja = capitulo;
+    }
+
+    let pendiente: BloqueTexto | null = bloque;
+
+    while (pendiente) {
+      const el = pintar(pendiente);
+      molde.appendChild(el);
+
+      if (cabe()) {
+        // Entró. Falta una cosa: que un título no quede solo al pie. Un
+        // encabezado sin una línea de su texto debajo no anuncia nada, anuncia
+        // la hoja siguiente. Se le prueba un tramo del párrafo que viene, y si
+        // ese tramo no entra, el título se baja entero.
+        if (pendiente.t !== "p" && actual.length && !cabeConSuEntrada(el, bloque)) {
+          molde.removeChild(el);
+          cerrar();
+          continue;
+        }
+        actual.push(pendiente);
+        pendiente = null;
+        continue;
+      }
+
+      // Un título no se parte: si la hoja ya tenía algo, se baja entero.
+      if (pendiente.t !== "p") {
+        molde.removeChild(el);
+        if (actual.length) {
+          cerrar();
+          continue;
+        }
+        // Hoja vacía y aun así no entra. No hay nada mejor que dejarlo.
+        molde.appendChild(el);
+        actual.push(pendiente);
+        pendiente = null;
+        continue;
+      }
+
+      /*
+       * UN PARRAFO SE PARTE DONDE ESTA, NO EN LA HOJA SIGUIENTE.
+       *
+       * La primera versión cerraba la hoja y bajaba el párrafo entero, y la
+       * primera corrida contra el navegador la delató: 64 pliegos para un
+       * artículo que entra en la mitad. Con párrafos de ~110 palabras y hojas
+       * de ~110, casi ninguno entraba en lo que quedaba, así que casi todas
+       * las hojas se cerraban con el pie en blanco. Un libro no hace eso: el
+       * párrafo sigue en la página siguiente, y por eso existe `sigue`.
+       */
+      // Anotados a mano: sin el tipo, TypeScript ve `pendiente` derivándose de
+      // `cola` y `cola` de `pendiente`, y declara la inferencia circular.
+      const palabras: string[] = pendiente.x.split(" ");
+      let bajo = 1;
+      let alto2 = palabras.length - 1;
+      let ultimo = 0;
+      while (bajo <= alto2) {
+        const medio = (bajo + alto2) >> 1;
+        el.textContent = palabras.slice(0, medio).join(" ");
+        if (cabe()) {
+          ultimo = medio;
+          bajo = medio + 1;
+        } else {
+          alto2 = medio - 1;
+        }
+      }
+
+      if (!ultimo) {
+        // No entra ni una palabra. Si la hoja tenía algo, se cierra y se
+        // reintenta con la hoja limpia; si estaba vacía, la hoja es más chica
+        // que un renglón y se fuerza una palabra para no colgarse.
+        molde.removeChild(el);
+        if (actual.length) {
+          cerrar();
+          continue;
+        }
+        ultimo = 1;
+        el.textContent = palabras[0]!;
+        molde.appendChild(el);
+      }
+
+      actual.push({ ...pendiente, x: palabras.slice(0, ultimo).join(" ") });
+      const cola: string = palabras.slice(ultimo).join(" ");
+      cerrar();
+      pendiente = cola ? { t: "p", x: cola, sigue: true } : null;
+    }
+  }
+
+  cerrar();
+  molde.remove();
+  return hojas;
+}
+
+/** Una entrada del índice: un título del artículo, y en qué hoja cayó. */
+export type EntradaIndice = {
+  t: "h2" | "h3";
+  x: string;
+  /** El índice de la hoja dentro del volumen, base 0. */
+  hoja: number;
+};
+
+/**
+ * EL INDICE SALE DE LA PAGINACION, NO DEL ARTICULO.
+ *
+ * Es la diferencia entre un índice que funciona y uno que miente. Los títulos
+ * están en el artículo, pero EN QUE HOJA cae cada uno sólo se sabe después de
+ * paginar contra la ventana de este visitante — y cambia si agranda la
+ * ventana. Un índice armado desde el artículo tendría los títulos correctos y
+ * los destinos inventados, que es el peor de los dos mundos: se ve bien y
+ * lleva a cualquier lado.
+ *
+ * Se ignoran los títulos que quedaron en una hoja porque un párrafo largo los
+ * arrastró — no puede pasar: `paginarTexto` no parte títulos. Si alguna vez
+ * pasara, el índice tendría dos entradas al mismo destino, que es feo pero no
+ * es un error.
+ */
+export function indiceDe(hojas: HojaTexto[]): EntradaIndice[] {
+  const entradas: EntradaIndice[] = [];
+  hojas.forEach((hoja, i) => {
+    for (const b of hoja.bloques) {
+      if (b.t === "h2" || b.t === "h3") entradas.push({ t: b.t, x: b.x, hoja: i });
+    }
+  });
+  return entradas;
+}

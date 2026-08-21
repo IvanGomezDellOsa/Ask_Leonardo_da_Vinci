@@ -717,14 +717,48 @@ export function Hero() {
               <span style={{ flex: 1, height: 1, background: "linear-gradient(to left, transparent, oklch(84% 0.06 85 / 0.35))" }} />
             </span>
 
+            {/*
+              LA FILA DE BOTONES MIDE LO QUE DICE, NO 434 px (D-161).
+
+              Antes era una grilla de `1fr 1fr` dentro de un ancho fijo, así que
+              «Biblioteca» —cuyo texto mide 77 px— ocupaba los mismos 210 que
+              «Preguntar a Leonardo», que mide 167. Un botón secundario del
+              mismo tamaño que el primario no es un botón secundario: la
+              jerarquía la estaba dando sólo el relleno.
+
+              Con anchos naturales y el relleno de 22 px de Apple, la fila mide
+              348 px en castellano. La segunda línea de la descripción mide 565,
+              y 565 / φ = 349,2: la fila cae en razón áurea con el texto de
+              arriba con un error del 0,3%.
+
+              ⚠ ESO ES UNA COINCIDENCIA DEL CASTELLANO, NO UNA GARANTIA. En
+              inglés «Ask Leonardo» mide 149 px contra los 211 de «Preguntar a
+              Leonardo», la fila baja a 267 y la razón se va a 2,09. El ancho de
+              esta fila no es una decisión de diseño: es el largo de dos frases
+              más dos palancas chicas —relleno y separación—, y con esas dos
+              palancas no alcanza para cerrar en los dos idiomas sin fabricar
+              botones desmedidos.
+
+              Lo que SI justifica este cambio no es φ, es la jerarquía: antes la
+              grilla de `1fr 1fr` dentro de 434 px fijos le daba a «Biblioteca»
+              los mismos 210 px que a «Preguntar a Leonardo». Un botón
+              secundario del mismo tamaño que el primario no es un botón
+              secundario. Ahora miden 211 y 123, y la diferencia la dice la
+              geometría además del relleno.
+
+              En teléfono se mantiene la columna de ancho fijo, que ahí es lo
+              correcto: dos botones apilados y del mismo ancho.
+            */}
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: angosto ? "1fr" : "repeat(auto-fit,minmax(205px,1fr))",
+                display: angosto ? "grid" : "flex",
+                gridTemplateColumns: angosto ? "1fr" : undefined,
                 justifyContent: "center",
                 alignItems: "center",
+                flexWrap: "wrap",
                 gap: 14,
-                width: angosto ? "min(86vw,340px)" : "min(92vw,434px)",
+                width: angosto ? "min(86vw,340px)" : undefined,
+                maxWidth: "92vw",
               }}
             >
               <button
@@ -739,7 +773,7 @@ export function Hero() {
                   alignItems: "center",
                   gap: 10,
                   height: angosto ? 44 : 46,
-                  padding: "0 16px",
+                  padding: angosto ? "0 16px" : "0 22px",
                   justifyContent: "center",
                   whiteSpace: "nowrap",
                   background: "oklch(95% 0.024 85)",
@@ -772,7 +806,7 @@ export function Hero() {
                   alignItems: "center",
                   justifyContent: "center",
                   height: angosto ? 44 : 46,
-                  padding: "0 16px",
+                  padding: angosto ? "0 16px" : "0 22px",
                   whiteSpace: "nowrap",
                   background: "oklch(16% 0.02 40 / 0.2)",
                   border: "1px solid oklch(92% 0.03 85 / 0.32)",

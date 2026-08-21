@@ -71,20 +71,39 @@ const MASCARA_BRASA = (foco: { x: number; y: number }) =>
  */
 
 /**
- * φ, Y POR QUE ESTA ACA Y NO UN 1.618 SUELTO EN CADA LINEA.
+ * ESTE HERO NO TIENE TITULAR, Y ESO GOBIERNA TODOS LOS NUMEROS DE ABAJO.
  *
- * Las dos líneas de la intro están en razón áurea: 30 / φ = 18,54. No es
- * decoración numerológica — es la única proporción que Leonardo ilustró de su
- * puño para Pacioli en *De divina proportione*, y este es su hero.
+ * El elemento principal es el video del taller. Las dos líneas de la intro no
+ * son título y bajada: son **una descripción del producto**, o sea material de
+ * apoyo. Un segundo elemento principal compitiendo con el video no hace falta,
+ * y a 35 y a 30 px la primera línea se leía como titular — que es exactamente
+ * la sensación que la delató (D-160).
  *
- * Lo que importa es que la razón NO SE ROMPA en un teléfono: si el título se
- * achica con `vw` y la bajada con otro `vw`, en algún ancho dejan de guardar
- * la razón y la jerarquía se desarma sola. Por eso los tres números del
- * `clamp` de la bajada son los del título divididos por φ, y se escriben
- * calculados: el día que alguien toque el título, la bajada lo sigue.
+ * De ahí sale el techo de 26: `display-md` de Apple arranca en 34 y `lead`
+ * —su tagline de apoyo— está en 28. Debajo de 28 la línea deja de leerse como
+ * titular. La segunda cae en 16,07, que es cuerpo de lectura común.
+ *
+ * φ, Y QUE HACE ACA. Las dos líneas están en razón áurea: 26 / φ = 16,07. No
+ * es decoración numerológica —es la única proporción que Leonardo ilustró de
+ * su puño para Pacioli en *De divina proportione*— pero tampoco es un capricho
+ * tipográfico: medidas las dos frases con la fuente cargada, la línea 2 ocupa
+ * 35,156 em y la línea 1, 22,27. Su cociente es **1,579**, y φ es 1,618. O sea
+ * que **φ es, con esta copy, casi exactamente el paso más chico que deja la
+ * primera línea igual de ancha que la segunda**; cualquier paso menor la
+ * dejaría más angosta que la que va debajo, que se lee al revés.
+ *
+ * POR ESO LAS DOS SALEN DEL MISMO ANCHO, y no es un defecto: un bloque de dos
+ * renglones parejos es lo que tiene que parecer una descripción. Perseguir φ
+ * en el ANCHO exigía un paso de 2,554 —o sea 44 px arriba— y eso es fabricar
+ * el titular que este hero decidió no tener.
+ *
+ * Lo que sí importa es que la razón NO SE ROMPA en un teléfono: si una línea
+ * se achica con un `vw` y la otra con otro, en algún ancho dejan de guardarla.
+ * Por eso los tres números del `clamp` de la segunda son los de la primera
+ * divididos por φ, y se escriben calculados.
  */
 const PHI = 1.618;
-const TITULO_MAX = 30;
+const TITULO_MAX = 26;
 const TITULO_VW = 6.8;
 const TITULO_MIN = 23;
 const aureo = (n: number) => +(n / PHI).toFixed(2);
@@ -111,65 +130,20 @@ const ESCALA_MOVIL = {
  */
 const AIRE_INTRO = `clamp(${aureo(aureo(TITULO_MIN))}px,${aureo(aureo(TITULO_VW))}vw,${aureo(aureo(TITULO_MAX))}px)`;
 
-/**
- * LA MEDIDA, Y POR QUE φ EN EL CUERPO NO ALCANZA.
+/*
+ * ACA VIVIA `MEDIDA_INTRO` / `TECHO_INTRO` (D-159): una medida compartida en
+ * `em` que obligaba a la segunda línea a partirse en dos renglones más
+ * angostos, para que la razón de ANCHOS diera φ. Se fue en D-160 junto con el
+ * encuadre que la justificaba.
  *
- * Con los cuerpos en 30 y 18,54 la razón era exacta en el número y **1,025 en
- * la pantalla**: las dos líneas salían del mismo ancho y el escalón no se veía.
- *
- * La cuenta explica por qué, y es mala suerte del texto. Medido con la fuente
- * cargada: la línea 1 ocupa 22,27 em y la línea 2, 35,16 em — la segunda es
- * **1,579 veces más larga en medida**. Y su cuerpo es 1,618 veces más chico.
- * Los dos factores se cancelan: 1,579 / 1,618 = 0,976. El ancho final quedaba
- * en 1:1 por más que el cuerpo estuviera en φ.
- *
- * LA CURA ES UNA SOLA MEDIDA EN `em` PARA LAS DOS. Un mismo número de `em`
- * sobre dos cuerpos que ya están en razón áurea da dos cajas en razón áurea,
- * por construcción y sin depender de lo que digan las líneas: 22,7 em son
- * 681 px arriba y 421 px abajo, y 681 / 421 = φ. La línea 2 se acomoda en dos
- * renglones dentro de su caja más angosta, que es la forma que tiene un hero
- * cuando el escalón se ve: un titular largo y debajo un bloque más chico.
- *
- * De paso arregla lo otro: 421 px a 18,54 px son ~45 caracteres por renglón,
- * que es medida de libro. La línea larga en la fuente incómoda venía a 83
- * caracteres de corrido.
- *
- * 22,7 y no 22,3: la línea 1 más larga es la inglesa, 22,605 em, y tiene que
- * entrar en un renglón. Si alguna vez cambia el texto de `intro.ts`, este
- * número se vuelve a medir — la razón entre las cajas se sostiene sola, lo que
- * no se sostiene solo es que el titular no se parta.
+ * Dos motivos, y el segundo es el que manda. El primero: partía la frase al
+ * medio —«…para conversar / con él…»— y un lector no tiene forma de saber por
+ * qué esa línea baja, así que paga una incomodidad de lectura por una
+ * proporción que no puede ver. El segundo: la razón de anchos sólo llega a φ
+ * con un paso de cuerpo de 2,554, o sea con una primera línea de 44 px. Eso es
+ * un titular, y este hero no tiene titular.
  */
-const MEDIDA_INTRO = "22.7em";
 
-/**
- * EL TECHO DE PANTALLA TAMBIEN TIENE QUE ESTAR EN φ.
- *
- * `MEDIDA_INTRO` sostiene la razón mientras la ventana dé de sobra. Cuando no
- * da, manda el `96vw` — y ahí las dos cajas vuelven a medir lo mismo, que es
- * el problema original con otro disfraz. Medido a 375 px: 335 y 335, razón
- * 0,997.
- *
- * Así que el techo de la línea 2 es el de la línea 1 dividido por φ:
- * 96 / 1,618 = 59,33vw. Con eso la razón da 1,62 a CUALQUIER ancho, porque las
- * dos restricciones —la medida en `em` y el techo en `vw`— están las dos en φ y
- * cuál de las dos gana deja de importar.
- *
- * PERO NO EN EL TELEFONO. Con el techo en φ, a 375 px la bajada cae a 222 px
- * —tres renglones de unos 30 caracteres, medida de poesía y no de bajada— y el
- * último queda en 121 px, colgando. En una pantalla de ese ancho no existe una
- * razón áurea de anchos que no se pague con la legibilidad: la línea 1 sola ya
- * necesita 579 px para no partirse.
- *
- * Así que el techo en φ vale de 640 px para arriba, que es exactamente el rango
- * donde el escalón se veía plano —dos líneas de una sola línea cada una y del
- * mismo ancho— y donde sobra lugar para arreglarlo. Abajo de eso las dos
- * envuelven igual, la jerarquía la sostienen el cuerpo y el interlineado, y no
- * hay nada roto que arreglar.
- */
-const TECHO_INTRO = (angosto: boolean) => ({
-  titulo: "96vw",
-  bajada: angosto ? "96vw" : `${(96 / PHI).toFixed(2)}vw`,
-});
 
 const COPY = {
   preguntar: { es: "Preguntar a Leonardo", en: "Ask Leonardo" },
@@ -643,9 +617,7 @@ export function Hero() {
                 // Ver `MEDIDA_INTRO` y `TECHO_INTRO`: las dos restricciones
                 // están en φ, así que la razón entre las cajas se sostiene
                 // gane la que gane.
-                maxWidth: `min(${
-                  li === 0 ? TECHO_INTRO(angosto).titulo : TECHO_INTRO(angosto).bajada
-                }, ${MEDIDA_INTRO})`,
+                maxWidth: "96vw",
                 fontFamily: FUENTE.manuscrita,
                 fontWeight: 400,
                 // El segundo número manda en móvil y el tercero en escritorio;

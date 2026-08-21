@@ -1180,8 +1180,12 @@ a:hover {
   color: oklch(97% 0.03 85 / 0.9);
 }
 
+/* La flecha vive al pie del cuadro, que desde D-158 se destapó a propósito
+   para que se vean las rodillas y el sillón. Su contraste ya no lo pone el
+   fondo: lo pone ella. */
 .alv-hero-scroll svg {
   animation: alv-bajar 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 1px 7px oklch(6% 0.02 40 / 0.95));
 }
 
 @keyframes alv-bajar {

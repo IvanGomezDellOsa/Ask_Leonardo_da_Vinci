@@ -56,10 +56,10 @@ const MASCARA_BRASA = (foco: { x: number; y: number }) =>
   `radial-gradient(46vmin 34vmin at ${foco.x.toFixed(1)}% ${foco.y.toFixed(1)}%, transparent 0%, transparent 22%, black 78%)`;
 
 /**
- * LA ESCALERA TIPOGRAFICA, EXPLICITA. Ver D-147.
+ * LA ESCALERA TIPOGRAFICA, EXPLICITA. Ver D-147 y D-158.
  *
- * En escritorio el orden decreciente sale solo de los valores del diseño:
- * título 35 → bajada 19,5 → botón 15 → cómo funciona 18 (más chico de peso, va
+ * En escritorio el orden decreciente sale de los valores del diseño:
+ * título 30 → bajada 18,5 → botón 15 → cómo funciona 18 (más chico de peso, va
  * en fina y sin fondo) → pastilla 14. En un teléfono se rompía: el título
  * bajaba a 22,5 con el `clamp`, la bajada caía al piso de 13,5 y «Cómo
  * funciona» se quedaba en 18 px fijos — o sea **más grande que los botones y
@@ -69,17 +69,47 @@ const MASCARA_BRASA = (foco: { x: number; y: number }) =>
  * lugares: cada renglón es más chico que el anterior, y se lee de una si algún
  * día alguien la vuelve a tocar.
  */
+
+/**
+ * φ, Y POR QUE ESTA ACA Y NO UN 1.618 SUELTO EN CADA LINEA.
+ *
+ * Las dos líneas de la intro están en razón áurea: 30 / φ = 18,54. No es
+ * decoración numerológica — es la única proporción que Leonardo ilustró de su
+ * puño para Pacioli en *De divina proportione*, y este es su hero.
+ *
+ * Lo que importa es que la razón NO SE ROMPA en un teléfono: si el título se
+ * achica con `vw` y la bajada con otro `vw`, en algún ancho dejan de guardar
+ * la razón y la jerarquía se desarma sola. Por eso los tres números del
+ * `clamp` de la bajada son los del título divididos por φ, y se escriben
+ * calculados: el día que alguien toque el título, la bajada lo sigue.
+ */
+const PHI = 1.618;
+const TITULO_MAX = 30;
+const TITULO_VW = 6.8;
+const TITULO_MIN = 23;
+const aureo = (n: number) => +(n / PHI).toFixed(2);
+
 const ESCALA_MOVIL = {
-  // La razón entre titular y bajada es lo que hace la jerarquía, no su tamaño
-  // absoluto: en escritorio es 35 / 19,5 = **1,79**. En teléfono había quedado
-  // en 1,53 —22,9 sobre 15— y las dos líneas se leían casi como una sola. Con
-  // 6,8vw y 3,8vw da 25,5 / 14,25 a 375 px: 1,79, la misma de escritorio.
-  titulo: "clamp(23px,6.8vw,35px)",
-  bajada: "clamp(13.5px,3.8vw,19.5px)",
+  titulo: `clamp(${TITULO_MIN}px,${TITULO_VW}vw,${TITULO_MAX}px)`,
+  bajada: `clamp(${aureo(TITULO_MIN)}px,${aureo(TITULO_VW)}vw,${aureo(TITULO_MAX)}px)`,
   boton: 14,
   como: 13,
-  pastilla: 12,
+  pastilla: 11,
 } as const;
+
+/**
+ * El aire entre las dos líneas: la bajada dividida por φ otra vez, o sea el
+ * título sobre φ² (30 / 2,618 = 11,46).
+ *
+ * VA CON `vw` COMO EL TEXTO, y no con `vh`. Primero se escribió
+ * `clamp(7px,1.25vh,11.46px)` y en una ventana de 861 px de alto daba 10,76:
+ * correcto de casualidad. Un `gap` que escala con el ALTO entre dos textos que
+ * escalan con el ANCHO guarda la proporción sólo en las ventanas donde las dos
+ * cuentas se cruzan. Con la misma unidad y el mismo divisor, φ² se cumple en
+ * todos los anchos, que es lo único que hace que esto sea una escala y no tres
+ * números que hoy coinciden.
+ */
+const AIRE_INTRO = `clamp(${aureo(aureo(TITULO_MIN))}px,${aureo(aureo(TITULO_VW))}vw,${aureo(aureo(TITULO_MAX))}px)`;
 
 const COPY = {
   preguntar: { es: "Preguntar a Leonardo", en: "Ask Leonardo" },
@@ -360,16 +390,38 @@ export function Hero() {
             background: angosto
               ? `radial-gradient(ellipse at ${foco.x.toFixed(1)}% ${foco.y.toFixed(1)}%, transparent 46%, oklch(8% 0.02 40 / 0.3) 86%, oklch(6% 0.02 40 / 0.6) 100%)`
               : "radial-gradient(ellipse at 50% 55%, transparent 36%, oklch(8% 0.02 40 / 0.55) 80%, oklch(6% 0.02 40 / 0.88) 100%), " +
-                "linear-gradient(to bottom, oklch(6% 0.02 40 / 0.6) 0%, transparent 24%, transparent 68%, oklch(6% 0.02 40 / 0.68) 100%)",
+                // El piso baja de 0,68 a 0,24 (D-158). Ver el bloque de abajo:
+                // esta capa y la otra se multiplican, y entre las dos dejaban
+                // pasar el 2,5% de la luz.
+                "linear-gradient(to bottom, oklch(6% 0.02 40 / 0.6) 0%, transparent 24%, transparent 68%, oklch(6% 0.02 40 / 0.24) 100%)",
           }}
         />
 
         {/*
-          Piso oscuro: es lo que hace legibles los botones y la bajada sobre la
-          llama. Se subió una pizca en la franja del 26–48%, que es exactamente
-          donde cae «Por primera vez, un software…»: ahí el fuego es más claro
-          que en el resto del cuadro y esa línea, más chica que el título,
-          perdía contraste contra las chispas.
+          EL OSCURECIDO SIGUE AL TEXTO, NO AL MARCO (D-158).
+          
+          Antes esto era una franja negra que subía desde el borde de abajo, y
+          entre ella y la viñeta de la capa 1 —que se multiplican— al pie del
+          cuadro llegaba el 2,5% de la luz del video: (1−0,30)(1−0,68)(1−0,89).
+          O sea negro. Y justo ahí abajo están las rodillas de Leonardo y el
+          sillón, que es la parte del plano que dice que hay alguien sentado.
+
+          El problema es que oscurecer el MARCO para que se lea el TEXTO paga
+          el precio en todo el ancho del cuadro, incluso donde no hay una letra.
+          Ahora son dos capas con trabajos distintos:
+
+            1. UN LECHO ELIPTICO centrado en la copia (50%, 68%), que es donde
+               están el título, la bajada y los dos botones. Ahí adentro el
+               oscurecido es MAS fuerte que antes —0,62 contra 0,56—, así que
+               el texto se lee mejor, no peor.
+            2. UN PISO FLOJO, 0,30 en el borde de abajo contra 0,89: lo justo
+               para que el corte del video no encandile y empalme con la
+               sección clara que sigue.
+
+          Al pie pasa ahora ~37% de la luz en vez de 2,5%: quince veces más.
+          Lo que queda expuesto —«Cómo funciona» y la flecha de scroll, que
+          caen sobre las rodillas— se defiende con su propia sombra de texto,
+          que es exactamente donde corresponde ponerla: en la letra.
         */}
         <div
           style={{
@@ -381,8 +433,17 @@ export function Hero() {
               // El texto de la intro cae sobre el tercio central, que en vertical
               // es la escena nítida y no la mesa: alcanza con menos.
               ? "linear-gradient(to top, oklch(7% 0.02 40 / 0.86) 0%, oklch(7% 0.02 40 / 0.66) 22%, oklch(7% 0.02 40 / 0.34) 46%, oklch(7% 0.02 40 / 0.12) 70%, transparent 100%)"
-              : "linear-gradient(to top, oklch(7% 0.02 40 / 0.78) 0%, oklch(7% 0.02 40 / 0.7) 26%, oklch(7% 0.02 40 / 0.52) 48%, oklch(7% 0.02 40 / 0.26) 72%, transparent 100%), " +
-                "radial-gradient(105% 46% at 50% 104%, oklch(6% 0.02 40 / 0.5) 0%, transparent 72%)",
+              : // 1. El lecho de la copia.
+                "radial-gradient(52% 26% at 50% 68%, oklch(7% 0.02 40 / 0.62) 0%, oklch(7% 0.02 40 / 0.34) 52%, transparent 82%), " +
+                // 2. La mancha chica de «Cómo funciona». Ese renglón cae sobre
+                //    la página abierta del libro, que es lo más CLARO de todo
+                //    el cuadro, y es texto claro: el único punto donde destapar
+                //    el fondo lo dejaba peleando contra papel iluminado.
+                //    Angosta a propósito —14% de ancho— para no volver a tapar
+                //    las rodillas, que están a los costados y no en el medio.
+                "radial-gradient(14% 7% at 50% 86%, oklch(7% 0.02 40 / 0.5) 0%, transparent 100%), " +
+                // 3. El piso, apenas.
+                "linear-gradient(to top, oklch(7% 0.02 40 / 0.3) 0%, oklch(7% 0.02 40 / 0.18) 10%, oklch(7% 0.02 40 / 0.07) 22%, transparent 40%)",
           }}
         />
 
@@ -437,7 +498,11 @@ export function Hero() {
             zIndex: 6,
             display: "flex",
             alignItems: "center",
-            gap: 4,
+            // −10% (D-158): la pastilla de idioma es lo único que se ve durante
+            // toda la intro y a 112 px de ancho pesaba como un botón de acción,
+            // que no es. Se achicó de a partes iguales —cuerpo, relleno y
+            // separación— para que siga siendo la misma pastilla y no otra.
+            gap: 3,
             padding: 4,
             background: "oklch(12% 0.02 40 / 0.4)",
             border: "1px solid oklch(88% 0.04 85 / 0.22)",
@@ -458,9 +523,9 @@ export function Hero() {
               }}
               style={{
                 fontFamily: FUENTE.lectura,
-                fontSize: angosto ? ESCALA_MOVIL.pastilla : 14,
+                fontSize: angosto ? ESCALA_MOVIL.pastilla : 13,
                 fontWeight: lang === codigo ? 600 : 500,
-                padding: angosto ? "8px 13px" : "7px 15px",
+                padding: angosto ? "7px 12px" : "6px 14px",
                 background: lang === codigo ? "oklch(93% 0.03 85 / 0.92)" : "none",
                 border: "none",
                 borderRadius: 999,
@@ -505,7 +570,8 @@ export function Hero() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: "clamp(6px,1vh,11px)",
+              // Ver `AIRE_INTRO`: el título sobre φ².
+              gap: AIRE_INTRO,
               marginBottom: "clamp(6px,1.2vh,12px)",
               maxWidth: "96vw",
               textAlign: "center",
@@ -521,7 +587,15 @@ export function Hero() {
                 // con 3.4vw un teléfono caía siempre al piso del clamp y el
                 // título quedaba del tamaño de la bajada.
                 fontSize: li === 0 ? ESCALA_MOVIL.titulo : ESCALA_MOVIL.bajada,
-                lineHeight: li === 0 ? 1.4 : 1.6,
+                /*
+                 * El título va apretado —1,25— porque es un titular y se mira;
+                 * la bajada va a φ —1,618— porque es la única línea del hero
+                 * que se LEE, y en un teléfono son tres renglones. Que el
+                 * interlineado de la bajada sea justo φ no es un guiño: es lo
+                 * que la vuelve cómoda en el ancho angosto, que es donde hacía
+                 * falta.
+                 */
+                lineHeight: li === 0 ? 1.25 : PHI,
                 letterSpacing: ".012em",
                 color: li === 0 ? "oklch(98% 0.012 85)" : "oklch(96% 0.014 85 / 0.93)",
                 textShadow:
@@ -690,6 +764,14 @@ export function Hero() {
                 fontSize: angosto ? ESCALA_MOVIL.como : 18,
                 letterSpacing: ".03em",
                 color: "oklch(93% 0.02 85 / 0.72)",
+                /*
+                 * SU PROPIA SOMBRA, porque su fondo se lo llevaron (D-158).
+                 * Este botón cae al 86% del alto, justo sobre las rodillas, que
+                 * es la parte del cuadro que se destapó a propósito. La sombra
+                 * hace acá el trabajo que antes hacía la franja negra, pero
+                 * sólo en el contorno de la letra en vez de en todo el ancho.
+                 */
+                textShadow: "0 1px 10px oklch(6% 0.02 40 / 0.95), 0 0 22px oklch(6% 0.02 40 / 0.8)",
                 transition: "color .25s ease",
               }}
             >

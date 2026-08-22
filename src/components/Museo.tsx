@@ -36,17 +36,34 @@ import medidas from "../../public/biblioteca/medidas.json" with { type: "json" }
 
 const COPY = {
   firma: { es: "Museo", en: "Museum" },
+  /**
+   * EL TITULO DE LA PORTADA. Antes el `<h2>` era la bajada y no había nombre:
+   * la sección se anunciaba sólo con la etiqueta chica «MUSEO», que alcanza
+   * como rótulo pero no como puerta de entrada a una sala entera.
+   */
+  titulo: {
+    es: "Museo virtual Leonardo da Vinci",
+    en: "Leonardo da Vinci Virtual Museum",
+  },
   bajada: {
     es: "Nueve obras colgadas de telones, en una sala que se recorre.",
     en: "Nine works hung on cloth, in a room you walk through.",
   },
-  entrar: { es: "Entrar a la sala", en: "Enter the room" },
+  entrar: { es: "Entrar al museo", en: "Enter the museum" },
   volver: { es: "Salir", en: "Leave" },
   cargando: { es: "Levantando los telones", en: "Raising the cloth" },
-  controles: {
-    es: "WASD para caminar · mouse para mirar · Esc para salir",
-    en: "WASD to walk · mouse to look · Esc to leave",
-  },
+  /**
+   * EL RECORDATORIO DE TECLAS, y **el único que queda**. Había además una
+   * línea de texto en la portada y otra en la pausa; las dos se fueron por
+   * pedido del dueño. Este recuadro es ahora lo único que dice qué tecla hace
+   * qué, y por eso está siempre a la vista mientras se camina.
+   *
+   * Dice dos cosas: moverse y salir. Correr con `Shift` funciona y no se
+   * anuncia en ningún lado — es una decisión del dueño, no un olvido.
+   */
+  hudMover: { es: "Moverse", en: "Move" },
+  hudSalir: { es: "Salir", en: "Leave" },
+
   soloEscritorio: {
     es: "La sala necesita teclado y mouse, así que no abre en un teléfono. Las mismas nueve obras están en la biblioteca, hoja a hoja y con lupa.",
     en: "The room needs a keyboard and a mouse, so it does not open on a phone. The same nine works are in the library, leaf by leaf and with a loupe.",
@@ -197,10 +214,18 @@ export function Museo({ lang }: { lang: Idioma }) {
       {/* ---- La portada de la sección ---- */}
       {!dentro && (
         <div className="alv-museo-portada">
-          <span className="alv-museo-firma">{COPY.firma[lang]}</span>
+          {/*
+            SIN LA ETIQUETA «MUSEO» ARRIBA DEL TITULO. El resto del sitio la
+            usa como rótulo de sección y acá seguiría siendo correcta, pero
+            encima de «Museo virtual Leonardo da Vinci» dice dos veces lo
+            mismo. El nombre de la sección lo lleva ahora el título; la
+            etiqueta sigue viva en el `aria-label` del `<section>`, que es
+            donde un lector de pantalla la necesita.
+          */}
           <h2 className="alv-museo-titulo" style={{ fontFamily: FUENTE.titulo }}>
-            {COPY.bajada[lang]}
+            {COPY.titulo[lang]}
           </h2>
+          <p className="alv-museo-nota">{COPY.bajada[lang]}</p>
 
           {angosto ? (
             <>
@@ -218,12 +243,16 @@ export function Museo({ lang }: { lang: Idioma }) {
           ) : estado === "sinWebgl" ? (
             <p className="alv-museo-nota">{COPY.sinWebgl[lang]}</p>
           ) : (
-            <>
-              <button type="button" className="alv-museo-boton" onClick={entrar}>
-                {COPY.entrar[lang]}
-              </button>
-              <p className="alv-museo-controles">{COPY.controles[lang]}</p>
-            </>
+            /*
+              Sólo el botón. La lista de teclas estaba acá y sobraba: se lee
+              antes de tener con qué probarla, y adentro de la sala ya está el
+              recuadro de la esquina diciendo lo mismo cuando sirve. Sigue en
+              la capa de pausa, que es el momento en que alguien se pregunta
+              cómo era el control.
+            */
+            <button type="button" className="alv-museo-boton" onClick={entrar}>
+              {COPY.entrar[lang]}
+            </button>
           )}
 
           {/*
@@ -255,7 +284,6 @@ export function Museo({ lang }: { lang: Idioma }) {
       {/* ---- Pausado: el puntero se soltó ---- */}
       {estado === "pausado" && (
         <div className="alv-museo-capa" data-tocable="si">
-          <p className="alv-museo-controles">{COPY.controles[lang]}</p>
           <button
             type="button"
             className="alv-museo-boton"
@@ -285,7 +313,39 @@ export function Museo({ lang }: { lang: Idioma }) {
       {estado === "adentro" && (
         <button type="button" className="alv-museo-salir" onClick={salir}>
           {COPY.volver[lang]}
+          {/* La tecla que hace lo mismo, al lado del botón que lo hace. Es una
+              tecla, así que va en un <kbd>: el lector de pantalla la anuncia
+              como tecla y no como una palabra suelta pegada a «Salir». */}
+          <kbd className="alv-museo-tecla">Esc</kbd>
         </button>
+      )}
+
+      {/*
+        EL RECORDATORIO DE TECLAS, dibujado como el teclado y no escrito.
+
+        Antes era una línea de texto —«WASD moverse · Shift correr»— y se leía
+        como una nota al pie. Cuatro teclas en cruz se reconocen sin leerlas:
+        la forma ES la información, y por eso todos los juegos la dibujan así.
+        `<kbd>` en vez de `<div>` porque siguen siendo teclas, y la cruz la
+        arma el grid del CSS, no un carácter de dibujo.
+
+        `aria-hidden`: la sala en sí ya es inaccesible para quien no ve —para
+        eso está la lista de las nueve obras en la portada, y la biblioteca—,
+        así que anunciar teclas de caminata acá no le sirve a nadie.
+      */}
+      {estado === "adentro" && (
+        <div className="alv-museo-hud" aria-hidden="true">
+          <div className="alv-museo-hud-cruz">
+            <kbd>W</kbd>
+            <kbd>A</kbd>
+            <kbd>S</kbd>
+            <kbd>D</kbd>
+          </div>
+          <span className="alv-museo-hud-pie">{COPY.hudMover[lang]}</span>
+          <span className="alv-museo-hud-salir">
+            <kbd>Esc</kbd> {COPY.hudSalir[lang]}
+          </span>
+        </div>
       )}
     </section>
   );

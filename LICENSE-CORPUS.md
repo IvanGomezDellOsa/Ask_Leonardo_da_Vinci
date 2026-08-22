@@ -60,6 +60,28 @@ ahí. El «0% de citas inventadas» se mide contra Richter y sólo contra Richte
 tomo es material que se mira en la biblioteca, como las 27 láminas. El propio volumen lo dice en su
 portadilla, antes de la primera línea de texto.
 
+## El modelo 3D del museo, que tampoco es corpus
+
+`public/museo/visitante.glb` es el único modelo 3D del proyecto y **no lo hicimos nosotros**: es el
+personaje que uno maneja en la sala (D-166).
+
+| | |
+|---|---|
+| **Qué es** | «Business Man», del *Ultimate Modular Men Pack* |
+| **Autor** | **Quaternius** — <https://quaternius.com> |
+| **De dónde** | <https://poly.pizza/m/JFrLIKqvCH> |
+| **Términos** | **CC0 1.0 Universal** (dominio público) — <https://creativecommons.org/publicdomain/zero/1.0/> |
+| **Atribución** | **No la exige.** CC0 es una renuncia: se puede usar, modificar y redistribuir, comercialmente, sin pedir permiso ni acreditar. Queda anotado igual, que es lo mínimo que se le debe a alguien que regala su trabajo |
+
+**No hay conflicto con MIT.** CC0 no es recíproca: a diferencia del tomo de Wikipedia, más arriba,
+este archivo no arrastra ninguna condición sobre el resto del repositorio.
+
+**Ningún byte se descarga si no se entra a la sala.** Mismo criterio que las nueve obras y que el
+propio motor 3D: el `import()` dinámico vive adentro del botón «Entrar al museo» (D-162).
+
+Hubo además un sombrero y un sillón, que ya no están (D-167 a D-171). El sombrero era la única pieza
+no-CC0 que llegó a entrar al repositorio; se fue con él.
+
 ## La cadena de traducción, declarada
 
 El italiano de Leonardo → el inglés de Richter (1888) → el castellano de este proyecto. **Son tres

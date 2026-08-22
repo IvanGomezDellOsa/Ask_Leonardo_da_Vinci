@@ -1661,15 +1661,6 @@ a:hover {
   color: oklch(24% 0.008 70 / 0.72);
 }
 
-.alv-museo-controles {
-  margin: 0;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: oklch(24% 0.008 70 / 0.5);
-}
-
 /* El mismo relleno de 22 px de los botones del hero: una sola gramática de
    botón en todo el sitio (D-161). */
 .alv-museo-boton {
@@ -1779,30 +1770,159 @@ a:hover {
   color: oklch(24% 0.008 70 / 0.76);
 }
 
+/* EL BOTON DE SALIR, con la misma gramática que el recuadro de teclas de la
+   esquina opuesta: pastilla traslúcida, y la tecla dibujada como tecla.
+   Antes tenían dos tratamientos distintos de `<kbd>` —uno chato y otro con
+   relieve— y se leían como dos piezas de sitios diferentes. */
 .alv-museo-salir {
   position: absolute;
   z-index: 5;
   top: 28px;
   right: 32px;
-  height: 34px;
-  padding: 0 15px;
-  border: 1px solid oklch(24% 0.008 70 / 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  height: 38px;
+  /* Menos relleno del lado de la tecla: el relieve del `<kbd>` ya ocupa
+     espacio óptico y con el padding parejo la pastilla se veía volcada. */
+  padding: 0 8px 0 17px;
+  border: 1px solid oklch(24% 0.008 70 / 0.18);
   border-radius: 999px;
   cursor: pointer;
-  background: oklch(97% 0.006 85 / 0.7);
+  background: oklch(97% 0.006 85 / 0.72);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  color: oklch(24% 0.008 70 / 0.78);
+  color: oklch(24% 0.008 70 / 0.74);
   font-family: inherit;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
 }
 
 .alv-museo-salir:hover {
   color: oklch(24% 0.008 70);
-  border-color: oklch(24% 0.008 70 / 0.4);
+  border-color: oklch(24% 0.008 70 / 0.34);
+  background: oklch(98% 0.006 85 / 0.86);
+}
+
+/* LA TECLA, dibujada como una tecla.
+   Un atajo escrito con la misma letra que la etiqueta se lee como parte del
+   texto —«SALIR ESC»—; encerrado en su relieve se lee como lo que es. Va en
+   caja y media menos de peso que la etiqueta para que el botón siga mandando. */
+.alv-museo-tecla {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 23px;
+  padding: 0 8px;
+  border: 1px solid oklch(24% 0.008 70 / 0.2);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: oklch(100% 0 0 / 0.62);
+  color: oklch(24% 0.008 70 / 0.56);
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.alv-museo-salir:hover .alv-museo-tecla {
+  border-color: oklch(24% 0.008 70 / 0.32);
+  color: oklch(24% 0.008 70 / 0.78);
+}
+
+/* EL HUD DE MOVIMIENTO: una tarjeta, no una pastilla.
+   Deja de ser una línea de texto y pasa a ser el dibujo del teclado, que es
+   como se reconoce sin leer. Sigue el mismo lenguaje que el botón «Salir» de
+   la esquina opuesta —fondo traslúcido, borde de un pelo, `<kbd>` con
+   relieve— pero en bloque, porque acá lo que informa es la FORMA. */
+.alv-museo-hud {
+  position: absolute;
+  z-index: 5;
+  /* Abajo a la DERECHA y no a la izquierda: la cartela de la obra ya ocupa
+     esa esquina —340 px de ancho, `bottom: 40px`— y las dos superpuestas
+     tapaban justo el texto que la sala existe para hacer leer. */
+  right: 32px;
+  bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px 12px;
+  border: 1px solid oklch(24% 0.008 70 / 0.2);
+  border-radius: 14px;
+  background: oklch(97% 0.006 85 / 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: oklch(24% 0.008 70 / 0.7);
+}
+
+/* La cruz la arma el grid: `W` sola en la columna del medio y `A S D` abajo
+   llenando la fila. Sin caracteres de dibujo ni tres contenedores anidados.
+
+   Las cuatro celdas van declaradas una por una. Poner sólo la `W` en la
+   columna 2 y dejar fluir el resto NO alcanza —el flujo automático mete la `A`
+   al lado de la `W` y termina en un cuadrado de 2×2, que fue lo que salió la
+   primera vez—: hay que decir dónde va cada una. */
+.alv-museo-hud-cruz {
+  display: grid;
+  grid-template-columns: repeat(3, 30px);
+  gap: 4px;
+}
+
+.alv-museo-hud-cruz kbd:nth-child(1) { grid-area: 1 / 2; }
+.alv-museo-hud-cruz kbd:nth-child(2) { grid-area: 2 / 1; }
+.alv-museo-hud-cruz kbd:nth-child(3) { grid-area: 2 / 2; }
+.alv-museo-hud-cruz kbd:nth-child(4) { grid-area: 2 / 3; }
+
+.alv-museo-hud kbd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  border: 1px solid oklch(24% 0.008 70 / 0.22);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: oklch(100% 0 0 / 0.55);
+  color: oklch(24% 0.008 70 / 0.72);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.alv-museo-hud-pie {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+/* La salida va debajo de una línea: es otra clase de acción —termina el
+   recorrido— y agruparla con las de caminar la volvería un quinto movimiento. */
+.alv-museo-hud-salir {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding-top: 9px;
+  border-top: 1px solid oklch(24% 0.008 70 / 0.14);
+  font-size: 10.5px;
+  color: oklch(24% 0.008 70 / 0.6);
+}
+
+.alv-museo-hud-salir kbd {
+  padding: 0 7px;
+  height: 22px;
+  font-size: 9.5px;
 }
 
 /* La mira: un punto mínimo en el centro. Sin él no se sabe qué se está
@@ -1811,8 +1931,13 @@ a:hover {
   content: none;
 }
 
+/* LA MIRA SE FUE CON LA PRIMERA PERSONA (D-165). Existía porque sin un punto
+   en el centro no se sabía qué se estaba mirando. Con la cámara detrás del
+   hombro ese punto cae sobre la espalda del personaje, que es exactamente
+   donde no hay nada que mirar: quien dice qué obra está enfrente es la
+   cartela. */
 .alv-museo:has(.alv-museo-salir)::after {
-  content: "";
+  content: none;
   position: absolute;
   z-index: 5;
   top: 50%;

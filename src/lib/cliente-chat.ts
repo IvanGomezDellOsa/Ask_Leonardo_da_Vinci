@@ -55,11 +55,11 @@ const RECHAZOS: Record<string, Record<Idioma, string>> = {
     en: `We have reached the ${MAX_TURNOS} exchanges of this session. Reload the page to begin anew.`,
   },
   global_dia: {
-    es: "Leonardo descansa: se agotó lo que este taller puede responder hoy. Las 6 preguntas de la portada siguen andando — están guardadas acá mismo y no dependen de eso.",
+    es: "Leonardo descansa: se agotó lo que este taller puede responder hoy. Las 6 preguntas de la portada siguen andando: están guardadas acá mismo y no dependen de eso.",
     en: "Leonardo rests: what this workshop can answer today is spent. The 6 questions on the cover still work — they are kept right here and depend on none of this.",
   },
   cuota_proveedor: {
-    es: "Leonardo descansa: se agotó lo que este taller puede responder hoy. Las 6 preguntas de la portada siguen andando — están guardadas acá mismo y no dependen de eso.",
+    es: "Leonardo descansa: se agotó lo que este taller puede responder hoy. Las 6 preguntas de la portada siguen andando: están guardadas acá mismo y no dependen de eso.",
     en: "Leonardo rests: what this workshop can answer today is spent. The 6 questions on the cover still work — they are kept right here and depend on none of this.",
   },
   turnstile: {
@@ -67,7 +67,7 @@ const RECHAZOS: Record<string, Record<Idioma, string>> = {
     en: "I could not confirm a person on the other side. Reload the page and try again.",
   },
   red: {
-    es: "No llegué al taller — puede ser tu conexión. Probá de nuevo en un momento.",
+    es: "No llegué al taller: puede ser tu conexión. Probá de nuevo en un momento.",
     en: "I could not reach the workshop — it may be your connection. Try again in a moment.",
   },
   desconocido: {

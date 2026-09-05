@@ -45,6 +45,14 @@ export type OpcionesMuseo = {
   alSoltarPuntero: () => void;
   /** Progreso de carga de texturas, 0..1. */
   alCargar: (t: number) => void;
+  /**
+   * Entrada tactil. Cambia tres cosas y ninguna es cosmetica: se mira
+   * arrastrando el dedo en vez de con el puntero bloqueado, se camina con el
+   * vector analogico de `empujar()` en vez de con WASD, y **no se corre** —
+   * `Shift` no existe en un telefono y no hay gesto que lo reemplace sin
+   * pelearse con el arrastre.
+   */
+  tactil?: boolean;
 };
 
 /* ---- Las medidas de la sala, en metros ---------------------------------- */
@@ -199,6 +207,13 @@ const ROCE_CUERPO = 0.55;
  * que hay que ver, que es la tela envolviendo a alguien.
  */
 /** A qué distancia va la cámara por detrás del personaje. */
+/** El FOV vertical de escritorio, y el piso de la cuenta de `redimensionar`. */
+const FOV_BASE = 62;
+/** El techo: mas que esto es ojo de pez. */
+const FOV_MAXIMO = 78;
+/** El campo horizontal que se trata de sostener en pantallas verticales. */
+const FOV_HORIZONTAL = (52 * Math.PI) / 180;
+
 const CAMARA_ATRAS = 3.2;
 /** Corrimiento a la derecha. Una cámara al hombro deja ver hacia dónde se va;
  *  una centrada pone la nuca justo encima de lo que uno quiere mirar. */
@@ -374,8 +389,6 @@ class Telon {
 
     this.geom.computeVertexNormals();
     this.malla = new THREE.Mesh(this.geom, material);
-    this.malla.castShadow = true;
-    this.malla.receiveShadow = true;
   }
 
   /**
@@ -612,9 +625,11 @@ class Telon {
  * BAJA EL BRILLO DEL MODELO DESCARGADO (D-167).
  *
  * El GLB del visitante viene con `metalness` en 0,4 sobre CUALQUIER material,
- * piel y tela incluidas. Con los focos de la sala en 130 de intensidad eso se
- * ve de plástico — el mismo motivo por el que el mármol del piso, más abajo en
- * este archivo, lleva `metalness` apenas 0,06 y no más.
+ * piel y tela incluidas. Con los focos que la sala tenía entonces —nueve, a 130
+ * de intensidad, sacados en D-172— eso se veía de plástico; el mismo motivo por
+ * el que el mármol del piso, más abajo en este archivo, lleva `metalness` apenas
+ * 0,06 y no más. Sin focos el brillo especular molesta menos, pero la corrección
+ * sigue siendo correcta: nada acá es metal salvo los herrajes.
  *
  * Nada en una galería es metal salvo los herrajes, así que se pisa el valor
  * después de cargar en vez de confiar en lo que trajo el archivo.
@@ -639,10 +654,15 @@ function desplasticar(raiz: THREE.Object3D) {
 export type Museo = {
   /** Arranca el bucle. */
   andar: () => void;
-  /** Lo para sin destruir nada: la pestaña se fue de la sección. */
-  parar: () => void;
   /** Pide el bloqueo de puntero, que es lo que permite mirar con el mouse. */
   tomarPuntero: () => void;
+  /**
+   * El rumbo que pide el joystick tactil, en coordenadas de pantalla y
+   * normalizado: `x` a la derecha, `z` hacia adelante (negativo), modulo 0..1.
+   * Es analogico — el modulo es la velocidad—, y es toda la superficie que el
+   * joystick de React necesita del motor.
+   */
+  empujar: (x: number, z: number) => void;
   redimensionar: () => void;
   destruir: () => void;
 };
@@ -663,8 +683,29 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     powerPreference: "high-performance",
   });
   render.setPixelRatio(Math.min(devicePixelRatio, 2));
-  render.shadowMap.enabled = true;
-  render.shadowMap.type = THREE.PCFShadowMap;
+  /*
+   * SIN MAPA DE SOMBRAS (D-173).
+   *
+   * Estaba en `PCFShadowMap` con un mapa de 1024 que viajaba con el visitante.
+   * Se sacó entero por pedido del dueño, y su diagnóstico era el correcto: en
+   * esta sala las sombras daban más problemas que beneficio. Los tres que se
+   * veían, anotados para que nadie las vuelva a poner esperando otra cosa:
+   *
+   *   · ACNE Y PETER-PANNING. Un mapa de 1024 repartido sobre 28 m deja ~3,6 cm
+   *     por texel. `bias -0.0015` más `normalBias 0.02` era el equilibrio entre
+   *     el rayado en el mármol y la sombra despegada de los pies — se corrigió
+   *     tres veces y nunca quedó bien en los dos a la vez.
+   *   · EL BORDE DEL MAPA. Fuera de los 28 m la sombra simplemente termina, y
+   *     el corte se ve al caminar.
+   *   · LA TELA. `castShadow` sobre una malla que se re-simula cada cuadro
+   *     obliga a re-subir su geometría al mapa además de a la escena.
+   *
+   * Y el costo era real: una pasada extra de la escena entera por cuadro, más
+   * el muestreo PCF en cada fragmento.
+   *
+   * `shadowMap.enabled` arranca en `false`, así que alcanza con no encenderlo;
+   * queda dicho acá porque su ausencia es una decisión, no un olvido.
+   */
   render.toneMapping = THREE.ACESFilmicToneMapping;
   render.toneMappingExposure = 1.18;
 
@@ -685,7 +726,7 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
    */
   escena.fog = new THREE.Fog(0x39434f, 26, 90);
 
-  const camara = new THREE.PerspectiveCamera(62, 1, 0.1, 120);
+  const camara = new THREE.PerspectiveCamera(FOV_BASE, 1, 0.1, 120);
 
   /* ---- Luz --------------------------------------------------------------
      Un museo es luz difusa y pareja. Una hemisférica hace el ambiente, una
@@ -704,32 +745,34 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
    *              y el rebote frío del piso de mármol. Da el relleno y nada más.
    *   CENITAL    la direccional, casi vertical, que baja de las claraboyas y
    *              es la que proyecta las sombras.
-   *   FOCOS      un `SpotLight` por obra, apuntando al telón. Es exactamente
-   *              lo que hay en la sala de un museo, y es lo que hace que el
-   *              cuadro salte del fondo en vez de quedar sumergido.
+   *
+   * ⚠ HABIA UN CUARTO: un `SpotLight` por obra, apuntando al telón. Eran nueve
+   * y se sacaron en D-172 por pedido del dueño. Las luminarias siguen colgadas
+   * del techo como utilería, sin luz adentro. Lo que se perdió con ellos está
+   * anotado donde se arman los telones, más abajo en este archivo: la sala
+   * quedó más pareja, porque el azul de las paredes no devuelve luz suficiente
+   * para levantar las obras solo.
    */
   escena.add(new THREE.HemisphereLight(0xfff2dd, 0x7d8794, 1.9));
   /*
-   * LA SOMBRA VIAJA CON EL VISITANTE, y no es una optimización: es la única
-   * manera de que exista. Una sala de casi 120 metros de largo con un solo mapa
-   * de sombras fijo reparte 1024 píxeles sobre todo eso — se ve el rectángulo
-   * donde el mapa alcanza y el borde donde deja de alcanzar, que fue lo primero
-   * que apareció en el piso. Moviendo la luz y su objetivo con la cámara, esos
-   * mismos 1024 píxeles cubren 28 metros alrededor de quien mira, que es lo
-   * único que se ve.
+   * LA CENITAL. Casi vertical: la luz baja de las claraboyas, no entra por una
+   * ventana.
+   *
+   * ACA VIVIA «LA SOMBRA VIAJA CON EL VISITANTE» (D-163), que movía la luz y su
+   * objetivo cada cuadro para que los 1024 píxeles del mapa cubrieran los 28 m
+   * alrededor de quien mira en vez de los 120 de la sala. Con las sombras
+   * sacadas (D-173) eso quedó sin sentido — y de paso se ve algo que el diseño
+   * anterior tapaba:
+   *
+   * **UNA DIRECCIONAL NO TIENE POSICION, TIENE DIRECCION.** El vector iba de
+   * `(sujeto + (2.2, 15, 3.4))` a `(sujeto.x, 0, sujeto.z)`, o sea SIEMPRE
+   * `(-2.2, -15, -3.4)` — el mismo en cada cuadro, en cada punto de la sala.
+   * Las tres líneas del bucle no cambiaban la iluminación ni un lumen: existían
+   * enteramente para arrastrar la cámara de sombras. Se fijan una vez acá y el
+   * bucle se queda sin ellas.
    */
   const sol = new THREE.DirectionalLight(0xfff6e8, 2.1);
-  sol.castShadow = true;
-  sol.shadow.mapSize.set(1024, 1024);
-  sol.shadow.camera.near = 1;
-  sol.shadow.camera.far = 46;
-  const s = 14;
-  sol.shadow.camera.left = -s;
-  sol.shadow.camera.right = s;
-  sol.shadow.camera.top = s;
-  sol.shadow.camera.bottom = -s;
-  sol.shadow.bias = -0.0015;
-  sol.shadow.normalBias = 0.02;
+  sol.position.set(2.2, 15, 3.4);
   escena.add(sol);
   escena.add(sol.target);
   // El rebote del piso: sube y aclara los reversos de los telones, que si no
@@ -742,7 +785,14 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
    * EL PISO MINIMO DE LUZ. Con la cenital casi vertical, una pared vertical no
    * recibe casi nada y de cerca salía negra — el azul del Prado desaparecía
    * justo donde más se lo mira. Una ambiente floja garantiza que ninguna
-   * superficie caiga a cero sin lavar el contraste que dan los focos.
+   * superficie caiga a cero.
+   *
+   * Su valor —0,55— se eligió cuando además había nueve focos, y era el máximo
+   * que no lavaba el contraste que daban ellos. Sacados los focos (D-172) ese
+   * techo dejó de existir: hoy `0.55` es el piso de una sala sin nada por
+   * encima, no un equilibrio contra otra cosa. Se deja como estaba porque
+   * subirlo es una decisión de cuánta luz tiene que tener la sala, y esa la
+   * toma el dueño mirándola, no yo compensando un cambio que él pidió.
    */
   escena.add(new THREE.AmbientLight(0xdfe6ef, 0.55));
 
@@ -825,7 +875,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
   );
   piso.rotation.x = -Math.PI / 2;
   piso.position.z = zCentro;
-  piso.receiveShadow = true;
   escena.add(piso);
 
   const yeso = texturaYeso();
@@ -850,7 +899,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     const pared = new THREE.Mesh(new THREE.PlaneGeometry(largoSala, ALTO_SALA), matPared);
     pared.rotation.y = (lado * -Math.PI) / 2;
     pared.position.set((lado * ANCHO_SALA) / 2, ALTO_SALA / 2, zCentro);
-    pared.receiveShadow = true;
     escena.add(pared);
   }
 
@@ -882,7 +930,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     // Mirando hacia adentro de la sala, las dos.
     pared.rotation.y = alFondo ? 0 : Math.PI;
     pared.position.set(0, ALTO_SALA / 2, extremo);
-    pared.receiveShadow = true;
     escena.add(pared);
   }
 
@@ -906,7 +953,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     const x = (lado * ANCHO_SALA) / 2;
     const zocalo = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.34, largoSala), matMoldura);
     zocalo.position.set(x - lado * 0.045, 0.17, zCentro);
-    zocalo.receiveShadow = true;
     escena.add(zocalo);
 
     const cornisa = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.26, largoSala), matMoldura);
@@ -935,7 +981,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
 
     const zocalo = new THREE.Mesh(new THREE.BoxGeometry(ANCHO_SALA, 0.34, 0.09), matMoldura);
     zocalo.position.set(0, 0.17, z);
-    zocalo.receiveShadow = true;
     escena.add(zocalo);
 
     const cornisa = new THREE.Mesh(new THREE.BoxGeometry(ANCHO_SALA, 0.26, 0.22), matMoldura);
@@ -1049,13 +1094,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
    * marco sobresale de la pared, así que además es lo que corresponde.
    */
   grupoPuerta.position.set(0, 0, zFrente - 0.17);
-  grupoPuerta.traverse((n) => {
-    const m = n as THREE.Mesh;
-    if (m.isMesh) {
-      m.castShadow = true;
-      m.receiveShadow = true;
-    }
-  });
   escena.add(grupoPuerta);
 
   /*
@@ -1091,7 +1129,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     // separarse del cielorraso.
     const viga = new THREE.Mesh(new THREE.BoxGeometry(ANCHO_SALA, 0.5, 0.46), matViga);
     viga.position.set(0, ALTO_SALA - 0.26, z);
-    viga.castShadow = false;
     escena.add(viga);
 
     if (i % 3 === 1 && i < cuantasVigas) {
@@ -1185,38 +1222,50 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     barral.rotation.z = Math.PI / 2;
     barral.position.set(x, ALTURA_BARRAL + 0.02, z);
     barral.rotation.y = telon.malla.rotation.y;
-    barral.castShadow = true;
     escena.add(barral);
 
-    /*
-     * EL FOCO DE LA OBRA. Cuelga por delante del telón y apunta a su centro.
-     * Sin sombra a propósito: nueve mapas de sombra más el del sol es lo que
-     * separa una escena que corre de una que no, y la sombra que importa —la
-     * del telón sobre el piso— ya la da el cenital.
+    /* ---- LA LUMINARIA DE LA OBRA: la carcasa, sin luz adentro (D-172) ----
+     *
+     * ACA HABIA UN `SpotLight` POR OBRA —nueve— y se sacaron por pedido del
+     * dueño. Lo que queda es la luminaria como pieza de utilería: carcasa,
+     * varilla y nada más.
+     *
+     * QUE SE VA CON ELLOS, dicho sin adornos: los focos eran lo que hacía que
+     * el cuadro saltara del fondo. Con el azul del Prado en las paredes, la luz
+     * rebotada no alcanza para levantar las obras sola —es justamente lo que
+     * D-163 anotó al elegir el color—, así que la sala queda más pareja y más
+     * apagada de lo que estaba. Es un cambio visible, no una limpieza interna.
+     *
+     * QUE SE GANA: nueve `SpotLight` no son nueve objetos, son nueve luces que
+     * TODO material de la escena evalúa por fragmento. Sacarlas recompila los
+     * shaders con la cuenta de luces en cuatro y saca la parte más cara del
+     * cuadro; el resto del reparto —hemisférica, cenital, rebote y ambiente—
+     * queda intacto.
+     *
+     * LA CARCASA NO CUESTA NADA. Es una malla estática que se agrega una vez,
+     * no se toca en el bucle y no tiene ninguna luz colgando. Las dos posiciones que
+     * antes salían del foco ahora son dos vectores sueltos, que es lo único que
+     * la carcasa necesitaba de él: dónde está y hacia dónde mira.
      */
-    const foco = new THREE.SpotLight(0xfff1d8, 130, 13, 0.5, 0.6, 1.35);
-    foco.position.set(x - lado * 1.7, ALTO_SALA - 0.42, z + 0.5);
-    foco.target.position.set(x, ALTURA_BARRAL - ALTO_TELON / 2, z);
-    escena.add(foco);
-    escena.add(foco.target);
+    const posLuminaria = new THREE.Vector3(x - lado * 1.7, ALTO_SALA - 0.42, z + 0.5);
+    const miraLuminaria = new THREE.Vector3(x, ALTURA_BARRAL - ALTO_TELON / 2, z);
 
-    /* La carcasa del foco, para que la luz salga de algo. */
     const carcasa = new THREE.Mesh(
       new THREE.CylinderGeometry(0.07, 0.1, 0.24, 10),
       new THREE.MeshStandardMaterial({ color: 0x24272b, roughness: 0.45, metalness: 0.7 }),
     );
-    carcasa.position.copy(foco.position);
-    carcasa.lookAt(foco.target.position);
+    carcasa.position.copy(posLuminaria);
+    carcasa.lookAt(miraLuminaria);
     carcasa.rotateX(Math.PI / 2);
     escena.add(carcasa);
 
-    /* La varilla del foco al techo. Sin ella la carcasa era un cubo negro
-       flotando, que es peor que no poner nada. */
+    /* La varilla al techo. Sin ella la carcasa era un cubo negro flotando, que
+       es peor que no poner nada. */
     const varilla = new THREE.Mesh(
       new THREE.CylinderGeometry(0.018, 0.018, 0.42, 6),
       new THREE.MeshStandardMaterial({ color: 0x24272b, roughness: 0.5, metalness: 0.6 }),
     );
-    varilla.position.set(foco.position.x, ALTO_SALA - 0.21, foco.position.z);
+    varilla.position.set(posLuminaria.x, ALTO_SALA - 0.21, posLuminaria.z);
     escena.add(varilla);
 
     /* Los dos tensores. Van del barral al techo y ni un centímetro más: en la
@@ -1277,7 +1326,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     const pieza = (g: THREE.BufferGeometry, m: THREE.Material, y: number) => {
       const malla = new THREE.Mesh(g, m);
       malla.position.y = y;
-      malla.castShadow = true;
       return malla;
     };
 
@@ -1405,8 +1453,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
       raiz.traverse((n) => {
         const m = n as THREE.Mesh;
         if (m.isMesh) {
-          m.castShadow = true;
-          m.receiveShadow = true;
           // El traje es oscuro y la sala también: sin esto los reversos se
           // hunden en la pared azul.
           (m.material as THREE.MeshStandardMaterial).side = THREE.FrontSide;
@@ -1566,7 +1612,11 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
    * Es el cambio de fondo de D-165: hasta acá el que caminaba era la cámara y
    * el cuerpo la seguía. Ahora camina el cuerpo y la cámara lo mira. Todo lo
    * demás —el tope contra las paredes, la cápsula que empuja la tela, el foco
-   * de la cartela, el sol— pasó a colgar de este punto.
+   * de la cartela— pasó a colgar de este punto.
+   *
+   * EL SOL YA NO. Colgaba de acá para arrastrar su cámara de sombras; sin
+   * sombras (D-173) se fija una vez al construir, porque una direccional no
+   * tiene posición sino dirección y la suya nunca cambiaba.
    */
   const sujeto = new THREE.Vector3(0, 0, zFrente - 4.7);
   /** Dónde estaba en el paso anterior, para saber cuánto arrastra. */
@@ -1605,6 +1655,15 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
   let arrastrando = false;
   let ultimoX = 0;
   let ultimoY = 0;
+  /** Lo ultimo que pidio el joystick. Modulo 0..1: es la velocidad. */
+  let empujeX = 0;
+  let empujeZ = 0;
+  /**
+   * El dedo que esta mirando. ⚠ Se guarda el identificador y no un booleano:
+   * con el joystick tocado hay dos dedos en pantalla, y sin distinguirlos el
+   * segundo `touchmove` mueve la camara mientras uno camina.
+   */
+  let dedoMirando: number | null = null;
 
   const bloqueado = () => document.pointerLockElement === lienzo;
 
@@ -1653,6 +1712,47 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     arrastrando = false;
   };
 
+  /*
+   * ⚠ SENSIBILIDAD PROPIA PARA EL DEDO. El mouse recorre la pantalla varias
+   * veces sin levantarse; un pulgar hace un arco de 300 px. Con el 0,0022 del
+   * mouse, un barrido entero de un telefono giraba 47 grados y la sala se
+   * sentia trabada.
+   */
+  const SENSIBILIDAD_DEDO = 0.0035;
+
+  const dedoDe = (e: TouchEvent, id: number) => {
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const t = e.changedTouches[i]!;
+      if (t.identifier === id) return t;
+    }
+    return null;
+  };
+
+  const alTocar = (e: TouchEvent) => {
+    if (!activo || dedoMirando !== null) return;
+    const t = e.changedTouches[0];
+    if (!t) return;
+    dedoMirando = t.identifier;
+    ultimoX = t.clientX;
+    ultimoY = t.clientY;
+  };
+
+  const alArrastrarDedo = (e: TouchEvent) => {
+    if (!activo || dedoMirando === null) return;
+    const t = dedoDe(e, dedoMirando);
+    if (!t) return;
+    // Sin esto el navegador se lleva el gesto como scroll o como zoom.
+    e.preventDefault();
+    mirar((t.clientX - ultimoX) / 0.0022 * SENSIBILIDAD_DEDO, (t.clientY - ultimoY) / 0.0022 * SENSIBILIDAD_DEDO);
+    ultimoX = t.clientX;
+    ultimoY = t.clientY;
+  };
+
+  const alSoltarDedo = (e: TouchEvent) => {
+    if (dedoMirando === null) return;
+    if (dedoDe(e, dedoMirando)) dedoMirando = null;
+  };
+
   const alCambiarPuntero = () => {
     // Salir del bloqueo es la forma en que el navegador dice «Escape». Se
     // avisa a React, que pone la capa de pausa.
@@ -1668,6 +1768,11 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
   lienzo.addEventListener("mousedown", alBajarMouse);
   document.addEventListener("mouseup", alSubirMouse);
   document.addEventListener("pointerlockchange", alCambiarPuntero);
+  // `passive: false` porque `alArrastrarDedo` llama a `preventDefault`.
+  lienzo.addEventListener("touchstart", alTocar, { passive: true });
+  lienzo.addEventListener("touchmove", alArrastrarDedo, { passive: false });
+  lienzo.addEventListener("touchend", alSoltarDedo, { passive: true });
+  lienzo.addEventListener("touchcancel", alSoltarDedo, { passive: true });
 
   /** Coordenadas locales del visitante respecto de un telón. */
   const tmp = new THREE.Vector3();
@@ -1683,15 +1788,28 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
   function paso(dt: number) {
     /* ---- 1 · Caminar. Camina el PERSONAJE, no la cámara ------------------ */
     deseada.set(0, 0, 0);
-    if (teclas.has("KeyW") || teclas.has("ArrowUp")) deseada.z -= 1;
-    if (teclas.has("KeyS") || teclas.has("ArrowDown")) deseada.z += 1;
-    if (teclas.has("KeyA") || teclas.has("ArrowLeft")) deseada.x -= 1;
-    if (teclas.has("KeyD") || teclas.has("ArrowRight")) deseada.x += 1;
+    /*
+     * EL JOYSTICK MANDA SOBRE LAS TECLAS cuando hay empuje, y es ANALOGICO: el
+     * modulo del vector es la fraccion de velocidad, asi que inclinarlo poco
+     * camina despacio. El teclado no puede dar eso — una tecla esta o no esta—
+     * y por eso normaliza a 1.
+     */
+    let escala = 1;
+    if (empujeX !== 0 || empujeZ !== 0) {
+      deseada.set(empujeX, 0, empujeZ);
+      escala = Math.min(1, deseada.length());
+    } else {
+      if (teclas.has("KeyW") || teclas.has("ArrowUp")) deseada.z -= 1;
+      if (teclas.has("KeyS") || teclas.has("ArrowDown")) deseada.z += 1;
+      if (teclas.has("KeyA") || teclas.has("ArrowLeft")) deseada.x -= 1;
+      if (teclas.has("KeyD") || teclas.has("ArrowRight")) deseada.x += 1;
+    }
     if (deseada.lengthSq() > 0) {
-      // Shift para correr: el clip ya estaba en el archivo (D-167), sólo
-      // hacía falta la tecla y la velocidad de más.
-      const corriendoAhora = teclas.has("ShiftLeft") || teclas.has("ShiftRight");
-      deseada.normalize().multiplyScalar(corriendoAhora ? VELOCIDAD_CORRER : VELOCIDAD);
+      // Shift para correr (D-167). ⚠ Apagado con entrada tactil: no hay tecla
+      // y cualquier gesto que la reemplace pelea con el arrastre de mirar.
+      const corriendoAhora =
+        !o.tactil && (teclas.has("ShiftLeft") || teclas.has("ShiftRight"));
+      deseada.normalize().multiplyScalar((corriendoAhora ? VELOCIDAD_CORRER : VELOCIDAD) * escala);
       // W sigue siendo «hacia donde mira la cámara», que es lo que espera
       // cualquiera: en tercera persona el rumbo lo pone el encuadre.
       deseada.applyAxisAngle(EJE_Y, giroY);
@@ -1741,12 +1859,6 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     }
     const bamboleo = visitante.animar(dt, rapidez, rumbo);
     visitante.grupo.position.set(sujeto.x, bamboleo, sujeto.z);
-
-    // La luz y su objetivo acompañan al visitante. Ver el comentario del sol.
-    // Casi vertical: la luz baja de las claraboyas, no entra por una ventana.
-    sol.position.set(sujeto.x + 2.2, 15, sujeto.z + 3.4);
-    sol.target.position.set(sujeto.x, 0, sujeto.z);
-    sol.target.updateMatrixWorld();
 
     /* ---- 3 · Dónde querría estar la cámara ------------------------------- */
     /*
@@ -1885,10 +1997,39 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     const h = lienzo.clientHeight || 1;
     render.setSize(w, h, false);
     camara.aspect = w / h;
+    /*
+     * ⚠ EL FOV DE THREE ES VERTICAL, Y EN UN TELEFONO EN VERTICAL ESO ES UNA
+     * MIRILLA. Con 62 grados y proporcion 0,56 el campo HORIZONTAL cae a 37
+     * grados: no se ve un telon entero y caminar se vuelve un pasillo.
+     *
+     * Se abre el vertical hasta que el horizontal llegue a ~52 grados, con
+     * tope en 78 para que no aparezca la distorsion de gran angular. En
+     * escritorio la cuenta da menos de 62 y no cambia nada.
+     */
+    const porHorizontal = 2 * Math.atan(Math.tan(FOV_HORIZONTAL / 2) / camara.aspect);
+    camara.fov = Math.min(FOV_MAXIMO, Math.max(FOV_BASE, (porHorizontal * 180) / Math.PI));
     camara.updateProjectionMatrix();
   }
 
   redimensionar();
+
+  /**
+   * Suelta el bucle y toda la entrada. ⚠ Es LOCAL y no parte de `Museo`: la
+   * declaraba el tipo público con un caso de uso —«la pestaña se fue de la
+   * sección»— que nunca llegó a existir, y en once meses el único que la llamó
+   * fue `destruir()` (D-196).
+   */
+  function parar() {
+    activo = false;
+    corriendo = false;
+    if (raf !== null) cancelAnimationFrame(raf);
+    raf = null;
+    teclas.clear();
+    arrastrando = false;
+    dedoMirando = null;
+    empujeX = 0;
+    empujeZ = 0;
+  }
 
   return {
     andar() {
@@ -1898,15 +2039,14 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
       ultimo = 0;
       raf = requestAnimationFrame(bucle);
     },
-    parar() {
-      activo = false;
-      corriendo = false;
-      if (raf !== null) cancelAnimationFrame(raf);
-      raf = null;
-      teclas.clear();
-      arrastrando = false;
+    empujar(x, z) {
+      empujeX = x;
+      empujeZ = z;
     },
     tomarPuntero() {
+      // ⚠ En tactil no se pide: no hay puntero que bloquear, y el rechazo
+      // dispararia `pointerlockchange` y con el la capa de pausa.
+      if (o.tactil) return;
       // Si el navegador lo niega, no pasa nada: queda el arrastre.
       try {
         const r = lienzo.requestPointerLock?.() as unknown as Promise<void> | undefined;
@@ -1917,13 +2057,17 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
     },
     redimensionar,
     destruir() {
-      this.parar();
+      parar();
       document.removeEventListener("keydown", alBajarTecla);
       document.removeEventListener("keyup", alSubirTecla);
       document.removeEventListener("mousemove", alMoverMouse);
       lienzo.removeEventListener("mousedown", alBajarMouse);
       document.removeEventListener("mouseup", alSubirMouse);
       document.removeEventListener("pointerlockchange", alCambiarPuntero);
+      lienzo.removeEventListener("touchstart", alTocar);
+      lienzo.removeEventListener("touchmove", alArrastrarDedo);
+      lienzo.removeEventListener("touchend", alSoltarDedo);
+      lienzo.removeEventListener("touchcancel", alSoltarDedo);
       if (document.pointerLockElement === lienzo) document.exitPointerLock?.();
       destruido = true;
 

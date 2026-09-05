@@ -79,7 +79,7 @@ const COPY = {
   es: {
     titulo: "Consulta a Leonardo da Vinci",
     saludo: "Elegí una de estas preguntas, o escribí la tuya. Responderé con lo que dejé escrito en mis cuadernos.",
-    nota: "Lo entrecomillado es cita literal de sus cuadernos: no se modificó, para no perder autenticidad. Por eso a veces el lenguaje suena antiguo o cuesta leerlo.",
+    nota: "Lo entrecomillado no está reescrito: sale textual de los pasajes. Por eso a veces el lenguaje suena antiguo o cuesta leerlo.",
     sugeridas: "Preguntas sugeridas",
     otras: "Otras preguntas sugeridas",
     abrir: "Ampliar",
@@ -105,7 +105,7 @@ const COPY = {
   en: {
     titulo: "Consult Leonardo da Vinci",
     saludo: "Choose one of these questions, or write your own. I shall answer with what I set down in my notebooks.",
-    nota: "Quoted phrases are literal transcriptions from his notebooks, unmodified, so as not to lose authenticity. That is why the language sometimes sounds archaic or reads with difficulty.",
+    nota: "The phrases in quotation marks are not rewritten: they come straight out of the passages. That is why the language sometimes sounds archaic or reads with difficulty.",
     sugeridas: "Suggested questions",
     otras: "Other suggested questions",
     abrir: "Expand",
@@ -984,6 +984,9 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
                 minHeight: 26,
                 maxHeight: 128,
                 overflowY: "auto",
+                // Mismo motivo que `.alv-scroll`: sin esto, llegar al final de
+                // un texto largo empieza a scrollear la página de atrás.
+                overscrollBehavior: "contain",
               }}
             />
             <button

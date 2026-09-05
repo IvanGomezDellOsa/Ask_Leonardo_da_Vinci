@@ -1,40 +1,65 @@
 "use client";
 
 /**
- * `true` cuando la ventana es de teléfono. Ver D-144.
+ * Media queries como estado de React, para las decisiones que NO son de escala.
  *
- * POR QUE HACE FALTA UN HOOK Y NO ALCANZA CON CSS. Todo el diseño vive en
- * `style={{}}` —así salió de Claude Design y así se integró— y una regla de
- * hoja de estilos no le gana en especificidad a un estilo inline sin
- * `!important`. Las medidas fluidas se resuelven con `clamp()`, que no necesita
- * nada de esto; lo que sí lo necesita son las decisiones que **no son de
- * escala**: que el botón «Volver» pase a ser una flecha sola, que el panel deje
- * de reservar 126 px de cada lado para el encabezado, que las tarjetas de
- * pasaje pierdan la sangría. Eso es otra maqueta, no la misma más chica.
+ * Por qué hace falta un hook y no alcanza con CSS: el diseño vive en
+ * `style={{}}` y una hoja de estilos no le gana en especificidad sin
+ * `!important`. Las medidas fluidas se resuelven con `clamp()`; esto es para
+ * cuando cambia la maqueta o el contenido, no el tamaño.
  *
- * ARRANCA EN `false` Y SE CORRIGE EN EL EFECTO. El servidor no tiene forma de
- * saber el ancho de la ventana; devolver algo distinto de lo que el cliente
- * calcula en el primer render rompe la hidratación. Se paga un cuadro con la
- * maqueta ancha, que en un teléfono es imperceptible y siempre preferible a un
- * error de hidratación.
+ * Todos arrancan en `false` y se corrigen en el efecto: el servidor no conoce la
+ * ventana, y devolver algo distinto de lo que el cliente calcula en el primer
+ * render rompe la hidratación.
  */
 
 import { useEffect, useState } from "react";
 
-/** El corte. Debajo de esto la maqueta cambia, no sólo encoge. */
+/** Debajo de esto la maqueta cambia, no sólo encoge (D-144). */
 const ANGOSTO = "(max-width: 640px)";
 
-export function useAngosto(): boolean {
-  const [angosto, setAngosto] = useState(false);
+/**
+ * Entrada primaria táctil. Es la pregunta correcta para «¿puede caminar la sala
+ * del museo?», que pide teclado y bloqueo de puntero: una tablet mide 1024 px de
+ * ancho y no tiene ninguno de los dos. Un portátil con pantalla táctil da
+ * `fine`, porque `pointer` describe el dispositivo PRIMARIO.
+ */
+const SIN_MOUSE = "(pointer: coarse)";
+
+/**
+ * Ventana demasiado baja para dibujar la sala del museo. El umbral sale de la
+ * cuenta: piso 17% + arco 320 px + aire 30 + rótulo ~98 no entran debajo de
+ * 540 px de alto. Es el caso del teléfono en horizontal (390 px de alto).
+ */
+const CHATA = "(max-height: 540px)";
+
+/** `true` mientras la consulta se cumple. Se resuscribe si la consulta cambia. */
+export function useMedia(consulta: string): boolean {
+  const [activa, setActiva] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia(ANGOSTO);
-    const avisar = () => setAngosto(mq.matches);
+    const mq = window.matchMedia(consulta);
+    const avisar = () => setActiva(mq.matches);
     avisar();
     // Rotar el teléfono cambia la respuesta: hay que escuchar, no medir una vez.
     mq.addEventListener("change", avisar);
     return () => mq.removeEventListener("change", avisar);
-  }, []);
+  }, [consulta]);
 
-  return angosto;
+  return activa;
+}
+
+/** Ventana de teléfono. La usan la biblioteca, el códice y el hero. */
+export function useAngosto(): boolean {
+  return useMedia(ANGOSTO);
+}
+
+/** Sin mouse ni teclado: la sala del museo no se puede recorrer. */
+export function useSinMouse(): boolean {
+  return useMedia(SIN_MOUSE);
+}
+
+/** Ventana demasiado baja para que quepa el umbral dibujado. */
+export function useChata(): boolean {
+  return useMedia(CHATA);
 }

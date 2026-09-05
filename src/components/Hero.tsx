@@ -80,56 +80,82 @@ const MASCARA_BRASA = (foco: { x: number; y: number }) =>
  * y a 35 y a 30 px la primera línea se leía como titular — que es exactamente
  * la sensación que la delató (D-160).
  *
- * De ahí sale el techo de 26: `display-md` de Apple arranca en 34 y `lead`
- * —su tagline de apoyo— está en 28. Debajo de 28 la línea deja de leerse como
- * titular. La segunda cae en 16,07, que es cuerpo de lectura común.
+ * D-160 puso el techo en 26 leyendo la escala de Apple: `display-md` arranca en
+ * 34 y `lead` —su tagline de apoyo— está en 28, así que debajo de 28 la línea
+ * deja de leerse como titular. **D-173 lo subió a 30 por pedido del dueño**, o
+ * sea justo por encima de ese umbral. La tensión es real y queda anotada: a 30
+ * la primera línea empuja contra la lectura de titular que D-160 quiso evitar.
+ * Lo que sostiene que siga sin serlo es que el video sigue ocupando la pantalla
+ * entera detrás, y que la segunda línea subió con ella —a 18— en vez de quedarse
+ * atrás; el bloque creció, no se le abrió un escalón adentro.
  *
- * φ, Y QUE HACE ACA. Las dos líneas están en razón áurea: 26 / φ = 16,07. No
- * es decoración numerológica —es la única proporción que Leonardo ilustró de
- * su puño para Pacioli en *De divina proportione*— pero tampoco es un capricho
- * tipográfico: medidas las dos frases con la fuente cargada, la línea 2 ocupa
- * 35,156 em y la línea 1, 22,27. Su cociente es **1,579**, y φ es 1,618. O sea
- * que **φ es, con esta copy, casi exactamente el paso más chico que deja la
- * primera línea igual de ancha que la segunda**; cualquier paso menor la
- * dejaría más angosta que la que va debajo, que se lee al revés.
+ * LO QUE MANDA NO ES EL NUMERO, ES QUE LAS DOS CAJAS SALGAN CASI IGUALES.
+ * Medidas las dos frases en la ventana con la fuente cargada, la línea 1 ocupa
+ * 22,270 em y la línea 2, 35,156. Con 30 y 18 eso da 668,1 y 632,8 px: un 5,6%
+ * de diferencia. Un bloque de dos renglones parejos es lo que tiene que parecer
+ * una DESCRIPCION, que es lo que estas dos líneas son.
  *
- * POR ESO LAS DOS SALEN DEL MISMO ANCHO, y no es un defecto: un bloque de dos
- * renglones parejos es lo que tiene que parecer una descripción. Perseguir φ
- * en el ANCHO exigía un paso de 2,554 —o sea 44 px arriba— y eso es fabricar
- * el titular que este hero decidió no tener.
+ * Y si algún día se quiere el empate exacto, el número está medido: **la línea
+ * 2 a 19 px da 668,0 contra los 668,1 de la línea 1.** No se puso porque 18 fue
+ * lo que se pidió.
  *
  * Lo que sí importa es que la razón NO SE ROMPA en un teléfono: si una línea
  * se achica con un `vw` y la otra con otro, en algún ancho dejan de guardarla.
- * Por eso los tres números del `clamp` de la segunda son los de la primera
- * divididos por φ, y se escriben calculados.
+ * Por eso los tres números del `clamp` de la segunda salen de los de la primera
+ * divididos por el mismo paso, y se escriben calculados.
  */
 const PHI = 1.618;
-const TITULO_MAX = 26;
+
+/*
+ * 26 → 30 y 16,07 → 18, POR PEDIDO DEL DUEÑO (D-173). Con eso el paso entre las
+ * dos líneas deja de ser φ y pasa a ser 30/18 = 5/3 = 1,667 — un 3% por encima
+ * de 1,618.
+ *
+ * LO QUE φ COMPRABA SIGUE COMPRADO, Y ESA ERA LA PARTE QUE IMPORTABA. El punto
+ * de D-160 no era el número: era que a este paso las dos líneas SALEN CASI DEL
+ * MISMO ANCHO, que es lo que tiene que parecer un bloque de descripción de dos
+ * renglones. Medido en la ventana con la fuente cargada:
+ *
+ *   línea 1   22,270 em × 30 px = 668,1 px
+ *   línea 2   35,156 em × 18 px = 632,8 px   → 5,6% más angosta
+ *
+ * (Con φ eran 26 y 16,07: 579,0 contra 564,9, un 2,4%. O sea que el paso nuevo
+ * separa un poco más las cajas, y sigue lejos de leerse como escalón.)
+ *
+ * ⚠ EL PASO SE ESCRIBE UNA VEZ Y LOS TRES NUMEROS DEL `clamp` SALEN DE EL. Si
+ * la línea 1 se achicara con un `vw` y la línea 2 con otro, en algún ancho de
+ * pantalla dejarían de guardar la razón y el bloque se partiría en dos tamaños
+ * que no se hablan. Esa restricción es de D-159 y sigue en pie.
+ */
+const TITULO_MAX = 30;
 const TITULO_VW = 6.8;
 const TITULO_MIN = 23;
-const aureo = (n: number) => +(n / PHI).toFixed(2);
+const BAJADA_MAX = 18;
+/** El paso entre las dos líneas. Era φ (D-158); es 5/3 desde D-173. */
+const PASO = TITULO_MAX / BAJADA_MAX;
+const menor = (n: number) => +(n / PASO).toFixed(2);
 
 const ESCALA_MOVIL = {
   titulo: `clamp(${TITULO_MIN}px,${TITULO_VW}vw,${TITULO_MAX}px)`,
-  bajada: `clamp(${aureo(TITULO_MIN)}px,${aureo(TITULO_VW)}vw,${aureo(TITULO_MAX)}px)`,
+  bajada: `clamp(${menor(TITULO_MIN)}px,${menor(TITULO_VW)}vw,${BAJADA_MAX}px)`,
   boton: 14,
   como: 13,
   pastilla: 11,
 } as const;
 
 /**
- * El aire entre las dos líneas: la bajada dividida por φ otra vez, o sea el
- * título sobre φ² (30 / 2,618 = 11,46).
+ * El aire entre las dos líneas: la bajada dividida por el paso otra vez, o sea
+ * el título sobre el paso al cuadrado (30 / 2,778 = 10,8).
  *
  * VA CON `vw` COMO EL TEXTO, y no con `vh`. Primero se escribió
  * `clamp(7px,1.25vh,11.46px)` y en una ventana de 861 px de alto daba 10,76:
  * correcto de casualidad. Un `gap` que escala con el ALTO entre dos textos que
  * escalan con el ANCHO guarda la proporción sólo en las ventanas donde las dos
- * cuentas se cruzan. Con la misma unidad y el mismo divisor, φ² se cumple en
- * todos los anchos, que es lo único que hace que esto sea una escala y no tres
- * números que hoy coinciden.
+ * cuentas se cruzan. Con la misma unidad y el mismo divisor, la razón se cumple
+ * en todos los anchos, que es lo único que hace que esto sea una escala y no
+ * tres números que hoy coinciden.
  */
-const AIRE_INTRO = `clamp(${aureo(aureo(TITULO_MIN))}px,${aureo(aureo(TITULO_VW))}vw,${aureo(aureo(TITULO_MAX))}px)`;
+const AIRE_INTRO = `clamp(${menor(menor(TITULO_MIN))}px,${menor(menor(TITULO_VW))}vw,${menor(menor(TITULO_MAX))}px)`;
 
 /*
  * ACA VIVIA `MEDIDA_INTRO` / `TECHO_INTRO` (D-159): una medida compartida en
@@ -149,8 +175,10 @@ const AIRE_INTRO = `clamp(${aureo(aureo(TITULO_MIN))}px,${aureo(aureo(TITULO_VW)
 const COPY = {
   preguntar: { es: "Preguntar a Leonardo", en: "Ask Leonardo" },
   biblioteca: { es: "Biblioteca", en: "Library" },
+  museo: { es: "Museo virtual", en: "Virtual museum" },
   como: { es: "Cómo funciona", en: "How it works" },
   cargando: { es: "Ordenando cuadernos", en: "Sorting notebooks" },
+  subir: { es: "Volver al inicio", en: "Back to the top" },
 } as const;
 
 export function Hero() {
@@ -171,13 +199,59 @@ export function Hero() {
   const [codiceAbierto, setCodiceAbierto] = useState(false);
   /** La flecha de «hay más abajo». Se apaga al primer scroll. */
   const [pistaScroll, setPistaScroll] = useState(true);
+  /**
+   * QUE TAN LEJOS DEL HERO ESTAMOS. Gobierna la flecha de volver arriba: no
+   * tiene sentido ofrecer «volver al inicio» cuando el inicio está en pantalla.
+   * El corte son 60vh —más de media pantalla de distancia— y no un píxel, que
+   * haría aparecer la flecha con el hero todavía a la vista.
+   */
+  const [lejosDelHero, setLejosDelHero] = useState(false);
   useEffect(() => {
     const alScrollear = () => {
       if (window.scrollY > 24) setPistaScroll(false);
+      setLejosDelHero(window.scrollY > window.innerHeight * 0.6);
     };
+    alScrollear();
     window.addEventListener("scroll", alScrollear, { passive: true });
     return () => window.removeEventListener("scroll", alScrollear);
   }, []);
+
+  /*
+   * CON UN PANEL ABIERTO, LA PAGINA DE ATRAS NO SE MUEVE (D-195).
+   *
+   * `overscroll-behavior: contain` corta el encadenado DENTRO de los scrollers;
+   * esto cubre el resto, que es más de lo que parece: la rueda sobre el
+   * encabezado, las pestañas, el composer o el velo —que no scrollean— movía la
+   * web de atrás igual.
+   *
+   * ⚠ UN SOLO EFECTO PARA LOS DOS PANELES, y por eso vive acá y no adentro de
+   * cada uno: los dos pueden estar abiertos a la vez, y dos efectos guardando y
+   * restaurando `previo` por su cuenta dejan el `body` trabado si se cierran en
+   * orden distinto al que se abrieron.
+   */
+  useEffect(() => {
+    if (!codiceAbierto && !explainerAbierto) return;
+    const previo = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previo;
+    };
+  }, [codiceAbierto, explainerAbierto]);
+
+  /**
+   * LAS DOS SALAS QUE SE TRAGAN LA PANTALLA. Un tomo abierto en la biblioteca y
+   * la sala del museo no son secciones que se scrollean: son pantallas
+   * completas con sus propios controles. La flecha de volver arriba flotando
+   * encima de cualquiera de las dos sería un botón de un sitio distinto pegado
+   * sobre una pantalla que ya tiene su «Volver» y su «Salir».
+   *
+   * Cada sección avisa la suya. `useCallback` no es cosmético: sin él, la
+   * función nueva de cada render dispara el efecto que las escucha en bucle.
+   */
+  const [leyendoTomo, setLeyendoTomo] = useState(false);
+  const [dentroDelMuseo, setDentroDelMuseo] = useState(false);
+  const alLeer = useCallback((v: boolean) => setLeyendoTomo(v), []);
+  const alEntrarAlMuseo = useCallback((v: boolean) => setDentroDelMuseo(v), []);
 
   /**
    * EL ENCUADRE SE RECALCULA EN CADA `resize`, NO UNA VEZ AL MONTAR. Ver D-147.
@@ -371,6 +445,14 @@ export function Hero() {
    */
   const hayProgreso = !modeloListo && progreso > 0;
 
+  /**
+   * CUANDO SE VE LA FLECHA DE VOLVER ARRIBA. Las cuatro condiciones en una
+   * línea, y no repartidas en el JSX: es una sola pregunta —¿hay algo más
+   * importante en pantalla que volver al inicio?— y se lee de una.
+   */
+  const mostrarSubir =
+    lejosDelHero && !leyendoTomo && !dentroDelMuseo && !codiceAbierto && !explainerAbierto;
+
   return (
     <>
       <div
@@ -542,6 +624,8 @@ export function Hero() {
             background: "oklch(12% 0.02 40 / 0.4)",
             border: "1px solid oklch(88% 0.04 85 / 0.22)",
             borderRadius: 999,
+            // `-webkit-` para Safari anterior a la 18.
+            WebkitBackdropFilter: "blur(10px)",
             backdropFilter: "blur(10px)",
             opacity: uiOpacity,
             pointerEvents: uiPointer,
@@ -605,7 +689,7 @@ export function Hero() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              // Ver `AIRE_INTRO`: el título sobre φ².
+              // Ver `AIRE_INTRO`: el título sobre el paso al cuadrado.
               gap: AIRE_INTRO,
               marginBottom: "clamp(6px,1.2vh,12px)",
               maxWidth: "96vw",
@@ -615,9 +699,9 @@ export function Hero() {
             {LINEAS[lang].map((texto, li) => {
               const estilo = {
                 margin: 0,
-                // Ver `MEDIDA_INTRO` y `TECHO_INTRO`: las dos restricciones
-                // están en φ, así que la razón entre las cajas se sostiene
-                // gane la que gane.
+                // El único tope es la ventana: las dos líneas se miden solas y
+                // la razón entre ellas la sostiene la escala, no un ancho
+                // compartido — eso último fue `MEDIDA_INTRO` y se fue en D-160.
                 maxWidth: "96vw",
                 fontFamily: FUENTE.manuscrita,
                 fontWeight: 400,
@@ -626,12 +710,13 @@ export function Hero() {
                 // título quedaba del tamaño de la bajada.
                 fontSize: li === 0 ? ESCALA_MOVIL.titulo : ESCALA_MOVIL.bajada,
                 /*
-                 * El título va apretado —1,25— porque es un titular y se mira;
-                 * la bajada va a φ —1,618— porque es la única línea del hero
-                 * que se LEE, y en un teléfono son tres renglones. Que el
-                 * interlineado de la bajada sea justo φ no es un guiño: es lo
-                 * que la vuelve cómoda en el ancho angosto, que es donde hacía
-                 * falta.
+                 * La primera va apretada —1,25— porque se mira; la segunda va a
+                 * φ —1,618— porque es la única línea del hero que se LEE, y en
+                 * un teléfono son tres renglones. Acá φ sigue siendo φ y no el
+                 * paso de la escala: son dos cosas distintas que antes daban el
+                 * mismo número. El interlineado no persigue la razón entre los
+                 * cuerpos — es lo que vuelve cómoda la lectura en el ancho
+                 * angosto, que es donde hacía falta.
                  */
                 lineHeight: li === 0 ? 1.25 : PHI,
                 /*
@@ -719,7 +804,27 @@ export function Hero() {
             </span>
 
             {/*
-              LA FILA DE BOTONES MIDE LO QUE DICE, NO 434 px (D-161).
+              DOS FILAS, Y LAS TRES PIEZAS APLOMADAS SOBRE EL ROMBO (D-173).
+
+              El separador de arriba tiene un rombo en el medio, y ese rombo es
+              el eje del hero. Antes los tres botones iban en una sola fila, así
+              que sobre el eje no caía ninguno: caía el borde entre «Preguntar a
+              Leonardo» y «Biblioteca», que no es una pieza, es una juntura.
+
+              Ahora hay dos filas y las dos se aploman sobre el mismo eje:
+
+                ── ◆ ──          el rombo del separador
+                [ Preguntar a Leonardo ]      su MITAD cae en el eje
+                [ Biblioteca ] │ [ Museo ]    el HUECO cae en el eje
+
+              Los dos aplomos salen del mismo `align-items: center` de la
+              columna: la fila de dos, centrada como grupo, deja el hueco en el
+              centro por construcción. No hay ningún número que mantener.
+
+              Y de paso ordena la jerarquía por posición además de por relleno:
+              la acción principal ya no comparte renglón con dos destinos.
+
+              LOS ANCHOS SIGUEN SIENDO LOS QUE DICE CADA TEXTO (D-161).
 
               Antes era una grilla de `1fr 1fr` dentro de un ancho fijo, así que
               «Biblioteca» —cuyo texto mide 77 px— ocupaba los mismos 210 que
@@ -727,36 +832,32 @@ export function Hero() {
               mismo tamaño que el primario no es un botón secundario: la
               jerarquía la estaba dando sólo el relleno.
 
-              Con anchos naturales y el relleno de 22 px de Apple, la fila mide
-              348 px en castellano. La segunda línea de la descripción mide 565,
-              y 565 / φ = 349,2: la fila cae en razón áurea con el texto de
-              arriba con un error del 0,3%.
+              Antes eran una grilla de `1fr 1fr` dentro de un ancho fijo, así
+              que «Biblioteca» —cuyo texto mide 77 px— ocupaba los mismos 210 que
+              «Preguntar a Leonardo», que mide 167. Un botón secundario del mismo
+              tamaño que el primario no es un botón secundario: la jerarquía la
+              estaba dando sólo el relleno. Con anchos naturales miden 211 · 123 ·
+              151, y la diferencia la dice la geometría.
 
-              ⚠ ESO ES UNA COINCIDENCIA DEL CASTELLANO, NO UNA GARANTIA. En
-              inglés «Ask Leonardo» mide 149 px contra los 211 de «Preguntar a
-              Leonardo», la fila baja a 267 y la razón se va a 2,09. El ancho de
-              esta fila no es una decisión de diseño: es el largo de dos frases
-              más dos palancas chicas —relleno y separación—, y con esas dos
-              palancas no alcanza para cerrar en los dos idiomas sin fabricar
-              botones desmedidos.
+              ⚠ ACA VIVIA UNA COINCIDENCIA AUREA y ya no vale la pena repetirla:
+              con dos botones la fila daba 348 px contra los 565 de la segunda
+              línea, y 565 / φ = 349,2. D-161 ya la había anotado como
+              coincidencia del castellano —en inglés la razón se iba a 2,09— y
+              D-172 la rompió al sumar el tercer botón. El aplomo sobre el rombo
+              reemplaza esa relación por una que sí se sostiene en los dos
+              idiomas, porque no depende de cuánto miden las palabras.
 
-              Lo que SI justifica este cambio no es φ, es la jerarquía: antes la
-              grilla de `1fr 1fr` dentro de 434 px fijos le daba a «Biblioteca»
-              los mismos 210 px que a «Preguntar a Leonardo». Un botón
-              secundario del mismo tamaño que el primario no es un botón
-              secundario. Ahora miden 211 y 123, y la diferencia la dice la
-              geometría además del relleno.
-
-              En teléfono se mantiene la columna de ancho fijo, que ahí es lo
-              correcto: dos botones apilados y del mismo ancho.
+              EN TELEFONO LA SEGUNDA FILA VA A `1fr 1fr` Y NO A ANCHO NATURAL.
+              Con anchos naturales los dos botones quedarían de tamaños distintos
+              —127 y 109— y el hueco entre ellos ya no caería en el centro del
+              grupo. Repartidos en mitades, el hueco vuelve al eje y además se
+              cumple lo que pedía D-161 para móvil: dos botones del mismo ancho.
             */}
             <div
               style={{
-                display: angosto ? "grid" : "flex",
-                gridTemplateColumns: angosto ? "1fr" : undefined,
-                justifyContent: "center",
+                display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                flexWrap: "wrap",
                 gap: 14,
                 width: angosto ? "min(86vw,340px)" : undefined,
                 maxWidth: "92vw",
@@ -793,6 +894,36 @@ export function Hero() {
                 {COPY.preguntar[lang]}
               </button>
 
+              {/*
+                LA SEGUNDA FILA, EN DOS MITADES EXACTAS — Y ESO NO ES COSMETICA,
+                ES LA UNICA FORMA DE QUE EL HUECO CAIGA EN EL EJE.
+
+                Primero se hizo centrando el GRUPO y alcanzaba en teoría. Medido
+                en la ventana, no: el grupo quedaba centrado en 953 y el hueco en
+                938,5, catorce píxeles y medio a la izquierda. La causa es
+                aritmética y vale dejarla escrita —**el hueco sólo cae en el
+                centro del grupo si los dos botones miden lo mismo**; con 123 y
+                151 se corre (151 − 123) / 2 = 14 px hacia el más angosto—.
+
+                `1fr 1fr` sobre una grilla de ancho automático iguala las dos
+                columnas al ancho del contenido más largo, así que los dos miden
+                151 y el hueco vuelve al eje sin ningún número escrito a mano.
+
+                Y es lo correcto por otra razón: acá los dos botones son PARES
+                —dos destinos, los dos fantasma—, no un primario y un secundario.
+                La regla de anchos naturales de D-161 separaba jerarquías; entre
+                iguales, lo que corresponde es que se vean iguales.
+              */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 14,
+                  width: angosto ? "100%" : undefined,
+                }}
+              >
               <button
                 type="button"
                 className="alv-btn-fantasma"
@@ -807,11 +938,13 @@ export function Hero() {
                   alignItems: "center",
                   justifyContent: "center",
                   height: angosto ? 44 : 46,
-                  padding: angosto ? "0 16px" : "0 22px",
+                  padding: angosto ? "0 10px" : "0 22px",
                   whiteSpace: "nowrap",
                   background: "oklch(16% 0.02 40 / 0.2)",
                   border: "1px solid oklch(92% 0.03 85 / 0.32)",
                   borderRadius: 999,
+                  // `-webkit-` para Safari anterior a la 18.
+                  WebkitBackdropFilter: "blur(10px)",
                   backdropFilter: "blur(10px)",
                   cursor: "pointer",
                   fontFamily: FUENTE.lectura,
@@ -824,6 +957,60 @@ export function Hero() {
               >
                 {COPY.biblioteca[lang]}
               </button>
+
+              {/*
+                EL MUSEO, EL TERCER DESTINO. Los tres botones son las tres
+                cosas que el sitio tiene, en el mismo orden en que están en la
+                página: preguntar, leer, caminar.
+
+                UN PRIMARIO Y DOS FANTASMAS, no tres iguales. La jerarquía no se
+                reparte: preguntarle a Leonardo es lo que el sitio hace, y las
+                otras dos son lugares adonde ir. Sumar un tercer botón lleno
+                habría convertido la fila en un menú.
+
+                ⚠ Y ROMPE LA COINCIDENCIA DE D-161. Con dos botones la fila
+                medía 348 px en castellano y caía en razón áurea con la línea de
+                arriba (565 / φ = 349,2) por un 0,3%. Con el tercero la fila pasa
+                a ~512 y esa coincidencia se termina. No se pierde nada que
+                estuviera decidido: D-161 ya la había anotado como coincidencia
+                del castellano y no como criterio —en inglés nunca cerró—. Lo que
+                sí sigue en pie es lo que ese cambio justificaba, que era la
+                jerarquía por ancho natural: 211 · 123 · 150.
+              */}
+              <button
+                type="button"
+                className="alv-btn-fantasma"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  document
+                    .getElementById("museo")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: angosto ? 44 : 46,
+                  padding: angosto ? "0 10px" : "0 22px",
+                  whiteSpace: "nowrap",
+                  background: "oklch(16% 0.02 40 / 0.2)",
+                  border: "1px solid oklch(92% 0.03 85 / 0.32)",
+                  borderRadius: 999,
+                  // `-webkit-` para Safari anterior a la 18.
+                  WebkitBackdropFilter: "blur(10px)",
+                  backdropFilter: "blur(10px)",
+                  cursor: "pointer",
+                  fontFamily: FUENTE.lectura,
+                  fontWeight: 500,
+                  fontSize: angosto ? ESCALA_MOVIL.boton : 15,
+                  letterSpacing: ".03em",
+                  color: "oklch(96% 0.02 85 / 0.85)",
+                  transition: "border-color .25s ease, color .25s ease, background .25s ease",
+                }}
+              >
+                {COPY.museo[lang]}
+              </button>
+              </div>
             </div>
 
             <button
@@ -966,7 +1153,7 @@ export function Hero() {
         imagen —los tomos son gradientes— y las láminas recién se piden cuando
         se abre un volumen.
       */}
-      <Biblioteca lang={lang} />
+      <Biblioteca lang={lang} onLectura={alLeer} />
 
       {/*
         EL MUSEO VA DESPUES DE LA BIBLIOTECA, y montarlo tampoco cuesta nada:
@@ -974,7 +1161,47 @@ export function Hero() {
         Three.js y las nueve texturas viven detrás de un `import()` dinámico
         dentro del handler del botón (D-162).
       */}
-      <Museo lang={lang} />
+      <Museo lang={lang} onDentro={alEntrarAlMuseo} />
+
+      {/*
+        LA VUELTA AL PRINCIPIO (D-172).
+
+        Una flecha, abajo a la derecha, discreta. El sitio es una página larga
+        de tres pantallas completas y hasta ahora la única forma de volver al
+        hero era scrollear hacia arriba todo lo que se había bajado.
+
+        CUANDO NO ESTA, Y POR QUE:
+        · con el hero todavía a la vista — no hay adonde volver;
+        · con un tomo abierto o dentro de la sala — son pantallas completas con
+          su propio «Volver» y su propio «Salir», y una flecha de la página
+          encima de ellas es una pieza de otro sitio;
+        · con el códice o «Cómo funciona» abiertos — son capas sobre todo lo
+          demás, y la flecha les quedaría flotando encima.
+
+        Se desvanece en vez de desaparecer: `position: fixed` con `opacity`
+        animada no mueve nada de la página cuando entra o sale.
+      */}
+      <button
+        type="button"
+        className="alv-subir"
+        aria-label={COPY.subir[lang]}
+        data-on={mostrarSubir ? "si" : "no"}
+        /* No basta con `opacity: 0`: un botón invisible sigue recibiendo el
+           click y sigue estando en el orden de tabulación. */
+        tabIndex={mostrarSubir ? 0 : -1}
+        aria-hidden={!mostrarSubir}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        <svg width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true">
+          <path
+            d="M1 8 L7.5 1.5 L14 8"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
     </>
   );
 }

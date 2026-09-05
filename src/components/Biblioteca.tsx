@@ -91,6 +91,7 @@ const RADIO_LUPA = 0.209;
 
 const COPY = {
   firma: { es: "Biblioteca", en: "Library" },
+  museo: { es: "Museo", en: "Museum" },
   laminas: { es: "láminas", en: "plates" },
   capitulos: { es: "capítulos", en: "chapters" },
   cargando: { es: "Abriendo el volumen…", en: "Opening the volume…" },
@@ -118,7 +119,10 @@ const COPY = {
   hoja: { es: "Hoja", en: "Leaf" },
   de: { es: "de", en: "of" },
   lamina: { es: "Lámina", en: "Plate" },
-  andar: { es: "Verlo andar", en: "See it run" },
+  /* «Verlo andar» sonaba a que el dibujo camina. Estas cuatro láminas son
+     mecanismos —un tornillo sin fin, una rueda dentada— y el video muestra la
+     pieza haciendo lo que la pieza hace. */
+  andar: { es: "Verlo funcionar", en: "See it work" },
   enYoutube: { es: "Ver en YouTube", en: "Watch on YouTube" },
   lupa: { es: "Lupa", en: "Loupe" },
   indice: { es: "Índice", en: "Contents" },
@@ -352,7 +356,20 @@ const separacionTapa = (angosto: boolean) => (angosto ? 24 : SEPARACION_TAPA);
 /** Aire a los costados de la escena. */
 const margenEscena = (angosto: boolean) => (angosto ? 14 : MARGEN_ESCENA);
 
-export function Biblioteca({ lang }: { lang: Idioma }) {
+export function Biblioteca({
+  lang,
+  onLectura,
+}: {
+  lang: Idioma;
+  /**
+   * Avisa cuando hay un tomo ABIERTO, o sea cuando la sección dejó de ser una
+   * estantería y pasó a ser una pantalla de lectura con sus propios controles.
+   * Lo único que lo escucha hoy es la flecha de «volver arriba» del hero, que
+   * no puede quedar flotando sobre una hoja abierta. Opcional a propósito: la
+   * biblioteca sigue andando sola si nadie la escucha.
+   */
+  onLectura?: (v: boolean) => void;
+}) {
   const angosto = useAngosto();
   const [vista, setVista] = useState<Vista>("estanteria");
   const [libroIdx, setLibroIdx] = useState(0);
@@ -377,6 +394,16 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
    */
   const [texto, setTexto] = useState<VolumenTexto | "falla" | null>(null);
   const [indiceAbierto, setIndiceAbierto] = useState(false);
+
+  /*
+   * `vista` cambia desde el lomo, desde la tapa, desde el botón «Volver» y
+   * desde Escape. Avisar en cada uno de esos cuatro lugares es la forma segura
+   * de olvidarse de uno: se avisa acá, donde se mira el estado ya resuelto.
+   */
+  useEffect(() => {
+    onLectura?.(vista === "lectura");
+  }, [vista, onLectura]);
+  useEffect(() => () => onLectura?.(false), [onLectura]);
 
   // En un teléfono la hoja se lee sola: un pliego de dos páginas a 375 px deja
   // cada lámina en 170 px, que no es ver un dibujo, es adivinarlo.
@@ -458,6 +485,35 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
   }, [paginas, base, porPliego, indice]);
 
   const seccionRef = useRef<HTMLElement | null>(null);
+  /*
+   * LA SEÑAL DE QUE HAY MAS ABAJO, la misma que el hero (D-193).
+   *
+   * ⚠ SE MIDE CONTRA LA SECCION, NO CONTRA `scrollY`. El hero apaga su flecha al
+   * primer scroll porque arranca arriba de todo; a la biblioteca se LLEGA
+   * scrolleando, así que esa misma regla la apagaría antes de que nadie la vea.
+   *
+   * ⚠ Y LA VENTANA ES ANCHA A PROPOSITO. El primer intento pedía `top > -24`,
+   * copiando los 24 px del hero, y estaba mal: sin scroll-snap el visitante
+   * aterriza donde lo deja la rueda —medido, en −129— y ahí la sección llena la
+   * pantalla con la flecha ya apagada. La condición correcta no es «no se movió»
+   * sino «la estantería sigue siendo la pantalla»: entra cuando pasó la mitad y
+   * se va cuando el museo se comió un tercio de abajo.
+   */
+  const [pistaScroll, setPistaScroll] = useState(false);
+  useEffect(() => {
+    const alScrollear = () => {
+      const caja = seccionRef.current?.getBoundingClientRect();
+      const alto = window.innerHeight;
+      setPistaScroll(!!caja && caja.top < alto * 0.5 && caja.bottom > alto * 0.65);
+    };
+    alScrollear();
+    window.addEventListener("scroll", alScrollear, { passive: true });
+    window.addEventListener("resize", alScrollear);
+    return () => {
+      window.removeEventListener("scroll", alScrollear);
+      window.removeEventListener("resize", alScrollear);
+    };
+  }, []);
   const escenarioRef = useRef<HTMLDivElement | null>(null);
   const escenaRef = useRef<HTMLDivElement | null>(null);
   const hostRef = useRef<HTMLDivElement | null>(null);
@@ -1283,6 +1339,26 @@ export function Biblioteca({ lang }: { lang: Idioma }) {
             })}
           </div>
         </div>
+      )}
+
+      {/* Sólo con el estante a la vista: en lectura la sección es un libro a
+          pantalla completa y abajo están las miniaturas. */}
+      {vista === "estanteria" && (
+        <button
+          type="button"
+          className="alv-bib-scroll"
+          aria-label={COPY.museo[lang]}
+          data-on={pistaScroll ? "si" : "no"}
+          tabIndex={pistaScroll ? 0 : -1}
+          aria-hidden={!pistaScroll}
+          onClick={() =>
+            document.getElementById("museo")?.scrollIntoView({ behavior: "smooth", block: "start" })
+          }
+        >
+          <svg width="17" height="10" viewBox="0 0 17 10" fill="none" aria-hidden="true">
+            <path d="M1 1 L8.5 8.5 L16 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+          </svg>
+        </button>
       )}
     </section>
   );
@@ -2282,6 +2358,8 @@ const estiloFlecha: React.CSSProperties = {
   border: `1px solid ${paleta.pelo}`,
   borderRadius: "50%",
   background: "oklch(93.2% .014 84 / .68)",
+  // `-webkit-` porque Safari no soporta la propiedad sin prefijo hasta la 18.
+  WebkitBackdropFilter: "blur(10px)",
   backdropFilter: "blur(10px)",
   cursor: "pointer",
   color: paleta.tinta,

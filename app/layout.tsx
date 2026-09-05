@@ -48,17 +48,68 @@ const sourceSerif = Source_Serif_4({
   display: "swap",
 });
 
+const TITULO = "Ask Leonardo da Vinci";
+const DESCRIPCION =
+  "Conversá con Leonardo da Vinci fundado exclusivamente en sus cuadernos: " +
+  "la traducción de J. P. Richter (1888), de dominio público. Cada respuesta " +
+  "trae los pasajes que la sostienen. Si no está en sus cuadernos, lo dice.";
+
 export const metadata: Metadata = {
-  title: "Ask Leonardo da Vinci",
-  description:
-    "Conversá con Leonardo da Vinci fundado exclusivamente en sus cuadernos: " +
-    "la traducción de J. P. Richter (1888), de dominio público. Cada respuesta " +
-    "trae los pasajes que la sostienen. Si no está en sus cuadernos, lo dice.",
-  icons: { icon: "/favicon-64.webp", apple: "/logo-180.webp" },
+  metadataBase: new URL("https://askleonardodavinci.online"),
+  title: TITULO,
+  description: DESCRIPCION,
+  /**
+   * Las cuatro medidas del juego de iconos, no dos. `logo-256` y `logo-512`
+   * estaban en `public/` sin que nada las nombrara (D-196): declaradas, el
+   * navegador elige la que le sirve y en una pestaña a 2× o en un marcador de
+   * escritorio deja de escalar los 64 px.
+   */
+  icons: {
+    icon: [
+      { url: "/favicon-64.webp", sizes: "64x64", type: "image/webp" },
+      { url: "/logo-256.webp", sizes: "256x256", type: "image/webp" },
+      { url: "/logo-512.webp", sizes: "512x512", type: "image/webp" },
+    ],
+    apple: "/logo-180.webp",
+  },
+  /**
+   * SIN ESTO, EL LINK COMPARTIDO NO MUESTRA NADA. No había `openGraph` ni
+   * `twitter`: en LinkedIn, WhatsApp o Slack el sitio salía como una tira de
+   * texto sin imagen. Para un proyecto de portfolio, que se comparte por link,
+   * es la primera pantalla que ve la mayoría.
+   *
+   * `logo-600x312.png` es 1,92:1 —la razón que pide Open Graph— y estaba en
+   * `public/` sin que nada lo usara: se hizo para esto y nunca se conectó.
+   * 600 × 312 es el mínimo que las tarjetas grandes aceptan; si alguna vez se
+   * exporta a 1200 × 630 se ve más nítido y no hay que tocar nada más acá.
+   *
+   * Los textos salen de las mismas dos constantes que `title` y `description`:
+   * tres copias del mismo texto se desincronizan a la primera edición.
+   */
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    siteName: TITULO,
+    title: TITULO,
+    description: DESCRIPCION,
+    images: [{ url: "/logo-600x312.png", width: 600, height: 312, alt: TITULO }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: ["/logo-600x312.png"],
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "oklch(13% 0.02 45)",
+  /**
+   * EN HEXA Y NO EN OKLCH, que es la única excepción a la paleta del proyecto.
+   * `theme-color` lo parsea el navegador fuera de la hoja de estilos, y los que
+   * no entienden `oklch()` descartan la etiqueta entera y pintan su barra con el
+   * color por omisión. `#0e0503` es el mismo color, calculado, no elegido.
+   */
+  themeColor: "#0e0503",
   colorScheme: "dark",
   /**
    * `cover`: el hero es una escena a pantalla completa y tiene que llegar

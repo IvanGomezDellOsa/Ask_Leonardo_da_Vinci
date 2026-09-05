@@ -147,7 +147,18 @@ a:hover {
   animation: alv-fadein 0.35s ease both;
 }
 
+/*
+ * ⚠ `overscroll-behavior: contain` ES LO QUE IMPIDE QUE LA PAGINA SE MUEVA
+ * DETRAS. Sin él, al llegar al final de un panel el navegador «encadena» el
+ * scroll al documento y la web de atrás empieza a correr — pasaba en el códice
+ * y en «Cómo funciona», en escritorio y en teléfono (D-195).
+ *
+ * Lo llevan los tres scrollers de los paneles porque comparten esta clase. El
+ * `<textarea>` del composer lo tiene inline: no lleva la clase para no heredar
+ * la barra de scroll estilizada.
+ */
 .alv-scroll {
+  overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: oklch(38% 0.006 70) transparent;
   scrollbar-gutter: stable;
@@ -596,14 +607,6 @@ a:hover {
   text-align: left;
 }
 
-.alv-bib-tapa-firma {
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  opacity: 0.72;
-}
-
 .alv-bib-tapa-titulo {
   margin-top: 15px;
   font-size: 32px;
@@ -1047,11 +1050,6 @@ a:hover {
 
 .alv-bib-linea:hover span:last-child {
   transform: translate3d(2px, -2px, 0);
-}
-
-.alv-bib-pastilla:hover {
-  color: oklch(24% 0.008 70);
-  border-color: oklch(24% 0.008 70 / 0.4);
 }
 
 .alv-bib-mini {
@@ -1602,15 +1600,67 @@ a:hover {
   color: oklch(32% 0.1 40);
 }
 
-/* ===========================================================================
- * EL MUSEO (D-162)
+/* LA MISMA SEÑAL DE «HAY MAS ABAJO» QUE EL HERO, en el papel de la biblioteca.
  *
- * La sala va en CLARO como la biblioteca, y por una razón distinta: un museo
- * es luz. El piso, el fondo y la niebla comparten el mismo blanco cálido, así
- * que el pasillo no termina en un borde — se desvanece.
+ * Reusa `alv-bajar` —una sola definición del cabeceo para las dos— y cambia lo
+ * único que tiene que cambiar: la tinta, porque acá el fondo es claro. Sin el
+ * `drop-shadow` del hero: ahí hacía falta contra el video, sobre papel liso
+ * ensuciaría el trazo.
+ *
+ * ⚠ Apagada NO se tabula, y eso lo pone el `tabIndex` del componente: `opacity`
+ * no saca del orden de tabulación. Misma regla que `.alv-subir`. */
+.alv-bib-scroll {
+  position: absolute;
+  z-index: 18;
+  bottom: calc(clamp(30px, 5vh, 54px) + env(safe-area-inset-bottom));
+  left: 50%;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  color: oklch(24% 0.008 70 / 0.5);
+  transform: translateX(-50%);
+  transition: opacity 600ms ease, color 260ms ease;
+}
+
+.alv-bib-scroll[data-on="no"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.alv-bib-scroll:hover {
+  color: oklch(24% 0.008 70 / 0.9);
+}
+
+.alv-bib-scroll svg {
+  animation: alv-bajar 2.4s ease-in-out infinite;
+}
+
+/* ===========================================================================
+ * EL MUSEO — la portada. Blanco de galería, umbral dibujado a línea.
+ *
+ * ⚠ ES LA PUERTA, NO LA SALA. La sección no puede adelantar nada de lo que hay
+ * adentro; tres versiones se cayeron por eso (D-171 a D-173). Proporción de
+ * puerta 3 : 4 con la cabeza del arco al 34% del alto.
+ *
+ * El corte con la biblioteca no lo da la claridad —las dos secciones son
+ * claras— sino el croma, la superficie y el contenido. Ver `docs/20-branding.md`.
+ *
+ * D-162 · D-174 a D-176 · D-189 a D-192.
  * ======================================================================== */
 
 .alv-museo {
+  /* `dvh` por lo mismo que la biblioteca: en un teléfono `vh` cuenta la barra
+     del navegador retraída y la sección quedaría más alta que la pantalla.
+     Vive acá y no inline porque un `style={{}}` no admite las dos
+     declaraciones que hacen la reserva. */
+  height: 100vh;
+  height: 100dvh;
   isolation: isolate;
 }
 
@@ -1619,20 +1669,65 @@ a:hover {
   position: absolute;
   inset: 0;
   z-index: 4;
+  text-align: center;
+}
+
+/*
+ * Las capas de carga y pausa son un cartel: se centran con flex. La portada no,
+ * porque coloca cada pieza contra sus dos variables.
+ *
+ * ⚠ EL RELLENO VA ACA Y NO EN LA REGLA COMPARTIDA. El bloque contenedor de un
+ * `position: absolute` es la caja de RELLENO de su ancestro: un `padding` en
+ * `.alv-museo-portada` correría el arco, el botón y las huellas fuera del eje.
+ */
+.alv-museo-capa {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 18px;
   padding: 0 24px;
-  text-align: center;
 }
 
-/* La capa de pausa deja ver la sala detrás: no se salió, se soltó el mouse. */
-.alv-museo-capa {
+/* LA CAPA DE PAUSA DEJA VER LA SALA DETRAS: no se salió, se soltó el mouse. Un
+   vidrio claro, que es lo que dice «esto sigue acá abajo» sin dejar leer nada. */
+.alv-museo-capa[data-tocable="si"] {
   background: oklch(96% 0.006 85 / 0.82);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
+}
+
+/*
+ * ⚠ LAS TRES MEDIDAS DE LAS QUE CUELGA TODA LA SECCION. El arco, la línea del
+ * piso, el botón, el rótulo y las huellas salen de estas tres y de ninguna otra.
+ *
+ * `--arco-alto`: `56vh` impide que el arco toque el techo; `36vw` impide que
+ * quede flaco en una ventana ancha y baja; el piso de 320 px sale del botón en
+ * inglés (192 px dentro de un vano de 240).
+ */
+.alv-museo-portada {
+  --arco-alto: clamp(320px, min(56vh, 36vw), 600px);
+  --arco-piso: 17%;
+  /*
+   * ⚠ EN `vh` Y NO COMO FRACCION DE `--arco-piso`: un `margin-left` en
+   * porcentaje se resuelve contra el ANCHO del contenedor, no contra el alto.
+   * En porcentaje la misma variable valía 83 px como `height` y 118 px dentro
+   * del margen, y el par de huellas quedaba 26 px fuera del eje (D-190).
+   *
+   * 9vh = 0,53 × la franja de piso. Con la trasera al 12% y la delantera al 36%
+   * quedan 18 px de aire contra el borde y 16 contra la línea.
+   */
+  --huella-alto: clamp(44px, 9vh, 98px);
+}
+
+/* Tapa el umbral mientras bajan Three y las nueve texturas. Del color de la
+   sección, que es además el de la sala que viene detrás: no hay salto de
+   claridad en ninguno de los dos sentidos. Sin desenfoque porque abajo hay un
+   dibujo quieto y el filtro costaría una pasada de composición por nada. */
+.alv-museo-capa[data-modo="cargando"] {
+  background: oklch(97.6% 0.003 85 / 0.96);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .alv-museo-firma {
@@ -1643,49 +1738,265 @@ a:hover {
   color: oklch(24% 0.008 70 / 0.62);
 }
 
+/* ---- El cuarto: dos planos, una línea y dos pasos -----------------------
+ *
+ * ⚠ Sin textura, sombra ni perspectiva: un piso en fuga vuelve a REPRESENTAR la
+ * sala (D-173). Se descartaron baldosas en fuga por eso y porque competían con
+ * el arco por la misma tinta de un pelo.
+ *
+ * 93,6% da 1,13:1 contra el muro. Más oscuro se lee como banda de color: ése es
+ * el techo del color, y por eso lo que explica el piso son las huellas (D-190).
+ */
+.alv-museo-suelo {
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: var(--arco-piso);
+  pointer-events: none;
+  background: oklch(93.6% 0.005 80);
+}
+
+/* Se apaga en los dos extremos en vez de cortarse contra el borde: cortada se
+   lee como el canto de una caja, desvanecida como un plano que sigue. Mismo
+   recurso que el estante de la biblioteca. */
+.alv-museo-linea-piso {
+  position: absolute;
+  z-index: 1;
+  bottom: var(--arco-piso);
+  left: 50%;
+  width: min(88vw, 1180px);
+  height: 1px;
+  pointer-events: none;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    oklch(24% 0.008 70 / 0.28) 14%,
+    oklch(24% 0.008 70 / 0.34) 50%,
+    oklch(24% 0.008 70 / 0.28) 86%,
+    transparent 100%
+  );
+}
+
+/* ---- Las dos huellas -----------------------------------------------------
+ *
+ * Vuelven piso al piso —una pisada sólo puede estar apoyada en el suelo— y
+ * señalan la puerta.
+ *
+ * ⚠ El orden no es intercambiable: la de atrás maciza (el paso real, ya dado) y
+ * la de adelante pixelada (la virtual, la que cruza el vano). Al revés diría que
+ * uno sale de lo virtual hacia lo real.
+ */
+.alv-museo-huella {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  height: var(--huella-alto);
+  /* La misma razón que el `viewBox`: una suela mide 1 de ancho por 2,6 de
+     largo. Escrita acá, el ancho no hay que calcularlo en ningún lado. */
+  aspect-ratio: 100 / 260;
+  pointer-events: none;
+  transform: rotate(var(--giro));
+}
+
+.alv-museo-huella[data-pie="real"] {
+  --giro: -5deg;
+  bottom: calc(var(--arco-piso) * 0.12);
+  /* `left: 50%` deja el BORDE en el eje, así que la mitad del ancho —0,19 del
+     alto— es lo que hay que restar para centrar la huella, y el resto es lo que
+     la separa del eje: los dos pies quedan a ±0,32 del alto, o sea a 0,25 de
+     distancia entre sí. Es la zancada de alguien parado, no la de alguien
+     corriendo, y el punto medio de los dos cae exacto sobre el eje del vano. */
+  margin-left: calc(var(--huella-alto) * -0.51);
+  /*
+   * LA MACIZA VA MAS CLARA QUE LA PIXELADA, y no es un descuido. La pixelada
+   * cubre el 59% de su silueta —un cuadrado de 10 en una celda de 13— así que a
+   * igual alfa entrega bastante menos tinta. Con 0,58 y 0,68 las dos pesan
+   * parecido de lejos, y de cerca cada píxel se ve nítido.
+   */
+  color: oklch(24% 0.008 70 / 0.58);
+}
+
+.alv-museo-huella[data-pie="virtual"] {
+  --giro: 5deg;
+  bottom: calc(var(--arco-piso) * 0.36);
+  margin-left: calc(var(--huella-alto) * 0.13);
+  color: oklch(24% 0.008 70 / 0.68);
+}
+
+/* La maciza se pinta con `currentColor`; la pixelada trae su relleno de patrón
+   en un atributo y NO puede tener una regla de `fill` que lo pise —el CSS le
+   gana a los atributos de presentación—, así que acá sólo se nombra la maciza y
+   el cuadradito del patrón. */
+.alv-museo-huella[data-pie="real"] path,
+.alv-museo-huella pattern rect {
+  fill: currentColor;
+}
+
+/* ---- El umbral, a línea --------------------------------------------------
+ *
+ * `aspect-ratio` 3/4 fija contra el `viewBox` 360 × 480, así que el arco nunca
+ * se deforma. Son dos caminos y no uno para que las jambas suban desde el piso
+ * y se encuentren en la clave.
+ */
+.alv-museo-umbral {
+  position: absolute;
+  bottom: var(--arco-piso);
+  left: 50%;
+  z-index: 1;
+  height: var(--arco-alto);
+  aspect-ratio: 3 / 4;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.alv-museo-umbral svg,
+.alv-museo-huella svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* El trazo no puede quedar cortado a la mitad contra el borde del `viewBox`. */
+  overflow: visible;
+}
+
+/* `non-scaling-stroke` en el SVG: el pelo mide 1 px en cualquier tamaño de
+   ventana. Sin eso el arco engorda al agrandarse y deja de ser un dibujo. */
+.alv-museo-arco {
+  fill: none;
+  stroke: oklch(24% 0.008 70 / 0.32);
+  stroke-width: 1;
+  stroke-linecap: round;
+  transition: stroke 0.45s ease;
+}
+
+/* El vano se afirma al apuntar su botón: la pieza entera reacciona a su única
+   acción, no es un `:hover` de adorno. */
+.alv-museo-portada:has(.alv-museo-boton-vano:hover) .alv-museo-arco,
+.alv-museo-portada:has(.alv-museo-boton-vano:focus-visible) .alv-museo-arco {
+  stroke: oklch(24% 0.008 70 / 0.55);
+}
+
+/* ---- El frente: el rótulo y la puerta -----------------------------------
+ *
+ * No dibuja nada. ⚠ Existe sólo para que el texto y el botón sean hermanos en el
+ * DOM —o sea en orden de lectura y de tabulación— mientras el CSS los manda a
+ * lugares distintos de la pantalla (D-176).
+ */
+.alv-museo-frente {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.alv-museo-frente > * {
+  pointer-events: auto;
+}
+
+/*
+ * El rótulo va sobre el eje del vano, como un museo firma su entrada (D-190).
+ *
+ * ⚠ NO TIENE `top`: cuelga de las dos variables y crece hacia arriba, así que no
+ * puede pisar la clave del arco en ninguna altura de ventana. Un `top` a ojo sí
+ * podía.
+ */
+.alv-museo-columna {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--arco-piso) + var(--arco-alto) + clamp(30px, 6vh, 76px));
+  z-index: 2;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(12px, 1.4vh, 18px);
+  width: min(86vw, 820px);
+}
+
 .alv-museo-titulo {
-  max-width: 22.7em;
   margin: 0;
-  font-size: clamp(23px, 6.8vw, 26px);
+  /*
+   * SUBIO DE 46 A 58 px, y lo permite el eje. Encajonado en una columna de 340
+   * px el título partía en dos renglones y no podía crecer más sin partir en
+   * tres. Sobre el eje entra en un solo renglón hasta 58 px, y un renglón único
+   * es lo que hace que se lea como el nombre grabado sobre una puerta y no como
+   * un párrafo de encabezado.
+   */
+  font-size: clamp(30px, 4vw, 58px);
   font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-  color: oklch(22% 0.01 66);
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+  color: oklch(23% 0.012 62);
 }
 
 .alv-museo-nota {
-  max-width: 34em;
+  max-width: min(100%, 42em);
   margin: 0;
-  font-size: 14px;
-  line-height: 1.62;
-  color: oklch(24% 0.008 70 / 0.72);
+  font-size: clamp(16px, 1.35vw, 21px);
+  line-height: 1.6;
+  text-wrap: pretty;
+  /* SIN ALFA, y no es cosmética. Un `0.62` sobre este blanco da 3,4:1 y no llega
+     a AA para un cuerpo de 21 px, que no cuenta como texto grande. Pleno a 40%
+     de claridad da 8,6:1. */
+  color: oklch(40% 0.012 72);
 }
 
-/* El mismo relleno de 22 px de los botones del hero: una sola gramática de
-   botón en todo el sitio (D-161). */
+/* ---- Los botones ---------------------------------------------------------
+ *
+ * Una sola definición para los tres sitios donde aparece —el vano, la pila y la
+ * capa de pausa—: con la sección clara los tres caen sobre claro. Pastilla de
+ * 46 px con 22 px de relleno, la gramática de botón del sitio (D-161).
+ */
 .alv-museo-boton {
   height: 46px;
   padding: 0 22px;
   border: 0;
   border-radius: 999px;
   cursor: pointer;
-  background: oklch(24% 0.012 66);
-  color: oklch(97% 0.006 85);
+  background: oklch(23% 0.012 62);
+  color: oklch(97% 0.008 85);
   font-family: inherit;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.03em;
-  box-shadow: 0 8px 22px oklch(24% 0.008 70 / 0.22);
-  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .alv-museo-boton:hover {
-  box-shadow: 0 10px 28px oklch(24% 0.008 70 / 0.3);
+  background: oklch(31% 0.016 58);
 }
 
 /* El mismo micro-gesto que usa Apple en todo su sistema. */
 .alv-museo-boton:active {
   transform: scale(0.96);
+}
+
+/*
+ * El botón vive DENTRO del vano: la acción de la sección es cruzar el umbral
+ * (D-176). Sobre el eje y al 36% del alto del arco por encima del piso — colgado
+ * de las dos variables, así que no puede despegarse del vano en ninguna ventana.
+ */
+.alv-museo-boton-vano {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--arco-piso) + var(--arco-alto) * 0.36);
+  z-index: 3;
+  transform: translate(-50%, 50%);
+  letter-spacing: 0.06em;
+  box-shadow: 0 10px 30px oklch(24% 0.02 60 / 0.16);
+}
+
+.alv-museo-boton-vano:hover {
+  box-shadow: 0 12px 36px oklch(24% 0.02 60 / 0.22);
+}
+
+.alv-museo-boton-vano:active {
+  transform: translate(-50%, 50%) scale(0.96);
 }
 
 .alv-museo-linea {
@@ -1706,19 +2017,390 @@ a:hover {
   color: oklch(24% 0.008 70);
 }
 
-/* La barra de carga de las nueve texturas. */
-.alv-museo-barra {
-  width: min(260px, 60vw);
-  height: 2px;
-  background: oklch(24% 0.008 70 / 0.14);
-  overflow: hidden;
+/* ---- La carga: los nueve telones descolgándose --------------------------
+ *
+ * Reemplaza a la barra de progreso. No es una metáfora: `alCargar` cuenta
+ * texturas sobre obras, así que cada tela que baja es una obra que llegó.
+ *
+ * El vaivén corre SIEMPRE, también sobre las que faltan: es lo que hace que la
+ * espera no se vea congelada cuando una textura grande tarda. */
+.alv-museo-telones {
+  height: auto;
+  max-width: min(76vw, 420px);
+  overflow: visible;
 }
 
-.alv-museo-barra span {
-  display: block;
-  height: 100%;
-  background: oklch(38% 0.09 42);
-  transition: width 0.3s ease;
+.alv-museo-barral {
+  stroke: oklch(24% 0.008 70 / 0.34);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.alv-museo-telon-vaiven {
+  animation: alv-museo-vaiven 3.6s ease-in-out infinite;
+}
+
+/* ⚠ `scaleY` con el origen en el barral: la tela BAJA desde donde cuelga. Con
+   el origen por omisión —el centro— crecería hacia los dos lados y se leería
+   como una barra que se estira, no como algo colgado. */
+.alv-museo-telon {
+  fill: oklch(24% 0.008 70 / 0.3);
+  transform: scaleY(0.045);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), fill 0.55s ease;
+}
+
+.alv-museo-telon[data-on="no"] {
+  fill: oklch(24% 0.008 70 / 0.09);
+}
+
+.alv-museo-telon[data-on="si"] {
+  transform: scaleY(1);
+}
+
+@keyframes alv-museo-vaiven {
+  0%,
+  100% {
+    transform: rotate(-1.1deg);
+  }
+  50% {
+    transform: rotate(1.1deg);
+  }
+}
+
+/* ---- El joystick táctil (D-194) -----------------------------------------
+ *
+ * ⚠ EL AREA QUE ESCUCHA ES MAS GRANDE QUE EL DIBUJO. El `padding` del contenedor
+ * es zona viva: un pulgar no acierta un aro de 128 px, acierta una región. El
+ * aro es lo que se ve; esto es lo que se toca.
+ *
+ * Abajo a la IZQUIERDA porque la otra mano arrastra para mirar, y con
+ * `env(safe-area-inset-*)` porque el `viewportFit: cover` del layout deja el
+ * borde del teléfono debajo. */
+.alv-museo-joystick {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  bottom: 0;
+  padding: 26px 30px calc(26px + env(safe-area-inset-bottom))
+    calc(26px + env(safe-area-inset-left));
+  /* Sin esto el navegador se lleva el gesto como scroll o como zoom, y el
+     joystick sólo funciona en tirones. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/*
+ * ⚠ EL DISCO VA MAS OSCURO QUE EL FONDO, no más claro. El resto del vidrio del
+ * sitio es claro sobre oscuro; acá el joystick cae siempre sobre el mármol
+ * blanco del piso, y con el mismo tratamiento el aro desaparecía y quedaba el
+ * pomo flotando solo. Disco apenas más oscuro, aro de un pelo y medio, y el
+ * pomo casi blanco: el contraste lo da el par, como en cualquier analógico.
+ */
+.alv-museo-joystick-aro {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  border: 1.5px solid oklch(24% 0.008 70 / 0.32);
+  border-radius: 50%;
+  background: oklch(88% 0.006 85 / 0.34);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 3px 14px oklch(24% 0.02 60 / 0.14);
+  transition: background 0.24s ease, border-color 0.24s ease;
+}
+
+.alv-museo-joystick-aro[data-on="si"] {
+  background: oklch(84% 0.008 85 / 0.44);
+  border-color: oklch(24% 0.008 70 / 0.46);
+}
+
+/* La cruz de referencia, con las dos líneas en un solo pseudo-elemento vía dos
+   degradés: dice dónde está el centro sin agregar dos nodos más. */
+.alv-museo-joystick-cruz {
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), oklch(24% 0.008 70 / 0.2) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(to right, transparent calc(50% - 0.5px), oklch(24% 0.008 70 / 0.2) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+}
+
+/* 52 px de diámetro: el `RADIO_POMO` de `Museo.tsx` es 26 y de ahí sale el tope
+   del recorrido. ⚠ Los dos números son el mismo; si se mueve uno se mueve el
+   otro. */
+.alv-museo-joystick-pomo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 52px;
+  height: 52px;
+  border: 1px solid oklch(24% 0.008 70 / 0.16);
+  border-radius: 50%;
+  background: oklch(99% 0.004 85 / 0.92);
+  box-shadow: 0 4px 14px oklch(24% 0.02 60 / 0.18);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  /* Sin transición mientras se arrastra —el pomo tiene que ir pegado al dedo—;
+     la vuelta al centro sí la hace el CSS cuando `data-on` pasa a `no`. */
+  transition: transform 0s;
+}
+
+.alv-museo-joystick-aro[data-on="no"] .alv-museo-joystick-pomo {
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* En táctil el HUD deja de ser un teclado dibujado y pasa a ser una sola línea:
+   el joystick se explica solo y lo único que hay que enseñar es el arrastre. */
+/* ⚠ A la DERECHA y no centrada: el joystick ocupa 180 px desde el borde
+   izquierdo y en una pantalla de 390 una pastilla centrada le cae encima. */
+.alv-museo-hud[data-tactil="si"] {
+  right: calc(20px + env(safe-area-inset-right));
+  left: auto;
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  padding: 9px 15px;
+  border-radius: 999px;
+  animation: alv-museo-ayuda 6s ease-in-out forwards;
+}
+
+/* Se desvanece sola: es una instrucción de una vez, y a los seis segundos
+   estorba más de lo que enseña. */
+@keyframes alv-museo-ayuda {
+  0%,
+  62% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+/* ---- La sala se levanta ---------------------------------------------------
+ *
+ * `no` sin entrar en pantalla · `si` corriendo · `ya` hecha y sin animación.
+ * ⚠ El tercero existe porque salir de la sala remonta la portada: sin él el arco
+ * se redibuja entero cada vez.
+ *
+ * El orden es el de una obra: nada entra antes de que exista aquello sobre lo
+ * que se apoya. Los retrasos y `DURACION_REVELADO` en `Museo.tsx` son un solo
+ * cronograma; si se mueve uno, se mueve el otro.
+ */
+.alv-museo-portada[data-revelado="no"] .alv-museo-linea-piso,
+.alv-museo-portada[data-revelado="no"] .alv-museo-huella,
+.alv-museo-portada[data-revelado="no"] .alv-museo-columna > *,
+.alv-museo-portada[data-revelado="no"] .alv-museo-boton-vano {
+  opacity: 0;
+}
+
+/* El piso se pinta en vez de aparecer: un `clip-path` que sube desde el borde
+   de abajo es una superficie pintándose; un `opacity` es una capa encendiéndose.
+   Termina justo donde después nace la línea. */
+.alv-museo-portada[data-revelado="no"] .alv-museo-suelo {
+  clip-path: inset(100% 0 0 0);
+}
+
+.alv-museo-portada[data-revelado="no"] .alv-museo-linea-piso {
+  transform: translateX(-50%) scaleX(0.2);
+}
+
+/* El trazo se recorre con `pathLength="1"`, así que el dasharray es 1 y no hay
+   que medir el camino con JavaScript: el largo real del arco cambia con el
+   tamaño de la ventana y una medida en píxeles habría quedado vieja al primer
+   `resize`. */
+.alv-museo-portada[data-revelado="no"] .alv-museo-arco {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.alv-museo-portada[data-revelado="si"] .alv-museo-suelo {
+  animation: alv-museo-pinta 0.8s cubic-bezier(0.33, 0, 0.2, 1) both;
+}
+
+.alv-museo-portada[data-revelado="si"] .alv-museo-linea-piso {
+  animation: alv-museo-piso 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
+}
+
+.alv-museo-portada[data-revelado="si"] .alv-museo-arco {
+  stroke-dasharray: 1;
+  animation: alv-museo-traza 1.3s cubic-bezier(0.4, 0, 0.2, 1) 0.75s both;
+}
+
+.alv-museo-portada[data-revelado="si"] .alv-museo-columna > * {
+  animation: alv-museo-sube 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* El rótulo entra con el arco a medio dibujar y la bajada un pelo después: dos
+   renglones que aparecen juntos se leen como un bloque, y uno atrás del otro se
+   leen como una frase. */
+.alv-museo-portada[data-revelado="si"] .alv-museo-columna > *:nth-child(1) { animation-delay: 1.15s; }
+.alv-museo-portada[data-revelado="si"] .alv-museo-columna > *:nth-child(2) { animation-delay: 1.3s; }
+.alv-museo-portada[data-revelado="si"] .alv-museo-columna > *:nth-child(3) { animation-delay: 1.42s; }
+
+/* En orden de caminata, con 0,23 s entre uno y otro: es el tiempo de un paso y
+   por eso se leen como alguien caminando. Bajan 3 px al entrar. */
+.alv-museo-portada[data-revelado="si"] .alv-museo-huella[data-pie="real"] {
+  animation: alv-museo-pisa 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.75s both;
+}
+
+.alv-museo-portada[data-revelado="si"] .alv-museo-huella[data-pie="virtual"] {
+  animation: alv-museo-pisa 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.98s both;
+}
+
+/* La puerta, al final: es lo único que hay que hacer acá, y aparece cuando ya
+   está claro dónde está y quién viene caminando hacia ella. */
+.alv-museo-portada[data-revelado="si"] .alv-museo-boton-vano {
+  animation: alv-museo-puerta 0.6s cubic-bezier(0.22, 1, 0.36, 1) 2.25s both;
+}
+
+@keyframes alv-museo-pinta {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes alv-museo-piso {
+  from { opacity: 0; transform: translateX(-50%) scaleX(0.2); }
+  to { opacity: 1; transform: translateX(-50%) scaleX(1); }
+}
+
+@keyframes alv-museo-traza {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes alv-museo-sube {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes alv-museo-pisa {
+  from { opacity: 0; transform: rotate(var(--giro)) translateY(-3px); }
+  to { opacity: 1; transform: rotate(var(--giro)); }
+}
+
+@keyframes alv-museo-puerta {
+  from { opacity: 0; transform: translate(-50%, calc(50% + 10px)); }
+  to { opacity: 1; transform: translate(-50%, 50%); }
+}
+
+/* ---- Las tres maquetas -----------------------------------------------------
+ *
+ * `data-maqueta` lo decide `Museo.tsx`. Las tres son de TAMAÑO —cuánto entra en
+ * pantalla— y ninguna decide si la sala abre: **la sala abre en las tres**,
+ * también en teléfono, desde D-194.
+ *
+ *   sala     el umbral dibujado y el botón adentro del vano;
+ *   apilada  debajo de 640 px de ancho: el vano queda demasiado angosto para el
+ *            botón, así que texto y botón bajan a una pila y el arco pasa a ser
+ *            la firma de la sección;
+ *   chata    debajo de 540 px de alto —el teléfono en horizontal— no se dibuja
+ *            nada: el arco entraría en 90 px y el vano en 67 de ancho, y eso no
+ *            es un dibujo, es pelusa. Queda el rótulo y la acción, centrados.
+ *
+ * ⚠ Antes esto colgaba de un `@media (max-width: 640px)` y **el ancho era la
+ * dimensión equivocada**: a 844 px un teléfono en horizontal caía en la maqueta
+ * de escritorio y el rótulo terminaba 103 px por encima del borde (D-192).
+ */
+.alv-museo-portada[data-maqueta="apilada"] .alv-museo-frente,
+.alv-museo-portada[data-maqueta="chata"] .alv-museo-frente {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 6vh, 80px) 24px;
+}
+
+.alv-museo-portada[data-maqueta="apilada"] .alv-museo-columna,
+.alv-museo-portada[data-maqueta="chata"] .alv-museo-columna {
+  position: static;
+  transform: none;
+  width: min(86vw, 620px);
+  gap: 13px;
+  margin-bottom: 15px;
+}
+
+.alv-museo-portada[data-maqueta="apilada"] .alv-museo-boton-vano,
+.alv-museo-portada[data-maqueta="chata"] .alv-museo-boton-vano {
+  position: static;
+  transform: none;
+  box-shadow: none;
+}
+
+.alv-museo-portada[data-maqueta="apilada"][data-revelado="si"] .alv-museo-boton-vano,
+.alv-museo-portada[data-maqueta="chata"][data-revelado="si"] .alv-museo-boton-vano {
+  animation-name: alv-museo-sube;
+}
+
+.alv-museo-portada[data-maqueta="apilada"] .alv-museo-boton-vano:active,
+.alv-museo-portada[data-maqueta="chata"] .alv-museo-boton-vano:active {
+  transform: scale(0.96);
+}
+
+/* En `chata` no queda cuarto: ni piso, ni línea, ni arco, ni huellas. Queda el
+   blanco de galería con el rótulo y la acción centrados, que es lo único que
+   390 px de alto pueden sostener sin que algo quede fuera de pantalla. */
+.alv-museo-portada[data-maqueta="chata"] .alv-museo-suelo,
+.alv-museo-portada[data-maqueta="chata"] .alv-museo-linea-piso,
+.alv-museo-portada[data-maqueta="chata"] .alv-museo-umbral,
+.alv-museo-portada[data-maqueta="chata"] .alv-museo-huella {
+  display: none;
+}
+
+/* EN TELEFONO EL DIBUJO ADEMAS SE ACHICA, y esto sí es cuestión de tamaño: la
+ * maqueta ya la puso `data-maqueta`, acá sólo se ajustan las tres medidas.
+ *
+ * `23vh` sale de medir a 375 × 600, la pantalla más corta que hay que aguantar:
+ * la pila termina en y = 352 y el arco tiene que arrancar después. Con `29vh`
+ * arrancaba en 342 —el botón le caía sobre la clave—, con `26vh` en 360 y
+ * quedaban 8 px, que a ojo es tocarse. Con `23vh` arranca en 378.
+ */
+@media (max-width: 640px) {
+  .alv-museo-portada {
+    --arco-alto: clamp(140px, 23vh, 210px);
+    /* La franja de piso sube a 14%: por debajo de eso las dos huellas no entran
+       en diagonal, y son ellas las que explican que eso es un piso. */
+    --arco-piso: 14%;
+    /* 0,54 × 14% = 7vh. Misma cuenta que en escritorio, contra esta franja. */
+    --huella-alto: clamp(34px, 7vh, 66px);
+  }
+
+  .alv-museo-portada[data-maqueta="apilada"] .alv-museo-frente,
+  .alv-museo-portada[data-maqueta="chata"] .alv-museo-frente {
+    /* En teléfono la pila arranca arriba en vez de centrarse: abajo está el
+       arco, y centrar el texto lo dejaría montado encima. */
+    justify-content: flex-start;
+    padding: clamp(40px, 7vh, 80px) 18px 0;
+  }
+
+  .alv-museo-portada[data-maqueta="apilada"] .alv-museo-columna,
+  .alv-museo-portada[data-maqueta="chata"] .alv-museo-columna {
+    width: min(86vw, 360px);
+  }
+}
+
+/* Con el movimiento reducido no se levanta nada: la sección aparece hecha. La
+   animación cuenta cómo está construida la sala y es prescindible; la sala no. */
+@media (prefers-reduced-motion: reduce) {
+  .alv-museo-portada[data-revelado] .alv-museo-suelo,
+  .alv-museo-portada[data-revelado] .alv-museo-linea-piso,
+  .alv-museo-portada[data-revelado] .alv-museo-arco,
+  .alv-museo-portada[data-revelado] .alv-museo-huella,
+  .alv-museo-portada[data-revelado] .alv-museo-columna > *,
+  .alv-museo-portada[data-revelado] .alv-museo-boton-vano {
+    animation: none;
+    opacity: 1;
+    clip-path: none;
+    stroke-dashoffset: 0;
+  }
+
+  .alv-museo-portada[data-revelado] .alv-museo-linea-piso {
+    transform: translateX(-50%) scaleX(1);
+  }
+
+  .alv-museo-portada[data-revelado] .alv-museo-huella {
+    transform: rotate(var(--giro));
+  }
 }
 
 /* ---- La cartela ----------------------------------------------------------
@@ -1925,29 +2607,158 @@ a:hover {
   font-size: 9.5px;
 }
 
-/* La mira: un punto mínimo en el centro. Sin él no se sabe qué se está
-   mirando, y con una cruz de videojuego esto dejaría de parecer un museo. */
-.alv-museo-lienzo + .alv-museo-cartela::after {
-  content: none;
+/* ---- Lo que el dedo reacomoda adentro de la sala ------------------------- */
+@media (pointer: coarse) {
+  /* El botón de salir es la ÚNICA salida en táctil —no hay `Escape` ni capa de
+     pausa— así que crece a 44 px, el mínimo cómodo de un pulgar. */
+  .alv-museo-salir {
+    height: 44px;
+    padding: 0 18px;
+    top: calc(16px + env(safe-area-inset-top));
+    right: calc(16px + env(safe-area-inset-right));
+  }
+
+  /* ⚠ Y pierde el `Esc`: anunciar una tecla que el dispositivo no tiene es
+     peor que no anunciar nada. */
+  .alv-museo-salir .alv-museo-tecla {
+    display: none;
+  }
+
+  /*
+   * LA CARTELA SE MUDA ARRIBA. Vivía abajo a la izquierda, que es justo donde
+   * ahora está el joystick: el pulgar la tapaba entera. Arriba queda a la
+   * altura a la que un museo cuelga sus fichas, y de paso el ancho completo le
+   * da los 340 px que en 390 de pantalla no entraban al costado.
+   */
+  .alv-museo-cartela {
+    left: calc(16px + env(safe-area-inset-left));
+    right: calc(16px + env(safe-area-inset-right));
+    bottom: auto;
+    top: calc(72px + env(safe-area-inset-top));
+    max-width: none;
+    /* Más chica que en escritorio: acá tapa la sala, que es lo que se vino a
+       ver. El recorte va en relleno e interlínea antes que en cuerpo, para no
+       bajar de 11 px de texto. */
+    padding: 12px 15px;
+  }
+
+  .alv-museo-cartela-titulo {
+    margin-bottom: 5px;
+    font-size: 15px;
+  }
+
+  .alv-museo-cartela-nota {
+    font-size: 11.5px;
+    line-height: 1.5;
+  }
 }
 
-/* LA MIRA SE FUE CON LA PRIMERA PERSONA (D-165). Existía porque sin un punto
-   en el centro no se sabía qué se estaba mirando. Con la cámara detrás del
-   hombro ese punto cae sobre la espalda del personaje, que es exactamente
-   donde no hay nada que mirar: quien dice qué obra está enfrente es la
-   cartela. */
-.alv-museo:has(.alv-museo-salir)::after {
-  content: none;
-  position: absolute;
-  z-index: 5;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  margin: -2.5px 0 0 -2.5px;
-  border-radius: 50%;
-  background: oklch(24% 0.008 70 / 0.34);
+/* ===========================================================================
+ * LA FLECHA DE VOLVER AL PRINCIPIO (D-172)
+ *
+ * El sitio es una página de tres pantallas completas y no tenía vuelta: para
+ * volver al hero desde el museo había que deshacer scrolleando todo el camino.
+ *
+ * DISCRETA, Y ESO ES UNA DECISION, NO UN TAMAÑO. No compite con nada porque no
+ * es una acción de ninguna de las tres pantallas: es un servicio del sitio. De
+ * ahí que sea una pastilla traslúcida sin texto, con la flecha sola, y que
+ * espere a que la toques para levantar el contraste.
+ *
+ * DOS FONDOS, UNA SOLA PIEZA. Cae sobre el papel claro de la biblioteca y sobre
+ * el azul del museo, así que no puede tener un color propio: es un vidrio
+ * esmerilado que toma lo que tenga detrás —`backdrop-filter`— con un borde de un
+ * pelo en `currentColor`. Y `color-scheme`/`mix-blend-mode` no servían acá: el
+ * texto es una flecha de 1,4 px de trazo y una mezcla la haría desaparecer sobre
+ * el mármol del piso del museo. El color lo fija cada sección más abajo.
+ * ======================================================================== */
+
+.alv-subir {
+  position: fixed;
+  z-index: 60;
+  right: clamp(16px, 2.4vw, 32px);
+  bottom: calc(clamp(16px, 2.4vw, 32px) + env(safe-area-inset-bottom));
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  cursor: pointer;
+  /* Discreta, pero encontrable. A `0.34` se perdía contra la pared azul del
+     museo, que es el otro fondo sobre el que cae. */
+  color: oklch(24% 0.008 70 / 0.5);
+  background: oklch(97% 0.006 85 / 0.62);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  transition:
+    opacity 0.34s ease,
+    transform 0.34s cubic-bezier(0.32, 0.72, 0, 1),
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+/* APAGADA: invisible, intocable y fuera del orden de tabulación —eso último lo
+   pone el `tabIndex` del componente, porque `opacity` no saca del tab—. Baja
+   seis píxeles al irse, que es de dónde vuelve cuando aparece.
+
+   ⚠ `opacity: 0` NO ALCANZA CUANDO HAY `backdrop-filter`. Chromium sigue
+   pintando el recorte desenfocado del fondo aunque el elemento esté en opacidad
+   cero: en la captura del hero la pastilla se veía perfectamente con
+   `opacity` computada en `0`. Se apaga también el filtro, y `visibility` cierra
+   el caso —además saca el elemento de la búsqueda de texto del navegador—.
+
+   `visibility` se transiciona con `allow-discrete` para que la salida siga
+   durando lo que dura el fundido en vez de cortarse en el primer cuadro. */
+.alv-subir[data-on="no"] {
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
+  transform: translateY(6px);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition:
+    opacity 0.34s ease,
+    transform 0.34s cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0.34s allow-discrete;
+}
+
+.alv-subir[data-on="si"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+
+.alv-subir:hover {
+  color: oklch(24% 0.008 70 / 0.85);
+  background: oklch(99% 0.006 85 / 0.82);
+}
+
+.alv-subir svg {
+  /* Medio píxel arriba: una punta de flecha centrada por caja se lee baja,
+     porque su masa está abajo. */
+  margin-top: -1px;
+}
+
+/* UN SOLO TRATAMIENTO PARA LOS DOS FONDOS, y eso costó una vuelta.
+ *
+ * Llegó a tener dos: claro sobre el papel de la biblioteca y oscuro sobre el
+ * azul del museo, con el componente midiendo qué sección le quedaba debajo. La
+ * captura mostró por qué no servía: los 42 px de la pastilla caen SIEMPRE dentro
+ * de la banda del piso cuando el museo está entero en pantalla, y el piso es
+ * mármol claro. O sea que la versión «oscura» aparecía justo sobre lo único
+ * claro de la sección, que es exactamente al revés.
+ *
+ * El fondo real debajo de esta flecha es claro casi siempre —papel, o mármol—, y
+ * en el rato en que no lo es —la pared, mientras la sección entra— un vidrio
+ * claro sobre azul se ve de sobra. Una pieza, sin medición y sin estado.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  .alv-subir[data-on="no"] {
+    transform: none;
+  }
 }
 
 /* Para lo que existe para un lector de pantalla y no para la vista. */

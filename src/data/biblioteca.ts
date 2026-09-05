@@ -311,8 +311,8 @@ export const BIBLIOTECA: Libro[] = [
         origen: "Mona Lisa.webp",
         titulo: { es: "La Gioconda", en: "Mona Lisa" },
         nota: {
-          es: "El retrato de medio cuerpo con las manos cruzadas, el paisaje de puentes y caminos detrás y el esfumado que borra los contornos.",
-          en: "The half-length portrait with folded hands, the landscape of bridges and roads behind, and the sfumato that dissolves the outlines.",
+          es: "Óleo sobre tabla de álamo, 77 × 53 cm, pintado entre 1503 y 1516. El esfumado disuelve los contornos en capas finísimas, y es lo que vuelve la expresión imposible de fijar. Museo del Louvre, París.",
+          en: "Oil on poplar panel, 77 × 53 cm, painted between 1503 and 1516. The sfumato dissolves the outlines into the faintest layers, and that is what makes the expression impossible to pin down. Musée du Louvre, Paris.",
         },
       },
       {
@@ -320,8 +320,8 @@ export const BIBLIOTECA: Libro[] = [
         origen: "Ultima cena.webp",
         titulo: { es: "La última cena", en: "The Last Supper" },
         nota: {
-          es: "Los doce repartidos en cuatro grupos de tres, con las líneas de la sala convergiendo en la cabeza de Cristo.",
-          en: "The twelve arranged in four groups of three, with the room's lines converging on Christ's head.",
+          es: "Mural de 4,6 × 8,8 m en el refectorio de Santa Maria delle Grazie, Milán, pintado entre 1495 y 1498. Leonardo trabajó al temple sobre pared seca en vez de al fresco: por eso empezó a descascararse en vida suya.",
+          en: "A 4.6 × 8.8 m wall painting in the refectory of Santa Maria delle Grazie, Milan, made between 1495 and 1498. Leonardo worked in tempera on a dry wall instead of true fresco, which is why it began to flake in his own lifetime.",
         },
       },
       {
@@ -329,8 +329,8 @@ export const BIBLIOTECA: Libro[] = [
         origen: "La dama del armiño.webp",
         titulo: { es: "La dama del armiño", en: "Lady with an Ermine" },
         nota: {
-          es: "Una mujer joven girando el torso hacia un lado y la mirada hacia el otro, con el armiño que sostiene siguiendo el mismo giro.",
-          en: "A young woman turning her torso one way and her gaze the other, the ermine she holds following the same turn.",
+          es: "Óleo sobre nogal de 54 × 39 cm, hacia 1489-1491. Se la identifica con Cecilia Gallerani, de la corte de Ludovico Sforza en Milán. Museo Czartoryski, Cracovia.",
+          en: "Oil on walnut, 54 × 39 cm, around 1489–1491. The sitter is identified as Cecilia Gallerani, of Ludovico Sforza's court in Milan. Czartoryski Museum, Kraków.",
         },
       },
       {
@@ -338,8 +338,8 @@ export const BIBLIOTECA: Libro[] = [
         origen: "Ginevra de Benci.webp",
         titulo: { es: "Ginevra de' Benci", en: "Ginevra de' Benci" },
         nota: {
-          es: "El retrato recortado contra una mata de enebro, con el paisaje de agua y cielo detrás.",
-          en: "The portrait set against a juniper bush, with the water and sky landscape behind.",
+          es: "Óleo y temple sobre álamo de 38,8 × 36,7 cm, pintado en Florencia entre 1474 y 1478. Es el único cuadro de Leonardo expuesto al público en América. National Gallery of Art, Washington.",
+          en: "Oil and tempera on poplar, 38.8 × 36.7 cm, painted in Florence between 1474 and 1478. It is the only Leonardo painting on public view in the Americas. National Gallery of Art, Washington.",
         },
       },
       {
@@ -347,8 +347,8 @@ export const BIBLIOTECA: Libro[] = [
         origen: "Virgen de las rocas.webp",
         titulo: { es: "La Virgen de las rocas", en: "Virgin of the Rocks" },
         nota: {
-          es: "El grupo piramidal dentro de una gruta, con la luz entrando por las aberturas del fondo.",
-          en: "The pyramidal group inside a grotto, with light entering through the openings behind.",
+          es: "Óleo sobre tabla trasladado a lienzo, 199 × 122 cm, hacia 1483-1493. Hay dos versiones del cuadro: ésta es la del Louvre —el ángel señala a Juan y nadie lleva aureola—; la otra está en la National Gallery de Londres.",
+          en: "Oil on panel transferred to canvas, 199 × 122 cm, around 1483–1493. There are two versions of the painting: this is the Louvre one — the angel points at John and no one wears a halo — while the other is in the National Gallery, London.",
         },
       },
       {
@@ -359,8 +359,8 @@ export const BIBLIOTECA: Libro[] = [
           en: "The Virgin and Child with St. Anne",
         },
         nota: {
-          es: "Tres generaciones encajadas en una sola figura piramidal: Ana sostiene a María, María se inclina hacia el Niño, el Niño abraza al cordero.",
-          en: "Three generations locked into a single pyramidal figure: Anne holds Mary, Mary leans toward the Child, the Child grasps the lamb.",
+          es: "Óleo sobre tabla de 168 × 112 cm. Leonardo lo empezó hacia 1501 y lo siguió trabajando hasta el final de su vida sin darlo por terminado. Tres generaciones encajadas en una sola pirámide. Museo del Louvre, París.",
+          en: "Oil on panel, 168 × 112 cm. Leonardo began it around 1501 and kept working on it until the end of his life without ever calling it finished. Three generations locked into a single pyramid. Musée du Louvre, Paris.",
         },
       },
       {
@@ -368,8 +368,8 @@ export const BIBLIOTECA: Libro[] = [
         origen: "Hombre de vitruvio.webp",
         titulo: { es: "El hombre de Vitruvio", en: "Vitruvian Man" },
         nota: {
-          es: "La figura inscrita a la vez en el círculo y en el cuadrado, con las proporciones anotadas en espejo arriba y abajo.",
-          en: "The figure inscribed in circle and square at once, the proportions noted in mirror-writing above and below.",
+          es: "Pluma y tinta parda sobre papel, 34,4 × 24,5 cm, hacia 1490. Ilustra las proporciones del cuerpo que describió el arquitecto romano Vitruvio, con las notas escritas en espejo. Gallerie dell'Accademia, Venecia, donde casi no se expone por lo frágil que es.",
+          en: "Pen and brown ink on paper, 34.4 × 24.5 cm, around 1490. It illustrates the bodily proportions described by the Roman architect Vitruvius, with the notes written in mirror script. Gallerie dell'Accademia, Venice, where it is rarely shown because of its fragility.",
         },
       },
       {
@@ -380,8 +380,8 @@ export const BIBLIOTECA: Libro[] = [
           en: "Head of a Woman (La Scapigliata)",
         },
         nota: {
-          es: "El rostro terminado hasta el modelado y el pelo apenas esbozado alrededor: el cuadro quedó en ese estado.",
-          en: "The face finished down to the modelling and the hair barely sketched around it: the panel was left in that state.",
+          es: "Tierra, ámbar y albayalde sobre tabla, 24,7 × 21 cm, hacia 1506-1508. Quedó sin terminar: el rostro está modelado y el pelo apenas esbozado alrededor. Galleria Nazionale, Parma.",
+          en: "Earth, amber and white lead on panel, 24.7 × 21 cm, around 1506–1508. It was left unfinished: the face is modelled and the hair barely sketched around it. Galleria Nazionale, Parma.",
         },
       },
       {
@@ -389,8 +389,8 @@ export const BIBLIOTECA: Libro[] = [
         origen: "volto-fanciulla.jpg",
         titulo: { es: "Rostro de muchacha", en: "Head of a Young Girl" },
         nota: {
-          es: "Estudio de una cabeza inclinada con los ojos bajos, trabajado a punta fina sobre papel preparado.",
-          en: "A study of a tilted head with lowered eyes, worked in fine point on prepared paper.",
+          es: "Punta de plata realzada con blanco sobre papel preparado, 18,1 × 15,9 cm, hacia 1483-1485. Es el estudio para el ángel de la Virgen de las rocas, que también está en esta sala. Biblioteca Reale, Turín.",
+          en: "Silverpoint heightened with white on prepared paper, 18.1 × 15.9 cm, around 1483–1485. It is the study for the angel in the Virgin of the Rocks, which is also in this room. Biblioteca Reale, Turin.",
         },
       },
     ],

@@ -116,6 +116,40 @@ if (existsSync(fEs)) {
 const conAtribucion = chunks.filter((c) => c.url && /gutenberg\.org/i.test(c.url)).length;
 bien(`${conAtribucion} chunks enlazan la fuente en gutenberg.org (atribución, no marca)`);
 
+/**
+ * LAS NOTAS DE TRABAJO DEL TRANSCRIPTOR, que no son el aparato legal de arriba.
+ *
+ * «IGNORE FOOTNOTES FOR THIS PAGE - Project Manager» o «Above must belong to
+ * previous page's footnotes» no son de Leonardo ni de Richter: las escribió
+ * quien digitalizó el libro. Vale el mismo argumento que el boilerplate legal
+ * —si se cuelan, el sistema las cita como si fueran de alguien— pero las regex
+ * de arriba no las ven, porque no dicen «Gutenberg» en ningún lado.
+ *
+ * ⚠ SE MIDE SOBRE LO QUE PUEDE LLEGAR A UNA RESPUESTA, no sobre el corpus
+ * entero. Un chunk que la curaduría sacó del índice no se recupera nunca, así
+ * que no puede citarse: contarlo como fallo obligaría a re-correr el pipeline
+ * de la Fase 1 para arreglar algo sin superficie. Lo que sí importa —y es lo que
+ * falla acá— es que vuelva a entrar uno al índice.
+ */
+const TRANSCRIPTOR: RegExp[] = [
+  /IGNORE FOOTNOTES/i, /Project Manager/i, /belong to previous page/i,
+  /previous page'?s footnotes/i, /\*\*\* ?from previous page/i,
+];
+const fCur = new URL("artifacts/curaduria.json", RAIZ);
+const fueraDelIndice = new Set<string>(
+  existsSync(fCur)
+    ? Object.keys((JSON.parse(readFileSync(fCur, "utf8")) as { chunks: Record<string, unknown> }).chunks)
+    : []);
+
+const conNotas = chunks.filter((c) => TRANSCRIPTOR.some((p) => p.test(c.text)));
+const enIndice = conNotas.filter((c) => !fueraDelIndice.has(c.id));
+if (enIndice.length) {
+  mal(`${enIndice.length} chunks del ÍNDICE con notas del transcriptor: ${enIndice.map((c) => c.id).join(", ")}`);
+} else {
+  bien(`0 chunks del índice con notas del transcriptor` +
+       (conNotas.length ? ` (${conNotas.length} las tiene y está fuera del índice: ${conNotas.map((c) => c.id).join(", ")})` : ""));
+}
+
 // ---------------------------------------------------------------------------
 console.log(`\n## 4 · La licencia del repositorio (D-130)\n`);
 

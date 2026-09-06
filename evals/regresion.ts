@@ -101,6 +101,8 @@ const medido: Record<string, Punto> = {};
   }
   medido["curaduria.inventory"] = { valor: porTipo.inventory ?? 0, decision: "D-098" };
   medido["curaduria.no_traducible"] = { valor: porTipo.no_traducible ?? 0, decision: "D-108" };
+  medido["curaduria.aparato"] = { valor: porTipo.aparato ?? 0, decision: "D-207",
+    nota: "Catálogo del editor dentro de un pasaje de Leonardo. Si baja, volvió a entrar al índice material que se recupera y se cita como si fuera suyo." };
   medido["indice.chunksLeonardo"] = { valor: motor.por.en.corpus.filasPorVoz.leonardo.length, decision: "D-098" };
   medido["tau.en"] = { valor: motor.por.en.umbrales.tau.en, decision: "D-100" };
   medido["tau.es"] = { valor: motor.por.es.umbrales.tau.es, decision: "D-108" };

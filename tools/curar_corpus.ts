@@ -118,10 +118,55 @@ const marcas = (t: string, ws: string[]): number =>
 const ajenos = chunks.filter((c) =>
   c.voice === "richter" && (marcas(c.text, MARCAS_FR) >= 3 || marcas(c.text, MARCAS_IT) >= 3));
 
+/**
+ * TERCERA CLASE: EL CATALOGO DEL EDITOR DENTRO DE UN PASAJE DE LEONARDO.
+ *
+ * La revision de voz de julio dejo dos unidades marcadas como «colas
+ * irreducibles»: la voz cambia DENTRO de un parrafo y la clasificacion trabaja
+ * a nivel de bloque, asi que el bloque entero queda como Leonardo. La nota decia
+ * que entre las dos eran «~15 palabras de notacion de esquema».
+ *
+ * **Medido, son 476 palabras y 19 marcas de catalogo.** `rt-0755` son 352
+ * palabras que enumeran tipos de cupula con remisiones a laminas —«We have
+ * eleven variations of this type. aa) Pl. LXXXVIII, No. 3»— en primera persona
+ * del plural del editor. Y **es alcanzable**: «What did you design for churches
+ * with domes?» lo trae al top-3 y se lo entrega al modelo como voz de Leonardo.
+ * Eso es el riesgo R1 ocurriendo, no en teoria.
+ *
+ * LA REGLA SEPARA SOLA. Cuatro o mas remisiones a laminas, manuscritos o
+ * numeros de pasaje marcan **2 chunks de 1.431**, y son exactamente los dos que
+ * la revision ya habia senalado. No es una excepcion escrita a mano con forma de
+ * regla: es un umbral que aisla el material contaminado y no toca nada mas.
+ *
+ * ⚠ NO SE CAMBIA LA VOZ EN EL CORPUS, y es deliberado. `rt-0755` abre con una
+ * frase que SI es de Leonardo —«It never looks well to see the roofs of a
+ * church»— y marcar el bloque como Richter la perderia igual, ademas de exigir
+ * re-correr el pipeline entero. Sacarlo del indice tiene el mismo efecto sobre
+ * el producto y no toca ni el corpus ni los vectores (D-059).
+ */
+/**
+ * ⚠ LA REGEX SE CONSTRUYE EN CADA LLAMADA, y el limite de palabra va como
+ * `(?![a-z])` en vez de ``.
+ *
+ * Esta linea nacio con un `\b` que un heredoc convirtio en el **caracter de
+ * control backspace** (0x08). La regex quedo exigiendo un byte que no existe en
+ * ningun texto, asi que `MS. B` dejo de contar: `rt-0755` marcaba 12 en vez de
+ * 15 y `rt-0747` caia por debajo del umbral de 4. **La regla parecia andar y
+ * marcaba de menos**, que es exactamente el modo de fallo que este proyecto
+ * lleva quince entradas documentando — un numero plausible, sin error visible.
+ *
+ * Se detecto comparando el conteo de adentro del script contra el mismo conteo
+ * hecho afuera: 12 contra 15 sobre el mismo texto.
+ */
+const catalogo = (t: string): string[] =>
+  t.match(/Pl\.\s*[IVXLC]+|MS\.\s*[A-Z](?![a-z])|see No\.\s*\d|Nos?\.\s*\d+\s*(and|,)/g) ?? [];
+const MIN_MARCAS = 4;
+
 const leo = chunks.filter((c) => c.voice === "leonardo");
 const candidatos = leo.filter(esCandidato);
+const conCatalogo = leo.filter((c) => catalogo(c.text).length >= MIN_MARCAS);
 
-interface Ficha { utility: "inventory" | "no_traducible"; segMedia: number; titulo: string | null; muestra: string }
+interface Ficha { utility: "inventory" | "no_traducible" | "aparato"; segMedia: number; titulo: string | null; muestra: string }
 const fichas: Record<string, Ficha> = {};
 
 for (const c of candidatos) {
@@ -139,6 +184,19 @@ for (const c of ajenos) {
   fichas[c.id] = { utility: "no_traducible", segMedia: 0, titulo: c.richterTitle,
                    muestra: c.text.replace(/\s+/g, " ").slice(0, 120) };
 }
+
+// El catalogo del editor pisa a las otras dos: es la razon mas fuerte para salir.
+for (const c of conCatalogo) {
+  fichas[c.id] = { utility: "aparato", segMedia: 0, titulo: c.richterTitle,
+                   muestra: c.text.replace(/\s+/g, " ").slice(0, 120) };
+}
+/**
+ * Se dice CUANTOS marca cada regla, no sólo el total. Con un total agregado, una
+ * regla que marca de menos se ve igual que una que marca bien: el numero baja y
+ * no hay forma de saber cual de las tres se movio.
+ */
+console.log(`  con catálogo editorial: ${conCatalogo.length} chunk(s) — ` +
+            conCatalogo.map((c) => `${c.id} (${catalogo(c.text).length})`).join(", "));
 
 const excluidos = Object.keys(fichas);
 const palabrasFuera = leo

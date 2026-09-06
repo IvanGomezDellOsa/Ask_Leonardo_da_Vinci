@@ -15,8 +15,8 @@
   "resumen": {
     "chunksLeonardo": 1431,
     "candidatos": 102,
-    "excluidos": 38,
-    "palabrasFuera": 1479,
+    "excluidos": 40,
+    "palabrasFuera": 1955,
     "palabrasTotal": 169188
   },
   "chunks": {
@@ -247,6 +247,18 @@
       "segMedia": 0,
       "titulo": null,
       "muestra": "I have been unable to find in the manuscripts any passage whatever which throws any light on Leonardo's great reputation"
+    },
+    "rt-0747": {
+      "utility": "aparato",
+      "segMedia": 0,
+      "titulo": "On bronze casting generally (731-740)",
+      "muestra": "The main underground channel does not receive turbid water, but that water runs in the ditches outside the town with fou"
+    },
+    "rt-0755": {
+      "utility": "aparato",
+      "segMedia": 0,
+      "titulo": "A. General Observations._",
+      "muestra": "It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters mad"
     }
   }
 }

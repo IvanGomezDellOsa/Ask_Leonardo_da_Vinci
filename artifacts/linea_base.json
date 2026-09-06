@@ -35,8 +35,13 @@
       "valor": 11,
       "decision": "D-108"
     },
+    "curaduria.aparato": {
+      "valor": 2,
+      "decision": "D-207",
+      "nota": "Catálogo del editor dentro de un pasaje de Leonardo. Si baja, volvió a entrar al índice material que se recupera y se cita como si fuera suyo."
+    },
     "indice.chunksLeonardo": {
-      "valor": 1404,
+      "valor": 1402,
       "decision": "D-098"
     },
     "tau.en": {

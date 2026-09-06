@@ -2,8 +2,8 @@
 
 > **Generado.** No editar a mano: `npm run curar`. Ver D-098.
 
-38 chunks de 1431, 1479 palabras de 169188
-(0.9% del corpus de Leonardo).
+40 chunks de 1431, 1955 palabras de 169188
+(1.2% del corpus de Leonardo).
 
 Siguen en `chunks.json` y siguen contando para verificar citas. Lo único que
 cambia es que no compiten por entrar al top-k.
@@ -21,6 +21,8 @@ cambia es que no compiten por entrar al top-k.
 | 0.00 | `fn-R1566-158` | — | "La Bibia volgare historiata (per Nicolo di Mallermi) Venecia … M.CCCC.LXXI in kalende di Augusto (per Vindelino de Spir |
 | 0.00 | `fn-R1566-199` | — | (Witelo, Vitellion, Vitellon) Vitellione. *E da vedersi su questo ottico prospettico del secolo XIII Luca Pacioli, Paolo |
 | 0.00 | `intro-R1113-3` | — | I have been unable to find in the manuscripts any passage whatever which throws any light on Leonardo's great reputation |
+| 0.00 | `rt-0747` | On bronze casting generally (731-740) | The main underground channel does not receive turbid water, but that water runs in the ditches outside the town with fou |
+| 0.00 | `rt-0755` | A. General Observations._ | It never looks well to see the roofs of a church; they should rather be flat and the water should run off by gutters mad |
 | 1.85 | `rt-1438` | Undated memoranda (1435-1457) | [Lactantius], [the book of Benozzo], groups, to bind the book,—a lantern,—Ser Pecantino,—Pandolfino.—[Rosso]—a square, — |
 | 2.62 | `rt-1434` | Memoranda after 1500 (1414—1434) | Have Avicenna's work on useful inventions translated; spectacles with the case, steel and fork and…., charcoal, boards,  |
 | 2.73 | `rt-1381` | Memoranda before 1500 (1379-l413) | NAMES OF ENGINEERS. Callias of Rhodes, Epimachus the Athenian, Diogenes, a philosopher, of Rhodes, Calcedonius of Thrace |

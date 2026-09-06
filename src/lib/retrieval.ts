@@ -70,8 +70,16 @@ interface Bm25Artefacto {
 
 const K_RRF = 60;
 
-/** Valores de `utility` que salen del indice de recuperacion. Ver D-098 y D-108. */
-const FUERA_DEL_INDICE = new Set(["inventory", "no_traducible"]);
+/**
+ * Valores de `utility` que salen del indice de recuperacion. Ver D-098, D-108 y
+ * D-207.
+ *
+ * `aparato` es catalogo del editor —remisiones a laminas y manuscritos— que
+ * quedo dentro de un bloque clasificado como Leonardo porque la voz cambia a
+ * mitad de parrafo. Sale del indice y **se queda en el corpus**: la verificacion
+ * de citas lo sigue viendo, que es lo que hay que preservar.
+ */
+const FUERA_DEL_INDICE = new Set(["inventory", "no_traducible", "aparato"]);
 
 export class Corpus {
   readonly meta: IndexMeta;

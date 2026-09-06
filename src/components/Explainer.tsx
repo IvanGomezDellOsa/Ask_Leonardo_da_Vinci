@@ -104,6 +104,18 @@ const COPY = {
     pestanaSimple: "Lo esencial",
     pestanaTecnica: "Explicación técnica",
     boton: "Entendido",
+    avisoPrivacidad: "Aviso de privacidad",
+    cerrarAviso: "Cerrar",
+    tituloPrivacidad: "Qué pasa con lo que escribís",
+    privacidad: [
+      "No hay cuentas, ni cookies, ni analítica. Este sitio no guarda nada en tu navegador.",
+      "Tus preguntas no se guardan. Se usan para buscar en los cuadernos y para armar la respuesta, y ahí terminan: no quedan en ningún registro, ni acá ni en ningún lado.",
+      "Para responder, tu pregunta y los pasajes encontrados se le envían a Google, que es quien redacta la respuesta a partir de ese material. Si Google no está disponible, se envían a Groq. Ninguno de los dos recibe tu nombre ni nada que te identifique, porque el sitio no te lo pide.",
+      "Se cuenta cuántas consultas llegan desde cada conexión, para que nadie agote el servicio. Tu dirección IP se convierte en un código irreversible antes de contarla y se descarta al cabo de un día. La dirección tal cual no se guarda nunca, y nunca junto a lo que preguntaste.",
+      "La primera vez que abrís la consulta, tu navegador descarga desde Hugging Face el modelo que busca en los cuadernos. Es una descarga única y ocurre en tu equipo. Si reproducís el video de la biblioteca, YouTube lo sirve en su versión sin cookies de seguimiento.",
+      "Para comprobar que del otro lado hay una persona y no un programa, cada consulta pasa por Cloudflare Turnstile, que recibe tu dirección IP. No hay casilla que marcar ni imágenes que resolver: en la enorme mayoría de los casos no vas a ver nada.",
+      "La conversación se borra al recargar la página. No hay forma de recuperarla, tampoco para nosotros.",
+    ],
     tecnico: [
       "La forma directa de hacer que una IA responda como Leonardo es pedírselo: se le explica quién fue y escribe como si fuera él. Suena bien y es casi todo inventado. Sobre 120 preguntas de prueba, un modelo así citó a Leonardo 161 veces, y 156 de esas frases no existen en ninguna parte de sus cuadernos: el 96,9%.",
       "Acá busca primero. La pregunta se compara contra el corpus entero —202.000 palabras de Leonardo en 1.504 pasajes de Richter, troceados en 2.062 fragmentos— y se mide cuánto se parece a lo más cercano que haya. Si no llega a un umbral calibrado, Leonardo se abstiene y al modelo ni se lo llama. Si llega, el modelo escribe con esos pasajes delante.",
@@ -126,6 +138,18 @@ const COPY = {
     pestanaSimple: "The short version",
     pestanaTecnica: "Technical",
     boton: "Got it",
+    avisoPrivacidad: "Privacy notice",
+    cerrarAviso: "Close",
+    tituloPrivacidad: "What happens to what you write",
+    privacidad: [
+      "No accounts, no cookies, no analytics. This site stores nothing in your browser.",
+      "Your questions are not kept. They are used to search the notebooks and to compose the answer, and that is where they end: they go into no log, here or anywhere.",
+      "To answer, your question and the passages found are sent to Google, which writes the reply from that material. If Google is unavailable, they are sent to Groq. Neither receives your name or anything identifying you, because the site never asks for it.",
+      "The number of queries arriving from each connection is counted, so that no one can exhaust the service. Your IP address is turned into an irreversible code before being counted and is discarded within a day. The address itself is never stored, and never alongside what you asked.",
+      "The first time you open the consultation, your browser downloads the search model from Hugging Face. It is a one-time download and it happens on your device. If you play the video in the library, YouTube serves it in its no-tracking-cookie version.",
+      "To check that there is a person and not a program on the other side, each query passes through Cloudflare Turnstile, which receives your IP address. There is no box to tick and no images to solve: in the vast majority of cases you will see nothing at all.",
+      "The conversation is erased when you reload the page. There is no way to recover it — not for us either.",
+    ],
     tecnico: [
       "The direct way to make an AI answer as Leonardo is to ask it to: you tell it who he was and it writes as if it were him. It reads well, and it is mostly invented. Across 120 test questions, a model set up that way quoted Leonardo 161 times, and 156 of those phrases exist nowhere in his notebooks: 96.9%.",
       "Here it searches first. The question is compared against the whole corpus — 202,000 words of Leonardo across 1,504 Richter passages, cut into 2,062 fragments — and how closely it matches the nearest one is measured. Below a calibrated threshold, Leonardo declines and the model is never called. Above it, the model writes with those passages in front of it.",
@@ -147,13 +171,27 @@ export function Explainer({ lang, onCerrar }: { lang: Idioma; onCerrar: () => vo
    */
   const [tecnico, setTecnico] = useState(false);
   const parrafos = tecnico ? t.tecnico : t.parrafos;
+  /**
+   * EL AVISO DE PRIVACIDAD VA EN UN POPOUT, NO EN UNA PESTAÑA (D-215).
+   *
+   * La obligación de informar existe —el sitio trata la IP y manda la consulta a
+   * Google— pero **darle una pestaña le da un peso que no tiene**: es lo que
+   * nadie viene a leer. Un enlace al pie lo deja accesible sin ocuparle sitio a
+   * lo que la gente sí lee, que es el mismo calibre de D-178: no mentir no es
+   * declarar cada contra en la primera pantalla.
+   */
+  const [aviso, setAviso] = useState(false);
 
-  // Escape cierra, igual que el códice.
+  // Escape cierra: primero el aviso si está abierto, y recién después el panel.
   useEffect(() => {
-    const alTeclado = (e: KeyboardEvent) => { if (e.key === "Escape") onCerrar(); };
+    const alTeclado = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (aviso) setAviso(false);
+      else onCerrar();
+    };
     window.addEventListener("keydown", alTeclado);
     return () => window.removeEventListener("keydown", alTeclado);
-  }, [onCerrar]);
+  }, [onCerrar, aviso]);
 
   return (
     <div
@@ -352,8 +390,131 @@ export function Explainer({ lang, onCerrar }: { lang: Idioma; onCerrar: () => vo
         >
           {t.boton}
         </button>
+
+        {/* El enlace de línea del sistema, en su versión oscura. Relleno para
+            que el área táctil no sea la altura de una versalita de 10 px. */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+          <button
+            type="button"
+            onClick={() => setAviso(true)}
+            className="alv-codice-linea"
+            style={{
+              background: "none",
+              border: "none",
+              padding: "10px 12px",
+              margin: "-4px 0 -8px",
+              cursor: "pointer",
+              fontFamily: FUENTE.lectura,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: ".15em",
+              textTransform: "uppercase",
+              color: T.tenue,
+            }}
+          >
+            <span style={{ borderBottom: "1px solid currentColor", paddingBottom: 2 }}>
+              {t.avisoPrivacidad}
+            </span>
+          </button>
+        </div>
         </div>
       </div>
+
+      {/*
+        EL AVISO, ENCIMA DEL PANEL Y NO EN LUGAR DE EL (D-215).
+        Se abre sobre «Cómo funciona» y al cerrarlo se vuelve exactamente a donde
+        se estaba: quien fue a mirar qué pasa con sus datos no perdió la lectura.
+
+        `stopPropagation` en el velo y en la caja: sin eso, un clic acá adentro
+        burbujea hasta el `onClick={onCerrar}` del velo de afuera y cierra los dos
+        paneles de una — el mismo defecto que el códice ya tuvo que atajar.
+      */}
+      {aviso && (
+        <div
+          onClick={(e) => { e.stopPropagation(); setAviso(false); }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 90,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: angosto ? 16 : 28,
+            background: "oklch(6% 0.02 40 / 0.72)",
+          }}
+        >
+          <div
+            className="alv-in"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t.tituloPrivacidad}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              boxSizing: "border-box",
+              display: "flex",
+              flexDirection: "column",
+              width: "min(640px, 100%)",
+              maxHeight: "min(82dvh, 720px)",
+              background: T.explainerBg,
+              border: `1px solid ${T.explainerBorde}`,
+              borderRadius: 14,
+              color: T.explainerTexto,
+              boxShadow: "0 30px 70px oklch(6% 0.02 40 / 0.6)",
+            }}
+          >
+            <div
+              className="alv-scroll"
+              style={{ overflowY: "auto", padding: angosto ? "20px 20px 4px" : "26px 34px 6px" }}
+            >
+              <h2
+                style={{
+                  margin: "0 0 14px",
+                  fontFamily: FUENTE.manuscrita,
+                  fontSize: angosto ? 20 : 23,
+                  fontWeight: 400,
+                  color: T.titulo,
+                }}
+              >
+                {t.tituloPrivacidad}
+              </h2>
+              {t.privacidad.map((p, i) => (
+                <p
+                  key={i}
+                  style={{
+                    margin: "0 0 11px",
+                    fontFamily: FUENTE.lectura,
+                    fontSize: angosto ? 14.5 : 15.5,
+                    lineHeight: angosto ? 1.65 : 1.7,
+                  }}
+                >
+                  {p}
+                </p>
+              ))}
+            </div>
+
+            <div style={{ flexShrink: 0, padding: angosto ? "10px 20px 18px" : "12px 34px 22px" }}>
+              <button
+                type="button"
+                onClick={() => setAviso(false)}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: 12,
+                  background: "transparent",
+                  color: T.explainerTexto,
+                  border: `1px solid ${T.cajaBorde}`,
+                  borderRadius: 8,
+                  fontFamily: FUENTE.lectura,
+                  fontSize: 15,
+                  cursor: "pointer",
+                }}
+              >
+                {t.cerrarAviso}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

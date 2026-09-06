@@ -96,7 +96,7 @@ export async function consultar(
    * SOLO cuando la consulta no se sostiene sola: lo decide `consultaParaEmbeber`
    * en el llamador, porque quien embebe es el navegador (D-022).
    */
-  extra: { historial?: Turno[]; vectorContexto?: Float32Array } = {},
+  extra: { historial?: Turno[]; vectorContexto?: Float32Array; turnstile?: string } = {},
 ): Promise<ResultadoChat> {
   let res: Response;
   try {
@@ -111,6 +111,7 @@ export async function consultar(
         vector: Array.from(vector),
         vectorContexto: extra.vectorContexto ? Array.from(extra.vectorContexto) : undefined,
         historial: extra.historial,
+        turnstile: extra.turnstile,
         turno,
       }),
     });
@@ -138,6 +139,12 @@ export async function consultar(
   return {
     ok: false,
     texto: texto(motivo, idioma),
-    descansa: cuerpo.descansa === true || res.status === 503,
+    /**
+     * Lo dice el servidor y nadie más (D-206). Estaba `|| res.status === 503`, y
+     * con eso un 503 de «no se pudieron cargar los artefactos» —un fallo de
+     * despliegue— se mostraba como el taller cerrado por hoy. Quien sabe si se
+     * agotó la cuota es quien la cuenta.
+     */
+    descansa: cuerpo.descansa === true,
   };
 }

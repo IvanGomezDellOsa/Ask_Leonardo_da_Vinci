@@ -28,6 +28,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PORTADA } from "../data/portada.js";
 import { useEmbedder } from "../hooks/useEmbedder.js";
+import { useTurnstile } from "../hooks/useTurnstile.js";
 import { useAngosto } from "../hooks/useAngosto.js";
 import { consultar, MAX_CARACTERES, type Idioma } from "../lib/cliente-chat.js";
 import { consultaParaEmbeber, type Turno } from "../lib/conversacion.js";
@@ -195,6 +196,12 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
   const t = COPY[lang];
   const angosto = useAngosto();
   const { estado, progreso, embed } = useEmbedder();
+  /**
+   * Inerte mientras no haya `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (D-206): no baja el
+   * script de Cloudflare ni monta nada. Con la clave puesta, cada consulta libre
+   * pide un token nuevo — es de un solo uso.
+   */
+  const turnstile = useTurnstile();
 
   /**
    * La medida de lectura en un teléfono. 18 px en una columna de 340 px da
@@ -409,7 +416,8 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
        */
       const conContexto = consultaParaEmbeber(texto, historial);
       const vectorContexto = conContexto === texto ? undefined : await embed(conContexto);
-      const r = await consultar(texto, lang, vector, turno, { historial, vectorContexto });
+      const r = await consultar(texto, lang, vector, turno,
+        { historial, vectorContexto, turnstile: await turnstile.token() });
       if (r.ok) asentar(id, r.respuesta);
       else {
         setMensajes((ms) => ms.filter((m) => m.id !== id));
@@ -1175,6 +1183,32 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           )}
         </form>
       </div>
+
+      {/**
+        * DONDE CLOUDFLARE DIBUJA, SI ALGUNA VEZ DESAFIA (D-206).
+        *
+        * Está siempre en el DOM porque el widget se monta al abrir el códice,
+        * pero en `appearance: "interaction-only"` no pinta nada hasta que hay
+        * que probar que del otro lado hay una persona. Recién ahí aparece el
+        * recuadro de Cloudflare, centrado sobre el panel.
+        *
+        * Sin `NEXT_PUBLIC_TURNSTILE_SITE_KEY` el hook no monta nada y este div
+        * queda vacío: cero pixeles, cero red, cero cambio.
+        */}
+      {turnstile.activo && (
+        <div
+          ref={turnstile.ref}
+          style={{
+            position: "fixed",
+            left: "50%",
+            bottom: "12%",
+            transform: "translateX(-50%)",
+            zIndex: 80,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
+      )}
     </div>
   );
 }

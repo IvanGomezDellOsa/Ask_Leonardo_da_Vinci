@@ -160,7 +160,22 @@ const limitador = new Limitador(contadorDelEntorno(process.env), limitesDelEntor
  * queda del lado de quien decide el diseño.
  */
 function rechazo(v: Veredicto, status: number): NextResponse {
-  const cuerpo: Record<string, unknown> = { error: "limite", motivo: v.motivo, descansa: true };
+  /**
+   * ⚠ `descansa` SOLO CUANDO EL TALLER CERRO DE VERDAD. Ver D-206.
+   *
+   * Estaba fijo en `true` para todos los rechazos, y mientras el cliente lo
+   * ignoraba daba igual. Desde D-203 **gobierna qué pantalla se ve**: con el
+   * `true` fijo, superar el cupo horario o fallar Turnstile mostraba «Leonardo
+   * descansa» —«mañana los cuadernos vuelven a abrirse»— cuando en realidad hay
+   * que esperar una hora, o recargar la página.
+   *
+   * Es la misma clase de defecto que este proyecto lleva quince entradas
+   * anotando, con un agravante: el campo no estaba mal **hasta que alguien le
+   * dio significado**. Un dato que nadie lee no tiene forma de estar equivocado.
+   */
+  const cuerpo: Record<string, unknown> = {
+    error: "limite", motivo: v.motivo, descansa: v.motivo === "global_dia",
+  };
   const h = new Headers();
   if (v.esperaSegundos) h.set("retry-after", String(v.esperaSegundos));
   return NextResponse.json(cuerpo, { status, headers: h });

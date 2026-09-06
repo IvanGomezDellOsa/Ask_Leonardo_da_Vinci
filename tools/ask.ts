@@ -65,7 +65,9 @@ const LOTE: [Idioma, string, string][] = [
 const env: Record<string, string> = {};
 for (const l of readFileSync(new URL("../.env.local", import.meta.url), "utf8").split("\n")) {
   const m = l.match(/^([A-Z0-9_]+)=(.*)$/);
-  if (m && m[2].trim()) env[m[1]] = m[2].trim();
+  // Vercel escribe sus valores ENTRECOMILLADOS. Sin quitarlas, la URL queda con
+  // comillas adentro y el fetch falla en silencio, cayendo al respaldo (D-220).
+  if (m && m[2].trim()) env[m[1]] = m[2].trim().replace(/^(["'])([\s\S]*)\1$/, "$2");
 }
 // El tope por modelo lo trae cada proveedor (D-198); esto es el de la cascada.
 const presupuesto = new PresupuestoTpm(Infinity, Infinity);

@@ -111,7 +111,9 @@ export function claves(): Record<string, string> {
   const out: Record<string, string> = {};
   for (const l of readFileSync(new URL(".env.local", RAIZ), "utf8").split("\n")) {
     const m = l.match(/^([A-Z0-9_]+)=(.*)$/);
-    if (m && m[2].trim()) out[m[1]] = m[2].trim();
+    // Vercel escribe sus valores ENTRECOMILLADOS. Sin quitarlas, la URL queda con
+    // comillas adentro y el fetch falla en silencio, cayendo al respaldo (D-220).
+    if (m && m[2].trim()) out[m[1]] = m[2].trim().replace(/^(["'])([\s\S]*)\1$/, "$2");
   }
   return out;
 }

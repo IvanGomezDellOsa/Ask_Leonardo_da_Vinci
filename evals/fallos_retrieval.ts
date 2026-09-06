@@ -16,10 +16,26 @@
  *   B-02        el denso lo deja en 34 (es) / 17 (en), pero lo que SI trae
  *               contesta la pregunta: es una ETIQUETA ANGOSTA, no un fallo
  *   B-07        el denso lo deja en 68 (es) / 95 (en) y lo que trae no habla del
- *               tema. **Es el único fallo de recuperación de verdad**
+ *               tema. **Era el único fallo de recuperación de verdad**, y desde
+ *               D-217 está medido y cerrado — ver el aviso de abajo
  *
  * Ninguna palanca de ordenamiento sube un pasaje 68 puestos, así que juntarlos
  * bajo una etiqueta común invitaba a buscarles una cura común que no existe.
+ *
+ * ⚠ B-07: NO REINTENTAR CAMBIAR LO QUE SE EMBEBE. D-217 midió las cuatro
+ * variantes de preparación del texto del chunk. Sacarle el título de Richter
+ * —la hipótesis obvia, porque el título dice «Juegos y ejercicios útiles» y el
+ * encabezado del propio Leonardo dice «UNA MANERA DE DESARROLLAR Y DESPERTAR LA
+ * MENTE A VARIAS INVENCIONES»— gana **+0,0002** contra una brecha de **0,0368**.
+ * Agregarle el encabezado de Leonardo **empeora** (−0,0112): diluye el texto con
+ * una línea corta. El título ajeno no es lo que hunde al pasaje; es que el modelo
+ * no acerca «imaginación» a «mirar manchas en una pared». Lo único que podría
+ * moverlo es otro modelo de embeddings, que recalibra τ, recall y los 129 MB del
+ * navegador.
+ *
+ * Y corrido por `responder()`, B-07 **contesta con Leonardo real, citado exacto y
+ * sin que intervenga ninguna garantía de cita**. Es prioridad 3 (cobertura), no
+ * prioridad 1 (no alucinar).
  *
  * ⚠ LAS TABLAS DE D-103 Y D-111 NO SE PUEDEN COMPARAR CON ESTO. Salieron del
  * instrumento anterior a D-134, que buscaba las consultas castellanas en el

@@ -23,6 +23,7 @@
     "traducir:verificar": "tsx tools/verificar_traduccion.ts",
     "evals:recall": "tsx evals/recall_k.ts",
     "evals:compuerta": "tsx evals/compuerta.ts",
+    "evals:adversarial": "tsx evals/adversarial.ts",
     "evals:multiturno": "tsx evals/multiturno.ts",
     "curar": "tsx tools/curar_corpus.ts",
     "indexar": "tsx tools/indexar.ts",

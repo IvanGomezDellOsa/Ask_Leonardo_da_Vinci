@@ -108,7 +108,7 @@ const COPY = {
     fuentes: "Fuentes",
     // `curada` y `abstiene` llegan con `texto` vacío del servidor: esta es la
     // redacción del frontend, y por eso vive acá y no en el prompt.
-    descansaEtiqueta: "El taller descansa",
+    descansaEtiqueta: "Leonardo descansa",
     descansaAccion: "Ver las preguntas guardadas",
     curada: "De eso no dejé anotación alguna en mis cuadernos.",
     sinNotaAviso: "Mis papeles callan, y Richter, mi editor, tampoco comenta el silencio.",
@@ -132,7 +132,7 @@ const COPY = {
     leerEn: "Read on gutenberg.org ↗",
     richter: "Richter notes (1888)",
     fuentes: "Sources",
-    descansaEtiqueta: "The workshop rests",
+    descansaEtiqueta: "Leonardo rests",
     descansaAccion: "See the kept questions",
     curada: "Of that I left no notation at all in my notebooks.",
     sinNotaAviso: "My papers are silent, and Richter, my editor, does not comment on the silence either.",

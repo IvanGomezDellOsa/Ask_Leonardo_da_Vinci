@@ -57,17 +57,17 @@ const RECHAZOS: Record<string, Record<Idioma, string>> = {
   },
   /**
    * ⚠ ESTOS DOS SE MUESTRAN CON OTRO TRATAMIENTO (D-203): el códice los reconoce
-   * por `descansa` y les pone la etiqueta «El taller descansa» y el enlace a las
+   * por `descansa` y les pone la etiqueta «Leonardo descansa» y el enlace a las
    * preguntas guardadas. Por eso el texto ya no explica con palabras dónde están
    * ni repite el titular: la interfaz lo dice mejor y en menos.
    */
   global_dia: {
-    es: "Se agotó lo que este taller puede responder hoy. Mañana los cuadernos vuelven a abrirse.",
-    en: "What this workshop can answer today is spent. Tomorrow the notebooks open again.",
+    es: "Se agotó lo que puede responder hoy. Mañana los cuadernos vuelven a abrirse.",
+    en: "What he can answer today is spent. Tomorrow the notebooks open again.",
   },
   cuota_proveedor: {
-    es: "Se agotó lo que este taller puede responder hoy. Mañana los cuadernos vuelven a abrirse.",
-    en: "What this workshop can answer today is spent. Tomorrow the notebooks open again.",
+    es: "Se agotó lo que puede responder hoy. Mañana los cuadernos vuelven a abrirse.",
+    en: "What he can answer today is spent. Tomorrow the notebooks open again.",
   },
   turnstile: {
     es: "No pude confirmar que del otro lado hay una persona. Recargá la página y probá otra vez.",

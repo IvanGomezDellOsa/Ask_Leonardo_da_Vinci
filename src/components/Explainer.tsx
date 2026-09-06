@@ -108,12 +108,13 @@ const COPY = {
     cerrarAviso: "Cerrar",
     tituloPrivacidad: "Qué pasa con lo que escribís",
     privacidad: [
-      "No hay cuentas, ni cookies, ni analítica. Este sitio no guarda nada en tu navegador.",
+      "No hay cuentas ni cookies: este sitio no guarda nada en tu navegador. Las visitas sí se cuentan, y más abajo está explicado cómo.",
       "Tus preguntas no se guardan. Se usan para buscar en los cuadernos y para armar la respuesta, y ahí terminan: no quedan en ningún registro, ni acá ni en ningún lado.",
       "Para responder, tu pregunta y los pasajes encontrados se le envían a Google, que es quien redacta la respuesta a partir de ese material. Si Google no está disponible, se envían a Groq. Ninguno de los dos recibe tu nombre ni nada que te identifique, porque el sitio no te lo pide.",
       "Se cuenta cuántas consultas llegan desde cada conexión, para que nadie agote el servicio. Tu dirección IP se convierte en un código irreversible antes de contarla y se descarta al cabo de un día. La dirección tal cual no se guarda nunca, y nunca junto a lo que preguntaste.",
       "La primera vez que abrís la consulta, tu navegador descarga desde Hugging Face el modelo que busca en los cuadernos. Es una descarga única y ocurre en tu equipo. Si reproducís el video de la biblioteca, YouTube lo sirve en su versión sin cookies de seguimiento.",
       "Para comprobar que del otro lado hay una persona y no un programa, cada consulta pasa por Cloudflare Turnstile, que recibe tu dirección IP. No hay casilla que marcar ni imágenes que resolver: en la enorme mayoría de los casos no vas a ver nada.",
+      "Para saber cuánta gente entra, Vercel —donde el sitio está alojado— registra cada visita: qué página abriste, desde dónde llegaste y de qué país. No usa cookies, no te sigue por otros sitios y no guarda nada que te identifique. También mide cuánto tarda la página en cargar en tu equipo.",
       "La conversación se borra al recargar la página. No hay forma de recuperarla, tampoco para nosotros.",
     ],
     tecnico: [
@@ -142,12 +143,13 @@ const COPY = {
     cerrarAviso: "Close",
     tituloPrivacidad: "What happens to what you write",
     privacidad: [
-      "No accounts, no cookies, no analytics. This site stores nothing in your browser.",
+      "No accounts and no cookies: this site stores nothing in your browser. Visits are counted, and how is explained below.",
       "Your questions are not kept. They are used to search the notebooks and to compose the answer, and that is where they end: they go into no log, here or anywhere.",
       "To answer, your question and the passages found are sent to Google, which writes the reply from that material. If Google is unavailable, they are sent to Groq. Neither receives your name or anything identifying you, because the site never asks for it.",
       "The number of queries arriving from each connection is counted, so that no one can exhaust the service. Your IP address is turned into an irreversible code before being counted and is discarded within a day. The address itself is never stored, and never alongside what you asked.",
       "The first time you open the consultation, your browser downloads the search model from Hugging Face. It is a one-time download and it happens on your device. If you play the video in the library, YouTube serves it in its no-tracking-cookie version.",
       "To check that there is a person and not a program on the other side, each query passes through Cloudflare Turnstile, which receives your IP address. There is no box to tick and no images to solve: in the vast majority of cases you will see nothing at all.",
+      "To know how many people visit, Vercel — where the site is hosted — records each visit: which page you opened, where you arrived from and which country. It uses no cookies, does not follow you across other sites and stores nothing that identifies you. It also measures how long the page takes to load on your device.",
       "The conversation is erased when you reload the page. There is no way to recover it — not for us either.",
     ],
     tecnico: [

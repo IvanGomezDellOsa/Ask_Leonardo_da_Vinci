@@ -21,6 +21,24 @@
 // nada — el build falla con "the module has no exports at all".
 import { Cormorant_Garamond, IM_Fell_English, Source_Serif_4 } from "next/font/google";
 import type { Metadata, Viewport } from "next/types.js";
+/**
+ * LAS DOS MEDICIONES DE VERCEL, y las dos obligaron a corregir el aviso de
+ * privacidad en el mismo commit (D-221). Su primera línea decía «no hay
+ * cuentas, ni cookies, ni analítica» y `21-privacidad.md` avisaba desde D-215
+ * que esa frase caducaba el día que entrara analítica. Entró: se corrigió.
+ *
+ * Analytics no usa cookies ni identifica al visitante, pero **sí manda a Vercel
+ * la URL, el referrer y el país** en cada visita. Que no haya cookie no lo
+ * vuelve invisible, y en un proyecto cuya tesis es «no me creas, está medido»
+ * omitirlo sería exactamente el tipo de silencio que el proyecto le reprocha a
+ * los demás.
+ *
+ * SpeedInsights mide las Core Web Vitals reales, que es lo que R10 fija como
+ * meta (LCP < 2,5 s en móvil de gama media con 4G) y que hasta ahora no se
+ * había medido nunca contra visitantes de verdad, sólo en local.
+ */
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -130,7 +148,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${cormorant.variable} ${imFell.variable} ${sourceSerif.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

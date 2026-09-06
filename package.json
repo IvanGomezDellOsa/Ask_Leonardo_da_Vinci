@@ -22,6 +22,7 @@
     "evals:adjudicar": "tsx evals/adjudicar.ts",
     "traducir:verificar": "tsx tools/verificar_traduccion.ts",
     "evals:recall": "tsx evals/recall_k.ts",
+    "evals:fallos": "tsx evals/fallos_retrieval.ts",
     "evals:compuerta": "tsx evals/compuerta.ts",
     "evals:adversarial": "tsx evals/adversarial.ts",
     "evals:multiturno": "tsx evals/multiturno.ts",

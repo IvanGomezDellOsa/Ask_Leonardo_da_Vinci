@@ -28,7 +28,8 @@
 
 import type { Recuperado } from "./retrieval.js";
 import { citasInvalidas, quitarComillasInvalidas, podarTrasDeclinar } from "./citas.js";
-import { construirPrompt } from "./llm.js";
+import { construirPrompt, type Turno } from "./llm.js";
+import { sanearHistorial } from "./conversacion.js";
 import { decidirCon, type Motor, type Idioma } from "./grounding.js";
 
 export interface Generador {
@@ -76,14 +77,30 @@ export async function responder(opciones: {
   idioma: Idioma;
   /** `query: <pregunta>` embebido por el llamador. */
   vector: Float32Array;
+  /**
+   * El mismo `query:` pero con la pregunta anterior pegada adelante, cuando la
+   * consulta no se sostiene sola (`consultaParaEmbeber`, D-197). **Sólo elige
+   * pasajes**: el gate umbraliza `vector`. Sin esto, una repregunta recupera lo
+   * que se parezca a «¿y por qué?».
+   */
+  vectorContexto?: Float32Array;
+  /**
+   * Los turnos previos, para que el modelo sepa a qué se refiere «eso». Se
+   * saneen o no, viajan recortados: `sanearHistorial` los acota acá adentro, así
+   * que ningún llamador puede saltearse el límite.
+   */
+  historial?: Turno[];
   generar: Generador;
   k?: number;
   /** Reintentos ante cita fabricada. 2 es lo que midió D-082. */
   reintentos?: number;
 }): Promise<Respondido> {
-  const { motor, pregunta, idioma, vector, generar, k = 3, reintentos = 2 } = opciones;
+  const {
+    motor, pregunta, idioma, vector, vectorContexto, historial = [],
+    generar, k = 3, reintentos = 2,
+  } = opciones;
 
-  const d = decidirCon(motor, pregunta, vector, idioma, k);
+  const d = decidirCon(motor, pregunta, vector, idioma, k, vectorContexto);
   if (d.tipo === "curada") {
     return { ...VACIO, decision: "curada", texto: "", cosMax: null, tau: null,
              caso: d.caso, cita: d.cita,
@@ -116,7 +133,7 @@ export async function responder(opciones: {
   const textosVistos = pasajes.map(
     (p) => (idioma === "es" && p.chunk.textoEs) ? p.chunk.textoEs : p.chunk.text);
   const { system, messages } = construirPrompt(
-    pregunta, pasajes.map((p) => p.chunk), [], idioma);
+    pregunta, pasajes.map((p) => p.chunk), sanearHistorial(historial), idioma);
 
   /**
    * REINTENTO POR CITA FABRICADA (D-082). Tras tres rondas de reglas de prompt

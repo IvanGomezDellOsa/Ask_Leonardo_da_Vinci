@@ -23,6 +23,7 @@
     "traducir:verificar": "tsx tools/verificar_traduccion.ts",
     "evals:recall": "tsx evals/recall_k.ts",
     "evals:compuerta": "tsx evals/compuerta.ts",
+    "evals:multiturno": "tsx evals/multiturno.ts",
     "curar": "tsx tools/curar_corpus.ts",
     "indexar": "tsx tools/indexar.ts",
     "indice": "tsx tools/indice_decisiones.ts",
@@ -35,6 +36,8 @@
     "regresion": "tsx evals/regresion.ts",
     "curadas": "tsx tools/curadas.ts",
     "procedencia": "tsx tools/procedencia.ts",
+    "modelos": "tsx tools/modelos.ts",
+    "limites": "tsx tools/probar_limites.ts",
     "exportar:portada": "tsx tools/exportar_portada.ts",
     "biblioteca": "tsx tools/optimizar_biblioteca.ts",
     "wikipedia": "tsx tools/wikipedia.ts"
@@ -50,6 +53,7 @@
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@types/react": "19.2.18",
+    "sharp": "^0.34.5",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }

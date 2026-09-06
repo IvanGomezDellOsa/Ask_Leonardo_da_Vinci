@@ -143,12 +143,16 @@ export class ContadorMemoria implements Contador {
  * Upstash Redis por REST. Es el backend que `03-arquitectura.md` eligio y el
  * unico que cuenta bien con varias instancias.
  *
- * ⚠️ **SIN PROBAR CONTRA UN REDIS REAL**: no hay credenciales de Upstash en el
- * entorno todavia. Se escribe ahora porque el despliegue lo necesita y porque
- * la forma del pipeline REST es sencilla, pero **hasta que corra contra Upstash
- * de verdad esto es codigo no ejercitado**, y el proyecto no acostumbra creerle
- * a codigo no ejercitado. La seleccion automatica de abajo lo deja apagado
- * mientras no haya credenciales, asi que no puede romper nada por accidente.
+ * EJERCITADO DESDE D-201, contra un servidor local que habla el protocolo REST
+ * de Upstash: `npm run limites`. No hace falta una cuenta — lo que hay que
+ * comprobar no es Redis sino este lado: que el pipeline lleve `INCR` + `EXPIRE
+ * … NX` sobre la clave y la ventana pedidas, y que los cuatro modos de fallo
+ * caigan a memoria. Corre en CI.
+ *
+ * ⚠️ **Sigue sin haber corrido contra Upstash de verdad**, porque no hay
+ * credenciales en el entorno. Lo que está probado es el contrato, no la cuenta.
+ * La seleccion automatica de abajo lo deja apagado mientras no haya
+ * credenciales, asi que no puede romper nada por accidente.
  *
  * ANTE UN FALLO DE RED, CAE A MEMORIA en vez de decidir sola. Las dos
  * alternativas son peores: fallar cerrado tumba el sitio por un blip de Redis

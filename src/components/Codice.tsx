@@ -30,6 +30,7 @@ import { PORTADA } from "../data/portada.js";
 import { useEmbedder } from "../hooks/useEmbedder.js";
 import { useAngosto } from "../hooks/useAngosto.js";
 import { consultar, MAX_CARACTERES, type Idioma } from "../lib/cliente-chat.js";
+import { consultaParaEmbeber, type Turno } from "../lib/conversacion.js";
 import type { PasajePublico, RespuestaPublica } from "../lib/respuesta.js";
 import { CANAL, FUENTE, T, TEXTO_LECTURA } from "./estilos.js";
 
@@ -354,8 +355,31 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
     escrituras.current.push(setTimeout(() => asentar(id, fija), 420));
   };
 
+  /**
+   * Los turnos previos, para que Leonardo entienda a qué se refiere «eso»
+   * (D-197). Los mensajes de sistema quedan afuera: son rechazos de la interfaz,
+   * no parte de la conversación.
+   *
+   * De `completo` y no de `texto`: `texto` es lo revelado hasta ahora por la
+   * animación, así que a mitad del revelado el historial saldría cortado.
+   */
+  const historialDe = (ms: Mensaje[]): Turno[] =>
+    // `<Turno>` explícito: sin él, el ternario infiere una unión de arrays de
+    // dos tipos distintos y no de un array de la unión.
+    ms.flatMap<Turno>((m) =>
+      m.tipo === "usuario" ? [{ rol: "usuario" as const, texto: m.texto }]
+      : m.tipo === "leonardo" && m.completo ? [{ rol: "leonardo" as const, texto: m.completo }]
+      : []);
+
   /** Camino largo: vector en el navegador y `POST /api/chat`. */
   const preguntarLibre = async (texto: string) => {
+    /**
+     * ⚠ ANTES DE `agregar`, y por eso se lee `mensajes` y no un ref: en este
+     * punto el estado todavía es el del render anterior, o sea la conversación
+     * SIN esta pregunta. Moverlo abajo mandaría la pregunta actual duplicada,
+     * como último turno del historial y como consulta.
+     */
+    const historial = historialDe(mensajes);
     agregar({ tipo: "usuario", texto });
     const id = abrirLeonardo();
     setEnVuelo(true);
@@ -365,7 +389,14 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
     try {
       // `embed` espera solo a que el modelo esté listo si todavía no lo está.
       const vector = await embed(texto);
-      const r = await consultar(texto, lang, vector, turno);
+      /**
+       * El segundo embedding sale SOLO si la consulta no se sostiene sola, que
+       * es el caso raro. Son ~50 ms de cómputo local y cero cuota: el modelo ya
+       * está cargado en el navegador (D-022).
+       */
+      const conContexto = consultaParaEmbeber(texto, historial);
+      const vectorContexto = conContexto === texto ? undefined : await embed(conContexto);
+      const r = await consultar(texto, lang, vector, turno, { historial, vectorContexto });
       if (r.ok) asentar(id, r.respuesta);
       else {
         setMensajes((ms) => ms.filter((m) => m.id !== id));

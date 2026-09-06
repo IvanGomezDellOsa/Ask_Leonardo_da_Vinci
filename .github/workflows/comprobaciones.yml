@@ -1,0 +1,78 @@
+# Paso 32 del roadmap. Ver D-200.
+#
+# TODO LO DE ACA CORRE SIN UNA SOLA CLAVE. Es la condición de diseño, no una
+# casualidad: los artefactos están versionados, el embedding corre local y las
+# dos corridas que respaldan el titular del README están publicadas en
+# `evals/out/` (D-114). Un fork puede reproducir el número principal del
+# proyecto sin pedirle nada a nadie.
+#
+# Lo que NO está acá y no puede estar: `npm run modelos` y `npm run evals`
+# necesitan claves de proveedor. Ésos viven en el checklist de despliegue.
+name: comprobaciones
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - run: npm ci
+
+      # Los ~129 MB de `Xenova/multilingual-e5-small` (D-118). Se restauran
+      # DESPUES de `npm ci` a propósito: `ci` borra `node_modules` entero, y ahí
+      # adentro es donde Transformers.js guarda los pesos.
+      - name: Caché del modelo de embeddings
+        uses: actions/cache@v4
+        with:
+          path: node_modules/@huggingface/transformers/.cache
+          key: e5-small-${{ runner.os }}-v1
+
+      # Dos pasadas porque `tsconfig.json` excluye `tools/`, `evals/` y
+      # `pipeline/` —Next sólo compila lo suyo—. Sin la segunda, un error de
+      # tipos en el instrumental es invisible: así se coló el conteo con `NaN`
+      # de D-197 §5a y el `return` a medio convertir que D-200 encontró.
+      - name: Tipos (app y src)
+        run: npx tsc --noEmit
+
+      - name: Tipos (tools y evals)
+        run: npx tsc --noEmit -p tsconfig.tools.json
+
+      # Los 10 números deterministas. Si uno se movió, se movió el sistema.
+      - name: Regresión
+        run: npm run regresion
+
+      # El resultado principal: 187 citas contra el corpus entero, 0 inventadas.
+      - name: Citas contra el corpus
+        run: npm run evals:citas-corpus -- --entrada rag-k3-gemini-voz8.jsonl
+
+      # La guarda de D-197: falla si el gate empieza a mirar el vector con
+      # contexto (16 filtraciones) o si el clasificador deja de acertar.
+      - name: Multi-turno
+        run: npm run evals:multiturno
+
+      # El control de abuso contra un Upstash de mentira: sin red externa ni claves.
+      - name: Límites
+        run: npm run limites
+
+      # Que los 9 casos curados citen textual y no pisen lo que el corpus sí contesta.
+      - name: Lista curada
+        run: npm run curadas
+
+      # Checksums del corpus, licencia de Gutenberg intacta, 0 boilerplate servido.
+      - name: Procedencia
+        run: npm run procedencia
+
+      - name: Build
+        run: npm run build

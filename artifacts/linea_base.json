@@ -1,6 +1,6 @@
 {
   "regla": "Números offline, deterministas y sin juez. `npm run regresion` los recalcula y falla si alguno se movió. Ver D-115.",
-  "fijado": "2026-08-11",
+  "fijado": "2026-09-06",
   "parcial": true,
   "puntos": {
     "recall.A.k3.fallos": {
@@ -46,6 +46,11 @@
     "tau.es": {
       "valor": 0.841,
       "decision": "D-108"
+    },
+    "indice.es.enCastellano": {
+      "valor": 12,
+      "decision": "D-202",
+      "nota": "De 12 chunks muestreados, cuántos tienen el vector del texto castellano. Si baja, el índice es se reconstruyó sin la traducción."
     }
   }
 }

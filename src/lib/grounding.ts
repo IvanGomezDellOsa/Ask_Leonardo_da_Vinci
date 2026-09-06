@@ -77,9 +77,10 @@ export function cargarMotor(raiz: URL): Motor {
  */
 export function decidirCon(
   motor: Motor, consulta: string, vector: Float32Array, idioma: Idioma, k = 3,
+  vectorContexto?: Float32Array,
 ): Decision {
   const { corpus, umbrales } = motor.por[idioma];
-  return decidir(corpus, umbrales, consulta, vector, idioma, k);
+  return decidir(corpus, umbrales, consulta, vector, idioma, k, vectorContexto);
 }
 
 /**
@@ -261,6 +262,20 @@ export function decidir(
   vector: Float32Array,
   idioma: Idioma,
   k = 3,
+  /**
+   * EL CONTEXTO RECUPERA, NUNCA DECIDE. Ver D-197.
+   *
+   * Cuando la consulta no se sostiene sola —«¿y por qué?»— el llamador embebe la
+   * pregunta anterior pegada adelante y manda ese vector acá. **Sólo elige qué
+   * pasajes van al prompt**: quien se compara contra τ sigue siendo el coseno de
+   * `vector`, el de la consulta sola.
+   *
+   * ⚠ NO UMBRALIZAR ESTE COSENO. Medido en `npm run evals:multiturno` sobre los
+   * 120 casos como segundo turno: si el gate mira el vector con contexto, hereda
+   * el coseno del turno anterior y aparecen **16 filtraciones nuevas**. Con esta
+   * separación son 0, y el conteo de filtraciones queda idéntico al de siempre.
+   */
+  vectorContexto?: Float32Array,
 ): Decision {
   const curado = capaCurada(consulta);
   if (curado) {
@@ -314,5 +329,13 @@ export function decidir(
     return { tipo: "abstiene", cosMax, tau, evidencia: [] };
   }
 
-  return { tipo: "responde", cosMax, tau, pasajes: top, notas: corpus.notasDe(top) };
+  /**
+   * Recién acá entra el contexto, y con el TEXTO de la consulta del turno: así
+   * BM25 puntúa con los términos de lo que se acaba de preguntar y no con los
+   * del turno anterior. `cosMax` sigue siendo el que gobernó la decisión.
+   */
+  const pasajes = vectorContexto
+    ? corpus.buscar(vectorContexto, consulta, "leonardo", k).top
+    : top;
+  return { tipo: "responde", cosMax, tau, pasajes, notas: corpus.notasDe(pasajes) };
 }

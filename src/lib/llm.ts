@@ -584,8 +584,36 @@ function mensajes(consulta: string, historial: Turno[]) {
   return messages;
 }
 
+/**
+ * LOS LIMITES VIAJAN PEGADOS AL PROVEEDOR. Ver D-198.
+ *
+ * Antes vivían en cada llamador: `route.ts` y `tools/ask.ts` construían
+ * `PresupuestoTpm(60_000, 12)` —los números de Gemini— y ese único presupuesto
+ * gobernaba también a Groq, que tiene 8.000 TPM medidos. O sea que el resguardo
+ * corría con un presupuesto 7,5 veces mayor que su límite real y sólo se
+ * enteraba por el 429.
+ *
+ * Es la misma cura que D-107 aplicó a τ: el umbral viaja pegado al corpus en
+ * `Motor` porque **la única defensa que funciona es que sea imposible tomar uno
+ * sin el otro**. Acá igual: quien conoce el límite es el proveedor.
+ *
+ * `medido` no es decoración. Estos números son **por modelo y con fecha**, no
+ * constantes del proveedor: D-023 leyó 6.000 TPM de la documentación de Groq,
+ * D-086 midió 12.000 en los headers de `llama-3.3-70b-versatile` —decomisionado
+ * en D-133— y `openai/gpt-oss-120b` da 8.000. Tres valores distintos para «el
+ * límite de Groq», ninguno equivocado en su momento.
+ */
+export interface LimitesProveedor {
+  tpm: number;
+  rpm: number;
+  /** De dónde salió y cuándo. Si dice «heredado», nadie lo remidió para este modelo. */
+  medido: string;
+}
+
 export interface Proveedor {
   nombre: string;
+  /** Los límites de ESTE modelo, para que el presupuesto no modele a otro. */
+  limites: LimitesProveedor;
   generar(system: string, messages: { role: string; content: string }[]): Promise<Respuesta>;
 }
 
@@ -623,8 +651,25 @@ export function groq(
   /** `json` fuerza salida JSON valida; lo usa el verificador del paso 14. */
   opciones: { temperatura?: number; maxTokens?: number; json?: boolean } = {},
 ): Proveedor {
+  /**
+   * MEDIDO EL 2026-09-05 en los headers de `openai/gpt-oss-120b`:
+   *   x-ratelimit-limit-tokens: 8000 · x-ratelimit-limit-requests: 1000
+   *
+   * Tres valores distintos para «el límite de Groq» a lo largo del proyecto:
+   * D-023 leyó 6.000 de la documentación, D-086 midió 12.000 en los headers de
+   * `llama-3.3-70b-versatile` —que D-133 dio de baja— y este modelo da 8.000.
+   * Ninguno estaba equivocado en su momento: **es por modelo y con fecha.**
+   *
+   * `rpm` queda en Infinity porque el que muerde acá es el de tokens: con ~2.700
+   * tokens por pedido, 8.000 TPM son ~3 por minuto y los 1.000 requests no se
+   * rozan.
+   */
+  const limites: LimitesProveedor = {
+    tpm: 8000, rpm: Infinity, medido: "headers de gpt-oss-120b, 2026-09-05",
+  };
   return {
     nombre: `groq/${modelo}`,
+    limites,
     async generar(system, messages) {
       const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
@@ -637,6 +682,20 @@ export function groq(
           ...(opciones.json ? { response_format: { type: "json_object" } } : {}),
         }),
       });
+      /**
+       * EL LIMITE SE APRENDE DE QUIEN LO IMPONE. Groq lo manda en cada respuesta,
+       * así que en vez de que el número envejezca en un comentario se lee del
+       * header y se corrige solo. Es la cura estructural del README —identidad
+       * por contenido en la frontera de E/S— aplicada al limitador: la alternativa
+       * es enumerar a mano un valor que ya cambió tres veces (6.000 → 12.000 →
+       * 8.000) sin que nada avisara.
+       */
+      const tope = Number(r.headers.get("x-ratelimit-limit-tokens"));
+      if (Number.isFinite(tope) && tope > 0 && tope !== limites.tpm) {
+        console.warn(`[llm] groq/${modelo} declara ${tope} TPM (teníamos ${limites.tpm})`);
+        limites.tpm = tope;
+        limites.medido = `header x-ratelimit-limit-tokens, ${new Date().toISOString().slice(0, 10)}`;
+      }
       if (!r.ok) {
         const cuerpo = await r.text();
         const err = new Error(`${r.status} ${cuerpo}`);
@@ -686,8 +745,13 @@ export function deepseek(
   modelo: string, apiKey: string,
   opciones: { temperatura?: number; maxTokens?: number; json?: boolean } = {},
 ): Proveedor {
+  /**
+   * Es pago (D-089 lo dejó sólo como juez de evals), así que no hay tier gratuito
+   * que proteger: un tope local sólo alargaría la corrida sin evitar un 429.
+   */
   return {
     nombre: `deepseek/${modelo}`,
+    limites: { tpm: Infinity, rpm: Infinity, medido: "sin tope: es pago (D-089)" },
     async generar(system, messages) {
       const r = await fetch("https://api.deepseek.com/chat/completions", {
         method: "POST",
@@ -749,8 +813,17 @@ export function gemini(
    */
   opciones: { temperatura?: number; maxTokens?: number; esquema?: unknown } = {},
 ): Proveedor {
+  /**
+   * 60.000 TPM y 12 RPM, de D-086 (2026-08-05). El free tier de
+   * `gemini-3.1-flash-lite` da 15 RPM: se deja en 12 porque los reintentos que
+   * el propio cliente hace ante un 429 también son requests.
+   *
+   * Acá el que muerde es el de REQUESTS, no el de tokens — es exactamente el
+   * desajuste que D-086 documentó, y por eso las dos dimensiones viajan juntas.
+   */
   return {
     nombre: `gemini/${modelo}`,
+    limites: { tpm: 60_000, rpm: 12, medido: "D-086, 2026-08-05" },
     async generar(system, messages) {
       const r = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`,
@@ -793,24 +866,81 @@ export function gemini(
  * Recorre la cascada. Devuelve `null` cuando se agota: eso es el modo
  * "Leonardo descansa", que se sirve estatico y nunca como error tecnico.
  */
+/**
+ * Un presupuesto por proveedor, indexado por nombre y con SUS límites (D-198).
+ * Se conserva entre pedidos aunque la cascada se reconstruya, que es lo único
+ * que hace que una ventana rodante signifique algo en serverless.
+ */
+const presupuestosPorProveedor = new Map<string, { p: PresupuestoTpm; tpm: number; rpm: number }>();
+
+function presupuestoDe(p: Proveedor): PresupuestoTpm {
+  const { tpm, rpm } = p.limites;
+  const guardado = presupuestosPorProveedor.get(p.nombre);
+  // Si los límites cambiaron —Groq los reporta en cada respuesta— se rehace.
+  if (guardado && guardado.tpm === tpm && guardado.rpm === rpm) return guardado.p;
+  const nuevo = new PresupuestoTpm(tpm, rpm);
+  presupuestosPorProveedor.set(p.nombre, { p: nuevo, tpm, rpm });
+  return nuevo;
+}
+
 export async function generar(
   proveedores: Proveedor[], presupuesto: PresupuestoTpm,
   system: string, messages: { role: string; content: string }[],
 ): Promise<Respuesta | null> {
   const estimado = estimarTokens(system + messages.map((m) => m.content).join("")) + 300;
-  if (!presupuesto.disponible(estimado)) return null;   // degradacion preventiva
+  if (!presupuesto.disponible(estimado)) {
+    /**
+     * SE DICE POR QUE. Este `null` se convierte en «Leonardo descansa», que es
+     * la misma cara para tres causas distintas —presupuesto local, 429 del
+     * proveedor y 5xx— y hasta acá no dejaba ningún rastro de cuál fue.
+     *
+     * No es cosmético: R17 pide una alerta de consumo, y un modo degradado que
+     * no dice qué se agotó obliga a adivinar entre subir el límite, esperar el
+     * reseteo o revisar una caída del proveedor. El cuerpo del error se recorta
+     * —los proveedores devuelven páginas enteras— y no lleva ni la consulta ni
+     * la clave (D-034, D-035).
+     */
+    const e = presupuesto.estado();
+    console.warn(`[llm] presupuesto local: ${e.tokens}+${estimado}/${e.tpm} tokens, ` +
+                 `${e.requests + 1}/${e.rpm} requests en la ventana`);
+    return null;   // degradacion preventiva
+  }
 
   for (const p of proveedores) {
+    /**
+     * EL PRESUPUESTO DEL PROVEEDOR, ADEMAS DEL GLOBAL. Ver D-198.
+     *
+     * El que llega por parámetro es el tope de la cascada entera y lo fija el
+     * llamador; éste es el del modelo que se está por llamar. Sin él, un único
+     * presupuesto con los números de Gemini gobernaba también a Groq —8.000 TPM
+     * medidos contra 60.000 declarados— y el resguardo sólo se enteraba de su
+     * límite por el 429.
+     *
+     * Vive en un mapa de módulo y no en el objeto proveedor porque `route.ts`
+     * arma la cascada por pedido: con el contador adentro del objeto, cada
+     * pedido empezaría de cero y la ventana rodante no contaría nada.
+     */
+    const propio = presupuestoDe(p);
+    if (!propio.disponible(estimado)) {
+      const e = propio.estado();
+      console.warn(`[llm] ${p.nombre} sin ventana propia: ${e.tokens}+${estimado}/${e.tpm} tokens, ` +
+                   `${e.requests + 1}/${e.rpm} requests`);
+      continue;
+    }
     try {
       const r = await p.generar(system, messages);
       presupuesto.registrar(r.tokensEntrada + r.tokensSalida);
+      propio.registrar(r.tokensEntrada + r.tokensSalida);
       return r;
     } catch (e) {
-      const status = (e as Error & { status?: number }).status;
-      if (status && status !== 429 && status < 500) throw e;   // error real, no cuota
-      // 429 o 5xx: se pasa al siguiente proveedor
+      const err = e as Error & { status?: number };
+      if (err.status && err.status !== 429 && err.status < 500) throw e;   // error real, no cuota
+      // 429 o 5xx: se pasa al siguiente proveedor, dejando dicho cuál cayó.
+      console.warn(`[llm] ${p.nombre} no respondió (${err.status ?? "sin status"}): ` +
+                   err.message.slice(0, 200));
     }
   }
+  console.warn(`[llm] la cascada se agotó: ${proveedores.length} proveedor(es) sin respuesta`);
   return null;
 }
 
@@ -825,6 +955,32 @@ export async function generar(
  * Es la misma leccion que las dos copias de `palabras()`: una definicion
  * compartida, no una por consumidor.
  */
+/**
+ * LA CASCADA DE PRODUCCION, EN UN SOLO LUGAR. Ver D-199.
+ *
+ * Estaba escrita dos veces —`route.ts` y `tools/ask.ts`— y ahora la lee también
+ * `npm run modelos`. Tres copias de «con qué modelos generamos» es como el banco
+ * de pruebas terminó ejercitando Groq mientras producción usaba Gemini (D-197
+ * §5b): no divergen de golpe, divergen cuando alguien actualiza una sola.
+ *
+ * `gemini-3.1-flash-lite` genera y `openai/gpt-oss-120b` es el resguardo por su
+ * cuota independiente (D-023, D-089, D-133). DeepSeek no entra: D-089 lo
+ * reasignó a juez de evals.
+ */
+export const CASCADA_PRODUCCION = [
+  "gemini/gemini-3.1-flash-lite",
+  "groq/openai/gpt-oss-120b",
+] as const;
+
+/** La cascada, saltando los proveedores sin clave: faltar una degrada, no rompe. */
+export function cascadaDe(env: Record<string, string | undefined>): Proveedor[] {
+  const p: Proveedor[] = [];
+  for (const id of CASCADA_PRODUCCION) {
+    try { p.push(proveedorPorId(id, env as Record<string, string>)); } catch { /* sin clave */ }
+  }
+  return p;
+}
+
 export function proveedorPorId(id: string, env: Record<string, string>): Proveedor {
   const [fam, ...resto] = id.split("/");
   const modelo = resto.join("/");

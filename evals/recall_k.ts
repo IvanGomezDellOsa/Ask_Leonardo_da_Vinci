@@ -63,7 +63,7 @@ import { ART, cargarCasos } from "./comun.js";
 
 const KS = [3, 5, 8];
 
-const arg0 = (n) => { const i = process.argv.indexOf('--'+n); return i>=0 ? process.argv[i+1] : ''; };
+const arg0 = (n: string): string => { const i = process.argv.indexOf('--'+n); return i>=0 ? process.argv[i+1] : ''; };
 /** Permite apuntar a un indice alternativo para comparar modelos. Ver D-097. */
 const dirIdx = arg0('artifacts');
 const DIR = dirIdx ? new URL('../' + dirIdx + '/', import.meta.url) : ART;

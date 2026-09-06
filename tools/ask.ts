@@ -3,6 +3,8 @@
  *
  *   npm run ask -- es "¿Por qué el cielo es azul?"
  *   npm run ask -- --lote          corre las 20 preguntas de control
+ *   npm run ask -- --conv es "¿Cómo estudiabas la anatomía?" "¿Y por qué?"
+ *                                  una conversacion: cada turno ve los anteriores
  *
  * Muestra lo que el paso 11 de la Fase 2 pide: pasajes recuperados, `cos_max`,
  * si se abstuvo y por que. La llamada al LLM es la Fase 2 paso 10; hasta que
@@ -13,8 +15,9 @@ import { readFileSync } from "node:fs";
 import { cargarExtractor } from "../src/lib/embed.js";
 import { recortar } from "../src/lib/retrieval.js";
 import { cargarMotor, Idioma } from "../src/lib/grounding.js";
+import { consultaParaEmbeber, sanearHistorial, type Turno } from "../src/lib/conversacion.js";
 import { responder } from "../src/lib/responder.js";
-import { PresupuestoTpm, generar, groq } from "../src/lib/llm.js";
+import { PresupuestoTpm, generar, cascadaDe } from "../src/lib/llm.js";
 
 const ART = new URL("../artifacts/", import.meta.url);
 
@@ -43,15 +46,30 @@ const LOTE: [Idioma, string, string][] = [
   ["es", "F", "¿Quién era Salaì para vos?"],
 ];
 
-// La clave sale de .env.local, que esta gitignoreado. Nunca de NEXT_PUBLIC_*
-// ni del cliente (D-035). Sin clave, el banco corre igual y muestra el prompt.
-const claveGroq = (readFileSync(new URL("../.env.local", import.meta.url), "utf8")
-  .match(/^GROQ_API_KEY=(.+)$/m) ?? [])[1]?.trim();
-const presupuesto = new PresupuestoTpm(6000);
-// Llama 3.3 70B / 3.1 8B decomisionados por Groq el 16/8/2026 (ver D-133).
-const cascada = claveGroq
-  ? [groq("openai/gpt-oss-120b", claveGroq), groq("openai/gpt-oss-20b", claveGroq)]
-  : [];
+/**
+ * LA MISMA CASCADA QUE `app/api/chat/route.ts` (D-197).
+ *
+ * Esto probaba Groq mientras produccion genera con `gemini-3.1-flash-lite`: el
+ * banco de pruebas del motor **ejercitaba un proveedor que el producto no usa**,
+ * y con la cuota de Groq agotada imprimia «Leonardo descansa» sobre un sistema
+ * que habria contestado perfecto. Es la clase de defecto que D-113 arreglo con
+ * las tres copias del bucle de respuesta — el banco tiene que mostrar lo que el
+ * producto hace.
+ *
+ * Los topes por modelo los trae cada proveedor desde D-198, asi que tampoco hay
+ * un numero cableado que se separe del de la ruta.
+ *
+ * Las claves salen de `.env.local`, gitignoreado. Nunca de `NEXT_PUBLIC_*` ni
+ * del cliente (D-035). Sin claves, el banco corre igual y muestra el retrieval.
+ */
+const env: Record<string, string> = {};
+for (const l of readFileSync(new URL("../.env.local", import.meta.url), "utf8").split("\n")) {
+  const m = l.match(/^([A-Z0-9_]+)=(.*)$/);
+  if (m && m[2].trim()) env[m[1]] = m[2].trim();
+}
+// El tope por modelo lo trae cada proveedor (D-198); esto es el de la cascada.
+const presupuesto = new PresupuestoTpm(Infinity, Infinity);
+const cascada = cascadaDe(env);
 
 /**
  * Un motor con un índice por idioma (D-107). Antes era un solo Corpus inglés y
@@ -66,7 +84,9 @@ async function embeber(texto: string): Promise<Float32Array> {
   return s.data as Float32Array;
 }
 
-async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
+async function preguntar(
+  idioma: Idioma, texto: string, esperado?: string, historial: Turno[] = [],
+) {
   /**
    * SE PASA POR `responder`, NO POR `decidirCon` A SECAS. Ver D-113.
    *
@@ -75,8 +95,16 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
    * anda el producto" no era la que el producto produce. Un banco de pruebas que
    * muestra otra cosa que el sistema real es peor que no tenerlo.
    */
+  /**
+   * El mismo reparto que en el navegador (D-197): el vector de la consulta sola
+   * gobierna el gate, y el segundo —con el turno anterior adelante— sale solo si
+   * la consulta no se sostiene por si misma.
+   */
+  const conContexto = consultaParaEmbeber(texto, historial);
   const R = await responder({
     motor, pregunta: texto, idioma, vector: await embeber(texto),
+    vectorContexto: conContexto === texto ? undefined : await embeber(conContexto),
+    historial,
     generar: async (sys, msgs) => {
       const g = await generar(cascada, presupuesto, sys, msgs);
       return g ?? { texto: "", tokensEntrada: 0, tokensSalida: 0 };
@@ -101,7 +129,7 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
       const t = (idioma === "es" && n.chunk.textoEs) ? n.chunk.textoEs : n.chunk.text;
       console.log(`    nota ${n.chunk.id}: ${recortar(t, 40)}`);
     }
-    return d;
+    return { d, texto: R.texto };
   }
   const rel = ((d.cosMax - d.tau) >= 0 ? "+" : "") + (d.cosMax - d.tau).toFixed(4);
   if (d.tipo === "abstiene") {
@@ -109,7 +137,7 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
     // Sin evidencia que mostrar: D-110 eliminó la nota de Richter recuperada,
     // porque medida sobre 23 abstenciones casi nunca probaba nada. Lo único que
     // puede acompañar una abstención es la nota de un caso curado (D-124).
-    return d;
+    return { d, texto: R.texto };
   }
   console.log(`  RESPONDE — cos_max ${d.cosMax.toFixed(4)} ≥ τ_${idioma} ${d.tau.toFixed(4)} (${rel})`);
   for (const p of d.pasajes) {
@@ -126,18 +154,19 @@ async function preguntar(idioma: Idioma, texto: string, esperado?: string) {
     if (R.comillasQuitadas) g.push(`${R.comillasQuitadas} comilla(s) quitada(s)`);
     if (R.podadas) g.push(`${R.podadas} palabra(s) podada(s)`);
     if (R.citasSinRespaldo.length) g.push(`**${R.citasSinRespaldo.length} CITA(S) SIN RESPALDO**`);
-    console.log(`\n  ${R.tokensEntrada}+${R.tokensSalida} tokens · ${presupuesto.usoActual()}/6000 TPM` +
+    console.log(`\n  ${R.tokensEntrada}+${R.tokensSalida} tokens · ${presupuesto.usoActual()} tok en la ventana` +
+                ` · historial: ${sanearHistorial(historial).length} mensaje(s)` +
                 (g.length ? ` · ${g.join(" · ")}` : " · garantías sin intervenir"));
     console.log(R.texto.split("\n").map((l) => "  │ " + l).join("\n"));
   }
-  return d;
+  return { d, texto: R.texto };
 }
 
 const args = process.argv.slice(2);
 if (args[0] === "--lote") {
   const conteo: Record<string, Record<string, number>> = {};
   for (const [idioma, grupo, texto] of LOTE) {
-    const d = await preguntar(idioma, texto, grupo);
+    const { d } = await preguntar(idioma, texto, grupo);
     conteo[grupo] ??= {};
     conteo[grupo][d.tipo] = (conteo[grupo][d.tipo] ?? 0) + 1;
   }
@@ -146,6 +175,20 @@ if (args[0] === "--lote") {
     console.log(`  ${grupo.padEnd(7)} ${JSON.stringify(c)}`);
   }
   console.log("\n  esperado: dentro→responde · fuera→abstiene · F→curada o abstiene");
+} else if (args[0] === "--conv") {
+  /**
+   * Una conversacion de verdad: cada turno recibe los anteriores. Es la unica
+   * forma de ver de punta a punta lo que D-197 arregla — el retrieval se mide
+   * offline con `npm run evals:multiturno`, pero que Leonardo ENTIENDA «¿y por
+   * qué?» sólo se comprueba generando.
+   */
+  const idioma = (args[1] as Idioma) ?? "es";
+  const historial: Turno[] = [];
+  for (const q of args.slice(2)) {
+    const { texto } = await preguntar(idioma, q, undefined, historial);
+    historial.push({ rol: "usuario", texto: q });
+    if (texto) historial.push({ rol: "leonardo", texto });
+  }
 } else {
   const idioma = (args[0] as Idioma) ?? "es";
   await preguntar(idioma, args.slice(1).join(" ") || "¿Por qué el cielo es azul?");

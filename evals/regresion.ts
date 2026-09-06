@@ -106,6 +106,45 @@ const medido: Record<string, Punto> = {};
   medido["tau.es"] = { valor: motor.por.es.umbrales.tau.es, decision: "D-108" };
 }
 
+// ---- ¿el índice castellano habla castellano? ----------------------------
+{
+  /**
+   * SE COMPRUEBA POR CONTENIDO, NO POR FECHA DE ARCHIVO. Ver D-202.
+   *
+   * `artifacts/es/index.bin` puede construirse con la traducción o sin ella:
+   * `indexar --idioma es` usa `chunks_es.json` **si el chunk está traducido** y
+   * cae al inglés si no. Un índice reconstruido antes de que la traducción
+   * existiera —o después de un `chunks_es.json` incompleto— queda con vectores
+   * ingleses adentro del índice castellano, **y no falla nada**: sigue
+   * devolviendo pasajes plausibles, sólo que peores, que es el modo de fallo que
+   * este proyecto lleva quince entradas documentando.
+   *
+   * Se embebe el pasaje en los dos idiomas y se mira contra cuál se parece el
+   * vector guardado. Doce chunks fijos —seis de cada voz, elegidos por orden y
+   * no al azar, para que el número sea determinista—. El de Richter importa
+   * especialmente: es el que el README daba por pendiente cuando ya estaba hecho.
+   */
+  const es = JSON.parse(readFileSync(new URL("chunks_es.json", ART), "utf8")) as
+    Record<string, { texto: string; titulo: string | null }>;
+  const corpusEs = motor.por.es.corpus;
+  const muestra = (["richter", "leonardo"] as const).flatMap((voz) =>
+    corpusEs.chunks.filter((c) => c.voice === voz && es[c.id]).slice(0, 6));
+
+  let enCastellano = 0;
+  for (const c of muestra) {
+    const fila = corpusEs.meta.ids.indexOf(c.id);
+    if (fila < 0) continue;
+    const t = es[c.id]!;
+    const vEs = (await embed("passage: " + (t.titulo ? t.titulo + ". " : "") + t.texto,
+      { pooling: "mean", normalize: true })).data as Float32Array;
+    const vEn = (await embed("passage: " + (c.richterTitle ? c.richterTitle + ". " : "") + c.text,
+      { pooling: "mean", normalize: true })).data as Float32Array;
+    if (corpusEs.cosenos(vEs, [fila])[0].cos > corpusEs.cosenos(vEn, [fila])[0].cos) enCastellano++;
+  }
+  medido["indice.es.enCastellano"] = { valor: enCastellano, decision: "D-202",
+    nota: `De ${muestra.length} chunks muestreados, cuántos tienen el vector del texto castellano. Si baja, el índice es se reconstruyó sin la traducción.` };
+}
+
 // ---- alcance: caro, sólo con --lento -----------------------------------
 if (lento) {
   const base = motor.por.en.corpus;

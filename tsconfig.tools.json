@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "noEmit": true, "types": ["node"] },
+  "include": ["src/**/*.ts", "tools/**/*.ts", "evals/**/*.ts"],
+  "exclude": ["node_modules", "experiments", "pipeline"]
+}

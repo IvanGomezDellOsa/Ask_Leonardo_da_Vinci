@@ -15,6 +15,7 @@
  */
 
 import type { RespuestaPublica } from "./respuesta.js";
+import type { Turno } from "./conversacion.js";
 
 export type Idioma = "es" | "en";
 
@@ -84,6 +85,12 @@ export async function consultar(
   idioma: Idioma,
   vector: Float32Array,
   turno: number,
+  /**
+   * Lo que hace que un turno entienda al anterior (D-197). `vectorContexto` va
+   * SOLO cuando la consulta no se sostiene sola: lo decide `consultaParaEmbeber`
+   * en el llamador, porque quien embebe es el navegador (D-022).
+   */
+  extra: { historial?: Turno[]; vectorContexto?: Float32Array } = {},
 ): Promise<ResultadoChat> {
   let res: Response;
   try {
@@ -96,6 +103,8 @@ export async function consultar(
         // El vector viaja como array común: `Float32Array` no sobrevive a
         // `JSON.stringify` (sale como objeto con claves numéricas).
         vector: Array.from(vector),
+        vectorContexto: extra.vectorContexto ? Array.from(extra.vectorContexto) : undefined,
+        historial: extra.historial,
         turno,
       }),
     });

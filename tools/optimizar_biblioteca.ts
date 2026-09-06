@@ -148,7 +148,9 @@ async function procesar(libro: LibroLaminas, lamina: Lamina): Promise<Medida> {
         .webp({ quality: q, effort: 6 })
         .toFile(salida);
 
-    let calidad = variante.q;
+    // `: number` explícito: `VARIANTES` es `as const`, así que sin la anotación
+    // el tipo se estrecha al literal (82 | 72) y el ajuste de abajo no compila.
+    let calidad: number = variante.q;
     let info = await codificar(calidad);
 
     // El techo sólo rige para la hoja: el índice a 320 px nunca se le acerca.

@@ -28,8 +28,8 @@ import { pathToFileURL } from "node:url";
 import { cargarMotor, type Motor, type Idioma } from "../../../src/lib/grounding.js";
 import { responder } from "../../../src/lib/responder.js";
 import {
-  PresupuestoTpm, generar, proveedorPorId, huellaPrompt, varianteVigente,
-  type Proveedor,
+  PresupuestoTpm, generar, cascadaDe, huellaPrompt, varianteVigente,
+  type Turno,
 } from "../../../src/lib/llm.js";
 import {
   Limitador, contadorDelEntorno, limitesDelEntorno, ipDe, identidad, sal,
@@ -121,48 +121,21 @@ function cargar(): { motor: Motor; fijas: Map<string, Fija>; huella: string } | 
 // Proveedores y presupuesto
 // ---------------------------------------------------------------------------
 
-/**
- * `gemini-3.1-flash-lite` es el generador de producción (D-089: la mitad de
- * D-088 que quedó vigente). Groq queda de resguardo por su cuota independiente
- * (D-023) — DeepSeek NO entra: D-089 lo reasignó a juez, y dejarlo en la
- * cascada de operación repetiría el error que esa entrada revocó.
- *
- * `openai/gpt-oss-120b` y no `llama-3.3-70b-versatile`: Groq decomisionó ese
- * modelo el 16 de agosto de 2026 (aviso propio, ver D-133). Verificado con el
- * pipeline real antes de migrar: mismas garantías (D-082/083/093) intactas.
- *
- * Cada proveedor entra sólo si su clave está: faltar una degrada, no rompe.
- */
-function cascadaDeProduccion(env: Record<string, string | undefined>): Proveedor[] {
-  const p: Proveedor[] = [];
-  const intentar = (id: string) => {
-    try { p.push(proveedorPorId(id, env as Record<string, string>)); } catch { /* falta la clave */ }
-  };
-  intentar("gemini/gemini-3.1-flash-lite");
-  intentar("groq/openai/gpt-oss-120b");
-  return p;
-}
 
 /**
- * 60.000 TPM y 12 RPM — LOS VALORES DE GEMINI, no los de Groq. Ver D-086.
+ * EL TOPE DE LA CASCADA ENTERA. Los límites POR MODELO viajan con cada proveedor
+ * desde D-198 (`LimitesProveedor` en `llm.ts`), así que acá ya no se cablean.
  *
- * Esto decía `new PresupuestoTpm(6000)` y estaba mal en las dos dimensiones,
- * reintroduciendo el defecto exacto que D-086 documentó:
+ * Esto decía `new PresupuestoTpm(60_000, 12)` —los valores de Gemini medidos en
+ * D-086— y ese único presupuesto gobernaba también a Groq, que da **8.000 TPM
+ * medidos**: el resguardo corría con un tope 7,5 veces mayor que el suyo y sólo
+ * se enteraba por el 429. Antes de eso decía `PresupuestoTpm(6000)`, que estaba
+ * mal en las dos dimensiones y reintroducía el defecto exacto de D-086.
  *
- *   - 6.000 TPM es el límite que D-023 leyó de la documentación de GROQ, y que
- *     D-086 midió mal por la mitad (son 12.000). Aplicado a Gemini, cuyo tier
- *     da ~60.000, estrangulaba a un décimo de la capacidad real.
- *   - `rpm` quedaba en `Infinity`, o sea **el presupuesto no miraba la
- *     dimensión que efectivamente muerde en Gemini**: 15 requests por minuto.
- *     Con la verificación de cita de D-082 un pedido son hasta tres requests,
- *     así que cinco usuarios concurrentes bastaban para un 429 que el limitador
- *     creía imposible.
- *
- * 12 y no 15 a propósito, igual que en el runner: el margen cubre los reintentos
- * que el propio cliente hace ante un 429. Valor medido por modelo y con fecha
- * (2026-08-05), no una constante del proveedor.
+ * Queda sin tope propio porque no hay una restricción de la cascada como tal:
+ * las que existen son de cada proveedor, y ahora cada uno trae la suya.
  */
-const presupuesto = new PresupuestoTpm(60_000, 12);
+const presupuesto = new PresupuestoTpm(Infinity, Infinity);
 
 /**
  * Control de abuso (paso 25, R6, R17). Ver `src/lib/limites.ts` y D-123.
@@ -242,10 +215,44 @@ const tituloDe = (c: Chunk, idioma: Idioma): string | null =>
  */
 const DIMS_EMBEDDING = 384;
 
+/**
+ * Tope del historial ANTES de sanear. `sanearHistorial` se queda con los últimos
+ * 8 y recorta cada uno, así que esto no protege el prompt —eso ya está cubierto—
+ * sino el parseo: sin un tope acá, un cuerpo con 50.000 entradas se recorre
+ * entero para tirar 49.992.
+ */
+const MAX_ENTRADAS_HISTORIAL = 40;
+/** Por entrada. Una respuesta de Leonardo ronda las 300 palabras. */
+const MAX_CARACTERES_TURNO = 4000;
+
 interface CuerpoPedido {
   pregunta: string; idioma: Idioma; vector: number[];
+  /** El vector con el turno anterior adelante, si la consulta no se sostiene sola (D-197). */
+  vectorContexto?: number[];
+  historial?: Turno[];
   /** Nº de turno declarado por el cliente, y token de Turnstile. Los dos opcionales. */
   turno?: number; turnstile?: string;
+}
+
+const vectorValido = (v: unknown): v is number[] =>
+  Array.isArray(v) && v.length === DIMS_EMBEDDING &&
+  v.every((x) => typeof x === "number" && Number.isFinite(x));
+
+/**
+ * EL HISTORIAL ES TEXTO DEL CLIENTE, igual que la pregunta. No hay sesión en el
+ * servidor que lo verifique (D-032) y no la va a haber. Se valida la forma y el
+ * tamaño; lo que impide que un historial fabricado se convierta en una cita es
+ * otra cosa, y es mecánica: D-082 comprueba cada cita contra los pasajes de ESTE
+ * turno, así que una frase inventada en el historial no puede salir entrecomillada.
+ */
+function historialValido(v: unknown): v is Turno[] {
+  if (!Array.isArray(v) || v.length > MAX_ENTRADAS_HISTORIAL) return false;
+  return v.every((t) => {
+    if (!t || typeof t !== "object") return false;
+    const e = t as Record<string, unknown>;
+    return (e.rol === "usuario" || e.rol === "leonardo") &&
+           typeof e.texto === "string" && e.texto.length <= MAX_CARACTERES_TURNO;
+  });
 }
 
 function validar(cuerpo: unknown): CuerpoPedido | null {
@@ -255,12 +262,15 @@ function validar(cuerpo: unknown): CuerpoPedido | null {
   // Corta la inyección de prompt larga y el vaciado de cuota con contextos enormes.
   if (typeof c.pregunta !== "string" || !c.pregunta.trim() || c.pregunta.length > 500) return null;
   if (c.idioma !== "es" && c.idioma !== "en") return null;
-  if (!Array.isArray(c.vector) || c.vector.length !== DIMS_EMBEDDING) return null;
-  if (!c.vector.every((x) => typeof x === "number" && Number.isFinite(x))) return null;
+  if (!vectorValido(c.vector)) return null;
+  if (c.vectorContexto !== undefined && !vectorValido(c.vectorContexto)) return null;
+  if (c.historial !== undefined && !historialValido(c.historial)) return null;
   if (c.turno !== undefined && (typeof c.turno !== "number" || !Number.isFinite(c.turno))) return null;
   if (c.turnstile !== undefined && typeof c.turnstile !== "string") return null;
   return {
-    pregunta: c.pregunta.trim(), idioma: c.idioma, vector: c.vector as number[],
+    pregunta: c.pregunta.trim(), idioma: c.idioma, vector: c.vector,
+    vectorContexto: c.vectorContexto as number[] | undefined,
+    historial: c.historial as Turno[] | undefined,
     turno: c.turno as number | undefined, turnstile: c.turnstile as string | undefined,
   };
 }
@@ -336,7 +346,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   // --- camino vivo ---------------------------------------------------------
-  const cascada = cascadaDeProduccion(process.env);
+  // La cascada sale de `llm.ts` (D-199): una sola definición, no una por consumidor.
+  const cascada = cascadaDe(process.env);
   if (cascada.length === 0) {
     return NextResponse.json(
       { error: "el servidor no tiene generador configurado" }, { status: 503 });
@@ -361,6 +372,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       pregunta: pedido.pregunta,
       idioma: pedido.idioma,
       vector: new Float32Array(pedido.vector),
+      vectorContexto: pedido.vectorContexto
+        ? new Float32Array(pedido.vectorContexto) : undefined,
+      historial: pedido.historial,
       /**
        * EL PRESUPUESTO DIARIO SE DESCUENTA ACA ADENTRO, no en el handler.
        *

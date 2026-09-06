@@ -143,7 +143,16 @@ const presupuesto = new PresupuestoTpm(Infinity, Infinity);
  * Una sola instancia por proceso: el contador en memoria no sirve de nada si se
  * construye por pedido, y el de Upstash no necesita reconstruirse.
  */
-const limitador = new Limitador(contadorDelEntorno(process.env), limitesDelEntorno(process.env));
+const limitador = new Limitador(
+  contadorDelEntorno(process.env),
+  limitesDelEntorno(process.env),
+  /**
+   * A dónde avisar cuando el presupuesto llega al 70% y cuando se agota (D-210).
+   * Sin la variable, el aviso queda en consola como antes — que en serverless es
+   * lo mismo que no avisar, y por eso existe esta línea.
+   */
+  process.env.ALERTA_WEBHOOK?.trim() || undefined,
+);
 
 /**
  * EL SERVIDOR NO ESCRIBE PROSA DE LEONARDO, NI SIQUIERA PARA UN ERROR.

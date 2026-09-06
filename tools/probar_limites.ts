@@ -244,6 +244,52 @@ console.log(`\n## El limitador\n`);
 }
 
 // ---------------------------------------------------------------------------
+console.log(`\n## El aviso de consumo por webhook\n`);
+
+{
+  /**
+   * Un receptor de mentira, igual que el Upstash de arriba: lo que hay que
+   * comprobar no es Discord sino nuestro lado — que avise en los dos momentos,
+   * que el cuerpo sirva para los dos servicios, y que un webhook caído no tumbe
+   * el límite que estaba protegiendo.
+   */
+  const recibidos: string[] = [];
+  const srv = createServer((req, res) => {
+    let cuerpo = "";
+    req.on("data", (c) => { cuerpo += c; });
+    req.on("end", () => { recibidos.push(cuerpo); res.writeHead(204).end(); });
+  });
+  await new Promise<void>((r) => srv.listen(0, "127.0.0.1", r));
+  const { port } = srv.address() as AddressInfo;
+
+  // Tope 10 → el aviso del 70% sale en la 7ª y el de agotado en la 11ª.
+  const lim = new Limitador(new ContadorMemoria(), { ...LIMITES, globalDia: 10 },
+                            `http://127.0.0.1:${port}`);
+  for (let i = 0; i < 11; i++) await lim.presupuestoDiario();
+  await new Promise((r) => setTimeout(r, 400));
+
+  comprobar("avisa dos veces: al 70% y al agotarse", recibidos.length === 2,
+            `${recibidos.length} aviso(s)`);
+  comprobar("el primero dice 70%", /70%/.test(recibidos[0] ?? ""), recibidos[0] ?? "");
+  comprobar("el segundo dice AGOTADO", /AGOTADO/.test(recibidos[1] ?? ""), recibidos[1] ?? "");
+  /**
+   * Discord lee `content` y Slack lee `text`. Mandar los dos hace que el mismo
+   * webhook sirva para cualquiera sin preguntar cuál es.
+   */
+  comprobar("el cuerpo sirve para Discord y para Slack",
+            recibidos.every((t) => t.includes('"content"') && t.includes('"text"')));
+  await new Promise<void>((r) => { srv.close(() => r()); });
+}
+
+{
+  const lim = new Limitador(new ContadorMemoria(), { ...LIMITES, globalDia: 1 },
+                            "http://127.0.0.1:1");   // nada escuchando
+  await lim.presupuestoDiario();
+  const v = await lim.presupuestoDiario();
+  comprobar("un webhook caído no rompe el límite", !v.permite && v.motivo === "global_dia");
+}
+
+// ---------------------------------------------------------------------------
 console.log(`\n## Turnstile\n`);
 
 {

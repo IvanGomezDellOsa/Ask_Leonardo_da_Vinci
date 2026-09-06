@@ -239,6 +239,44 @@ export function limitesDelEntorno(env: Record<string, string | undefined>): Limi
   };
 }
 
+/**
+ * EL AVISO DE CONSUMO. Ver D-210.
+ *
+ * `04-costos-y-limites.md` pide una alerta al 70% y hasta acá era un
+ * `console.warn`. **En serverless nadie lee esa consola**: el aviso existia y no
+ * avisaba, que es la definicion de una comprobacion que no comprueba (D-115).
+ *
+ * ⚠ SIN `ALERTA_WEBHOOK` NO SE MANDA NADA y el mensaje sigue yendo a consola,
+ * igual que antes. Es el mismo criterio que Turnstile (D-206): la capacidad
+ * queda cableada y configurarla la activa, sin que no configurarla cueste nada.
+ *
+ * El cuerpo lleva `content` Y `text` a proposito: Discord lee el primero y Slack
+ * el segundo, cada uno ignora el que no conoce, y asi el mismo webhook sirve
+ * para los dos sin preguntar cual es. Los dos tienen webhooks gratis, que es la
+ * condicion del presupuesto de US$0.
+ *
+ * NUNCA LLEVA UNA CONSULTA. El mensaje son contadores agregados: cuantas
+ * generaciones sobre cuantas. `Limitador` no recibe la pregunta por firma
+ * (D-034), asi que no podria filtrarla ni queriendo.
+ *
+ * No bloquea ni propaga: si el webhook falla, se anota y la respuesta al usuario
+ * sigue su curso. Un aviso caido no puede tumbar el chat.
+ */
+async function avisar(mensaje: string, webhook?: string): Promise<void> {
+  console.warn(`[limites] ${mensaje}`);
+  if (!webhook) return;
+  try {
+    await fetch(webhook, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ content: `Ask Leonardo · ${mensaje}`, text: `Ask Leonardo · ${mensaje}` }),
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch (e) {
+    console.error("[limites] no se pudo avisar por webhook:", (e as Error).message);
+  }
+}
+
 export interface Veredicto {
   permite: boolean;
   /** Para el cuerpo de la respuesta y el `Retry-After`. */
@@ -253,7 +291,12 @@ const PERMITE: Veredicto = { permite: true };
 const hoy = (): string => new Date().toISOString().slice(0, 10);
 
 export class Limitador {
-  constructor(private c: Contador, private lim: Limites = LIMITES) {}
+  constructor(
+    private c: Contador,
+    private lim: Limites = LIMITES,
+    /** A donde avisar del consumo. Sin esto, el aviso queda en consola. */
+    private webhook?: string,
+  ) {}
 
   private async cupo(
     clave: string, limite: number, ventana: number, motivo: Veredicto["motivo"],
@@ -289,9 +332,21 @@ export class Limitador {
   async presupuestoDiario(): Promise<Veredicto> {
     const clave = `gen:d:${hoy()}`;
     const n = await this.c.incr(clave, 172_800);
+    /**
+     * DOS AVISOS, NO UNO: al 70% queda margen para reaccionar; al 100% ya no hay
+     * nada que hacer y lo que importa es enterarse de que el sitio esta en modo
+     * degradado. Con un solo aviso hay que elegir entre las dos cosas.
+     *
+     * Se comparan por IGUALDAD, no por `>=`: `incr` es atomico y devuelve cada
+     * valor exactamente una vez, asi que el aviso sale una sola vez por dia.
+     */
     if (n === Math.ceil(this.lim.globalDia * this.lim.avisoGlobal)) {
-      console.warn(`[limites] presupuesto diario al ${this.lim.avisoGlobal * 100}%: ` +
-                   `${n} de ${this.lim.globalDia} generaciones`);
+      void avisar(`presupuesto diario al ${this.lim.avisoGlobal * 100}%: ` +
+                  `${n} de ${this.lim.globalDia} generaciones`, this.webhook);
+    }
+    if (n === this.lim.globalDia + 1) {
+      void avisar(`presupuesto diario AGOTADO: ${this.lim.globalDia} generaciones. ` +
+                  `El sitio queda en modo degradado hasta mañana.`, this.webhook);
     }
     if (n <= this.lim.globalDia) return PERMITE;
     return { permite: false, motivo: "global_dia", usado: n, limite: this.lim.globalDia };

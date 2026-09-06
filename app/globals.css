@@ -2017,6 +2017,16 @@ a:hover {
   color: oklch(24% 0.008 70);
 }
 
+/* El mismo enlace de línea, del lado oscuro del contraste: el códice (D-203).
+ * Sólo vive acá el hover; el resto va inline como todo el componente. */
+.alv-codice-linea {
+  transition: color 0.18s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.alv-codice-linea:hover {
+  color: oklch(92% 0.005 75);
+}
+
 /* ---- La carga: los nueve telones descolgándose --------------------------
  *
  * Reemplaza a la barra de progreso. No es una metáfora: `alCargar` cuenta

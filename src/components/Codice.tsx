@@ -45,8 +45,17 @@ interface PasajeAbrible extends PasajePublico {
 
 type Mensaje =
   | { id: number; tipo: "usuario"; texto: string }
-  /** Rechazos y avisos de la interfaz. Nunca se muestran como voz de Leonardo. */
-  | { id: number; tipo: "sistema"; texto: string }
+  /**
+   * Rechazos y avisos de la interfaz. Nunca se muestran como voz de Leonardo.
+   *
+   * `descansa` separa **el taller cerrado de un error** (D-203). El servidor lo
+   * manda en los dos 503 —presupuesto diario y cuota del proveedor— y hasta acá
+   * el cliente lo tiraba: agotar la cuota del día se veía igual que perder la
+   * conexión, en la misma caja gris. No son lo mismo: de uno no hay nada que
+   * hacer, y del otro sí — las 6 preguntas de portada siguen andando porque
+   * están bundleadas (D-132).
+   */
+  | { id: number; tipo: "sistema"; texto: string; descansa?: boolean }
   | {
       id: number;
       tipo: "leonardo";
@@ -99,6 +108,8 @@ const COPY = {
     fuentes: "Fuentes",
     // `curada` y `abstiene` llegan con `texto` vacío del servidor: esta es la
     // redacción del frontend, y por eso vive acá y no en el prompt.
+    descansaEtiqueta: "El taller descansa",
+    descansaAccion: "Ver las preguntas guardadas",
     curada: "De eso no dejé anotación alguna en mis cuadernos.",
     sinNotaAviso: "Mis papeles callan, y Richter, mi editor, tampoco comenta el silencio.",
     abstiene: "Sobre eso no he dejado anotación en mis cuadernos, y prefiero no inventarte una.",
@@ -121,6 +132,8 @@ const COPY = {
     leerEn: "Read on gutenberg.org ↗",
     richter: "Richter notes (1888)",
     fuentes: "Sources",
+    descansaEtiqueta: "The workshop rests",
+    descansaAccion: "See the kept questions",
     curada: "Of that I left no notation at all in my notebooks.",
     sinNotaAviso: "My papers are silent, and Richter, my editor, does not comment on the silence either.",
     abstiene: "On that matter I left no notation in my notebooks, and I would rather not invent one for you.",
@@ -400,7 +413,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
       if (r.ok) asentar(id, r.respuesta);
       else {
         setMensajes((ms) => ms.filter((m) => m.id !== id));
-        agregar({ tipo: "sistema", texto: r.texto });
+        agregar({ tipo: "sistema", texto: r.texto, descansa: r.descansa });
       }
     } catch {
       setMensajes((ms) => ms.filter((m) => m.id !== id));
@@ -605,6 +618,117 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
                   }}
                 >
                   <p style={{ ...lectura, fontSize: angosto ? 15.5 : 16, lineHeight: 1.6 }}>{m.texto}</p>
+                </div>
+              );
+            }
+
+            /**
+             * EL TALLER CERRADO NO ES UN ERROR, Y SE VE DISTINTO (D-203).
+             *
+             * Un fallo de red va en la caja gris de abajo: es un contratiempo y
+             * se lee como tal. Que se haya agotado la cuota del día es otra
+             * cosa —el taller cerró, y mañana abre— así que en vez de una caja
+             * lleva la gramática del sitio para lo que no es un control: dos
+             * hairlines que se apagan en los extremos, la etiqueta en versalita
+             * y nada de borde. **No hay componente nuevo**: son las tres piezas
+             * que ya usan el estante de la biblioteca, la cartela del museo y
+             * el enlace secundario de todo el sitio.
+             *
+             * Y ofrece lo único que SI funciona con el presupuesto agotado: las
+             * 6 preguntas de portada, que están bundleadas y no dependen de la
+             * red ni del modelo (D-132). Sin el enlace, el texto tenía que
+             * explicar con palabras dónde encontrarlas.
+             */
+            if (m.tipo === "sistema" && m.descansa) {
+              const linea = `linear-gradient(90deg, transparent, ${T.panelBorde} 26%, ${T.panelBorde} 74%, transparent)`;
+              return (
+                <div
+                  key={m.id}
+                  role="status"
+                  className="alv-in"
+                  style={{
+                    alignSelf: "stretch",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "22px 8px",
+                    /**
+                     * Las dos líneas van de FONDO y no de borde: es la misma
+                     * técnica del estante de la biblioteca y de la línea de
+                     * piso del museo, y por la misma razón —una línea que se
+                     * corta contra el borde se lee como el canto de una caja;
+                     * desvanecida, como un plano que sigue—. `border-image`
+                     * también dibuja el degradado, pero deja el ancho a
+                     * merced del `border-width` y no se puede medir de un
+                     * vistazo.
+                     */
+                    backgroundImage: `${linea}, ${linea}`,
+                    backgroundSize: "100% 1px, 100% 1px",
+                    backgroundPosition: "top center, bottom center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                >
+                  <p
+                    style={{
+                      margin: 0,
+                      fontFamily: FUENTE.lectura,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: ".17em",
+                      textTransform: "uppercase",
+                      color: T.notaEtiqueta,
+                    }}
+                  >
+                    {t.descansaEtiqueta}
+                  </p>
+                  <p
+                    style={{
+                      margin: 0,
+                      maxWidth: "34em",
+                      fontFamily: FUENTE.lectura,
+                      fontSize: angosto ? 15 : 15.5,
+                      lineHeight: 1.6,
+                      color: T.cuerpo,
+                      textAlign: "center",
+                    }}
+                  >
+                    {m.texto}
+                  </p>
+                  {restantes.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSugAbiertas(true);
+                        finLista.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+                      }}
+                      className="alv-codice-linea"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        /**
+                         * El relleno es el AREA TACTIL, no el dibujo: el
+                         * subrayado va en el `span` para quedar pegado al
+                         * texto. Sin esto el botón mide 16 px de alto —medido—
+                         * y en un teléfono hay que apuntarle a una línea de
+                         * versalita de 10 px.
+                         */
+                        padding: "9px 10px",
+                        margin: "-9px 0",
+                        cursor: "pointer",
+                        fontFamily: FUENTE.lectura,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        letterSpacing: ".15em",
+                        textTransform: "uppercase",
+                        color: T.pasajeToggle,
+                      }}
+                    >
+                      <span style={{ borderBottom: "1px solid currentColor", paddingBottom: 2 }}>
+                        {t.descansaAccion}
+                      </span>
+                    </button>
+                  )}
                 </div>
               );
             }

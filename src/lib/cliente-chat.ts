@@ -55,13 +55,19 @@ const RECHAZOS: Record<string, Record<Idioma, string>> = {
     es: `Llegamos a los ${MAX_TURNOS} intercambios de esta sesión. Recargá la página para empezar de nuevo.`,
     en: `We have reached the ${MAX_TURNOS} exchanges of this session. Reload the page to begin anew.`,
   },
+  /**
+   * ⚠ ESTOS DOS SE MUESTRAN CON OTRO TRATAMIENTO (D-203): el códice los reconoce
+   * por `descansa` y les pone la etiqueta «El taller descansa» y el enlace a las
+   * preguntas guardadas. Por eso el texto ya no explica con palabras dónde están
+   * ni repite el titular: la interfaz lo dice mejor y en menos.
+   */
   global_dia: {
-    es: "Leonardo descansa: se agotó lo que este taller puede responder hoy. Las 6 preguntas de la portada siguen andando: están guardadas acá mismo y no dependen de eso.",
-    en: "Leonardo rests: what this workshop can answer today is spent. The 6 questions on the cover still work — they are kept right here and depend on none of this.",
+    es: "Se agotó lo que este taller puede responder hoy. Mañana los cuadernos vuelven a abrirse.",
+    en: "What this workshop can answer today is spent. Tomorrow the notebooks open again.",
   },
   cuota_proveedor: {
-    es: "Leonardo descansa: se agotó lo que este taller puede responder hoy. Las 6 preguntas de la portada siguen andando: están guardadas acá mismo y no dependen de eso.",
-    en: "Leonardo rests: what this workshop can answer today is spent. The 6 questions on the cover still work — they are kept right here and depend on none of this.",
+    es: "Se agotó lo que este taller puede responder hoy. Mañana los cuadernos vuelven a abrirse.",
+    en: "What this workshop can answer today is spent. Tomorrow the notebooks open again.",
   },
   turnstile: {
     es: "No pude confirmar que del otro lado hay una persona. Recargá la página y probá otra vez.",

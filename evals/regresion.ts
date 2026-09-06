@@ -122,15 +122,21 @@ const medido: Record<string, Punto> = {};
    * este proyecto lleva quince entradas documentando.
    *
    * Se embebe el pasaje en los dos idiomas y se mira contra cuál se parece el
-   * vector guardado. Doce chunks fijos —seis de cada voz, elegidos por orden y
-   * no al azar, para que el número sea determinista—. El de Richter importa
-   * especialmente: es el que el README daba por pendiente cuando ya estaba hecho.
+   * vector guardado. Doce chunks fijos, elegidos por orden y no al azar, para que
+   * el número sea determinista.
+   *
+   * ⚠ SOLO DE LEONARDO DESDE D-211, y no por simplificar: **el índice ya no tiene
+   * otra voz**. Muestrear de Richter daba 6 de 12 —no porque falte la traducción
+   * sino porque esas filas no existen—, o sea un número que baja por la razón
+   * equivocada. Que las notas de Richter estén traducidas lo cubre
+   * `npm run curadas`, que verifica cada `citaEs` contra su `textoEs`.
    */
   const es = JSON.parse(readFileSync(new URL("chunks_es.json", ART), "utf8")) as
     Record<string, { texto: string; titulo: string | null }>;
   const corpusEs = motor.por.es.corpus;
-  const muestra = (["richter", "leonardo"] as const).flatMap((voz) =>
-    corpusEs.chunks.filter((c) => c.voice === voz && es[c.id]).slice(0, 6));
+  const muestra = corpusEs.chunks
+    .filter((c) => c.voice === "leonardo" && es[c.id] && corpusEs.meta.ids.includes(c.id))
+    .slice(0, 12);
 
   let enCastellano = 0;
   for (const c of muestra) {

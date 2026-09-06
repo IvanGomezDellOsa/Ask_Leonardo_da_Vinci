@@ -84,6 +84,8 @@ const FUERA_DEL_INDICE = new Set(["inventory", "no_traducible", "aparato"]);
 export class Corpus {
   readonly meta: IndexMeta;
   readonly chunks: Chunk[];
+  /** El chunk de cada fila del índice, resuelto por id. Ver D-211. */
+  private readonly chunkDeFila: Chunk[];
   private readonly vecs: Float32Array;   // count * dims, ya renormalizado
   private readonly bm25: Bm25Artefacto;
   private readonly stop: Set<string>;
@@ -174,12 +176,38 @@ export class Corpus {
      * agregar filtraciones al gate, y solo puede agregar abstenciones. El costo
      * esta acotado por construccion y es el unico numero que hay que vigilar.
      */
+    /**
+     * QUE CHUNK ES CADA FILA DEL INDICE — POR ID, NO POR POSICION. Ver D-211.
+     *
+     * Hasta acá esto decía `this.chunks[i]`, dando por sentado que la fila `i`
+     * del binario es el chunk `i` de `chunks.json`. Es cierto hoy y **nada lo
+     * comprobaba**: si alguien regenera el corpus sin reindexar, o el índice deja
+     * de tener una fila por chunk, cada vector pasa a apuntar a otro pasaje.
+     *
+     * **Ese es el peor fallo posible en este proyecto y sería invisible**: el
+     * sistema seguiría devolviendo pasajes plausibles, con su cita verificada
+     * contra el texto equivocado. Ni una excepción, ni un número raro.
+     *
+     * Con el mapa por id, un índice desalineado **no carga**: revienta al
+     * construir el `Corpus`, diciendo qué fila y qué id no encontró.
+     */
+    const porId = new Map(this.chunks.map((c) => [c.id, c]));
+    this.chunkDeFila = this.meta.ids.map((id, i) => {
+      const c = porId.get(id);
+      if (!c) {
+        throw new Error(
+          `el índice tiene en la fila ${i} el id "${id}" y el corpus no lo contiene. ` +
+          `Índice y corpus no se corresponden: reindexá con \`npm run indexar\`.`);
+      }
+      return c;
+    });
+
     this.filasPorVoz = { leonardo: [], richter: [] };
     this.meta.voice.forEach((v, i) => {
       // Dos clases distintas, un solo mecanismo: inventarios de Leonardo que no
       // contestan nada (D-098) y aparato de Richter en otro idioma que no puede
       // servir de evidencia mostrable (D-108).
-      if (curar && FUERA_DEL_INDICE.has(this.chunks[i].utility ?? "")) return;
+      if (curar && FUERA_DEL_INDICE.has(this.chunkDeFila[i].utility ?? "")) return;
       this.filasPorVoz[v].push(i);
     });
   }
@@ -258,7 +286,7 @@ export class Corpus {
       const rd = rankDenso.get(fila)!;
       const rb = rankBm25.get(fila) ?? null;
       return {
-        chunk: this.chunks[fila],
+        chunk: this.chunkDeFila[fila],
         cos,
         rankDenso: rd,
         rankBm25: rb,

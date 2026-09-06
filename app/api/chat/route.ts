@@ -147,11 +147,16 @@ const limitador = new Limitador(
   contadorDelEntorno(process.env),
   limitesDelEntorno(process.env),
   /**
-   * A dónde avisar cuando el presupuesto llega al 70% y cuando se agota (D-210).
-   * Sin la variable, el aviso queda en consola como antes — que en serverless es
-   * lo mismo que no avisar, y por eso existe esta línea.
+   * A dónde avisar cuando el presupuesto llega al 70% y cuando se agota (D-210,
+   * D-212). Los dos canales son opcionales e independientes: sin ninguno, el
+   * aviso queda en consola — que en serverless es lo mismo que no avisar, y por
+   * eso existen estas líneas.
    */
-  process.env.ALERTA_WEBHOOK?.trim() || undefined,
+  {
+    webhook: process.env.ALERTA_WEBHOOK?.trim() || undefined,
+    email: process.env.ALERTA_EMAIL?.trim() || undefined,
+    resendKey: process.env.RESEND_API_KEY?.trim() || undefined,
+  },
 );
 
 /**

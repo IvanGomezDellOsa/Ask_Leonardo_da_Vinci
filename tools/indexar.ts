@@ -35,7 +35,33 @@ const PREF_CONSULTA = "query: ";
 const PREF_PASAJE = "passage: ";
 
 interface Chunk { id: string; text: string; voice: string; richterTitle: string | null }
-const chunks: Chunk[] = JSON.parse(readFileSync("artifacts/chunks.json", "utf8"));
+const todos: Chunk[] = JSON.parse(readFileSync("artifacts/chunks.json", "utf8"));
+
+/**
+ * QUE VOCES ENTRAN AL INDICE. Por defecto sólo Leonardo. Ver D-211.
+ *
+ * Hasta acá entraban las dos, y **los 631 vectores de Richter no se consultaban
+ * nunca**: medido, las nueve llamadas a `Corpus.buscar()` del repositorio pasan
+ * `"leonardo"`. Las notas que el producto muestra salen de `annotatesPassage`
+ * —un campo del chunk, no un embedding— y de los cinco ids fijos de la lista
+ * curada. Desde que D-110 eliminó la evidencia de ausencia por recuperación, no
+ * queda un solo camino que busque sobre esa voz.
+ *
+ * ⚠ EL MOTIVO NO ES EL ESPACIO, SON 473 KB. Es que hoy los vectores del editor
+ * viven en el mismo binario que los de Leonardo, separados sólo por un array
+ * `voice` en el meta: una línea equivocada en el filtro sirve comentario de un
+ * erudito del s. XIX como si fuera de Leonardo, que es el riesgo R1 exacto.
+ * Sacándolos, ese error **no se puede cometer**. Es el mismo principio que hace
+ * que τ viaje pegado al corpus (D-107): la defensa que funciona es la que vuelve
+ * imposible la equivocación, no la que la advierte.
+ *
+ * `--voces leonardo,richter` reconstruye el índice completo si alguna vez hace
+ * falta volver a recuperar sobre las notas. **El texto no se toca**: `chunks.json`
+ * sigue con las 631 y la verificación de citas las sigue viendo (D-059).
+ */
+const voces = new Set(arg("voces", "leonardo").split(",").map((v) => v.trim()).filter(Boolean));
+const chunks = todos.filter((c) => voces.has(c.voice));
+console.log(`voces  : ${[...voces].join(", ")} — ${chunks.length} de ${todos.length} chunks`);
 
 /**
  * `--idioma es` construye el indice sobre la TRADUCCION (`chunks_es.json`), para

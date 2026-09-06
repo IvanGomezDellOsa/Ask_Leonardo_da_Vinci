@@ -264,7 +264,7 @@ console.log(`\n## El aviso de consumo por webhook\n`);
 
   // Tope 10 → el aviso del 70% sale en la 7ª y el de agotado en la 11ª.
   const lim = new Limitador(new ContadorMemoria(), { ...LIMITES, globalDia: 10 },
-                            `http://127.0.0.1:${port}`);
+                            { webhook: `http://127.0.0.1:${port}` });
   for (let i = 0; i < 11; i++) await lim.presupuestoDiario();
   await new Promise((r) => setTimeout(r, 400));
 
@@ -283,10 +283,53 @@ console.log(`\n## El aviso de consumo por webhook\n`);
 
 {
   const lim = new Limitador(new ContadorMemoria(), { ...LIMITES, globalDia: 1 },
-                            "http://127.0.0.1:1");   // nada escuchando
+                            { webhook: "http://127.0.0.1:1" });   // nada escuchando
   await lim.presupuestoDiario();
   const v = await lim.presupuestoDiario();
   comprobar("un webhook caído no rompe el límite", !v.permite && v.motivo === "global_dia");
+}
+
+{
+  /**
+   * El correo, contra un Resend de mentira. Lo que se comprueba es nuestro lado:
+   * que mande al destinatario pedido, con la clave en la cabecera, y **que el
+   * cuerpo no lleve ninguna consulta**.
+   */
+  const vistos: { auth: string; cuerpo: string }[] = [];
+  const srv = createServer((req, res) => {
+    let cuerpo = "";
+    req.on("data", (c) => { cuerpo += c; });
+    req.on("end", () => {
+      vistos.push({ auth: String(req.headers.authorization ?? ""), cuerpo });
+      res.writeHead(200, { "content-type": "application/json" }).end('{"id":"falso"}');
+    });
+  });
+  await new Promise<void>((r) => srv.listen(0, "127.0.0.1", r));
+  const { port } = srv.address() as AddressInfo;
+
+  const lim = new Limitador(new ContadorMemoria(), { ...LIMITES, globalDia: 10 }, {
+    email: "destino@ejemplo.test",
+    resendKey: "clave-de-prueba",
+    resendUrl: `http://127.0.0.1:${port}`,
+  });
+  for (let i = 0; i < 11; i++) await lim.presupuestoDiario();
+  await new Promise((r) => setTimeout(r, 400));
+
+  comprobar("manda dos correos: al 70% y al agotarse", vistos.length === 2, `${vistos.length}`);
+  comprobar("lleva la clave en la cabecera", vistos[0]?.auth === "Bearer clave-de-prueba");
+  comprobar("va al destinatario configurado", (vistos[0]?.cuerpo ?? "").includes("destino@ejemplo.test"));
+  comprobar("el cuerpo dice que no lleva consultas",
+            (vistos[0]?.cuerpo ?? "").includes("contadores agregados"));
+  await new Promise<void>((r) => { srv.close(() => r()); });
+}
+
+{
+  // Con destinatario y sin clave: se avisa por consola y no se rompe nada.
+  const lim = new Limitador(new ContadorMemoria(), { ...LIMITES, globalDia: 1 },
+                            { email: "destino@ejemplo.test" });
+  await lim.presupuestoDiario();
+  const v = await lim.presupuestoDiario();
+  comprobar("email sin clave: no rompe el límite", !v.permite && v.motivo === "global_dia");
 }
 
 // ---------------------------------------------------------------------------

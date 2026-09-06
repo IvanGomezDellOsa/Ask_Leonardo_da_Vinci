@@ -262,18 +262,80 @@ export function limitesDelEntorno(env: Record<string, string | undefined>): Limi
  * No bloquea ni propaga: si el webhook falla, se anota y la respuesta al usuario
  * sigue su curso. Un aviso caido no puede tumbar el chat.
  */
-async function avisar(mensaje: string, webhook?: string): Promise<void> {
+export interface Aviso {
+  /** Webhook de Discord o Slack. */
+  webhook?: string;
+  /** Destinatario del correo. Necesita `resendKey` para servir de algo. */
+  email?: string;
+  /** Clave de Resend. Sin ella el correo no se manda y se dice por consola. */
+  resendKey?: string;
+  /**
+   * Sólo para ejercitarlo: apunta el envío a un servidor local en vez de a la
+   * API real. Es la misma costura que `limitesDelEntorno` abrió para poder
+   * probar el presupuesto agotado sin gastar 400 llamadas — un camino que sólo
+   * se puede ejercitar con una cuenta real es un camino que nadie prueba.
+   */
+  resendUrl?: string;
+}
+
+/**
+ * EL CORREO VA POR RESEND. Ver D-212.
+ *
+ * Se eligió por lo que NO pide: no hace falta un dominio propio ni un servidor
+ * SMTP, no agrega una dependencia —es un `fetch`— y su plan gratuito da 100
+ * correos por día, contra los **dos por día como mucho** que este aviso puede
+ * generar. El presupuesto de operación sigue en US$0.
+ *
+ * ⚠ CON LA CLAVE GRATUITA Y SIN DOMINIO PROPIO, Resend sólo entrega al correo
+ * de la cuenta. Para esta alerta alcanza —el destinatario es el dueño— pero si
+ * mañana hay que avisarle a otra persona, hace falta verificar un dominio.
+ */
+async function porEmail(mensaje: string, a: Aviso): Promise<void> {
+  if (!a.email) return;
+  if (!a.resendKey) {
+    console.warn("[limites] ALERTA_EMAIL configurado sin RESEND_API_KEY: no se manda correo");
+    return;
+  }
+  const r = await fetch(a.resendUrl ?? "https://api.resend.com/emails", {
+    method: "POST",
+    headers: { authorization: `Bearer ${a.resendKey}`, "content-type": "application/json" },
+    body: JSON.stringify({
+      from: "Ask Leonardo <onboarding@resend.dev>",
+      to: [a.email],
+      subject: `Ask Leonardo · ${mensaje.split(":")[0]}`,
+      text: `${mensaje}
+
+Este aviso lo manda el limitador de consumo del sitio. ` +
+            `No lleva ninguna consulta de ningún visitante: son contadores agregados.`,
+    }),
+    signal: AbortSignal.timeout(5000),
+  });
+  if (!r.ok) throw new Error(`resend ${r.status} ${(await r.text()).slice(0, 120)}`);
+}
+
+async function porWebhook(mensaje: string, a: Aviso): Promise<void> {
+  if (!a.webhook) return;
+  await fetch(a.webhook, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ content: `Ask Leonardo · ${mensaje}`, text: `Ask Leonardo · ${mensaje}` }),
+    signal: AbortSignal.timeout(3000),
+  });
+}
+
+async function avisar(mensaje: string, a: Aviso = {}): Promise<void> {
   console.warn(`[limites] ${mensaje}`);
-  if (!webhook) return;
-  try {
-    await fetch(webhook, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ content: `Ask Leonardo · ${mensaje}`, text: `Ask Leonardo · ${mensaje}` }),
-      signal: AbortSignal.timeout(3000),
-    });
-  } catch (e) {
-    console.error("[limites] no se pudo avisar por webhook:", (e as Error).message);
+  /**
+   * LOS DOS CANALES SON INDEPENDIENTES Y NINGUNO PUEDE TUMBAR AL OTRO.
+   * `allSettled` y no `all`: si Resend está caído, el webhook igual sale — y al
+   * revés. Un aviso a medias es mejor que ninguno, y ninguno de los dos puede
+   * tumbar el chat, que es lo que de verdad importa.
+   */
+  const r = await Promise.allSettled([porWebhook(mensaje, a), porEmail(mensaje, a)]);
+  for (const x of r) {
+    if (x.status === "rejected") {
+      console.error("[limites] no se pudo avisar:", (x.reason as Error).message);
+    }
   }
 }
 
@@ -294,8 +356,8 @@ export class Limitador {
   constructor(
     private c: Contador,
     private lim: Limites = LIMITES,
-    /** A donde avisar del consumo. Sin esto, el aviso queda en consola. */
-    private webhook?: string,
+    /** A dónde avisar del consumo. Sin esto, el aviso queda en consola. */
+    private aviso: Aviso = {},
   ) {}
 
   private async cupo(
@@ -342,11 +404,11 @@ export class Limitador {
      */
     if (n === Math.ceil(this.lim.globalDia * this.lim.avisoGlobal)) {
       void avisar(`presupuesto diario al ${this.lim.avisoGlobal * 100}%: ` +
-                  `${n} de ${this.lim.globalDia} generaciones`, this.webhook);
+                  `${n} de ${this.lim.globalDia} generaciones`, this.aviso);
     }
     if (n === this.lim.globalDia + 1) {
       void avisar(`presupuesto diario AGOTADO: ${this.lim.globalDia} generaciones. ` +
-                  `El sitio queda en modo degradado hasta mañana.`, this.webhook);
+                  `El sitio queda en modo degradado hasta mañana.`, this.aviso);
     }
     if (n <= this.lim.globalDia) return PERMITE;
     return { permite: false, motivo: "global_dia", usado: n, limite: this.lim.globalDia };

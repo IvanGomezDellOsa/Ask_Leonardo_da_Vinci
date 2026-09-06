@@ -23,7 +23,7 @@ import { createServer, type Server } from "node:http";
 import { AddressInfo } from "node:net";
 import {
   ContadorUpstash, ContadorMemoria, Limitador, identidad, ipDe, LIMITES,
-  limitesDelEntorno, verificarTurnstile,
+  limitesDelEntorno, verificarTurnstile, contadorDelEntorno,
 } from "../src/lib/limites.js";
 
 let fallos = 0;
@@ -180,6 +180,47 @@ for (const modo of ["error500", "basura"] as const) {
   const ms = Date.now() - t0;
   comprobar("timeout a los ~2 s y cae a memoria", a === 1 && ms < 2900, `${a} en ${ms} ms`);
   await f.cerrar();
+}
+
+// ---------------------------------------------------------------------------
+/**
+ * POR QUE ESTA SECCION EXISTE. El fallo que cubre no es un bug de codigo: es que
+ * **el nombre de las variables lo elige Vercel, no nosotros**. Agregando la base
+ * desde su Marketplace, las credenciales llegan como `KV_REST_API_*`; copiandolas
+ * a mano desde Upstash, como `UPSTASH_REDIS_REST_*`. Leer un solo juego hacia que
+ * el camino de dos clics dejara el limitador en memoria sin ningun sintoma.
+ *
+ * Se prueba la SELECCION, no la conexion: que cada juego de nombres devuelva un
+ * contador compartido, que falten-los-dos devuelva el de memoria, y que medio
+ * juego —el error tipico de copiar y pegar— no se tome por bueno.
+ */
+console.log(`\n## De donde saca las credenciales de la base compartida\n`);
+
+{
+  const esUpstash = (c: unknown) => c instanceof ContadorUpstash;
+  const U = "https://x.upstash.io", T = "tok";
+
+  comprobar("nombres de Upstash: usa la base",
+    esUpstash(contadorDelEntorno({ UPSTASH_REDIS_REST_URL: U, UPSTASH_REDIS_REST_TOKEN: T })));
+
+  comprobar("nombres que inyecta Vercel: usa la base",
+    esUpstash(contadorDelEntorno({ KV_REST_API_URL: U, KV_REST_API_TOKEN: T })));
+
+  comprobar("los dos juegos a la vez: no rompe",
+    esUpstash(contadorDelEntorno({
+      UPSTASH_REDIS_REST_URL: U, UPSTASH_REDIS_REST_TOKEN: T,
+      KV_REST_API_URL: "https://otro.upstash.io", KV_REST_API_TOKEN: "otro",
+    })));
+
+  comprobar("sin nada: cae a memoria",
+    contadorDelEntorno({}) instanceof ContadorMemoria);
+
+  comprobar("media credencial no cuenta como credencial",
+    contadorDelEntorno({ KV_REST_API_URL: U }) instanceof ContadorMemoria);
+
+  comprobar("cadena vacia no cuenta como credencial",
+    contadorDelEntorno({ UPSTASH_REDIS_REST_URL: "  ", UPSTASH_REDIS_REST_TOKEN: T })
+      instanceof ContadorMemoria);
 }
 
 // ---------------------------------------------------------------------------

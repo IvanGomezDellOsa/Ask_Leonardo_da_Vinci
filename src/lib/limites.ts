@@ -188,10 +188,35 @@ export class ContadorUpstash implements Contador {
   }
 }
 
+/**
+ * ⚠️ DOS JUEGOS DE NOMBRES, PORQUE NO LOS ELEGIMOS NOSOTROS. Si la base se
+ * agrega desde el Marketplace de Vercel en vez de copiar las claves a mano,
+ * **Vercel inyecta las credenciales con SUS nombres** (`KV_REST_API_URL` /
+ * `KV_REST_API_TOKEN`, herencia del Vercel KV que migro a Upstash en 2024) y no
+ * con los de Upstash. Leyendo solo un juego, el camino mas comodo para el dueno
+ * —dos clics en el panel— dejaba el limitador en memoria **sin un solo sintoma**:
+ * el sitio responde igual y el techo diario se multiplica por instancia.
+ *
+ * Es el mismo patron que D-218: *un limite que se degrada sin avisar no aparece
+ * en ninguna lista de pendientes*. Ahi el disparador fue que en desarrollo corre
+ * una sola instancia; aca habria sido que el nombre de la variable lo decide un
+ * tercero. Se aceptan los dos y se prefiere el de Upstash si estan los dos.
+ */
 export function contadorDelEntorno(env: Record<string, string | undefined>): Contador {
-  const url = env.UPSTASH_REDIS_REST_URL?.trim();
-  const token = env.UPSTASH_REDIS_REST_TOKEN?.trim();
+  const url = env.UPSTASH_REDIS_REST_URL?.trim() || env.KV_REST_API_URL?.trim();
+  const token = env.UPSTASH_REDIS_REST_TOKEN?.trim() || env.KV_REST_API_TOKEN?.trim();
   if (url && token) return new ContadorUpstash(url, token);
+  /**
+   * EL AVISO NO ES DECORATIVO. Sin base compartida el limitador sigue
+   * funcionando, pero por instancia: es la unica degradacion del sistema que
+   * toca la prioridad 2 (no agotar la capacidad) y la unica que no se ve desde
+   * afuera. Que quede escrito en el log de arranque es lo minimo.
+   */
+  console.warn(
+    "[limites] sin base compartida: los contadores viven en memoria y son POR INSTANCIA. " +
+    "El techo diario efectivo pasa a ser (techo × instancias). " +
+    "Configurar UPSTASH_REDIS_REST_URL/_TOKEN (o KV_REST_API_URL/_TOKEN). Ver docs/22-publicar.md.",
+  );
   return new ContadorMemoria();
 }
 

@@ -89,6 +89,34 @@ const FUNCIONALES = new Set([
   "happens", "elaborate", "further", "not", "no", "yes", "one",
 ]);
 
+/**
+ * SEGUNDA LISTA, Y NO ES DUPLICACION: `esAutonoma` y `Corpus.anclas` hacen
+ * preguntas distintas y necesitan cortes distintos.
+ *
+ *   esAutonoma   ¿esta consulta se sostiene sola, o solo se entiende con la
+ *                anterior? Necesita la lista CORTA: si «algo» o «todo» contaran
+ *                como funcionales, «contame algo mas» dejaria de sostenerse y
+ *                arrastraria el contexto del turno anterior sin hacer falta.
+ *   anclas       ¿esta consulta nombra algo que el corpus conozca? Necesita la
+ *                lista LARGA: «estas» y «ahi» aparecen en los cuadernos como
+ *                palabras corrientes, asi que «¿como estas?» contaria como
+ *                consulta con tema.
+ *
+ * ⚠ SE INTENTO CON UNA SOLA LISTA Y SE MIDIO QUE NO: al agregar estas palabras
+ * a `FUNCIONALES`, `npm run evals:multiturno` reporto que **S4 —la estrategia
+ * que corre en produccion— dejo de cumplir su criterio** (D-197). Dos preguntas
+ * distintas, dos listas. Ver D-231.
+ */
+const SOLO_PARA_ANCLAS = new Set([
+  "estoy", "estas", "estás", "estan", "están", "estuve", "estaba",
+  "soy", "sos", "eres", "somos", "eran",
+  "puedo", "podes", "podés", "puede", "pueden", "poder", "podrias", "podrías",
+  "quiero", "queres", "querés", "quiere", "querer",
+  "algo", "nada", "alguien", "alguno", "alguna", "todo", "toda", "todos", "todas",
+  "ahi", "ahí", "aqui", "aquí", "alla", "allá", "aca", "acá",
+  "ahora", "hoy", "ya", "muy", "bien", "mal",
+].map((w) => w.normalize("NFD").replace(/\p{M}/gu, "")));
+
 /** La misma lista, ya despojada de acentos, para comparar contra tokens planos. */
 const FUNCIONALES_PLANAS = new Set(
   [...FUNCIONALES].map((w) => w.normalize("NFD").replace(/\p{M}/gu, "")));
@@ -103,6 +131,11 @@ const FUNCIONALES_PLANAS = new Set(
 function contenido(consulta: string): string[] {
   const plano = consulta.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
   return (plano.match(/[a-z][a-z'\-]*/g) ?? []).filter((t) => !FUNCIONALES_PLANAS.has(t));
+}
+
+/** Como `contenido`, pero con el corte largo. Solo para `Corpus.anclas` (D-231). */
+export function contenidoParaAnclas(consulta: string): string[] {
+  return contenido(consulta).filter((t) => !SOLO_PARA_ANCLAS.has(t));
 }
 
 /** Si la consulta se sostiene sola. Falso = sólo se entiende con lo anterior. */

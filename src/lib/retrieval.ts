@@ -14,6 +14,8 @@
 
 import { readFileSync, existsSync } from "node:fs";
 
+import { contenidoParaAnclas } from "./conversacion.js";
+
 export type Voz = "leonardo" | "richter";
 
 export interface Chunk {
@@ -88,6 +90,8 @@ export class Corpus {
   private readonly chunkDeFila: Chunk[];
   private readonly vecs: Float32Array;   // count * dims, ya renormalizado
   private readonly bm25: Bm25Artefacto;
+  /** Vocabulario por idioma, construido a demanda. Ver `anclas`. */
+  private vocabulario?: { es: Set<string> | null; en: Set<string> | null };
   private readonly stop: Set<string>;
   /** Indices de fila por voz, para poder buscar en un solo indice (D-042). */
   readonly filasPorVoz: Record<Voz, number[]>;
@@ -315,6 +319,45 @@ export class Corpus {
     });
     fusion.sort((a, b) => b.rrf - a.rrf);
     return { cosMax, top: fusion.slice(0, k) };
+  }
+
+  /**
+   * Las palabras de la consulta que EXISTEN en el vocabulario de Leonardo.
+   * Ver D-231.
+   *
+   * POR QUE HACE FALTA OTRA DIMENSION. El gate umbraliza el coseno, y el coseno
+   * no distingue una pregunta de un saludo: «Hola» puntua 0,8421 contra τ_es
+   * 0,8410 y **pasa**, trayendo maximas sobre la muerte. Medido, las faticas no
+   * forman una banda —«gracias» 0,8517, «¿como estas?» 0,8542— asi que ningun
+   * umbral las separa. Es la leccion de siempre del proyecto: *el componente
+   * mide una dimension distinta de la que gobierna el resultado*.
+   *
+   * La dimension que gobierna es otra y es binaria: **¿la consulta contiene
+   * alguna palabra que este corpus conozca?** Si no, no hay nada que buscar, y
+   * el coseno que salga es ruido geometrico.
+   *
+   * ⚠ NO ES UNA LISTA DE SALUDOS. No enumera casos: pregunta si el corpus tiene
+   * la palabra. Por eso cubre «hola», «gracias» y «¿me escuchas?» sin nombrarlos,
+   * y no se rompe con el saludo que a nadie se le ocurrio anotar.
+   *
+   * MEDIDO SOBRE EL BANCO, cero falsos positivos: de las 120 preguntas, las
+   * unicas tres sin ninguna ancla son anacronismos que deben abstenerse igual
+   * (aviones, fotografia, energia nuclear). Toda pregunta contestable tiene al
+   * menos una, y la mediana es 4.
+   */
+  anclas(consulta: string, idioma: "es" | "en"): string[] {
+    this.vocabulario ??= { es: null, en: null };
+    if (!this.vocabulario[idioma]) {
+      const v = new Set<string>();
+      for (const c of this.chunks) {
+        if (c.voice !== "leonardo") continue;
+        const texto = idioma === "es" ? (c.textoEs ?? c.text) : c.text;
+        for (const t of this.tokenizar(texto)) v.add(t);
+      }
+      this.vocabulario[idioma] = v;
+    }
+    const voc = this.vocabulario[idioma]!;
+    return contenidoParaAnclas(consulta).filter((t) => t.length > 2 && voc.has(t));
   }
 
   /** Las notas de Richter vinculadas a los pasajes recuperados (D-042). */

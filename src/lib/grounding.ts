@@ -296,6 +296,45 @@ export function decidir(
   }
 
   const tau = umbrales.tau[idioma];
+
+  /**
+   * CAPA 1a: SIN UNA SOLA PALABRA DEL CORPUS, NO HAY NADA QUE BUSCAR. Ver D-231.
+   *
+   * Va ANTES del coseno y no después, porque el coseno de una consulta sin tema
+   * no es una medida floja: es ruido. «Hola» puntúa 0,8421 contra τ_es 0,8410,
+   * **pasa**, y trae máximas sobre la muerte. Y no hay umbral que lo arregle:
+   * «gracias» da 0,8517 y «¿cómo estás?» 0,8542, más alto que preguntas
+   * legítimas. Las fáticas no forman una banda por debajo — están mezcladas.
+   *
+   * ⚠ ES OTRA DIMENSIÓN, NO OTRO UMBRAL. El gate mide *cuánto se parece*; esto
+   * mide *si hay algo que comparar*. Es la lección que el proyecto lleva
+   * repitiendo desde D-021: el ranking siempre pone algo en el primer puesto,
+   * exista o no material pertinente.
+   *
+   * ⚠ NO ENUMERA SALUDOS. No hay lista de «hola/buenas/gracias»: se pregunta si
+   * el corpus conoce alguna de las palabras. Por eso cubre el saludo que a nadie
+   * se le ocurrió anotar, y por eso el dueño puede confiar en que no es un parche
+   * —fue su propio pedido: «una solución sólida y no hardcodear».
+   *
+   * MEDIDO, CERO FALSOS POSITIVOS: de las 120 del banco, las únicas tres sin
+   * ninguna ancla son anacronismos que deben abstenerse igual. Toda pregunta
+   * contestable tiene al menos una; la mediana es 4.
+   */
+  /**
+   * ⚠ NO SE APLICA A LAS REPREGUNTAS, y esto NO es una excepción cómoda: es la
+   * definición misma de repregunta. «¿Y por qué?» no tiene anclas propias —por
+   * eso el llamador le pasó un `vectorContexto`—, y sus anclas son las del turno
+   * anterior. Sin esta salvedad la guarda mata el multiturno entero: medido,
+   * `npm run evals:multiturno` reporta que **S4, la estrategia que corre en
+   * producción, deja de cumplir su criterio** (D-197).
+   *
+   * Que `vectorContexto` esté es exactamente la señal correcta: el llamador ya
+   * evaluó `esAutonoma()` y decidió que esta consulta no se sostiene sola.
+   */
+  if (!vectorContexto && corpus.anclas(consulta, idioma).length === 0) {
+    return { tipo: "abstiene", cosMax: 0, tau, evidencia: [] };
+  }
+
   const { cosMax, top } = corpus.buscar(vector, consulta, "leonardo", k);
 
   if (cosMax < tau) {

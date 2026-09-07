@@ -101,9 +101,10 @@ export class Corpus {
    */
   constructor(dir: URL, { curar = true, base = dir }: { curar?: boolean; base?: URL } = {}) {
     /**
-     * `dir` trae lo que es PROPIO del indice —los vectores y su meta— y `base`
-     * lo que es COMPARTIDO entre indices: el corpus, la traduccion, el BM25 y la
-     * curaduria. El indice castellano de D-105 vive en `artifacts/es/` y no
+     * `dir` trae lo que es PROPIO del indice —los vectores, su meta y, desde
+     * D-226, su BM25— y `base` lo que es COMPARTIDO entre indices: el corpus, la
+     * traduccion y la curaduria. El indice castellano de D-105 vive en
+     * `artifacts/es/` y no
      * necesita su propia copia de `chunks.json`: son 3,4 MB que ademas
      * divergirian del original en cuanto alguien regenere uno solo de los dos.
      *
@@ -126,7 +127,23 @@ export class Corpus {
         if (t) { c.textoEs = t.texto; c.tituloEs = t.titulo; }
       }
     }
-    this.bm25 = JSON.parse(readFileSync(new URL("bm25.json", base), "utf8"));
+    /**
+     * EL BM25 ES PROPIO DEL INDICE, NO COMPARTIDO — desde D-226.
+     *
+     * Antes salia de `base` para los dos idiomas, y `base` es el corpus ingles.
+     * El comentario de `tokenizar` decia que asi "BM25 aporta poco cross-lingue".
+     * Medido, no era poco: era **cero**. El vocabulario son 15.252 terminos
+     * ingleses y ni "colores" ni "pintura" ni "agua" estan en el. Los RRF de una
+     * consulta castellana daban 1/61, 1/62 y 1/63 — la serie exacta del ranking
+     * denso, o sea BM25 sumando 0 en las tres posiciones. La mitad lexica de la
+     * busqueda hibrida no existia en castellano.
+     *
+     * Ahora cada indice trae el suyo y se cae a `base` si no esta, para que un
+     * clon sin `es/bm25.json` siga funcionando como antes en vez de reventar.
+     */
+    const fBm25 = new URL("bm25.json", dir);
+    this.bm25 = JSON.parse(
+      readFileSync(existsSync(fBm25) ? fBm25 : new URL("bm25.json", base), "utf8"));
     this.stop = new Set(this.bm25.stopwords);
 
     // int8 -> float32 y renormalizacion, igual que en el pipeline. Sin
@@ -230,13 +247,16 @@ export class Corpus {
    * `[a-z]...` no matchea vocales acentuadas ni ñ, y una consulta castellana se
    * fragmentaba: "cómo" -> "c" + "mo", metiendo el token basura "mo" en el
    * indice invertido ingles y perturbando el orden de RRF con coincidencias sin
-   * sentido. El corpus es ingles, asi que BM25 aporta poco cross-lingue por
-   * construccion —solo nombres propios compartidos: "Milan", "Ludovico"—, pero
-   * una cosa es aportar poco y otra aportar ruido.
+   * sentido.
    *
-   * El indice BM25 esta precomputado con la version anterior; para texto ingles
-   * el despojo es practicamente identidad, asi que el efecto real es del lado de
-   * la consulta, que es donde estaba el defecto.
+   * ⚠ ESTE COMENTARIO DECIA QUE "BM25 APORTA POCO CROSS-LINGUE POR CONSTRUCCION
+   * —solo nombres propios compartidos: Milan, Ludovico—". Era cierto y era
+   * demasiado indulgente: medido en D-226, aportaba **cero**. Y la causa no era
+   * de construccion sino de artefacto —el indice castellano reusaba el
+   * vocabulario ingles—, o sea que tenia arreglo. Desde D-226 cada idioma trae
+   * su propio BM25 y el despojo de acentos importa de los DOS lados: aca y en
+   * `tokenizar_es` de `pipeline/06_bm25.py`, que tiene que hacer exactamente lo
+   * mismo. Si divergen, la consulta y el indice dejan de encontrarse.
    */
   tokenizar(texto: string): string[] {
     const plano = texto.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");

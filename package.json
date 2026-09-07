@@ -42,7 +42,8 @@
     "limites": "tsx tools/probar_limites.ts",
     "exportar:portada": "tsx tools/exportar_portada.ts",
     "biblioteca": "tsx tools/optimizar_biblioteca.ts",
-    "wikipedia": "tsx tools/wikipedia.ts"
+    "wikipedia": "tsx tools/wikipedia.ts",
+    "retitular": "tsx tools/retitular_es.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",

@@ -1,6 +1,6 @@
 {
   "regla": "Números offline, deterministas y sin juez. `npm run regresion` los recalcula y falla si alguno se movió. Ver D-115.",
-  "fijado": "2026-09-06",
+  "fijado": "2026-09-07",
   "parcial": true,
   "puntos": {
     "recall.A.k3.fallos": {
@@ -14,11 +14,11 @@
       "nota": "PANTALLA. Un cambio acá pide LEER los casos antes de llamarlo regresión: puede ser un casi-empate o una etiqueta angosta."
     },
     "gate.aciertos": {
-      "valor": 89,
+      "valor": 88,
       "decision": "D-100"
     },
     "gate.filtraciones": {
-      "valor": 31,
+      "valor": 32,
       "decision": "D-100",
       "nota": "Alta por diseño: τ está en el punto de 0% de pérdida y quien juzga lo dudoso es el LLM (D-039)."
     },

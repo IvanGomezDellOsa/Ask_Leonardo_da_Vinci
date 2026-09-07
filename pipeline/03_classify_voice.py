@@ -194,6 +194,24 @@ RE_AUTONOMBRE = re.compile(
 # Ver D-065.
 RE_TITULO_AJENO = re.compile(r"Notes by unknown persons", re.I)
 
+# R-1566 es el TESTAMENTO de Leonardo: un instrumento notarial redactado en
+# tercera persona ("The said Testator desires to be buried within the church of
+# Saint Florentin at Amboise"). Habla DE Leonardo, no COMO Leonardo, y si entra
+# al indice el sistema puede presentar la prosa de un escribano como algo que el
+# escribio. Es el mismo error que D-207 (el catalogo del editor recuperado como
+# voz de Leonardo), con otra fuente.
+#
+# ⚠ HASTA D-230 SALIA DEL INDICE POR ACCIDENTE. El titulo "Notes by unknown
+# persons among the MSS. (1546—1565)" se le habia propagado de mas —declara su
+# rango y R-1566 esta fuera— y `RE_TITULO_AJENO` lo agarraba de rebote. Al
+# corregir la propagacion (D-228) el accidente desaparecio y el testamento
+# entraba al indice de Leonardo. La proteccion tiene que apoyarse en algo del
+# propio documento, no en un titulo mal aplicado.
+#
+# La marca es del texto y es exacta: "the said Testator" aparece en 3 chunks del
+# corpus y los 3 son este pasaje. Medido antes de escribir la regla.
+RE_TERCERA_PERSONA_NOTARIAL = re.compile(r"\bthe said Testator\b", re.I)
+
 UMBRAL_SEMILLA = 2.0     # 77% de recall con 0,4% de falsos positivos
 UMBRAL_EXPANSION = 0.5   # solo para bloques contiguos a una semilla
 MAX_HUECO = 3            # bloques que se rellenan entre dos tiradas
@@ -405,7 +423,8 @@ def main() -> int:
         # titulado como ajeno. Los tres mecanismos que dejaron entrar esto al
         # indice de Leonardo estan medidos en D-065; ninguno es arreglable con
         # las banderas, y este titulo los cubre a los tres.
-        ajeno = bool(p["richterTitle"] and RE_TITULO_AJENO.search(p["richterTitle"]))
+        ajeno = bool(p["richterTitle"] and RE_TITULO_AJENO.search(p["richterTitle"])) \
+            or bool(RE_TERCERA_PERSONA_NOTARIAL.search(texto))
         if texto.strip():
             if ajeno:
                 n_ajeno += 1

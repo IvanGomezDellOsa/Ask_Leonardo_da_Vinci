@@ -2,8 +2,8 @@
 
 | | documentos | terminos | largo medio | tamano |
 |---|---:|---:|---:|---:|
-| ingles (`bm25.json`) | 2,062 | 15,252 | 62.4 | 1639 KB |
-| castellano (`es/bm25.json`) | 2,062 | 18,519 | 58.0 | 1790 KB |
+| ingles (`bm25.json`) | 2,062 | 15,255 | 62.5 | 1639 KB |
+| castellano (`es/bm25.json`) | 2,062 | 18,523 | 58.0 | 1790 KB |
 
 - `k1=1.5`, `b=0.75` · podados por aparecer en mas del 60% de los
   documentos: 0 en ingles, 0 en castellano

@@ -3,7 +3,7 @@
  * NO EDITAR A MANO — D-112 prohíbe escribir una respuesta que no salió del
  * pipeline real, y ese principio aplica también acá.
  *
- * huella de origen: 376cccecbbc8
+ * huella de origen: e7330a3fb6b4
  */
 import type { RespuestaPublica } from "../lib/respuesta.js";
 
@@ -15,7 +15,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "pintura",
     "pregunta": "¿Por qué crees que la pintura es superior a las demás artes?",
     "decision": "responde",
-    "texto": "Porque la pintura trata con la «similitud real de las formas», mientras que la poesía solo las describe con palabras. Dejé escrito: «Si vosotros, historiadores, o poetas, o matemáticos, no hubierais visto las cosas con vuestros ojos, no podríais dar cuenta de ellas por escrito». El ojo, «la ventana del alma», es el medio principal por el cual apreciamos «las infinitas obras de la naturaleza»; el oído es el segundo, y se dignifica al oír lo que el ojo ha visto.\n\nY frente a la escultura, que es «menos intelectual», la pintura exige «sutiles consideraciones»: luz, aire, color, perspectiva, todo lo que la naturaleza ofrece a la mirada. El escultor trabaja con lo que ya está presente; el pintor ha de inventar la apariencia entera. Por eso dije que la pintura «supera todas las obras humanas».",
+    "texto": "Porque toca el sentido más alto que poseemos. Dejé escrito: «El ojo, que se llama la ventana del alma, es el medio principal por el cual el sentido central puede apreciar más completa y abundantemente las infinitas obras de la naturaleza». El oído es el segundo, y por eso la palabra, por más bella que sea, queda por detrás: el pintor con su pincel cuenta una historia «más fácilmente, con más simple completud y menos tediosa de entender» que el poeta con su pluma.\n\nY si la poesía presume de ser más eterna, yo respondo que las obras de un calderero son aún más eternas, pues el tiempo las conserva mejor que a vuestros escritos. Pero eso no les da ingenio. Nosotros, por nuestras artes, «podemos ser llamados nietos de Dios». La pintura no imita con palabras lo que no se ve; trata «con la similitud real de las formas», y eso la acerca a la naturaleza misma.",
     "pasajes": [
       {
         "richterNo": 655,
@@ -51,7 +51,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "pintura",
     "pregunta": "Why do you think painting is superior to the other arts?",
     "decision": "responde",
-    "texto": "Ah, friend, you touch the very core of my labours. I hold that painting is the worthier art, for it serves the eye—«the worthier sense»—while poetry serves but the ear. Consider: «if a good painter represents the fury of a battle, and if a poet describes one, and they are both together put before the public, you will see where most of the spectators will stop». The eye takes in all at once; the ear must wait upon words.\n\nAnd painting comprehends in itself «all the forms of nature», while the poet has «nothing but words, which are not universal as form is». A painter shows the effects themselves; a poet can only tell of them. Even sculpture, though it works in three dimensions, lacks many of nature's characteristics—colour, light, atmosphere—which painting commands. Thus the painter approaches the divine act of creation more nearly than any other.",
+    "texto": "Ah, you touch upon a question I have long turned over in my mind. Painting is the grandest of the arts because it serves the noblest sense—the eye, the window of the soul. I set down: «And if the poet gratifies the sense by means of the ear, the painter does so by the eye—the worthier sense». For the eye beholds all the forms of nature directly, while words are but poor shadows of those forms. A painted battle speaks at once to the spectator; a written one must labour through the mind.\n\nConsider also the sculptor, who works in dust and stone, and I have noted: «painting comprehends in itself all the forms of nature». The painter commands light, shadow, colour, and the very air between things—the sculptor has but solid mass, and lacks the subtlety of perspective and atmosphere. And where the poet claims eternity for his verses, I answer that a picture wrought in enamel upon copper may outlast them both, yet still bear the imagination of its maker.\n\nThus, painting is not mere manual toil, but a science of the visible world. If you call it mechanical because the hand labours, then the writer, too, sets down with his pen what his mind devises. But painting alone gives the representation of effects, not merely the effect of representation.",
     "pasajes": [
       {
         "richterNo": 655,
@@ -87,7 +87,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "teoria",
     "pregunta": "¿Cuál es el objetivo de aprender sin haber estudiado primero la teoría?",
     "decision": "responde",
-    "texto": "Sobre eso dejé escrito: «Aquellos que están enamorados de la práctica sin conocimiento son como el marinero que se sube a un barco sin timón ni brújula y que nunca puede estar seguro de adónde va». De modo que quien aprende solo con las manos, sin asentar antes los principios, navega a la deriva; puede que llegue a puerto, pero no sabrá cómo ni por qué.",
+    "texto": "Sobre ese yerro dejé escrito: «Aquellos que están enamorados de la práctica sin conocimiento son como el marinero que se sube a un barco sin timón ni brújula y que nunca puede estar seguro de adónde va». Así, quien aprende sin la teoría navega a la ventura, y su obra no tiene fundamento firme. Agregué luego que «la práctica debe fundarse siempre en la teoría sólida, y para esto la Perspectiva es la guía y la puerta; y sin esto nada puede hacerse bien en materia de dibujo».\n\nPor eso, no es el objetivo el que falla, sino el camino: sin la guía teórica, el esfuerzo se pierde. Y en esto conviene recordar también que «la práctica debe fundarse siempre en la teoría sólida», pues solo así el aprendizaje da fruto duradero.",
     "pasajes": [
       {
         "richterNo": 19,
@@ -103,13 +103,13 @@ export const PORTADA: Record<string, EntradaPortada> =
       },
       {
         "richterNo": 1169,
-        "titulo": "(1165-1170)",
+        "titulo": "Moral",
         "texto": "Evita los estudios cuyo resultado muere con el trabajador.\nLos hombres yerran cuando lamentan la huida del tiempo, acusándolo de ser demasiado veloz, y no percibiendo que es suficiente mientras pasa; pero la buena memoria, con la que la naturaleza nos ha dotado, hace que las cosas pasadas hace tiempo parezcan presentes.",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04962"
       },
       {
         "richterNo": 1170,
-        "titulo": "(1165-1170)",
+        "titulo": "Moral",
         "texto": "",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04962"
       }
@@ -129,7 +129,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "teoria",
     "pregunta": "What is the purpose of learning without first studying theory?",
     "decision": "responde",
-    "texto": "On that I set down: «Those who are in love with practice without knowledge are like the sailor who gets into a ship without rudder or compass and who never can be certain whether he is going. Practice must always be founded on sound theory, and to this Perspective is the guide and the gateway; and without this nothing can be done well in the matter of drawing.»\n\nSo you see, to labour with the hand and never with the mind is to wander blind upon the sea. Theory is the chart that shows the shore; without it, every stroke of the brush is a guess, and the work is left to fortune. And I would add that «study without a taste for it spoils memory, by retaining nothing which it has taken in» — so let the theory be loved, or it will be as food eaten without appetite, and nothing will remain.",
+    "texto": "Ah, you touch upon a matter close to my heart. On that I set down: «Those who are in love with practice without knowledge are like the sailor who gets into a ship without rudder or compass and who never can be certain whether he is going. Practice must always be founded on sound theory, and to this Perspective is the guide and the gateway; and without this nothing can be done well in the matter of drawing.»\n\nThus, learning without theory is but a vessel adrift — it may move, yet it knows not its course. And what is taken in without love is soon lost, for «study without a taste for it spoils memory, by retaining nothing which it has taken in.» So let the mind first grasp the principles, and then the hand may follow with certainty.",
     "pasajes": [
       {
         "richterNo": 19,
@@ -145,7 +145,7 @@ export const PORTADA: Record<string, EntradaPortada> =
       },
       {
         "richterNo": 1175,
-        "titulo": "(1165-1170)",
+        "titulo": "MORALS",
         "texto": "Just as food eaten without caring for it is turned into loathsome nourishment, so study without a taste for it spoils memory, by retaining nothing which it has taken in.",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04976"
       }
@@ -165,11 +165,11 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "maxima",
     "pregunta": "¿Qué máxima te repetías cada noche para dormir en paz y aprovechar la vida?",
     "decision": "responde",
-    "texto": "«Así como un día bien empleado procura un sueño feliz, así una vida bien empleada procura una muerte feliz». Esa es la sentencia que me acompaña al cerrar los ojos: no busco paz en el descanso, sino en la conciencia de que la jornada no fue ociosa. Quien trabaja con provecho duerme sin remordimientos, y quien vive con propósito encara el fin sin temor.",
+    "texto": "«Así como un día bien empleado procura un sueño feliz, así una vida bien empleada procura una muerte feliz». Esa es la máxima que me acompaña al cerrar los ojos: no me inquieta el mañana si el presente fue bien labrado, pues el descanso del cuerpo es espejo del descanso del ánimo.",
     "pasajes": [
       {
         "richterNo": 1173,
-        "titulo": "(1165-1170)",
+        "titulo": "Moral",
         "texto": "Así como un día bien empleado procura un sueño feliz, así una vida bien empleada procura una muerte feliz.",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04971"
       },
@@ -180,10 +180,10 @@ export const PORTADA: Record<string, EntradaPortada> =
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id05038"
       },
       {
-        "richterNo": 856,
-        "titulo": "Algunas notas sobre medicina (851-855)",
-        "texto": "Te enseño a preservar tu salud; y en esto tendrás éxito mejor en proporción a que evites a los médicos, porque sus medicinas son el trabajo de los alquimistas.",
-        "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id03752"
+        "richterNo": 1188,
+        "titulo": "Reglas de Vida (1188-1202)",
+        "texto": "Si gobernaras tu cuerpo por las reglas de la virtud no andarías a cuatro patas en este mundo.\nCrees en reputación como el pan en las manos de un niño.",
+        "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id05013"
       }
     ],
     "notas": [],
@@ -201,11 +201,11 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "maxima",
     "pregunta": "What maxim did you repeat to yourself each night to sleep in peace and make the most of life?",
     "decision": "responde",
-    "texto": "Ah, the night's accounting. On that, I set down a simple truth: «As a day well spent procures a happy sleep, so a life well employed procures a happy death.»",
+    "texto": "Ah, a fair question, for the body's rest is the mirror of the mind's order. On that I set down: «As a day well spent procures a happy sleep, so a life well employed procures a happy death.» This I hold as a lantern for the evening's reckoning—if the day's labour has been true to nature and to study, the pillow is soft, and the conscience quiet.",
     "pasajes": [
       {
         "richterNo": 1173,
-        "titulo": "(1165-1170)",
+        "titulo": "MORALS",
         "texto": "As a day well spent procures a happy sleep, so a life well employed procures a happy death.",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04971"
       },
@@ -237,31 +237,25 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "estudiar",
     "pregunta": "¿Por qué dices que estudiar sin ganas arruina la memoria?",
     "decision": "responde",
-    "texto": "Sobre eso dejé escrito: «así como la comida ingerida sin cuidado se convierte en alimento repugnante, así el estudio sin gusto por él estropea la memoria, al no retener nada de lo que ha tomado». Es una comparación que me parece clara: el alimento mal masticado no nutre, y el saber que se traga sin apetito tampoco. El gusto es el que abre la puerta de la retención; sin él, el esfuerzo se desperdicia.",
+    "texto": "«Así como comer contra la propia voluntad es perjudicial para la salud, así el estudio sin afición por él estropea la memoria, y no retiene nada de lo que toma.» Es como el cuerpo que rechaza un alimento que no desea: si el ánimo no acompaña, el saber entra y se pierde, sin dejar huella. Por eso conviene que el estudio sea apetecido, pues solo lo que se toma con gusto se digiere y permanece.",
     "pasajes": [
       {
         "richterNo": 1175,
-        "titulo": "(1165-1170)",
+        "titulo": "Moral",
         "texto": "Así como la comida ingerida sin cuidado se convierte en alimento repugnante, así el estudio sin gusto por él estropea la memoria, al no retener nada de lo que ha tomado.",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04976"
+      },
+      {
+        "richterNo": 1176,
+        "titulo": "Moral",
+        "texto": "Así como comer contra la propia voluntad es perjudicial para la salud, así el estudio sin afición por él estropea la memoria, y no retiene nada de lo que toma.",
+        "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04978"
       },
       {
         "richterNo": 502,
         "titulo": "Una advertencia contra el estudio unilateral",
         "texto": "CÓMO, EN OBRAS IMPORTANTES, UN HOMBRE NO DEBE CONFIAR ENTERAMENTE EN SU MEMORIA SIN CONDESCENDER A DIBUJAR DE LA NATURALEZA.\nCualquier maestro que se atreviera a jactarse de que podría recordar todas las formas y efectos de la naturaleza ciertamente me parecería estar dotado de extrema ignorancia, en tanto que estos efectos son infinitos y nuestra memoria no es suficientemente extensa para retenerlos. Por tanto, ¡oh pintor! cuídate de que la codicia de ganancia no suplante en ti la dignidad del arte; porque la adquisición de gloria es cosa mucho mayor que la gloria de las riquezas. Por tanto, por estas y otras razones que podrían darse, primero esfuérzate en dibujar para representar tu intención al ojo con formas expresivas, y la idea originalmente formada en tu imaginación; luego continúa quitando o poniendo, hasta que te hayas satisfecho. Entonces ten hombres vivos, vestidos o desnudos, como hayas propuesto en tu obra, y cuida de que en dimensiones y tamaño, según lo determinado por la perspectiva, nada quede en la obra que no esté en armonía con la razón y los efectos en la naturaleza. Y este será el camino para ganar honor en tu arte.",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id01986"
-      },
-      {
-        "richterNo": 1169,
-        "titulo": "(1165-1170)",
-        "texto": "Evita los estudios cuyo resultado muere con el trabajador.\nLos hombres yerran cuando lamentan la huida del tiempo, acusándolo de ser demasiado veloz, y no percibiendo que es suficiente mientras pasa; pero la buena memoria, con la que la naturaleza nos ha dotado, hace que las cosas pasadas hace tiempo parezcan presentes.",
-        "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04962"
-      },
-      {
-        "richterNo": 1170,
-        "titulo": "(1165-1170)",
-        "texto": "",
-        "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04962"
       }
     ],
     "notas": [],
@@ -279,7 +273,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "estudiar",
     "pregunta": "Why do you say that studying without desire ruins the memory?",
     "decision": "responde",
-    "texto": "Ah, you touch upon a truth I have often pondered. Just as the stomach rejects what is forced upon it, so too does the mind. «Just as eating against one's will is injurious to health, so study without a liking for it spoils the memory, and it retains nothing it takes in.»\n\nThe memory is not a vessel to be filled by force; it is a living thing that must be enticed. When the appetite for knowledge is absent, the mind closes itself, and what is poured in merely runs off, leaving no trace. Therefore, I counsel that one should study only that which stirs the soul, for then the learning becomes a pleasure, and the memory holds it fast.",
+    "texto": "On that I set down: «Just as eating against one's will is injurious to health, so study without a liking for it spoils the memory, and it retains nothing it takes in.» The stomach that receives food it loathes turns it to foul humour, and so the mind, forced to swallow what it does not crave, holds naught of it. Memory is no mere vessel to be filled; it is a living faculty that must consent to what it receives.",
     "pasajes": [
       {
         "richterNo": 496,
@@ -289,13 +283,13 @@ export const PORTADA: Record<string, EntradaPortada> =
       },
       {
         "richterNo": 1176,
-        "titulo": "(1165-1170)",
+        "titulo": "MORALS",
         "texto": "Just as eating against one's will is injurious to health, so study without a liking for it spoils the memory, and it retains nothing it takes in.",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04978"
       },
       {
         "richterNo": 1175,
-        "titulo": "(1165-1170)",
+        "titulo": "MORALS",
         "texto": "Just as food eaten without caring for it is turned into loathsome nourishment, so study without a taste for it spoils memory, by retaining nothing which it has taken in.",
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04976"
       }
@@ -315,7 +309,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "agua",
     "pregunta": "¿Por qué te niegas a publicar tus diseños para respirar bajo el agua?",
     "decision": "responde",
-    "texto": "Sobre eso dejé escrito: «no publico ni divulgo estos, por la mala naturaleza de los hombres, que los usarían para asesinatos en el fondo del mar destruyendo naves, y hundiéndolas, junto con los hombres en ellas». La codicia y la maldad humana me obligan a guardar tal conocimiento. Sin embargo, «impartiré otros, que no son peligrosos porque la boca del tubo por el que respiras está sobre el agua».",
+    "texto": "Sobre ese asunto dejé escrito: «No publico ni divulgo estos, por la mala naturaleza de los hombres, que los usarían para asesinatos en el fondo del mar destruyendo naves, y hundiéndolas, junto con los hombres en ellas». El ingenio puede servir a la vida o a la muerte; prefiero que mis invenciones no se vuelvan armas contra la Humanidad.",
     "pasajes": [
       {
         "richterNo": 1,
@@ -351,7 +345,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "agua",
     "pregunta": "Why do you refuse to publish your designs for breathing underwater?",
     "decision": "responde",
-    "texto": "You touch upon a matter I have weighed with great care. On that I set down: «I do not publish nor divulge these, by reason of the evil nature of men, who would use them for assassinations at the bottom of the sea by destroying ships, and sinking them, together with the men in them.»\n\nThe mind of man is a curious instrument—capable of sublime invention, yet often turned to base ends. I have seen enough of the world to know that a gift placed in unworthy hands becomes a weapon. So I keep that knowledge close, and instead impart «others, which are not dangerous because the mouth of the tube through which you breathe is above the water, supported on air sacks or cork.» Thus, what is safe I share freely; what might bring ruin I guard as a secret.",
+    "texto": "You touch upon a matter I have weighed with great care. I have indeed devised a means by which a man may remain some time beneath the waters, yet I hold it back. «I do not publish nor divulge these, by reason of the evil nature of men, who would use them for assassinations at the bottom of the sea by destroying ships, and sinking them, together with the men in them.» What profit is a marvel if it arms the wicked against the innocent? Better to keep the secret, and let the sea keep its peace.",
     "pasajes": [
       {
         "richterNo": 1,
@@ -387,7 +381,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "noche",
     "pregunta": "¿Por qué te despiertas en medio de la noche para repasar tus ideas en la oscuridad?",
     "decision": "responde",
-    "texto": "«Yo mismo he comprobado que no es de poca utilidad, estando en la cama en la oscuridad, recordar en la fantasía los detalles externos de formas previamente estudiadas, u otras cosas notables concebidas por especulación sutil». Es un ejercicio admirable, pues imprime las cosas en la memoria con mayor fuerza que la vigilia. En la penumbra, el ojo no se distrae con el mundo exterior, y la mente se vuelve hacia sus propias imágenes, como si las viera por primera vez.",
+    "texto": "«Yo mismo he comprobado que no es de poca utilidad, estando en la cama en la oscuridad, recordar en la fantasía los detalles externos de formas previamente estudiadas, u otras cosas notables concebidas por especulación sutil». Ese ejercicio, amigo, es admirable y útil para imprimir las cosas en la memoria. La noche callada presta al ingenio un lienzo limpio donde las formas aprendidas de día se dibujan con más claridad que la propia vigilia.",
     "pasajes": [
       {
         "richterNo": 496,
@@ -423,7 +417,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "noche",
     "pregunta": "Why do you wake up in the middle of the night to go over your ideas in the dark?",
     "decision": "responde",
-    "texto": "Ah, you speak of that habit I have found most useful. When I lie in bed in the dark, I do not merely rest; I exercise the mind. On this I set down: «I myself have proved it to be of no small use, when in bed in the dark, to recall in fancy the external details of forms previously studied, or other noteworthy things conceived by subtle speculation; and this is certainly an admirable exercise, and useful for impressing things on the memory.»\n\nIt is a quiet hour when the senses are not besieged by the day's clamour. The eye, being shut, does not wander; the ear is still. Then the memory may be turned over as a craftsman turns a gem in his palm, examining each facet without hurry. Thus what was studied by daylight becomes fixed and familiar, as if engraved upon the mind itself.",
+    "texto": "Ah, you speak of a habit I hold dear. When I lie in bed, in the dark, before sleep overtakes me, I find it an admirable exercise. «I myself have proved it to be of no small use, when in bed in the dark, to recall in fancy the external details of forms previously studied, or other noteworthy things conceived by subtle speculation; and this is certainly an admirable exercise, and useful for impressing things on the memory.»\n\nThe mind, freed from the clamour of the day, may turn its eye inward upon those forms it has gathered. It is a way of fixing them, like a painter setting down a sketch, so that they may serve the hand when daylight returns.",
     "pasajes": [
       {
         "richterNo": 496,

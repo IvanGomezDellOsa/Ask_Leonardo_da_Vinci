@@ -93,6 +93,35 @@ RE_INSERCION = re.compile(r"\[(?!Footnote)[^\[\]]{1,60}\]", re.S)
 # Richter en primera persona— se queda dentro del cuerpo de R-662.
 RE_ROMANO = re.compile(r"^\s*[_*]*([IVXLC]+)\.?[_*]*\s*$")
 
+# El rango que Richter escribe en sus propios titulos: "Fables on plants
+# (1275-1279)". Acepta guion, raya y semirraya, y la "l" que el OCR deja en
+# lugar de un 1 ("1379-l413").
+#
+# ⚠ HAY OTRA DEFINICION DE ESTO EN TypeScript: `rangosDeRichter` en
+# `src/lib/retrieval.ts`. Esta es mas chica a proposito —solo necesita el
+# primer rango del titulo, para saber si un pasaje se le escapo— pero si
+# alguna vez divergen en como leen un rango, el rotulo y la busqueda van a
+# discrepar sin avisar.
+RE_RANGO_TITULO = re.compile(r"\((\d{2,4})\s*[-—–]\s*([\dlI]{2,4})\)")
+
+# Un titulo tiene que decir algo. Dos letras seguidas alcanzan como prueba de
+# que hay una palabra y no solo numeros, parentesis y guiones.
+RE_TIENE_PALABRA = re.compile(r"[A-Za-z]{2}")
+
+
+def fuera_de_su_rango(titulo: str, n_pas: int) -> bool:
+    """True si el titulo declara un rango y este pasaje no cae adentro.
+
+    Es la unica de las dos condiciones de corte que se verifica SOLA: el titulo
+    se autodesmiente. Ver D-224 y D-228.
+    """
+    m = RE_RANGO_TITULO.search(titulo or "")
+    if not m:
+        return False
+    a = int(m.group(1).replace("l", "1").replace("I", "1"))
+    b = int(m.group(2).replace("l", "1").replace("I", "1"))
+    return not (a <= n_pas <= b)
+
 # Siglas de manuscrito que Richter deja sueltas al final de un pasaje
 # ("C.A. 94b; 271b]", "W. XXIII.]"). No son titulos.
 RE_SIGLA = re.compile(
@@ -655,10 +684,12 @@ def main() -> int:
     pasajes = []
     filas_bloques: list[dict] = []
     titulo_vigente = ""
+    seccion_del_titulo: tuple[str, str] | None = None
     for k, m in enumerate(marcas):
         fin = marcas[k + 1].start() if k + 1 < len(marcas) else len(texto)
         b_num = bloque_de(m.start(), anclas)
         n_pas = int(m.group(1))
+        sec, sub = secciones.get(b_num, ("", ""))
         # el titulo que precede a este pasaje pasa a ser el vigente (se propaga
         # hasta el proximo, que es como Richter titula rangos: "(153-157)")
         j = b_num - 1
@@ -666,8 +697,37 @@ def main() -> int:
             j -= 1
         if j in titulos:
             titulo_vigente = titulos[j]
+            seccion_del_titulo = (sec, sub)
+        elif titulo_vigente and (
+                fuera_de_su_rango(titulo_vigente, n_pas)
+                or (seccion_del_titulo is not None and (sec, sub) != seccion_del_titulo)):
+            # ⚠ LA PROPAGACION NECESITA CUANDO PARAR. Ver D-224 y D-228.
+            #
+            # Propagar es correcto —Richter titula rangos— pero hasta aca no
+            # expiraba nunca: seguia vigente aunque el pasaje saliera del rango
+            # que el propio titulo declara y aunque cambiara la seccion. Medido,
+            # el 27% de los titulos verificables caia fuera de su propio rango, y
+            # por eso R-784 ("ON THE NATURE OF THE ARCH") salia rotulado
+            # "Decorations for feasts".
+            #
+            # ⚠ AL EXPIRAR SE PONE LA SUBSECCION, NUNCA VACIO. Medido sobre los
+            # 138 mal rotulados (D-228): con el titulo verdadero el coseno sube
+            # +0,0270 de mediana y mejora en 131 de 138, pero **sin titulo BAJA
+            # 0,0078**. El titulo aporta senal aunque este mal; hay que
+            # acertarlo, no borrarlo. `section` existe en el 100% de los chunks
+            # de Leonardo, asi que siempre hay con que reemplazarlo.
+            titulo_vigente = sub.strip() or sec.strip()
+            seccion_del_titulo = (sec, sub)
         # en el Volumen I el rango del indice manda sobre la propagacion
         titulo_final = titulo_del_indice.get(n_pas, titulo_vigente)
+        # ⚠ UN TITULO SIN PALABRAS NO ES UN TITULO. R-1165..1169 quedaban con
+        # `"(1165-1170)"` y nada mas: el texto del titulo se perdio en el fuente
+        # y sobrevivio solo el rango. El rango esta BIEN aplicado, asi que las
+        # dos condiciones de corte de arriba no lo tocan — es otro defecto, de la
+        # misma familia. Se veia en la portada del sitio, como rotulo de fuente
+        # de una de las seis preguntas. Ver D-230.
+        if titulo_final and not RE_TIENE_PALABRA.search(titulo_final):
+            titulo_final = sub.strip() or sec.strip() or titulo_final
 
         piezas = partes(texto, m.end(), fin, saltar, b_num)
         cuerpo_txt = "\n".join(t for _, t in piezas)
@@ -681,7 +741,6 @@ def main() -> int:
             })
         # el cuerpo con el titulo adentro, solo para comparar con el control
         cuerpo_crudo = cuerpo(texto, m.end(), fin, consumidos)
-        sec, sub = secciones.get(b_num, ("", ""))
         ancla = por_indice.get(b_num, {}).get("id")
         pasajes.append({
             "richterNo": n_pas,

@@ -130,10 +130,18 @@ const medido: Record<string, Punto> = {};
     const t = c.tituloEs ?? c.richterTitle;
     if (t) titulos.add(t);
   }
-  const huerfanas = MAPA.flatMap((s) => s.temas).filter((t) => !titulos.has(t.consulta));
-  medido["mapa.temas"] = { valor: MAPA.reduce((a, s) => a + s.temas.length, 0), decision: "D-233" };
-  medido["mapa.consultasHuerfanas"] = { valor: huerfanas.length, decision: "D-233",
-    nota: "Temas del mapa cuyo título ya no existe en el corpus. Si sube, el mapa quedó viejo: correr `npm run mapa`." };
+  /** ⚠ LOS DOS IDIOMAS. El mapa inglés se alinea contra los títulos ingleses. */
+  const titulosEn = new Set<string>();
+  for (const c of motor.por.en.corpus.chunks) {
+    if (c.voice === "leonardo" && c.richterTitle) titulosEn.add(c.richterTitle);
+  }
+  const huerfanas = MAPA.es.flatMap((s) => s.temas).filter((t) => !titulos.has(t.consulta)).length
+    + MAPA.en.flatMap((s) => s.temas).filter((t) => !titulosEn.has(t.consulta)).length;
+  medido["mapa.temas"] = {
+    valor: MAPA.es.reduce((a, s) => a + s.temas.length, 0)
+         + MAPA.en.reduce((a, s) => a + s.temas.length, 0), decision: "D-233" };
+  medido["mapa.consultasHuerfanas"] = { valor: huerfanas, decision: "D-233",
+    nota: "Temas del mapa, en cualquiera de los dos idiomas, cuyo título ya no existe en el corpus. Si sube, el mapa quedó viejo: correr `npm run mapa`." };
 }
 
 // ---- ¿el índice castellano habla castellano? ----------------------------

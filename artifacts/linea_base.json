@@ -53,13 +53,13 @@
       "decision": "D-108"
     },
     "mapa.temas": {
-      "valor": 423,
+      "valor": 819,
       "decision": "D-233"
     },
     "mapa.consultasHuerfanas": {
       "valor": 0,
       "decision": "D-233",
-      "nota": "Temas del mapa cuyo título ya no existe en el corpus. Si sube, el mapa quedó viejo: correr `npm run mapa`."
+      "nota": "Temas del mapa, en cualquiera de los dos idiomas, cuyo título ya no existe en el corpus. Si sube, el mapa quedó viejo: correr `npm run mapa`."
     },
     "indice.es.enCastellano": {
       "valor": 12,

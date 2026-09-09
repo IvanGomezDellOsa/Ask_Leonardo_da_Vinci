@@ -80,9 +80,16 @@ export function MapaTemas({
    * seguir encontrando su tema.
    */
   const visibles = useMemo(() => {
+    /**
+     * ⚠ EL MAPA DEL IDIOMA, NUNCA EL DEL OTRO. La primera versión (D-233) tenía
+     * un solo mapa, castellano, y el sitio en inglés mostraba secciones y temas
+     * en castellano — y al clickear mandaba un título castellano al índice
+     * INGLES, que es la búsqueda cross-lingüe que D-105 midió como mala.
+     */
+    const mapa = MAPA[lang];
     const f = plano(filtro.trim());
-    if (!f) return MAPA;
-    return MAPA
+    if (!f) return mapa;
+    return mapa
       .map((s) => ({
         ...s,
         temas: plano(s.seccion).includes(f) || plano(s.glosa).includes(f)
@@ -90,7 +97,7 @@ export function MapaTemas({
           : s.temas.filter((x) => plano(x.visible).includes(f) || plano(x.consulta).includes(f)),
       }))
       .filter((s) => s.temas.length > 0);
-  }, [filtro]);
+  }, [filtro, lang]);
 
   const filtrando = filtro.trim().length > 0;
 

@@ -33,6 +33,8 @@ import { Corpus, rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
 import { cargarMotor, decidirCon, capaCurada, type Idioma } from "../src/lib/grounding.js";
 import { ART, cargarCasos } from "./comun.js";
 import { MAPA } from "../src/data/mapa.js";
+import { HUELLA_PORTADA, PORTADA } from "../src/data/portada.js";
+import { huellaPrompt, varianteVigente } from "../src/lib/llm.js";
 
 const LINEA = new URL("linea_base.json", ART);
 const fijar = process.argv.includes("--fijar");
@@ -45,9 +47,22 @@ const embed = await cargarExtractor();
 const emb = async (t: string) =>
   (await embed("query: " + t, { pooling: "mean", normalize: true })).data as Float32Array;
 
-const casos = cargarCasos();
+const todos = cargarCasos();
+/**
+ * ⚠ DOS BANCOS, DOS MEDICIONES. Ver D-236.
+ *
+ * `casos` son los 120 de control, y son los que fijan los numeros historicos:
+ * `recall.*` y `gate.*` se comparan contra su propia linea de base desde D-115 y
+ * **mezclarles 50 casos nuevos los moveria por construccion**, no por un cambio
+ * del sistema. Un numero que se mueve sin que se mueva el sistema es exactamente
+ * lo que esta guarda existe para que no pase.
+ *
+ * `comunes` son los 50 de banco comun, y tienen sus propios puntos.
+ */
+const casos = todos.filter((c) => c.banco !== "comun");
+const comunes = todos.filter((c) => c.banco === "comun");
 const vec = new Map<string, Float32Array>();
-for (const c of casos) vec.set(c.id, await emb(c.q));
+for (const c of todos) vec.set(c.id, await emb(c.q));
 
 const medido: Record<string, Punto> = {};
 
@@ -78,7 +93,7 @@ const medido: Record<string, Punto> = {};
     nota: "PANTALLA. Un cambio acá pide LEER los casos antes de llamarlo regresión: puede ser un casi-empate o una etiqueta angosta." };
 }
 
-// ---- el gate sobre los 120 casos ---------------------------------------
+// ---- el gate sobre los 120 de control -----------------------------------
 {
   let ok = 0, fuga = 0, sobre = 0;
   for (const c of casos) {
@@ -91,6 +106,35 @@ const medido: Record<string, Punto> = {};
     nota: "Alta por diseño: τ está en el punto de 0% de pérdida y quien juzga lo dudoso es el LLM (D-039)." };
   medido["gate.sobreAbstenciones"] = { valor: sobre, decision: "D-041",
     nota: "El número que hay que vigilar: la sobre-abstención no es gratis." };
+}
+
+// ---- el gate sobre el banco comun, y por idioma -------------------------
+{
+  /**
+   * ⚠ SE MIDE POR IDIOMA, y no por prolijidad. En la primera corrida las tres
+   * metas que se colaban se colaban **todas en ingles** — `what can i ask you
+   * about?`, `i didn't understand what you said`, `do you speak spanish?` — y
+   * `do you like music?` responde en ingles y se abstiene en castellano siendo la
+   * misma pregunta. Un solo numero agregado esconderia que el problema tiene
+   * idioma: τ_en (0,826) es mas bajo que τ_es (0,841) y el banco de control, con
+   * cero preguntas meta, nunca pudo verlo.
+   */
+  let ok = 0, fuga = 0, sobre = 0, fugaEn = 0, fugaEs = 0;
+  for (const c of comunes) {
+    const d = decidirCon(motor, c.q, vec.get(c.id)!, c.lang, 3);
+    const abst = d.tipo !== "responde";
+    if (abst === c.should_abstain) ok++;
+    else if (c.should_abstain) { fuga++; if (c.lang === "en") fugaEn++; else fugaEs++; }
+    else sobre++;
+  }
+  medido["gateComun.aciertos"] = { valor: ok, decision: "D-236",
+    nota: `De ${comunes.length} casos escritos como tipea una persona. Ver 28 §4E.` };
+  medido["gateComun.filtraciones"] = { valor: fuga, decision: "D-236",
+    nota: "Debía abstenerse y respondió. Son saludos, metapreguntas y datos biográficos que no están escritos." };
+  medido["gateComun.filtraciones.en"] = { valor: fugaEn, decision: "D-236" };
+  medido["gateComun.filtraciones.es"] = { valor: fugaEs, decision: "D-236" };
+  medido["gateComun.sobreAbstenciones"] = { valor: sobre, decision: "D-236",
+    nota: "PANTALLA. Podía contestar y se abstuvo: son preguntas cuya respuesta SÍ está en el corpus, verificada a mano." };
 }
 
 // ---- curaduría y umbrales: artefactos, no búsquedas ---------------------
@@ -140,8 +184,75 @@ const medido: Record<string, Punto> = {};
   medido["mapa.temas"] = {
     valor: MAPA.es.reduce((a, s) => a + s.temas.length, 0)
          + MAPA.en.reduce((a, s) => a + s.temas.length, 0), decision: "D-233" };
+  /**
+   * ⚠ LOS DOS MAPAS TIENEN QUE MEDIR LO MISMO. Ver D-241.
+   *
+   * El mismo corpus, las mismas secciones: si un idioma tiene más temas que el
+   * otro, alguno está mostrando de más o de menos. Estuvo en 423 contra 396
+   * desde D-233 y nadie lo miró: eran 27 títulos ingleses con DOS traducciones
+   * castellanas cada uno, así que el rail castellano mostraba 27 temas dos
+   * veces, con los pasajes repartidos entre las dos redacciones.
+   *
+   * Se cuenta la diferencia, no el total: el total puede cambiar legítimamente
+   * cuando cambia el corpus, la diferencia no.
+   */
+  medido["mapa.asimetria"] = {
+    valor: Math.abs(MAPA.es.reduce((a, s) => a + s.temas.length, 0)
+                  - MAPA.en.reduce((a, s) => a + s.temas.length, 0)),
+    decision: "D-241",
+    nota: "Temas de más que tiene un idioma sobre el otro. Tiene que ser 0: son el mismo corpus y las mismas secciones.",
+  };
   medido["mapa.consultasHuerfanas"] = { valor: huerfanas, decision: "D-233",
     nota: "Temas del mapa, en cualquiera de los dos idiomas, cuyo título ya no existe en el corpus. Si sube, el mapa quedó viejo: correr `npm run mapa`." };
+}
+
+// ---- ¿la caché de portada sigue vigente? --------------------------------
+{
+  /**
+   * ⚠ LA CACHE NO AVISABA CUANDO QUEDABA VIEJA. Ver D-237.
+   *
+   * Las 6 preguntas de portada viajan congeladas en el bundle del navegador
+   * (D-132) y **se sirven sin pasar por el API**, que es justamente lo que las
+   * hace instantáneas y a prueba de cuota. El precio: se saltean la validación
+   * de huella que `app/api/chat` hace desde D-112. La huella estaba, pero en un
+   * COMENTARIO — y un comentario no lo compara nadie.
+   *
+   * Ya mordió: el sitio estuvo sirviendo respuestas de un prompt y un índice que
+   * ya no existían, en silencio, hasta que D-230 lo encontró de casualidad.
+   *
+   * ⚠ Y ESTO BLOQUEA A `28` §4C. Congelar las ~800 respuestas del mapa crearía
+   * una SEGUNDA caché con el mismo agujero y dieciséis veces más grande. Primero
+   * la comprobación.
+   *
+   * Dos cosas, las dos deterministas:
+   *   1. la huella del bundle contra la vigente (prompt + corpus + índices + τ + curaduría)
+   *   2. que cada número de Richter citado siga existiendo en SU idioma
+   */
+  const vigente = huellaPrompt(varianteVigente(ART));
+  medido["cache.portadaVigente"] = { valor: HUELLA_PORTADA === vigente ? 1 : 0, decision: "D-237",
+    nota: `1 = la caché de portada se generó con el prompt y el índice de hoy. Si baja a 0, el sitio está sirviendo respuestas viejas en silencio: correr \`npm run precalcular\` y \`npm run exportar:portada\`. bundle=${HUELLA_PORTADA} vigente=${vigente}` };
+
+  let muertos = 0;
+  for (const [clave, e] of Object.entries(PORTADA)) {
+    const idioma = clave.endsWith(":es") ? "es" : "en";
+    const corpus = motor.por[idioma as Idioma].corpus;
+    for (const p of e.pasajes) {
+      if (p.richterNo !== null && !corpus.chunks.some((c) => c.richterNos.includes(p.richterNo!))) muertos++;
+    }
+  }
+  /**
+   * ⚠ CUANTAS ENTRADAS TIENE EL BUNDLE. Ver D-238.
+   *
+   * Desde que `precalcular:mapa` escribe en el mismo `respuestas_fijas.json`,
+   * un `exportar:portada` sin el filtro `origen !== "mapa"` bundlearia las 731
+   * del mapa: **40 KB pasarian a unos 3 MB** que cada visitante baja para leer,
+   * como mucho, una. No romperia nada — solo haria el sitio lento, en silencio.
+   */
+  medido["cache.portadaEntradas"] = { valor: Object.keys(PORTADA).length, decision: "D-238",
+    nota: "6 preguntas x 2 idiomas. Si sube, se colaron al bundle respuestas del mapa: van por la ruta, no por el bundle." };
+
+  medido["cache.portadaPasajesMuertos"] = { valor: muertos, decision: "D-237",
+    nota: "Pasajes citados por la portada cuyo número de Richter ya no está en el corpus de su idioma. Tiene que ser 0." };
 }
 
 // ---- ¿el índice castellano habla castellano? ----------------------------

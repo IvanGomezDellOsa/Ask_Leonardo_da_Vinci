@@ -27,6 +27,29 @@
       "decision": "D-041",
       "nota": "El número que hay que vigilar: la sobre-abstención no es gratis."
     },
+    "gateComun.aciertos": {
+      "valor": 43,
+      "decision": "D-236",
+      "nota": "De 50 casos escritos como tipea una persona. Ver 28 §4E."
+    },
+    "gateComun.filtraciones": {
+      "valor": 7,
+      "decision": "D-236",
+      "nota": "Debía abstenerse y respondió. Son saludos, metapreguntas y datos biográficos que no están escritos."
+    },
+    "gateComun.filtraciones.en": {
+      "valor": 6,
+      "decision": "D-236"
+    },
+    "gateComun.filtraciones.es": {
+      "valor": 1,
+      "decision": "D-236"
+    },
+    "gateComun.sobreAbstenciones": {
+      "valor": 0,
+      "decision": "D-236",
+      "nota": "PANTALLA. Podía contestar y se abstuvo: son preguntas cuya respuesta SÍ está en el corpus, verificada a mano."
+    },
     "curaduria.inventory": {
       "valor": 27,
       "decision": "D-098"
@@ -53,13 +76,33 @@
       "decision": "D-108"
     },
     "mapa.temas": {
-      "valor": 819,
+      "valor": 792,
       "decision": "D-233"
+    },
+    "mapa.asimetria": {
+      "valor": 0,
+      "decision": "D-241",
+      "nota": "Temas de más que tiene un idioma sobre el otro. Tiene que ser 0: son el mismo corpus y las mismas secciones."
     },
     "mapa.consultasHuerfanas": {
       "valor": 0,
       "decision": "D-233",
       "nota": "Temas del mapa, en cualquiera de los dos idiomas, cuyo título ya no existe en el corpus. Si sube, el mapa quedó viejo: correr `npm run mapa`."
+    },
+    "cache.portadaVigente": {
+      "valor": 1,
+      "decision": "D-237",
+      "nota": "1 = la caché de portada se generó con el prompt y el índice de hoy. Si baja a 0, el sitio está sirviendo respuestas viejas en silencio: correr `npm run precalcular` y `npm run exportar:portada`. bundle=a49a6cd9bfaa vigente=a49a6cd9bfaa"
+    },
+    "cache.portadaEntradas": {
+      "valor": 12,
+      "decision": "D-238",
+      "nota": "6 preguntas x 2 idiomas. Si sube, se colaron al bundle respuestas del mapa: van por la ruta, no por el bundle."
+    },
+    "cache.portadaPasajesMuertos": {
+      "valor": 0,
+      "decision": "D-237",
+      "nota": "Pasajes citados por la portada cuyo número de Richter ya no está en el corpus de su idioma. Tiene que ser 0."
     },
     "indice.es.enCastellano": {
       "valor": 12,

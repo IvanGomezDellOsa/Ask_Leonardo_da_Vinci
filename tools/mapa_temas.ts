@@ -187,12 +187,12 @@ const AMANO: Record<string, string> = {
   "The importance of light and shade in the Prospettiva de' perdimenti":
     "The part light and shade play in what is seen far off",
   "The practice of the Prospettiva de' colori": "How the perspective of colour is applied",
-  "A. General Observations": "General observations on architecture",
+  "A. General Observations._": "General observations on architecture",
   "G. Description of an unknown Temple": "Description of an unidentified temple",
   "PERSPECTIVE OF DISAPPEARANCE Definition": "What the perspective of disappearance is",
   "PERSPECTIVE OF General rules": "General rules of the perspective of colour",
   "ON ON OF Preliminary observations": "Preliminary observations",
-  "The log books of Vitruvius, of Alberti and of Leonardo":
+  "The ship's logs of Vitruvius, of Alberti and of Leonardo":
     "His notebooks and those of Vitruvius and Alberti",
 };
 
@@ -265,6 +265,37 @@ for (const c of chunks) {
   const s = (c.section || "").trim();
   if (s && (!SECCION[s] || !GLOSA[s])) sinTabla.add(s);
 }
+/**
+ * ⚠ UNA CLAVE DE `AMANO` QUE NO EXISTE NO FALLA: SIMPLEMENTE NO SE APLICA.
+ *
+ * Se escriben a mano y son 18. Dos estaban mal —«A. General Observations» sin el
+ * `._` que el corpus sí tiene, y «The log books of…» donde el título real es
+ * «The ship's logs of…»— y llevaban así desde que se escribieron: el rótulo
+ * limpio nunca se mostró y nadie se enteró, porque `rotulo()` cae al camino
+ * mecánico y devuelve algo razonable igual.
+ *
+ * Las dos se escribieron TRADUCIENDO la clave castellana en vez de copiar el
+ * título inglés del corpus. Es el mismo error que `npm run curadas` atrapó en la
+ * cita de Verrocchio (D-239), y por eso acá también se comprueba en vez de
+ * confiar. Se avisa y no se aborta: un rótulo perdido no rompe el mapa, pero
+ * tiene que verse.
+ */
+{
+  const titulos = new Set<string>();
+  for (const c of chunks) {
+    if (c.voice !== "leonardo") continue;
+    if (c.richterTitle) titulos.add(c.richterTitle);
+    const t = trad[c.id]?.titulo;
+    if (t) titulos.add(t);
+  }
+  const muertas = Object.keys(AMANO).filter((k) => !titulos.has(k));
+  if (muertas.length) {
+    console.warn(`\n⚠ ${muertas.length} clave(s) de AMANO no corresponden a ningún título del corpus:`);
+    for (const k of muertas) console.warn(`   ${JSON.stringify(k)}`);
+    console.warn("  El rótulo escrito a mano NO se aplica: se cae al mecánico.\n");
+  }
+}
+
 if (sinTabla.size) {
   console.error(`\nSECCIONES SIN NOMBRE O SIN DESCRIPCION (${sinTabla.size}):`);
   for (const s of sinTabla) console.error(`  ${JSON.stringify(s)}`);
@@ -319,9 +350,19 @@ function construir(idioma: Idioma) {
     vs.set(titulo, (vs.get(titulo) ?? 0) + 1);
   }
 
-  /** La variante que cubre más chunks; a igualdad, la primera alfabéticamente. */
-  const elegir = (vs: Map<string, number>): string =>
-    [...vs.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]![0];
+  /**
+   * La variante que cubre más chunks; a igualdad, la primera alfabéticamente.
+   *
+   * ⚠ PERO PRIMERO, LA QUE TENGA ROTULO ESCRITO A MANO. Sin esto, unificar dos
+   * variantes podía tirar el rótulo de `AMANO` sin que nada fallara: si la que
+   * gana por cantidad de chunks no está en la tabla, el tema cae al rótulo
+   * mecánico y el trabajo a mano se pierde en silencio. Es barato preferirla y
+   * quita el modo de fallo entero en vez de avisar de él.
+   */
+  const elegir = (vs: Map<string, number>): string => {
+    const orden = [...vs.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    return (orden.find(([t]) => AMANO[t]) ?? orden[0]!)[0];
+  };
 
   let unificados = 0;
   for (const porTema of porSeccion.values()) {

@@ -4141,7 +4141,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 11
     },
     {
-     "visible": "A. General Observations",
+     "visible": "General observations on architecture",
      "consulta": "A. General Observations._",
      "pasajes": 6
     },
@@ -4277,7 +4277,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 2
     },
     {
-     "visible": "The ship's logs of Vitruvius, of Alberti and of Leonardo",
+     "visible": "His notebooks and those of Vitruvius and Alberti",
      "consulta": "The ship's logs of Vitruvius, of Alberti and of Leonardo",
      "pasajes": 1
     },

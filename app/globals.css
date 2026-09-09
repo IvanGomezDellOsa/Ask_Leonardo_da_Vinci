@@ -223,6 +223,113 @@ a:hover {
   filter: brightness(1.06);
 }
 
+/* ---- El rail del mapa: hover, activo y foco (D-255) ---------------------
+ *
+ * ⚠ ACA NO HABIA NADA. `.alv-mapa-sec` y `.alv-mapa-tema` estaban puestas en
+ * `MapaTemas.tsx` desde D-233 y **no existían en ningún archivo de estilos**:
+ * los 396 temas y las 22 secciones —la función principal del panel— no
+ * devolvían nada al pasarles el mouse ni al enfocarlos con el teclado.
+ *
+ * D-248 no los encontró porque barría código sin usar, y esto es al revés:
+ * un nombre de clase USADO que no existe. Se buscan por separado.
+ */
+.alv-mapa-sec:hover,
+.alv-mapa-tema:hover {
+  background: oklch(21% 0.005 70);
+}
+
+.alv-mapa-tema:hover {
+  color: oklch(92% 0.005 75);
+}
+
+.alv-mapa-sec:active,
+.alv-mapa-tema:active {
+  background: oklch(23% 0.006 70);
+}
+
+/* ---- El anillo de foco del códice (D-255) -------------------------------
+ *
+ * ⚠ EL CODICE ENTERO NO TENIA FOCO VISIBLE. En 2.600 líneas había DOS
+ * `:focus-visible` —la perilla de la biblioteca y el botón del museo— y los
+ * dos afuera de acá. Además el campo del composer y el buscador del rail
+ * apagaban el contorno con `outline: none` y no ponían nada en su lugar.
+ *
+ * `:focus-visible` y no `:focus`: con `:focus` el anillo aparece también al
+ * hacer click, y en una lista de 396 botones eso es ruido en cada toque.
+ *
+ * El color es `FOCO` de `estilos.ts`. ⚠ Vive en los dos lados: si cambia allá,
+ * cambia acá.
+ */
+.alv-mapa-sec:focus-visible,
+.alv-mapa-tema:focus-visible,
+.alv-fila:focus-visible,
+.alv-pasaje-toggle:focus-visible {
+  outline: 2px solid oklch(72% 0.05 80);
+  outline-offset: -2px;
+}
+
+.alv-cerrar:focus-visible,
+.alv-btn-texto:focus-visible,
+.alv-enviar:focus-visible,
+.alv-mapa-buscar:focus-visible,
+.alv-campo:focus-visible {
+  outline: 2px solid oklch(72% 0.05 80);
+  outline-offset: 2px;
+}
+
+/* El composer es una caja con el `textarea` adentro: el anillo lo lleva la
+   caja, no el campo, o quedaría un rectángulo flotando adentro de otro. */
+.alv-composer:focus-within {
+  border-color: oklch(40% 0.008 70);
+}
+
+.alv-composer:has(.alv-campo:focus-visible) {
+  outline: 2px solid oklch(72% 0.05 80);
+  outline-offset: 2px;
+}
+
+/* ---- Los pelos que se desvanecen en las puntas (D-255) ------------------
+ *
+ * `20-branding` §1 lo declara como regla del sistema —«las separaciones son
+ * líneas que se desvanecen en los extremos, no cajas»— y el códice era el
+ * único lugar del sitio que no la cumplía: cuatro bordes sólidos de punta a
+ * punta. Se dibujan como pseudo-elemento porque un `border` no se puede
+ * enmascarar.
+ */
+.alv-pelo-v,
+.alv-pelo-h {
+  position: relative;
+}
+
+.alv-pelo-v::after,
+.alv-pelo-h::after {
+  content: "";
+  position: absolute;
+  background: oklch(26% 0.006 70);
+  pointer-events: none;
+}
+
+/* Vertical: el canto derecho del rail, apagándose arriba y abajo. */
+.alv-pelo-v::after {
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+          mask-image: linear-gradient(180deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+}
+
+/* Horizontal: arranca pleno del lado del texto y se apaga hacia afuera, que es
+   la dirección en la que la línea deja de tener algo que separar. */
+.alv-pelo-h::after {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 72%, transparent 100%);
+          mask-image: linear-gradient(90deg, #000 0, #000 72%, transparent 100%);
+}
+
 /*
  * ACA IBA EL BLOQUE `@media (prefers-reduced-motion: reduce)`. Se sacó junto
  * con `RESPETAR_MOVIMIENTO_REDUCIDO = false` (`src/lib/intro.ts`, D-139): con

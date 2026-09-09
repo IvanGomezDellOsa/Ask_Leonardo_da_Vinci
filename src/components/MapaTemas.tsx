@@ -58,7 +58,11 @@ const TXT = {
 /** Sin acentos y en minúsculas, para que «musica» encuentre «música». */
 const plano = (s: string) => s.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
 
-export const ANCHO_MAPA = 300;
+/**
+ * ⚠ SUBIO DE 300 A 320 EN D-255. No es holgura: los nombres de sección pasaron
+ * a Cormorant a 18 px y a 300 px los más largos partían en tres renglones.
+ */
+export const ANCHO_MAPA = 320;
 
 export function MapaTemas({
   lang, onPreguntar, angosto = false, onCerrarCajon,
@@ -117,8 +121,9 @@ export function MapaTemas({
     <div style={{ display: "flex", flexDirection: "column", minHeight: 0, height: "100%" }}>
       <div
         style={{
-          padding: angosto ? "16px 16px 13px" : "17px 15px 13px",
-          borderBottom: `1px solid ${T.headerLinea}`,
+          padding: angosto ? "16px 16px 13px" : "34px 22px 14px",
+          // ⚠ SIN BORDE DESDE D-255. El rail dejó de ser una caja con secciones
+          // adentro: su único límite es el pelo del canto, que se desvanece.
           flexShrink: 0,
           display: "flex",
           alignItems: "flex-start",
@@ -142,6 +147,7 @@ export function MapaTemas({
         {onCerrarCajon && (
           <button
             type="button"
+            className="alv-btn-texto"
             onClick={onCerrarCajon}
             aria-label={t.cerrar}
             style={{
@@ -155,7 +161,7 @@ export function MapaTemas({
         )}
       </div>
 
-      <div style={{ padding: "13px 15px 8px", flexShrink: 0 }}>
+      <div style={{ padding: angosto ? "13px 15px 8px" : "6px 22px 12px", flexShrink: 0 }}>
         <input
           type="search"
           value={filtro}
@@ -164,13 +170,23 @@ export function MapaTemas({
           aria-label={t.buscarAria}
           autoComplete="off"
           spellCheck={false}
+          className="alv-mapa-buscar"
           style={{
-            width: "100%", boxSizing: "border-box", background: T.cajaBg,
-            border: `1px solid ${T.campoBorde}`, borderRadius: 6, color: T.campoTexto,
+            width: "100%", boxSizing: "border-box",
+            // ⚠ SIN CAJA EN ESCRITORIO (D-255): una caja con borde y radio
+            // adentro de un rail sin borde se lee como un objeto flotando. En
+            // teléfono el cajón sí es una caja y el campo la acompaña.
+            background: angosto ? T.cajaBg : "none",
+            border: angosto ? `1px solid ${T.campoBorde}` : 0,
+            borderBottom: `1px solid ${T.campoBorde}`,
+            borderRadius: angosto ? 6 : 0,
+            color: T.campoTexto,
             fontFamily: FUENTE.lectura,
             // ⚠ 16 px o Safari hace zoom solo al enfocar en teléfono.
             fontSize: 16,
-            padding: "9px 11px", outline: "none",
+            padding: angosto ? "9px 11px" : "9px 2px",
+            // ⚠ NO VA `outline: "none"`. Lo tenía y sin reemplazo: el foco del
+            // teclado no se veía. Ahora lo pone `.alv-mapa-buscar:focus-visible`.
           }}
         />
       </div>
@@ -178,7 +194,7 @@ export function MapaTemas({
       <nav
         className="alv-scroll"
         aria-label={t.nav}
-        style={{ flex: "1 1 0", minHeight: 0, overflowY: "auto", padding: "4px 8px 20px" }}
+        style={{ flex: "1 1 0", minHeight: 0, overflowY: "auto", padding: angosto ? "4px 8px 20px" : "4px 14px 24px" }}
       >
         {visibles.length === 0 ? (
           <p style={{
@@ -197,6 +213,7 @@ export function MapaTemas({
               onAlternar={() => alternar(s.seccion)}
               onElegir={elegir}
               pasajes={t.pasajes}
+              angosto={angosto}
             />
           ))
         )}
@@ -206,13 +223,14 @@ export function MapaTemas({
 }
 
 function Seccion({
-  s, abierta, onAlternar, onElegir, pasajes,
+  s, abierta, onAlternar, onElegir, pasajes, angosto,
 }: {
   s: SeccionDelMapa;
   abierta: boolean;
   onAlternar: () => void;
   onElegir: (consulta: string, comoSeVe: string) => void;
   pasajes: (n: number) => string;
+  angosto: boolean;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   return (
@@ -232,7 +250,7 @@ function Seccion({
           background: "none",
           border: 0,
           borderRadius: 6,
-          padding: "9px",
+          padding: angosto ? "9px" : "10px 9px",
           cursor: "pointer",
           textAlign: "left",
           fontFamily: FUENTE.lectura,
@@ -252,7 +270,25 @@ function Seccion({
         >
           ▶
         </span>
-        <span style={{ color: abierta ? T.titulo : T.cuerpo }}>{s.seccion}</span>
+        {/*
+          ⚠ LA JERARQUIA DEL RAIL LA DA LA FAMILIA, NO EL TAMAÑO (D-255). Antes
+          eran cuatro escalones —sección 14,5 · tema 13,5 · glosa 12 · contador
+          11— metidos en 3,5 px, que no se leen como jerarquía sino como una
+          lista pareja. Cormorant es la familia de títulos del sistema
+          (`20-branding` §4) y **el códice no la usaba en ningún lado**.
+        */}
+        <span
+          style={{
+            fontFamily: FUENTE.titulo,
+            fontSize: angosto ? 17 : 18,
+            fontWeight: 600,
+            letterSpacing: ".005em",
+            lineHeight: 1.2,
+            color: abierta ? T.titulo : T.cuerpo,
+          }}
+        >
+          {s.seccion}
+        </span>
         <span style={{
           fontFamily: FUENTE.manuscrita, fontSize: 11, color: T.notaEtiqueta,
           fontVariantNumeric: "tabular-nums",
@@ -294,8 +330,13 @@ function Seccion({
                 fontFamily: FUENTE.lectura,
                 fontSize: 13.5,
                 lineHeight: 1.35,
-                /** Los cinco imanes están, pero no se destacan. Ver `28` §5. */
-                color: x.iman ? T.notaEtiqueta : T.tenue,
+                /**
+                 * ⚠ LOS IMANES YA NO VAN MAS APAGADOS (D-255). `28` §5 pide que
+                 * no se destaquen, y tenerlos más tenues que el resto **también
+                 * es distinguirlos** — sólo que hacia abajo, y por debajo de AA.
+                 * Van igual que todos: ni ofrecidos ni escondidos.
+                 */
+                color: T.tenue,
               }}
             >
               {x.visible}

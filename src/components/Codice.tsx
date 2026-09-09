@@ -33,7 +33,7 @@ import { useAngosto } from "../hooks/useAngosto.js";
 import { consultar, MAX_CARACTERES, type Idioma } from "../lib/cliente-chat.js";
 import { consultaParaEmbeber, type Turno } from "../lib/conversacion.js";
 import type { PasajePublico, RespuestaPublica } from "../lib/respuesta.js";
-import { CANAL, FUENTE, T, TEXTO_LECTURA } from "./estilos.js";
+import { ANCHO_COMPOSICION, FUENTE, T, TEXTO_LECTURA } from "./estilos.js";
 import { ANCHO_MAPA, MapaTemas } from "./MapaTemas.js";
 
 const GUTENBERG = "https://www.gutenberg.org/files/5000/5000-h/5000-h.htm";
@@ -498,6 +498,23 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
   const restantes = sugerencias.filter((s) => !hechas.includes(s.id));
 
   const sinMensajes = mensajes.length === 0;
+
+  /**
+   * EL CANAL DEL PIE, ALINEADO CON LA LECTURA (D-255). Antes salía de `CANAL`,
+   * que centraba una columna de 760 en lo que sobrara del panel. Ahora la
+   * conversación se alinea a la izquierda contra el rail, así que el pie tiene
+   * que usar exactamente el mismo relleno o el composer queda corrido del texto
+   * que está arriba.
+   */
+  const canalPie = angosto
+    ? {
+        paddingLeft: "max(12px, env(safe-area-inset-left))",
+        paddingRight: "max(12px, env(safe-area-inset-right))",
+      }
+    : { paddingLeft: 56, paddingRight: 24 };
+
+  /** Si la lista de sugeridas está, el pelo lo lleva ella; si no, el composer. */
+  const haySugeridas = restantes.length > 0 && !sugDescartadas;
   const c = CURIOSOS[curioso]!;
 
   return (
@@ -539,45 +556,47 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
         }}
       >
         {/*
-          EL ENCABEZADO ES UNA FILA FLEX, NO UNA CAJA CON BOTONES ABSOLUTOS.
-          Con posicionamiento absoluto el botón no cuenta para el alto del
-          encabezado: el título medía ~19 px y el relleno daba 43, pero el
-          botón son 34 px arrancando en 11 — o sea que terminaba **2 px por
-          debajo** del borde inferior y quedaba pegado a la línea. En una fila
-          flex el alto lo pone el elemento más alto y `align-items: center`
-          reparte el aire solo.
+          ══════════════════════════════════════════════════════════════
+          NO HAY BARRA DE TITULO EN ESCRITORIO (D-255).
+          ══════════════════════════════════════════════════════════════
 
-          El hueco de la izquierda es el contrapeso del botón de cerrar: sin él
-          el título queda centrado en el espacio que sobra y no en el panel.
+          La tenía, y dejó de tener sentido cuando el códice pasó a pantalla
+          completa (D-244): ahí una barra con el nombre centrado deja de ser el
+          borde de un panel y pasa a ser el encabezado de una aplicación, que es
+          justo lo contrario de «un cuaderno, no una app sobre Leonardo»
+          (`20-branding` §1). Y competía: «Consulta a Leonardo da Vinci» a 20 px
+          contra «Pregunta asistida» a 19, uno al lado del otro en la misma
+          franja.
+
+          ⚠ EL NOMBRE NO SE PIERDE: el `aria-label` del `role="dialog"` de
+          arriba lo sigue anunciando, que es de donde lo toma un lector de
+          pantalla — nunca lo tomaba del `<h2>`.
+
+          EN TELEFONO LA FILA SE QUEDA, sin el título: ahí vive el botón que
+          abre el cajón del mapa, y sin fila no hay dónde ponerlo.
         */}
-        <div
-          style={{
-            boxSizing: "border-box",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            padding: angosto
-              ? "calc(10px + env(safe-area-inset-top)) 12px 10px"
-              : "14px 16px",
-            borderBottom: `1px solid ${T.headerLinea}`,
-            flexShrink: 0,
-          }}
-        >
-          {/*
-            EN TELEFONO EL HUECO DE LA IZQUIERDA SE VUELVE EL BOTON DEL MAPA.
-            Ocupa el mismo lugar que el contrapeso del botón de cerrar, así el
-            título sigue centrado en el panel y no en lo que sobra.
-          */}
-          {angosto ? (
+        {angosto && (
+          <div
+            style={{
+              boxSizing: "border-box",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              padding: "calc(10px + env(safe-area-inset-top)) 12px 10px",
+              flexShrink: 0,
+            }}
+          >
             <button
               type="button"
+              className="alv-btn-texto"
               onClick={() => setMapaAbierto(true)}
               aria-label={t.abrirMapa}
               aria-expanded={mapaAbierto}
               style={{
-                flex: "0 0 34px", width: 34, height: 34, padding: 0, background: "none",
-                border: 0, cursor: "pointer", display: "flex", flexDirection: "column",
-                justifyContent: "center", gap: 4,
+                flex: "0 0 44px", width: 44, height: 44, marginLeft: -5, padding: 0,
+                background: "none", border: 0, cursor: "pointer", display: "flex",
+                flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 4,
               }}
             >
               {[0, 1, 2].map((i) => (
@@ -588,25 +607,34 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
                 />
               ))}
             </button>
-          ) : (
-            <span aria-hidden="true" style={{ flex: "0 0 34px" }} />
-          )}
 
-          <h2
-            style={{
-              flex: "1 1 auto",
-              margin: 0,
-              textAlign: "center",
-              fontFamily: FUENTE.manuscrita,
-              fontSize: angosto ? 16 : 20,
-              fontWeight: 400,
-              letterSpacing: ".01em",
-              color: T.titulo,
-            }}
-          >
-            {t.titulo}
-          </h2>
+            <button
+              type="button"
+              className="alv-cerrar"
+              onClick={onCerrar}
+              aria-label={t.cerrar}
+              title={t.cerrar}
+              style={{
+                flex: "0 0 44px", width: 44, height: 44, marginRight: -5,
+                boxSizing: "border-box", padding: 0,
+                borderRadius: 999, border: "1px solid oklch(34% 0.006 70)", background: "none",
+                cursor: "pointer", fontFamily: FUENTE.lectura, fontSize: 20, lineHeight: 1,
+                color: "oklch(74% 0.006 75)",
+                transition: "color .2s ease, border-color .2s ease, background .2s ease",
+              }}
+            >
+              ×
+            </button>
+          </div>
+        )}
 
+        {/*
+          LA CRUZ DE ESCRITORIO, FLOTANDO. Sin barra necesita un lugar propio:
+          arriba a la derecha, redonda y de un pelo, que es la gramática de
+          botón secundario del sitio. Sigue siendo un `button` de 40 px con su
+          `aria-label` y su anillo de foco.
+        */}
+        {!angosto && (
           <button
             type="button"
             className="alv-cerrar"
@@ -614,25 +642,18 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             aria-label={t.cerrar}
             title={t.cerrar}
             style={{
-              flex: "0 0 34px",
-              width: 34,
-              height: 34,
-              boxSizing: "border-box",
-              padding: 0,
-              borderRadius: 8,
-              border: "1px solid oklch(34% 0.006 70)",
-              background: "none",
-              cursor: "pointer",
-              fontFamily: FUENTE.lectura,
-              fontSize: 20,
-              lineHeight: 1,
+              position: "absolute", top: 16, right: 20, zIndex: 3,
+              width: 40, height: 40, boxSizing: "border-box", padding: 0,
+              borderRadius: 999, border: "1px solid oklch(34% 0.006 70)", background: "none",
+              cursor: "pointer", fontFamily: FUENTE.lectura, fontSize: 20, lineHeight: 1,
               color: "oklch(74% 0.006 75)",
               transition: "color .2s ease, border-color .2s ease, background .2s ease",
             }}
           >
             ×
           </button>
-        </div>
+        )}
+
         {/*
           EL CUERPO ES UNA FILA: el mapa a la izquierda y la conversacion a la
           derecha. Ver `MapaTemas.tsx` y `28-estado-y-plan.md` §4A.
@@ -643,16 +664,36 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           lleva su columna y la lectura no se entera.
 
           En telefono el rail no esta: entra por el cajon, mas abajo.
+
+          ⚠ EL RAIL Y LA LECTURA SON UNA SOLA PIEZA (D-255). Antes el rail se
+          pegaba al borde izquierdo del panel y la conversacion se centraba en
+          lo que sobraba: a 1.916 px quedaban **dos objetos sueltos con 428 px
+          de vacio por lado**. Ahora el conjunto se topa en `ANCHO_COMPOSICION`
+          y se centra entero.
         */}
-        <div style={{ display: "flex", flex: "1 1 0", minHeight: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            flex: "1 1 0",
+            minHeight: 0,
+            width: "100%",
+            maxWidth: angosto ? "none" : ANCHO_COMPOSICION,
+            margin: "0 auto",
+            paddingInline: angosto ? 0 : 24,
+            boxSizing: "border-box",
+          }}
+        >
           {!angosto && (
             <aside
+              // El pelo del canto se desvanece arriba y abajo: `.alv-pelo-v`.
+              className="alv-pelo-v"
               style={{
                 flex: `0 0 ${ANCHO_MAPA}px`,
                 width: ANCHO_MAPA,
                 minHeight: 0,
-                borderRight: `1px solid ${T.headerLinea}`,
-                background: T.sistemaBg,
+                // ⚠ SIN FONDO PROPIO (D-255). Con `sistemaBg` el rail era una
+                // caja al lado de otra; sobre el mismo fondo del panel, el rail
+                // y la lectura se leen como dos columnas de la misma hoja.
               }}
             >
               <MapaTemas lang={lang} onPreguntar={(q, v) => void preguntarLibre(q, v)} />
@@ -667,19 +708,38 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             minHeight: "clamp(120px,22vh,240px)",
             boxSizing: "border-box",
             overflowY: "auto",
-            padding: angosto ? "16px 16px" : "clamp(14px,3vh,30px) max(5vw,24px)",
+            // El canal de la izquierda separa la lectura del rail; a la derecha
+            // no hace falta tanto, porque no hay nada contra que separarse.
+            padding: angosto ? "16px 16px" : "clamp(14px,3vh,30px) 24px clamp(14px,3vh,30px) 56px",
             display: "flex",
             flexDirection: "column",
             gap: 16,
-            maxWidth: 760,
-            margin: "0 auto",
+            maxWidth: angosto ? 760 : 816,
+            margin: angosto ? "0 auto" : 0,
             width: "100%",
           }}
         >
           {sinMensajes && (
-            <div style={{ paddingTop: "clamp(4px,2.5vh,26px)" }}>
-              <div style={{ borderLeft: `2px solid ${T.bordeIzq}`, padding: "2px 0 2px 16px" }}>
-                <p style={{ margin: "0 0 6px", fontFamily: FUENTE.lectura, fontSize: 13, color: T.nombre }}>
+            /*
+              EL SALUDO CAE EN EL 38,2% OPTICO (D-255). A pantalla completa
+              quedaba pegado arriba con 600 px de nada abajo: no faltaba
+              contenido, faltaba usar el vacio. Es la razon φ con la que el
+              museo cuelga su rotulo (`20-branding` §5), y el `clamp` la deja
+              caer sola en pantallas bajas en vez de empujar el saludo afuera.
+
+              En telefono no aplica: ahi la pantalla es angosta y alta, y bajar
+              el saludo lo mete abajo del teclado cuando se enfoca el campo.
+            */
+            <div style={{ paddingTop: angosto ? "clamp(4px,2.5vh,26px)" : "clamp(8px, calc((100vh - 420px) * 0.382), 190px)" }}>
+              <div style={{ borderLeft: `1px solid ${T.bordeIzq}`, padding: "2px 0 2px 18px" }}>
+                <p
+                  style={{
+                    // Versalita: es el rotulo de quien habla, no una linea de
+                    // texto. Mismo tratamiento que las etiquetas del sitio.
+                    margin: "0 0 9px", fontFamily: FUENTE.titulo, fontSize: 14,
+                    letterSpacing: ".06em", textTransform: "uppercase", color: T.nombre,
+                  }}
+                >
                   Leonardo da Vinci
                 </p>
                 <p style={lectura}>{t.saludo}</p>
@@ -1110,8 +1170,9 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           <div ref={finLista} />
         </div>
 
-        {restantes.length > 0 && !sugDescartadas && (
+        {haySugeridas && (
           <div
+            className="alv-pelo-h"
             style={{
               boxSizing: "border-box",
               flex: "0 1 auto",
@@ -1120,9 +1181,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
-              padding: angosto
-                ? "0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right))"
-                : `0 ${CANAL}`,
+              ...canalPie,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, padding: "15px 0 12px" }}>
@@ -1142,15 +1201,22 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
                   padding: 0,
                   cursor: "pointer",
                   fontFamily: FUENTE.lectura,
-                  fontSize: 16,
+                  // ⚠ VERSALITA DE 12, NO TITULO DE 16 (D-255). Es el rótulo de
+                  // una lista, no un encabezado: a 16 px y en negrita pesaba
+                  // como el saludo de Leonardo, que sí es contenido.
+                  fontSize: 12,
                   fontWeight: 600,
-                  color: "oklch(88% 0.006 75)",
+                  letterSpacing: ".16em",
+                  textTransform: "uppercase",
+                  color: "oklch(66% 0.008 75)",
                   transition: "color .18s ease",
                 }}
               >
                 <span style={{ flex: "1 1 auto", textAlign: "left" }}>
                   {hechas.length === 0 ? t.sugeridas : t.otras}{" "}
-                  <span style={{ opacity: 0.55, fontWeight: 400 }}>({restantes.length})</span>
+                  <span style={{ opacity: 0.6, fontWeight: 400, fontVariantNumeric: "tabular-nums" }}>
+                    ({restantes.length})
+                  </span>
                 </span>
                 <span
                   aria-hidden="true"
@@ -1254,7 +1320,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           nunca se deshabilita.
         */}
         {!modeloListo && (
-          <div style={{ boxSizing: "border-box", padding: `10px ${CANAL}`, borderTop: `1px solid ${T.cargaBorde}`, flexShrink: 0 }}>
+          <div className="alv-pelo-h" style={{ boxSizing: "border-box", ...canalPie, paddingBlock: 10, flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
               <span style={{ fontFamily: FUENTE.lectura, fontSize: 13, color: T.cargaEtiqueta }}>{t.cargando}</span>
               <span style={{ fontFamily: FUENTE.lectura, fontSize: 13, color: T.cargaEtiqueta }}>{progreso}%</span>
@@ -1282,6 +1348,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             e.preventDefault();
             enviar();
           }}
+          className={haySugeridas || !modeloListo ? undefined : "alv-pelo-h"}
           style={{
             display: "block",
             boxSizing: "border-box",
@@ -1293,12 +1360,19 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             // teléfono sin indicador, `env()` vale 0 y no sobra nada.
             padding: angosto
               ? "10px 12px calc(14px + env(safe-area-inset-bottom))"
-              : `14px ${CANAL} 20px`,
-            borderTop: `1px solid ${T.cargaBorde}`,
+              : "6px 24px 26px 56px",
+            // El pelo lo lleva el bloque de arriba cuando existe: tres líneas
+            // apiladas en el último cuarto de pantalla eran demasiada
+            // separación para lo poco que había que separar (D-255).
             flexShrink: 0,
           }}
         >
           <div
+            // ⚠ EL ANILLO DE FOCO VA EN LA CAJA, NO EN EL CAMPO (D-255). El
+            // `textarea` mantiene `outline: none` —un rectángulo adentro de otro
+            // se lee como un error de maqueta— y `.alv-composer:has(...)` pone
+            // el anillo afuera, que es lo que el ojo espera.
+            className="alv-composer"
             style={{
               display: "flex",
               alignItems: "flex-end",
@@ -1306,14 +1380,15 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
               boxSizing: "border-box",
               width: "100%",
               border: `1px solid ${T.campoBorde}`,
-              borderRadius: 10,
+              borderRadius: 12,
               background: T.cajaBg,
-              padding: "9px 9px 9px 6px",
+              padding: "10px 10px 10px 8px",
+              transition: "border-color .22s ease",
             }}
           >
             <textarea
               ref={campo}
-              className="alv-scroll"
+              className="alv-scroll alv-campo"
               value={entrada}
               onChange={(e) => {
                 setEntrada(e.target.value);
@@ -1366,10 +1441,12 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
                 background: T.enviarBg,
                 color: T.enviarTexto,
                 border: "none",
-                borderRadius: 7,
+                // Pastilla, como la única pastilla del sitio (`20-branding` §7).
+                borderRadius: 999,
                 fontFamily: FUENTE.lectura,
-                fontSize: angosto ? 15 : 16,
+                fontSize: angosto ? 15 : 15,
                 fontWeight: 600,
+                letterSpacing: ".03em",
                 cursor: entrada.trim() && !enVuelo ? "pointer" : "not-allowed",
                 opacity: entrada.trim() && !enVuelo ? 1 : 0.42,
                 flexShrink: 0,

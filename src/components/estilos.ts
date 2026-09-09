@@ -31,7 +31,18 @@ export const T = {
   titulo: "oklch(89% 0.005 75)",
   nombre: "oklch(58% 0.008 75)",
   cuerpo: "oklch(84% 0.006 75)",
-  tenue: "oklch(63% 0.007 75)",
+  /**
+   * ⚠ ESTOS DOS SUBIERON EN D-255, Y NO POR GUSTO. `tenue` y `notaEtiqueta` se
+   * midieron contra el panel (14%), pero el rail del mapa y el cajón de
+   * teléfono son `sistemaBg` (18%): ahí los mismos grises valen ~6% menos.
+   * `notaEtiqueta` daba **4,04:1** sobre el rail, debajo del 4,5:1 de AA.
+   *
+   * Los nuevos valores: `tenue` 6,04:1 y `notaEtiqueta` 5,59:1 sobre el rail;
+   * 6,40 y 5,91 sobre el panel. **El escalón entre los dos baja de 7 puntos a
+   * 2 a propósito**: desde D-255 la jerarquía del rail la da la familia
+   * —Cormorant en las secciones— y no un salto de gris.
+   */
+  tenue: "oklch(66% 0.007 75)",
   bordeIzq: "oklch(30% 0.006 70)",
   cajaBg: "oklch(18% 0.005 70)",
   cajaBorde: "oklch(28% 0.006 70)",
@@ -39,7 +50,7 @@ export const T = {
   sistemaBg: "oklch(18% 0.004 70)",
   sistemaTexto: "oklch(70% 0.006 75)",
   notaBorde: "oklch(28% 0.006 70)",
-  notaEtiqueta: "oklch(56% 0.008 75)",
+  notaEtiqueta: "oklch(64% 0.008 75)",
   notaTexto: "oklch(78% 0.006 75)",
   pasajeBg: "oklch(17% 0.005 70)",
   pasajeBorde: "oklch(27% 0.006 70)",
@@ -69,6 +80,28 @@ export const T = {
   otraVozEtiqueta: "oklch(66% 0.035 250)",
   otraVozTexto: "oklch(84% 0.018 250)",
 } as const;
+
+/**
+ * EL ANILLO DE FOCO DEL CODICE (D-255). Vive acá y en `globals.css` —el color,
+ * una sola vez— porque antes no vivía en ningún lado: había DOS `:focus-visible`
+ * en 2.600 líneas de CSS y los dos estaban afuera del códice, así que quien
+ * navega con teclado lo atravesaba entero a ciegas.
+ *
+ * Es el crema del taller con croma, no un azul de sistema: tiene que leerse
+ * como parte del ambiente y no como un contorno del navegador.
+ */
+export const FOCO = "oklch(72% 0.05 80)";
+
+/**
+ * EL ANCHO DE LA COMPOSICION (D-255). El rail y la columna de lectura se topan
+ * y se centran JUNTOS. Antes el rail se pegaba al borde izquierdo y la lectura
+ * —topada en 760— se centraba en lo que sobraba: a 1.916 px quedaban dos
+ * objetos sueltos con 428 px de vacío por lado.
+ *
+ * ⚠ La lectura sigue en 760 y eso no se toca: es lo que mantiene el largo de
+ * línea. Lo que cambia es contra qué se centra.
+ */
+export const ANCHO_COMPOSICION = 1140;
 
 /**
  * El margen lateral del códice. La columna de lectura tiene 760 px de tope;

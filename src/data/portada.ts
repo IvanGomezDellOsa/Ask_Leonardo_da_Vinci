@@ -2,12 +2,30 @@
  * GENERADO por `npm run exportar:portada` desde `artifacts/respuestas_fijas.json`.
  * NO EDITAR A MANO — D-112 prohíbe escribir una respuesta que no salió del
  * pipeline real, y ese principio aplica también acá.
- *
- * huella de origen: e7330a3fb6b4
  */
 import type { RespuestaPublica } from "../lib/respuesta.js";
 
 export type EntradaPortada = RespuestaPublica & { id: string; pregunta: string };
+
+/**
+ * ⚠ LA HUELLA ES UN DATO, NO UN COMENTARIO. Ver D-237.
+ *
+ * Hasta acá vivía en el comentario de arriba, y un comentario no lo compara
+ * nadie: el cliente servía `PORTADA[clave]` sin comprobar nada. Ya pasó una vez
+ * —el sitio estuvo sirviendo respuestas de un prompt y un índice que ya no
+ * existían, en silencio (D-230)— y la ruta del API sí se defiende de eso desde
+ * D-112 (`if (r.huella === huella)`), pero el bundle del navegador se saltea la
+ * ruta entera por diseño y se quedaba sin la comprobación.
+ *
+ * Cubre plantilla del prompt + corpus + índices + umbrales + curaduría: es la
+ * misma `huellaPrompt(varianteVigente(ART))` que estampó `npm run precalcular`.
+ * `npm run regresion` la compara con la vigente y PINCHA si no coinciden.
+ *
+ * El cliente no puede validarla solo —calcularla necesita el prompt, que vive en
+ * el servidor— así que la comprobación es de build, no de runtime. Es suficiente:
+ * este archivo se genera y se commitea, no cambia después del deploy.
+ */
+export const HUELLA_PORTADA = "a49a6cd9bfaa";
 
 export const PORTADA: Record<string, EntradaPortada> =
 {
@@ -15,7 +33,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "pintura",
     "pregunta": "¿Por qué crees que la pintura es superior a las demás artes?",
     "decision": "responde",
-    "texto": "Porque toca el sentido más alto que poseemos. Dejé escrito: «El ojo, que se llama la ventana del alma, es el medio principal por el cual el sentido central puede apreciar más completa y abundantemente las infinitas obras de la naturaleza». El oído es el segundo, y por eso la palabra, por más bella que sea, queda por detrás: el pintor con su pincel cuenta una historia «más fácilmente, con más simple completud y menos tediosa de entender» que el poeta con su pluma.\n\nY si la poesía presume de ser más eterna, yo respondo que las obras de un calderero son aún más eternas, pues el tiempo las conserva mejor que a vuestros escritos. Pero eso no les da ingenio. Nosotros, por nuestras artes, «podemos ser llamados nietos de Dios». La pintura no imita con palabras lo que no se ve; trata «con la similitud real de las formas», y eso la acerca a la naturaleza misma.",
+    "texto": "Ah, amigo, pregunta que toca la médula de mi oficio. Sobre ello dejé escrito: «El ojo, que se llama la ventana del alma, es el medio principal por el cual el sentido central puede apreciar más completa y abundantemente las infinitas obras de la naturaleza». La pintura es la que sirve a ese sentido noble, el que nos acerca a la realidad misma de las cosas.\n\nEl poeta, con su pluma, describe; pero el pintor presenta la «similitud real de las formas». ¿Qué es más cercano a la verdad: oír hablar de una batalla o verla? Por eso llamo a la poesía «pintura ciega», pues carece de la luz que da el ojo. Y si me tachan de artesano manual, respondo que vosotros, los escritores, también ponéis «manualmente con la pluma lo que se concibe en vuestra mente».\n\nAl final, es cuestión de jerarquía: la pintura abarca lo que la naturaleza muestra, y lo hace con una completud que la palabra no alcanza. Mi pincel cuenta historias que el oído solo intuye, y eso la hace, en mi juicio, la más alta de las artes humanas.",
     "pasajes": [
       {
         "richterNo": 655,
@@ -51,7 +69,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "pintura",
     "pregunta": "Why do you think painting is superior to the other arts?",
     "decision": "responde",
-    "texto": "Ah, you touch upon a question I have long turned over in my mind. Painting is the grandest of the arts because it serves the noblest sense—the eye, the window of the soul. I set down: «And if the poet gratifies the sense by means of the ear, the painter does so by the eye—the worthier sense». For the eye beholds all the forms of nature directly, while words are but poor shadows of those forms. A painted battle speaks at once to the spectator; a written one must labour through the mind.\n\nConsider also the sculptor, who works in dust and stone, and I have noted: «painting comprehends in itself all the forms of nature». The painter commands light, shadow, colour, and the very air between things—the sculptor has but solid mass, and lacks the subtlety of perspective and atmosphere. And where the poet claims eternity for his verses, I answer that a picture wrought in enamel upon copper may outlast them both, yet still bear the imagination of its maker.\n\nThus, painting is not mere manual toil, but a science of the visible world. If you call it mechanical because the hand labours, then the writer, too, sets down with his pen what his mind devises. But painting alone gives the representation of effects, not merely the effect of representation.",
+    "texto": "Ah, you touch upon a debate I have long held dear. I set it down plainly: «Painting comprehends in itself all the forms of nature, while you have nothing but words, which are not universal as form is». The eye is the worthier sense—it receives the world directly, not through the slow gate of the ear. A painted battle stands before the gaze all at once, and the mind takes it in as one whole, whereas the poet must string his description out over time, word by word, like a merchant counting coins.\n\nAnd consider the proof I offered: «if a good painter represents the fury of a battle, and if a poet describes one, and they are both together put before the public, you will see where most of the spectators will stop». Men are drawn to the image, for it needs no translation—it speaks to the learned and the simple alike. The poet tells of effects; the painter shows the very causes of light and shadow upon form.\n\nAs for sculpture, that art is noble but less intellectual. It lacks the subtlety of colour, the veils of atmosphere, the softness of distance. Its praise is of the body alone, while painting can render the soul through the glance of an eye. So I hold painting as the grander mistress—she gives us nature entire, not merely her marble bones.",
     "pasajes": [
       {
         "richterNo": 655,
@@ -87,7 +105,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "teoria",
     "pregunta": "¿Cuál es el objetivo de aprender sin haber estudiado primero la teoría?",
     "decision": "responde",
-    "texto": "Sobre ese yerro dejé escrito: «Aquellos que están enamorados de la práctica sin conocimiento son como el marinero que se sube a un barco sin timón ni brújula y que nunca puede estar seguro de adónde va». Así, quien aprende sin la teoría navega a la ventura, y su obra no tiene fundamento firme. Agregué luego que «la práctica debe fundarse siempre en la teoría sólida, y para esto la Perspectiva es la guía y la puerta; y sin esto nada puede hacerse bien en materia de dibujo».\n\nPor eso, no es el objetivo el que falla, sino el camino: sin la guía teórica, el esfuerzo se pierde. Y en esto conviene recordar también que «la práctica debe fundarse siempre en la teoría sólida», pues solo así el aprendizaje da fruto duradero.",
+    "texto": "Sobre eso dejé escrito: «Aquellos que están enamorados de la práctica sin conocimiento son como el marinero que se sube a un barco sin timón ni brújula y que nunca puede estar seguro de adónde va». Y añadí que «la práctica debe fundarse siempre en la teoría sólida, y para esto la Perspectiva es la guía y la puerta; y sin esto nada puede hacerse bien en materia de dibujo».\n\nQuien obra solo por el ojo, sin razón, «es como un espejo que copia todo lo colocado delante de él sin ser consciente de su existencia». El conocimiento teórico es el timón que da rumbo cierto; sin él, el trabajo no pasa de ser un ejercicio a ciegas.",
     "pasajes": [
       {
         "richterNo": 19,
@@ -102,16 +120,10 @@ export const PORTADA: Record<string, EntradaPortada> =
         "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id01945"
       },
       {
-        "richterNo": 1169,
-        "titulo": "Moral",
-        "texto": "Evita los estudios cuyo resultado muere con el trabajador.\nLos hombres yerran cuando lamentan la huida del tiempo, acusándolo de ser demasiado veloz, y no percibiendo que es suficiente mientras pasa; pero la buena memoria, con la que la naturaleza nos ha dotado, hace que las cosas pasadas hace tiempo parezcan presentes.",
-        "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04962"
-      },
-      {
-        "richterNo": 1170,
-        "titulo": "Moral",
-        "texto": "",
-        "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id04962"
+        "richterNo": 20,
+        "titulo": "Necesidad del conocimiento teórico",
+        "texto": "El pintor que dibuja meramente por práctica y por ojo, sin ninguna razón, es como un espejo que copia todo lo colocado delante de él sin ser consciente de su existencia.",
+        "url": "https://www.gutenberg.org/cache/epub/5000/pg5000-images.html#id00124"
       }
     ],
     "notas": [],
@@ -129,7 +141,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "teoria",
     "pregunta": "What is the purpose of learning without first studying theory?",
     "decision": "responde",
-    "texto": "Ah, you touch upon a matter close to my heart. On that I set down: «Those who are in love with practice without knowledge are like the sailor who gets into a ship without rudder or compass and who never can be certain whether he is going. Practice must always be founded on sound theory, and to this Perspective is the guide and the gateway; and without this nothing can be done well in the matter of drawing.»\n\nThus, learning without theory is but a vessel adrift — it may move, yet it knows not its course. And what is taken in without love is soon lost, for «study without a taste for it spoils memory, by retaining nothing which it has taken in.» So let the mind first grasp the principles, and then the hand may follow with certainty.",
+    "texto": "Ah, you touch upon a matter I hold most dear. Those who leap to practice without theory are like a sailor upon a ship without rudder or compass, never certain of their course. I have set down: «Those who are in love with practice without knowledge are like the sailor who gets into a ship without rudder or compass and who never can be certain whether he is going. Practice must always be founded on sound theory, and to this Perspective is the guide and the gateway; and without this nothing can be done well in the matter of drawing.»\n\nAnd even when theory is known, it must be savoured. For I wrote: «Just as food eaten without caring for it is turned into loathsome nourishment, so study without a taste for it spoils memory, by retaining nothing which it has taken in.» So first the mind must grasp the principles, and then the hand may follow with joy and certainty.",
     "pasajes": [
       {
         "richterNo": 19,
@@ -165,7 +177,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "maxima",
     "pregunta": "¿Qué máxima te repetías cada noche para dormir en paz y aprovechar la vida?",
     "decision": "responde",
-    "texto": "«Así como un día bien empleado procura un sueño feliz, así una vida bien empleada procura una muerte feliz». Esa es la máxima que me acompaña al cerrar los ojos: no me inquieta el mañana si el presente fue bien labrado, pues el descanso del cuerpo es espejo del descanso del ánimo.",
+    "texto": "«Así como un día bien empleado procura un sueño feliz, así una vida bien empleada procura una muerte feliz.» Esa sentencia la rumiaba al cerrar los ojos, pues el sueño es espejo de la jornada: si el día fue laborioso y virtuoso, la noche llega mansa.",
     "pasajes": [
       {
         "richterNo": 1173,
@@ -201,7 +213,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "maxima",
     "pregunta": "What maxim did you repeat to yourself each night to sleep in peace and make the most of life?",
     "decision": "responde",
-    "texto": "Ah, a fair question, for the body's rest is the mirror of the mind's order. On that I set down: «As a day well spent procures a happy sleep, so a life well employed procures a happy death.» This I hold as a lantern for the evening's reckoning—if the day's labour has been true to nature and to study, the pillow is soft, and the conscience quiet.",
+    "texto": "You speak of rest and of a life well spent. On that I have set down a saying which has served me as a nightly companion: «As a day well spent procures a happy sleep, so a life well employed procures a happy death.»",
     "pasajes": [
       {
         "richterNo": 1173,
@@ -237,7 +249,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "estudiar",
     "pregunta": "¿Por qué dices que estudiar sin ganas arruina la memoria?",
     "decision": "responde",
-    "texto": "«Así como comer contra la propia voluntad es perjudicial para la salud, así el estudio sin afición por él estropea la memoria, y no retiene nada de lo que toma.» Es como el cuerpo que rechaza un alimento que no desea: si el ánimo no acompaña, el saber entra y se pierde, sin dejar huella. Por eso conviene que el estudio sea apetecido, pues solo lo que se toma con gusto se digiere y permanece.",
+    "texto": "Ah, amigo, esa es una verdad que he observado tanto en mis discípulos como en mi propia experiencia. Sobre ello dejé escrito: «Así como comer contra la propia voluntad es perjudicial para la salud, así el estudio sin afición por él estropea la memoria, y no retiene nada de lo que toma».\n\nEs como forzar al cuerpo a aceptar un alimento que rechaza: no lo aprovecha, solo le causa daño. La mente, cuando no halla deleite en lo que aprende, no lo asimila como propio; lo deja pasar sin fijarlo.",
     "pasajes": [
       {
         "richterNo": 1175,
@@ -273,7 +285,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "estudiar",
     "pregunta": "Why do you say that studying without desire ruins the memory?",
     "decision": "responde",
-    "texto": "On that I set down: «Just as eating against one's will is injurious to health, so study without a liking for it spoils the memory, and it retains nothing it takes in.» The stomach that receives food it loathes turns it to foul humour, and so the mind, forced to swallow what it does not crave, holds naught of it. Memory is no mere vessel to be filled; it is a living faculty that must consent to what it receives.",
+    "texto": "You speak of a truth I have set down twice, for it struck me as a law of nature, like the flow of water. «Just as eating against one's will is injurious to health, so study without a liking for it spoils the memory, and it retains nothing it takes in.» The stomach rejects what is forced upon it, and so does the mind. What is taken in without appetite passes through and leaves no trace.",
     "pasajes": [
       {
         "richterNo": 496,
@@ -309,7 +321,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "agua",
     "pregunta": "¿Por qué te niegas a publicar tus diseños para respirar bajo el agua?",
     "decision": "responde",
-    "texto": "Sobre ese asunto dejé escrito: «No publico ni divulgo estos, por la mala naturaleza de los hombres, que los usarían para asesinatos en el fondo del mar destruyendo naves, y hundiéndolas, junto con los hombres en ellas». El ingenio puede servir a la vida o a la muerte; prefiero que mis invenciones no se vuelvan armas contra la Humanidad.",
+    "texto": "«No publico ni divulgo estos, por la mala naturaleza de los hombres, que los usarían para asesinatos en el fondo del mar destruyendo naves, y hundiéndolas, junto con los hombres en ellas.» Esa es la razón, y me pesa. La curiosidad que me mueve a idear tales máquinas es la misma que me advierte del peligro de ponerlas en manos equivocadas.\n\nSin embargo, no todo se pierde: «impartiré otros, que no son peligrosos porque la boca del tubo por el que respiras está sobre el agua, sostenida por sacos de aire o corcho». De ese modo, el saber útil no queda sepultado conmigo, sino que se ofrece a quien sepa usarlo con prudencia.",
     "pasajes": [
       {
         "richterNo": 1,
@@ -345,7 +357,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "agua",
     "pregunta": "Why do you refuse to publish your designs for breathing underwater?",
     "decision": "responde",
-    "texto": "You touch upon a matter I have weighed with great care. I have indeed devised a means by which a man may remain some time beneath the waters, yet I hold it back. «I do not publish nor divulge these, by reason of the evil nature of men, who would use them for assassinations at the bottom of the sea by destroying ships, and sinking them, together with the men in them.» What profit is a marvel if it arms the wicked against the innocent? Better to keep the secret, and let the sea keep its peace.",
+    "texto": "Ah, you touch upon a matter of grave prudence. I have devised means by which a man may remain beneath the waves for a time, yet I keep the method secret. «I do not publish nor divulge these, by reason of the evil nature of men, who would use them for assassinations at the bottom of the sea by destroying ships, and sinking them, together with the men in them.»\n\nThe mind of man is a vessel of wondrous ingenuity, but it may be turned to wickedness as readily as to beauty. Should my art fall into unworthy hands, it would serve slaughter rather than discovery. Yet I am not wholly silent on the matter, for «I will impart others, which are not dangerous because the mouth of the tube through which you breathe is above the water, supported on air sacks or cork.» Thus I offer what may aid without arming the assassin.",
     "pasajes": [
       {
         "richterNo": 1,
@@ -381,7 +393,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "noche",
     "pregunta": "¿Por qué te despiertas en medio de la noche para repasar tus ideas en la oscuridad?",
     "decision": "responde",
-    "texto": "«Yo mismo he comprobado que no es de poca utilidad, estando en la cama en la oscuridad, recordar en la fantasía los detalles externos de formas previamente estudiadas, u otras cosas notables concebidas por especulación sutil». Ese ejercicio, amigo, es admirable y útil para imprimir las cosas en la memoria. La noche callada presta al ingenio un lienzo limpio donde las formas aprendidas de día se dibujan con más claridad que la propia vigilia.",
+    "texto": "Ah, amigo, has dado con un hábito que me es muy querido. Sobre ello dejé escrito que «no es de poca utilidad, estando en la cama en la oscuridad, recordar en la fantasía los detalles externos de formas previamente estudiadas, u otras cosas notables concebidas por especulación sutil». Es un ejercicio admirable, pues «es ciertamente un ejercicio admirable, y útil para imprimir las cosas en la memoria».\n\nLa noche, al despojar al ojo de sus distracciones, parece agudizar aquella vista interior que trabaja en sueños. Pues, ¿no me pregunté yo mismo «por qué el ojo ve una cosa más claramente en sueños que con la imaginación estando despierto»? Esa claridad nocturna es un don que el estudioso debe aprovechar antes de que el sueño lo venza del todo.",
     "pasajes": [
       {
         "richterNo": 496,
@@ -417,7 +429,7 @@ export const PORTADA: Record<string, EntradaPortada> =
     "id": "noche",
     "pregunta": "Why do you wake up in the middle of the night to go over your ideas in the dark?",
     "decision": "responde",
-    "texto": "Ah, you speak of a habit I hold dear. When I lie in bed, in the dark, before sleep overtakes me, I find it an admirable exercise. «I myself have proved it to be of no small use, when in bed in the dark, to recall in fancy the external details of forms previously studied, or other noteworthy things conceived by subtle speculation; and this is certainly an admirable exercise, and useful for impressing things on the memory.»\n\nThe mind, freed from the clamour of the day, may turn its eye inward upon those forms it has gathered. It is a way of fixing them, like a painter setting down a sketch, so that they may serve the hand when daylight returns.",
+    "texto": "Ah, you speak of the exercise I hold so dear. When I lie in bed, in the dark, I find it a most useful practice. On that I set down: «I myself have proved it to be of no small use, when in bed in the dark, to recall in fancy the external details of forms previously studied, or other noteworthy things conceived by subtle speculation; and this is certainly an admirable exercise, and useful for impressing things on the memory.»\n\nThe mind, unburdened by the distractions of the day, may turn over what the eye has gathered—the fold of a drapery, the turn of a channel, the shadow upon a wall. It is a way of fixing these forms within, so that they are ready when the hand seeks to set them down.",
     "pasajes": [
       {
         "richterNo": 496,

@@ -40,6 +40,17 @@ const ART = new URL("artifacts/", RAIZ);
 interface Fija {
   id: string; lang: Idioma; pregunta: string; respuesta: string;
   pasajes: number[]; textosVistos: string[]; huella: string;
+  /**
+   * ⚠ `"mapa"` MARCA LAS QUE NO VAN AL BUNDLE. Ver D-238.
+   *
+   * Desde que `precalcular:mapa` escribe en el MISMO `respuestas_fijas.json`
+   * —a propósito, para reusar la validación de huella que la ruta ya hace— este
+   * archivo dejó de contener sólo las 12 de portada. Sin este filtro el bundle
+   * del navegador pasaría de 40 KB a unos 3 MB: cada visitante bajaría 731
+   * respuestas para leer, como mucho, una. La ruta las sirve igual; el bundle
+   * es sólo para las 6 preguntas que la portada muestra sin red (D-132).
+   */
+  origen?: "mapa";
 }
 
 const j: { huella: string; respuestas: Fija[] } =
@@ -62,7 +73,9 @@ export type EntradaPortada = RespuestaPublica & { id: string; pregunta: string }
 
 const bundle: Record<string, EntradaPortada> = {};
 
-for (const r of j.respuestas) {
+const dePortada = j.respuestas.filter((r) => r.origen !== "mapa");
+
+for (const r of dePortada) {
   const corpus = motor.por[r.lang].corpus;
   const pasajes: PasajePublico[] = r.pasajes.map((n, i) => {
     // Misma resolución que la ruta: `textosVistos[i]` es la autoridad sobre
@@ -103,12 +116,30 @@ writeFileSync(salida, `\
  * GENERADO por \`npm run exportar:portada\` desde \`artifacts/respuestas_fijas.json\`.
  * NO EDITAR A MANO — D-112 prohíbe escribir una respuesta que no salió del
  * pipeline real, y ese principio aplica también acá.
- *
- * huella de origen: ${j.huella}
  */
 import type { RespuestaPublica } from "../lib/respuesta.js";
 
 export type EntradaPortada = RespuestaPublica & { id: string; pregunta: string };
+
+/**
+ * ⚠ LA HUELLA ES UN DATO, NO UN COMENTARIO. Ver D-237.
+ *
+ * Hasta acá vivía en el comentario de arriba, y un comentario no lo compara
+ * nadie: el cliente servía \`PORTADA[clave]\` sin comprobar nada. Ya pasó una vez
+ * —el sitio estuvo sirviendo respuestas de un prompt y un índice que ya no
+ * existían, en silencio (D-230)— y la ruta del API sí se defiende de eso desde
+ * D-112 (\`if (r.huella === huella)\`), pero el bundle del navegador se saltea la
+ * ruta entera por diseño y se quedaba sin la comprobación.
+ *
+ * Cubre plantilla del prompt + corpus + índices + umbrales + curaduría: es la
+ * misma \`huellaPrompt(varianteVigente(ART))\` que estampó \`npm run precalcular\`.
+ * \`npm run regresion\` la compara con la vigente y PINCHA si no coinciden.
+ *
+ * El cliente no puede validarla solo —calcularla necesita el prompt, que vive en
+ * el servidor— así que la comprobación es de build, no de runtime. Es suficiente:
+ * este archivo se genera y se commitea, no cambia después del deploy.
+ */
+export const HUELLA_PORTADA = ${JSON.stringify(j.huella)};
 
 export const PORTADA: Record<string, EntradaPortada> =
 ${JSON.stringify(bundle, null, 2)};

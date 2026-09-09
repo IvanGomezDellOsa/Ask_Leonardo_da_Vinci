@@ -43,7 +43,8 @@
     "exportar:portada": "tsx tools/exportar_portada.ts",
     "biblioteca": "tsx tools/optimizar_biblioteca.ts",
     "wikipedia": "tsx tools/wikipedia.ts",
-    "retitular": "tsx tools/retitular_es.ts"
+    "retitular": "tsx tools/retitular_es.ts",
+    "mapa": "tsx tools/mapa_temas.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",

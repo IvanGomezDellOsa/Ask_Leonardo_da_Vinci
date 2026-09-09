@@ -34,6 +34,7 @@ import { consultar, MAX_CARACTERES, type Idioma } from "../lib/cliente-chat.js";
 import { consultaParaEmbeber, type Turno } from "../lib/conversacion.js";
 import type { PasajePublico, RespuestaPublica } from "../lib/respuesta.js";
 import { CANAL, FUENTE, T, TEXTO_LECTURA } from "./estilos.js";
+import { ANCHO_MAPA, MapaTemas } from "./MapaTemas.js";
 
 const GUTENBERG = "https://www.gutenberg.org/files/5000/5000-h/5000-h.htm";
 
@@ -114,6 +115,7 @@ const COPY = {
     curada: "De eso no dejé anotación alguna en mis cuadernos.",
     sinNotaAviso: "Mis papeles callan, y Richter, mi editor, tampoco comenta el silencio.",
     abstiene: "Sobre eso no he dejado anotación en mis cuadernos, y prefiero no inventarte una.",
+    abrirMapa: "Ver los temas de los cuadernos",
   },
   en: {
     titulo: "Consult Leonardo da Vinci",
@@ -138,6 +140,7 @@ const COPY = {
     curada: "Of that I left no notation at all in my notebooks.",
     sinNotaAviso: "My papers are silent, and Richter, my editor, does not comment on the silence either.",
     abstiene: "On that matter I left no notation in my notebooks, and I would rather not invent one for you.",
+    abrirMapa: "See the subjects in the notebooks",
   },
 } as const;
 
@@ -195,6 +198,8 @@ const CURIOSOS = [
 export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void }) {
   const t = COPY[lang];
   const angosto = useAngosto();
+  /** El cajon del mapa en telefono. En escritorio el rail esta siempre. */
+  const [mapaAbierto, setMapaAbierto] = useState(false);
   const { estado, progreso, embed } = useEmbedder();
   /**
    * Inerte mientras no haya `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (D-206): no baja el
@@ -392,7 +397,17 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
       : []);
 
   /** Camino largo: vector en el navegador y `POST /api/chat`. */
-  const preguntarLibre = async (texto: string) => {
+  /**
+   * @param texto     lo que se BUSCA. Para lo escrito a mano es lo mismo que se
+   *                  ve; para un tema del mapa es el título ORIGINAL de Richter.
+   * @param comoSeVe  lo que se MUESTRA en la burbuja, si difiere.
+   *
+   * ⚠ LOS DOS TEXTOS EXISTEN POR UNA RAZON MEDIDA. El mapa muestra un rótulo
+   * limpio y manda el título original, porque el 345/375 de `alcance.json` se
+   * midió con los originales. Sin este parámetro la burbuja del visitante decía
+   * «De la música (1129. 1130)» cuando él había clickeado «De la música».
+   */
+  const preguntarLibre = async (texto: string, comoSeVe?: string) => {
     /**
      * ⚠ ANTES DE `agregar`, y por eso se lee `mensajes` y no un ref: en este
      * punto el estado todavía es el del render anterior, o sea la conversación
@@ -400,7 +415,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
      * como último turno del historial y como consulta.
      */
     const historial = historialDe(mensajes);
-    agregar({ tipo: "usuario", texto });
+    agregar({ tipo: "usuario", texto: comoSeVe ?? texto });
     const id = abrirLeonardo();
     setEnVuelo(true);
     // El turno cuenta lo que el usuario dijo, incluido este. La ruta corta en
@@ -480,7 +495,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           // Con el borde de 1 px y la altura en `dvh`, sin esto el panel mide
           // 2 px MAS que la pantalla: se iba 2 px por arriba del borde.
           boxSizing: "border-box",
-          width: angosto ? "100vw" : "min(1320px,96vw)",
+          width: angosto ? "100vw" : "min(1460px,97vw)",
           marginBottom: angosto ? 0 : "clamp(12px,2.4vh,26px)",
           background: T.panelBg,
           backgroundImage: `radial-gradient(circle at 50% 0%, ${T.panelGradFrom} 0%, ${T.panelGradTo} 100%)`,
@@ -522,7 +537,34 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             flexShrink: 0,
           }}
         >
-          <span aria-hidden="true" style={{ flex: "0 0 34px" }} />
+          {/*
+            EN TELEFONO EL HUECO DE LA IZQUIERDA SE VUELVE EL BOTON DEL MAPA.
+            Ocupa el mismo lugar que el contrapeso del botón de cerrar, así el
+            título sigue centrado en el panel y no en lo que sobra.
+          */}
+          {angosto ? (
+            <button
+              type="button"
+              onClick={() => setMapaAbierto(true)}
+              aria-label={t.abrirMapa}
+              aria-expanded={mapaAbierto}
+              style={{
+                flex: "0 0 34px", width: 34, height: 34, padding: 0, background: "none",
+                border: 0, cursor: "pointer", display: "flex", flexDirection: "column",
+                justifyContent: "center", gap: 4,
+              }}
+            >
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  aria-hidden="true"
+                  style={{ display: "block", width: 17, height: 1.5, background: T.tenue }}
+                />
+              ))}
+            </button>
+          ) : (
+            <span aria-hidden="true" style={{ flex: "0 0 34px" }} />
+          )}
 
           <h2
             style={{
@@ -565,6 +607,33 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             ×
           </button>
         </div>
+        {/*
+          EL CUERPO ES UNA FILA: el mapa a la izquierda y la conversacion a la
+          derecha. Ver `MapaTemas.tsx` y `28-estado-y-plan.md` §4A.
+
+          ⚠ EL ANCHO DE LECTURA NO CRECE CON EL PANEL. La conversacion sigue
+          topeada en 760 px y centrada en lo que sobra; si creciera con la
+          ventana, las lineas quedarian largas y se leeria peor. El rail se
+          lleva su columna y la lectura no se entera.
+
+          En telefono el rail no esta: entra por el cajon, mas abajo.
+        */}
+        <div style={{ display: "flex", flex: "1 1 0", minHeight: 0 }}>
+          {!angosto && (
+            <aside
+              style={{
+                flex: `0 0 ${ANCHO_MAPA}px`,
+                width: ANCHO_MAPA,
+                minHeight: 0,
+                borderRight: `1px solid ${T.headerLinea}`,
+                background: T.sistemaBg,
+              }}
+            >
+              <MapaTemas lang={lang} onPreguntar={(q, v) => void preguntarLibre(q, v)} />
+            </aside>
+          )}
+
+          <div style={{ display: "flex", flexDirection: "column", flex: "1 1 0", minWidth: 0, minHeight: 0 }}>
         <div
           className="alv-scroll"
           style={{
@@ -1182,6 +1251,48 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             </p>
           )}
         </form>
+          </div>
+        </div>
+
+        {/*
+          EL CAJON DEL MAPA, SOLO EN TELEFONO. Va dentro del panel y no en un
+          portal: asi hereda el recorte y no se escapa por encima del borde.
+        */}
+        {angosto && (
+          <>
+            <div
+              onClick={() => setMapaAbierto(false)}
+              aria-hidden="true"
+              style={{
+                position: "absolute", inset: 0, zIndex: 5,
+                background: "oklch(6% 0.02 40 / 0.55)",
+                opacity: mapaAbierto ? 1 : 0,
+                pointerEvents: mapaAbierto ? "auto" : "none",
+                transition: "opacity .22s ease",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute", top: 0, bottom: 0, left: 0, zIndex: 6,
+                width: "min(340px, 86%)",
+                background: T.sistemaBg,
+                borderRight: `1px solid ${T.panelBorde}`,
+                transform: mapaAbierto ? "translateX(0)" : "translateX(-101%)",
+                transition: "transform .24s ease",
+                // Que el scroll del cajon no arrastre la conversacion de atras.
+                overscrollBehavior: "contain",
+                display: "flex", flexDirection: "column", minHeight: 0,
+              }}
+            >
+              <MapaTemas
+                lang={lang}
+                angosto
+                onPreguntar={(q, v) => void preguntarLibre(q, v)}
+                onCerrarCajon={() => setMapaAbierto(false)}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {/**

@@ -67,8 +67,26 @@ const arg = (n: string): string => {
 const EXCLUIDAS = new Set<string>([
   "Notas topográficas", "Topographical notes",
   "Cartas y apuntes personales", "Letters and personal records",
-  "Inventarios y cuentas", "Inventories and accounts",
 ]);
+
+/**
+ * ⚠ «NOTAS MISCELANEAS» NO ESTA ACA, Y CASI LO ESTUVO. La primera versión listó
+ * «Inventarios y cuentas», que **no es una sección sino un tema adentro de
+ * “Notas misceláneas”**: el filtro no excluía nada y nadie se enteraba. Al
+ * corregirlo, lo natural era poner la sección entera — su propia glosa dice
+ * «listas de libros, cuentas, recordatorios y apuntes sueltos», que suena a la
+ * misma clase de archivo que las dos de arriba.
+ *
+ * **Se leyeron las 9 que ya estaban congeladas antes de excluirla, y 7 se leen
+ * bien.** «Notas sobre discípulos» trae a Salai —«ladrón, mentiroso, obstinado,
+ * glotón»— y es de lo mejor que da el corpus; «Inventarios y cuentas» sale
+ * ordenado y con gracia. Las dos flojas son los dos «Memoranda», que se pisan
+ * entre sí y devuelven la misma cita.
+ *
+ * La analogía era buena y estaba equivocada. Las dos de arriba se excluyen por
+ * lo que se LEYO de ellas —dos de dos malas en cartas, una de una en
+ * topográficas—, no por parecerse a algo.
+ */
 
 const claves = (): Record<string, string> => {
   const out: Record<string, string> = {};

@@ -25,7 +25,7 @@ import { NextRequest, NextResponse } from "next/server.js";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { cargarMotor, type Motor, type Idioma } from "../../../src/lib/grounding.js";
+import { cargarMotor, type Motor, type Idioma, CREDITO_WIKI } from "../../../src/lib/grounding.js";
 import { responder } from "../../../src/lib/responder.js";
 import {
   PresupuestoTpm, generar, cascadaDe, huellaPrompt, varianteVigente,
@@ -445,6 +445,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       notas: R.notas,
       caso: R.caso,
       cita: R.cita,
+      /**
+       * LA SEGUNDA VOZ, CON SU CREDITO PEGADO (D-239). El crédito viaja con el
+       * texto y no lo escribe el cliente: CC BY-SA obliga a atribuir, y una
+       * atribución que vive en el componente se puede perder en un refactor sin
+       * que nada falle. Acá no: si hay texto, hay crédito.
+       */
+      wikipedia: R.wikipedia
+        ? { texto: R.wikipedia, ...CREDITO_WIKI[pedido.idioma] }
+        : null,
       origen: "vivo",
       diagnostico: {
         cosMax: R.cosMax, tau: R.tau,

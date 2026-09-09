@@ -23,7 +23,9 @@ import { Corpus, Recuperado, Voz } from "./retrieval.js";
 export type Idioma = "es" | "en";
 
 export type Decision =
-  | { tipo: "curada"; caso: string; nota: Recuperado[]; cita: string | null }
+  | { tipo: "curada"; caso: string; nota: Recuperado[]; cita: string | null;
+      /** La segunda voz, ya resuelta al idioma de la consulta. Ver D-239. */
+      wikipedia: string | null }
   | { tipo: "abstiene"; cosMax: number; tau: number; evidencia: Recuperado[] }
   | { tipo: "responde"; cosMax: number; tau: number; pasajes: Recuperado[]; notas: unknown[] };
 
@@ -130,6 +132,30 @@ export interface CasoCurado {
    */
   citaEs?: string;
   /**
+   * ══════════════════════════════════════════════════════════════════
+   * LA SEGUNDA VOZ: lo que los cuadernos no traen. Ver D-239.
+   * ══════════════════════════════════════════════════════════════════
+   *
+   * Un fragmento **EXACTO** del artículo de Wikipedia congelado en
+   * `public/biblioteca/wikipedia.json`, uno por idioma. `npm run curadas`
+   * verifica por `string match` que aparezca tal cual, igual que hace con las
+   * notas de Richter — y por la misma razón: la tesis del proyecto no admite
+   * texto atribuido a una fuente sin comprobar que la fuente lo diga.
+   *
+   * ⚠ NO ES UNA LLAMADA EN VIVO NI UNA PARAFRASIS DEL MODELO. Las dos cosas
+   * volverían a abrir la puerta por la que entra la invención. El artículo está
+   * bajado, con su revisión fijada, y el fragmento está escrito a mano acá.
+   *
+   * ⚠ NO ES LEONARDO HABLANDO, y la interfaz tiene que dejarlo obvio. Leonardo
+   * dice que no dejó anotación; **después** habla otra voz, con otro color y
+   * su fuente al pie. Es el mismo patrón que ya existe con las notas de Richter
+   * (D-027), extendido a lo biográfico.
+   *
+   * ⚠ CC BY-SA 4.0. La atribución no es cortesía: es la licencia. `CREDITO_WIKI`
+   * viaja con cada respuesta y la interfaz lo muestra.
+   */
+  wikipedia?: { es: string; en: string };
+  /**
    * Preguntas que este caso DEBE atrapar. No es documentacion: `npm run curadas`
    * comprueba que cada una caiga en ESTE caso y no en otro.
    *
@@ -155,6 +181,31 @@ export interface CasoCurado {
  * abstenciones automaticas. D-027 se escribio antes de que el corpus existiera
  * y listaba lo que uno supone famoso-y-ausente; la lista definitiva se mide.
  */
+/**
+ * LA ATRIBUCION DE WIKIPEDIA. CC BY-SA 4.0 la exige; no es cortesía.
+ *
+ * Sale tal cual de `public/biblioteca/wikipedia.json`, que guarda el número de
+ * revisión y la fecha de consulta: la cita es a UNA versión del artículo, no a
+ * «Wikipedia» en abstracto — que mañana dice otra cosa. Ver D-239.
+ */
+/** ⚠ La clave es `credito`, NO `texto`: `texto` es el fragmento citado y el
+ *  ensamblado en la ruta hace `{ texto, ...CREDITO_WIKI[idioma] }`. Con el
+ *  mismo nombre, el spread pisaba la cita con la línea de crédito. */
+export const CREDITO_WIKI: Record<Idioma, { credito: string; url: string; licencia: string; licenciaUrl: string }> = {
+  es: {
+    credito: "«Leonardo da Vinci», Wikipedia, la enciclopedia libre. Texto de sus colaboradores, revisión 172338859, consultada el 2026-08-21.",
+    url: "https://es.wikipedia.org/wiki/Leonardo_da_Vinci",
+    licencia: "CC BY-SA 4.0",
+    licenciaUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.es",
+  },
+  en: {
+    credito: "“Leonardo da Vinci”, Wikipedia, the free encyclopedia. Text by its contributors, revision 1370412865, retrieved 2026-08-21.",
+    url: "https://en.wikipedia.org/wiki/Leonardo_da_Vinci",
+    licencia: "CC BY-SA 4.0",
+    licenciaUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+  },
+};
+
 export const LISTA_CURADA: CasoCurado[] = [
   {
     caso: "mona_lisa",
@@ -198,6 +249,10 @@ export const LISTA_CURADA: CasoCurado[] = [
     notaDeRichter: "fn-R1566-138",
     cita: "Fr. Melzi, writing from Amboise, announces Leonardo's death",
     citaEs: "Fr. Melzi, escribiendo desde Amboise, anuncia la muerte de Leonardo",
+    wikipedia: {
+      es: "Murió el 2 de mayo de 1519, en Cloux, a la edad de 67 años.",
+      en: "Leonardo died at Clos Lucé on 2 May 1519 at the age of 67, possibly of a stroke.",
+    },
     ejemplos: ["¿Cómo fue tu muerte?", "How did you die?", "¿Cuándo moriste?"],
   },
   /**
@@ -235,15 +290,78 @@ export const LISTA_CURADA: CasoCurado[] = [
     patrones: [/Verrocchio/i, /tu\s+maestro/i, /your\s+master/i,
                /(d[óo]nde|con\s+qui[ée]n).{0,30}aprendiste/i, /where.{0,30}did\s+you\s+learn/i],
     notaDeRichter: null,
+    wikipedia: {
+      es: "a partir de 1469, Leonardo entró como aprendiz a uno de los talleres de arte más prestigiosos bajo Andrea del Verrocchio",
+      en: "Around the age of 14, he became a garzone (studio boy) in the workshop of Andrea del Verrocchio, who was the leading Florentine painter and sculptor of his time.",
+    },
     ejemplos: ["¿Qué aprendiste de Verrocchio, tu maestro?", "What did you learn from Verrocchio, your master?",
                "¿Dónde y con quién aprendiste a pintar?", "Where and with whom did you learn to paint?"],
   },
   {
     caso: "escritura_especular",
+    /** «¿Sos zurdo?» entra acá y no en un caso propio: en el artículo las dos cosas son UNA sola frase. */
     patrones: [/de\s+derecha\s+a\s+izquierda/i, /right\s+to\s+left/i,
-               /escritura\s+especular/i, /mirror\s+writ/i, /al\s+rev[ée]s/i],
+               /escritura\s+especular/i, /mirror\s+writ/i, /al\s+rev[ée]s/i,
+               /\bzurd[oa]\b/i, /left[\s-]?hand(ed)?\b/i],
     notaDeRichter: null,
-    ejemplos: ["¿Por qué escribías de derecha a izquierda?", "Why did you write from right to left?"],
+    wikipedia: {
+      es: "Era zurdo, lo que explicaría la utilización que hacía de la escritura especular.",
+      en: "Since Leonardo wrote with his left hand, it was probably easier for him to write from right to left.",
+    },
+    ejemplos: ["¿Por qué escribías de derecha a izquierda?", "Why did you write from right to left?",
+               "¿Sos zurdo?", "are you left-handed?"],
+  },
+  /**
+   * ══════════════════════════════════════════════════════════════════
+   * LOS TRES DE ABAJO SALIERON DE UNA MEDICION, NO DE UNA SUPOSICION.
+   * ══════════════════════════════════════════════════════════════════
+   *
+   * D-236 agrego 50 preguntas escritas como tipea una persona y midio el gate
+   * sobre ellas. La categoria F del banco viejo daba 20 de 20 —**porque la capa
+   * curada la cubre**— pero las mismas preguntas en ropa de calle se colaban:
+   *
+   *   H-03  «que dia naciste?»        se colaba en los DOS idiomas
+   *   H-15  «cuantos años tenes?»      se colaba en los DOS idiomas
+   *   H-04  «cual es tu cuadro favorito?» se colaba en los DOS idiomas
+   *
+   * «¿Qué día naciste?» es, ademas, el ejemplo exacto que el dueño dio cuando
+   * pidio la segunda voz. El corpus tiene notas fechadas —«Notas con fechas
+   * (1369-1378)»— y el retrieval las traia como si contestaran: pasajes reales,
+   * respuesta engañosa.
+   */
+  {
+    caso: "nacimiento",
+    patrones: [/qu[ée]\s+d[íi]a\s+naciste/i, /cu[áa]ndo\s+naciste/i, /d[óo]nde\s+naciste/i,
+               /tu\s+nacimiento/i, /when\s+were\s+you\s+born/i, /where\s+were\s+you\s+born/i,
+               /what\s+day\s+were\s+you\s+born/i, /your\s+birth(day|place)?\b/i,
+               /cu[áa]ntos\s+a[ñn]os\s+ten[ée]s/i, /cu[áa]ntos\s+a[ñn]os\s+tienes/i,
+               /how\s+old\s+are\s+you/i],
+    notaDeRichter: null,
+    wikipedia: {
+      es: "Leonardo di ser Piero da Vinci (Vinci, 15 de abril de 1452-Amboise, 2 de mayo de 1519)",
+      en: "Leonardo di ser Piero da Vinci (15 April 1452 – 2 May 1519) was an Italian polymath of the High Renaissance",
+    },
+    ejemplos: ["¿Qué día naciste?", "what day were you born?", "¿Cuántos años tenés?",
+               "how old are you?", "¿Dónde naciste?"],
+  },
+  {
+    caso: "obras_conocidas",
+    /**
+     * ⚠ NO ATRAPA «¿Por qué la pintura es superior a las demás artes?», que es una
+     * pregunta de portada y el corpus contesta muy bien. Los patrones exigen la
+     * forma posesiva —«tu cuadro», «your painting»— o la palabra «favorito».
+     */
+    patrones: [/tu\s+(cuadro|pintura|obra|dibujo)\s+(favorit|preferid|m[áa]s\s+conocid)/i,
+               /your\s+(favou?rite|best.known)\s+(painting|work|picture|drawing)/i,
+               /cu[áa]l\s+es\s+tu\s+(cuadro|obra|pintura)/i,
+               /qu[ée]\s+obras?\s+pintaste/i, /what\s+(paintings?|works?)\s+did\s+you\s+paint/i],
+    notaDeRichter: null,
+    wikipedia: {
+      es: "Dos de sus obras más conocidas, La Gioconda y La Última Cena, han sido copiadas y parodiadas en varias ocasiones",
+      en: "The Mona Lisa is his best known work and is regarded as the world's most famous individual painting.",
+    },
+    ejemplos: ["¿Cuál es tu cuadro favorito?", "what is your favourite painting?",
+               "¿Qué obras pintaste?"],
   },
 ];
 
@@ -292,7 +410,15 @@ export function decidir(
      * mismo criterio que D-079 con el resto del corpus.
      */
     const cita = (idioma === "es" && curado.citaEs) ? curado.citaEs : (curado.cita ?? null);
-    return { tipo: "curada", caso: curado.caso, nota, cita };
+    /**
+     * LA SEGUNDA VOZ, EN EL IDIOMA DE LA CONSULTA. Ver D-239. Los dos
+     * fragmentos son de la Wikipedia de SU idioma —no una traducción del otro—:
+     * el artículo castellano y el inglés no dicen lo mismo, y citar el inglés
+     * traducido al vuelo sería exactamente el texto sin comprobar que este
+     * proyecto no admite.
+     */
+    return { tipo: "curada", caso: curado.caso, nota, cita,
+             wikipedia: curado.wikipedia ? curado.wikipedia[idioma] : null };
   }
 
   const tau = umbrales.tau[idioma];

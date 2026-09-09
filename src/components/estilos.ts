@@ -57,6 +57,17 @@ export const T = {
   explainerBg: "oklch(17% 0.005 70)",
   explainerBorde: "oklch(30% 0.006 70)",
   explainerTexto: "oklch(82% 0.006 75)",
+  /**
+   * LA SEGUNDA VOZ (D-239). Es el único lugar del códice con un tinte que no
+   * pertenece a la paleta del taller —todo lo demás vive en el eje 70-75 de
+   * matiz, tierra sobre tierra—. Este se corre al azul: no es una elección
+   * decorativa, es la señal de que quien habla no es Leonardo. Si combinara,
+   * no cumpliría su función.
+   */
+  otraVozBg: "oklch(19% 0.014 250)",
+  otraVozBarra: "oklch(52% 0.055 250)",
+  otraVozEtiqueta: "oklch(66% 0.035 250)",
+  otraVozTexto: "oklch(84% 0.018 250)",
 } as const;
 
 /**

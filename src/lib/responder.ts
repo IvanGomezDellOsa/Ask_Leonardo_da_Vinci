@@ -43,6 +43,12 @@ export interface Respondido {
   /** Sólo en `curada`: el id del caso (D-124) y el fragmento exacto de la nota. */
   caso?: string;
   cita?: string | null;
+  /**
+   * LA SEGUNDA VOZ (D-239). Fragmento exacto de la Wikipedia congelada, ya en el
+   * idioma de la consulta. `null` cuando el caso no tiene dato biográfico que
+   * ofrecer — que es una posición honesta, no una tarea pendiente.
+   */
+  wikipedia?: string | null;
   /** Los pasajes recuperados, con su score. Vacío si no se respondió. */
   pasajes: Recuperado[];
   /**
@@ -103,7 +109,7 @@ export async function responder(opciones: {
   const d = decidirCon(motor, pregunta, vector, idioma, k, vectorContexto);
   if (d.tipo === "curada") {
     return { ...VACIO, decision: "curada", texto: "", cosMax: null, tau: null,
-             caso: d.caso, cita: d.cita,
+             caso: d.caso, cita: d.cita, wikipedia: d.wikipedia,
              /**
               * SE DEVUELVEN LOS PASAJES DE LA NOTA, no solo su id. Hasta D-124
               * esto mandaba `notas: [id]` y nada mas, asi que el cliente recibia

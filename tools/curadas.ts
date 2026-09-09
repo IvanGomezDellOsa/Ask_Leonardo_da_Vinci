@@ -38,6 +38,15 @@ const RAIZ = new URL("../", import.meta.url);
 const chunks: { id: string; voice: string; text: string; richterNo: number | null }[] =
   JSON.parse(readFileSync(new URL("artifacts/chunks.json", RAIZ), "utf8"));
 
+/**
+ * EL ARTICULO DE WIKIPEDIA CONGELADO, para verificar la segunda voz (D-239).
+ * Mismo principio que con las notas de Richter: la cita que el usuario lee como
+ * respaldada por la fuente se comprueba contra la fuente, no se confía.
+ */
+const fWiki = new URL("public/biblioteca/wikipedia.json", RAIZ);
+const wiki: Record<string, { bloques: { t: string; x: string }[]; revision: number }> =
+  existsSync(fWiki) ? JSON.parse(readFileSync(fWiki, "utf8")) : {};
+
 /** La traducción congelada (D-079, D-125), para verificar `citaEs`. */
 const fEs = new URL("artifacts/chunks_es.json", RAIZ);
 const textosEs: Record<string, { texto: string }> =
@@ -122,6 +131,41 @@ if (!colisiones) {
 }
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+console.log(`
+## 2.bis · La segunda voz: cada cita aparece TAL CUAL en Wikipedia
+`);
+
+/**
+ * ⚠ SE COMPRUEBA CONTRA EL ARTICULO DE SU PROPIO IDIOMA. El castellano y el
+ * inglés de Wikipedia no son traducciones uno del otro: dicen cosas distintas,
+ * con revisiones distintas. Verificar el fragmento castellano contra el artículo
+ * inglés daría siempre fallo, y verificarlo contra «Wikipedia» sin idioma daría
+ * un falso OK cuando la frase existe sólo en el otro.
+ */
+{
+  const conWiki = LISTA_CURADA.filter((c) => c.wikipedia);
+  if (!Object.keys(wiki).length) {
+    mal("falta `public/biblioteca/wikipedia.json`: no se puede verificar la segunda voz");
+  } else if (!conWiki.length) {
+    console.log("  (ningún caso declara segunda voz)");
+  } else {
+    for (const c of conWiki) {
+      for (const idioma of ["es", "en"] as const) {
+        const frag = c.wikipedia![idioma];
+        const art = wiki[idioma];
+        if (!art) { mal(`'${c.caso}' [${idioma}]: el artículo no está en wikipedia.json`); continue; }
+        if (!art.bloques.some((b) => b.x.includes(frag))) {
+          mal(`'${c.caso}' [${idioma}]: la cita NO aparece literal — «${frag.slice(0, 58)}…»`);
+        } else {
+          bien(`'${c.caso}' [${idioma}] verificada contra la revisión ${art.revision}`);
+        }
+      }
+    }
+  }
+}
+
+
 console.log(`\n## 3 · Cada caso atrapa sus propios ejemplos, y los atrapa ÉL\n`);
 
 for (const c of LISTA_CURADA) {

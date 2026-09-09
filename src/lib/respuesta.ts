@@ -19,6 +19,14 @@ export interface RespuestaPublica {
   /** Sólo en `curada` (D-124): qué caso disparó y el fragmento exacto de la nota. */
   caso?: string;
   cita?: string | null;
+  /**
+   * LA SEGUNDA VOZ (D-239): un dato que los cuadernos no traen, citado de la
+   * Wikipedia congelada. Viene ya resuelto al idioma de la consulta, y con su
+   * crédito — CC BY-SA obliga a mostrarlo, no es decoración.
+   */
+  wikipedia?: {
+    texto: string; credito: string; url: string; licencia: string; licenciaUrl: string;
+  } | null;
   pasajes: PasajePublico[];
   /** Ids de notas de Richter vinculadas, para la tarjeta de citación. */
   notas: string[];

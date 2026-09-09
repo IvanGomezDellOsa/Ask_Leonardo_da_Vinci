@@ -40,22 +40,20 @@ body {
   height: 100dvh;
 }
 
-.alv-panel {
-  height: 94vh;
-  height: min(92dvh, 100dvh - 24px);
-}
-
 /*
- * En teléfono el códice es la pantalla, no una hoja apoyada sobre el hero: a
- * 375 px de ancho, el margen y las esquinas redondeadas sólo restan lugar de
- * lectura. `dvh` es lo que hace que llegue justo hasta el borde vivo y ni un
- * píxel más — con `vh` se pasaba por debajo de la barra del navegador.
+ * EL CODICE ES LA PANTALLA, EN TODOS LOS TAMANOS. Antes era una hoja apoyada
+ * sobre el hero: 92dvh de alto y 1460 px de ancho, despegada del piso. Con el
+ * mapa de temas al costado eso dejo de cerrar: el rail se lleva 300 px y la
+ * conversacion quedaba angosta adentro de una hoja que ademas no llenaba la
+ * ventana. Pedido del dueno, con la captura al lado.
+ *
+ * `dvh` es el alto que hay AHORA, con la barra del navegador donde este; con
+ * `vh` el panel se pasa por debajo de esa barra en telefono. Se declaran las
+ * dos: el que no entienda `dvh` se queda con `vh`, que es lo que habia.
  */
-@media (max-width: 640px) {
-  .alv-panel {
-    height: 100vh;
-    height: 100dvh;
-  }
+.alv-panel {
+  height: 100vh;
+  height: 100dvh;
 }
 
 a {

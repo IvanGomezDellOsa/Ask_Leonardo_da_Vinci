@@ -71,6 +71,12 @@ type Mensaje =
       /** Curado sin nota: ni el corpus ni el editor dicen nada. */
       sinNota: boolean;
       /**
+       * LA SEGUNDA VOZ (D-239): el dato que los cuadernos no traen, citado de la
+       * Wikipedia congelada. Llega ya en el idioma de la consulta y con su
+       * crédito: CC BY-SA obliga a atribuir.
+       */
+      wikipedia: { texto: string; credito: string; url: string; licencia: string; licenciaUrl: string } | null;
+      /**
        * `true` cuando el revelado terminó. La evidencia —pasajes y nota de
        * Richter— NO se muestra antes: aparecer mientras Leonardo todavía está
        * hablando se lee apurado, como si las pruebas estuvieran esperando de
@@ -107,6 +113,13 @@ const COPY = {
     cuaderno: "cuaderno de Leonardo",
     leerEn: "Leer en gutenberg.org ↗",
     richter: "Richter anota (1888)",
+    /**
+     * LA SEGUNDA VOZ (D-239). El rótulo tiene que decir DOS cosas antes de que
+     * el visitante lea el dato: que esto no está en los cuadernos, y que no lo
+     * dice Leonardo. Por eso no es «Wikipedia» a secas.
+     */
+    otraVoz: "Esto no está en sus cuadernos. Lo dice Wikipedia:",
+    otraVozVer: "Ver el artículo",
     fuentes: "Fuentes",
     // `curada` y `abstiene` llegan con `texto` vacío del servidor: esta es la
     // redacción del frontend, y por eso vive acá y no en el prompt.
@@ -134,6 +147,8 @@ const COPY = {
     cuaderno: "Leonardo's notebook",
     leerEn: "Read on gutenberg.org ↗",
     richter: "Richter notes (1888)",
+    otraVoz: "This is not in his notebooks. Wikipedia says:",
+    otraVozVer: "See the article",
     fuentes: "Sources",
     descansaEtiqueta: "Leonardo rests",
     descansaAccion: "See the kept questions",
@@ -340,7 +355,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
       pendiente: true,
       texto: "",
       completo: "",
-      cita: null,
+      cita: null, wikipedia: null,
       sinNota: false,
       revelado: false,
       pasajes: [],
@@ -359,7 +374,15 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
     }
     if (r.decision === "curada") {
       const cita = r.cita ?? null;
-      parchear(id, { pendiente: false, completo: t.curada, cita, sinNota: !cita, pasajes: [] });
+      const wiki = r.wikipedia ?? null;
+      /**
+       * ⚠ `sinNota` YA NO ES «NO HAY NADA QUE MOSTRAR». Con la segunda voz
+       * (D-239) hay casos sin nota de Richter que igual traen un dato. El aviso
+       * «ni el corpus ni el editor dicen nada» sólo corresponde cuando no hay
+       * NINGUNA de las dos cosas; si no, contradice a lo que se ve debajo.
+       */
+      parchear(id, { pendiente: false, completo: t.curada, cita, wikipedia: wiki,
+                     sinNota: !cita && !wiki, pasajes: [] });
       revelar(id, t.curada);
       return;
     }
@@ -492,21 +515,15 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
         aria-label={t.titulo}
         style={{
           position: "relative",
-          // Con el borde de 1 px y la altura en `dvh`, sin esto el panel mide
-          // 2 px MAS que la pantalla: se iba 2 px por arriba del borde.
           boxSizing: "border-box",
-          width: angosto ? "100vw" : "min(1460px,97vw)",
-          marginBottom: angosto ? 0 : "clamp(12px,2.4vh,26px)",
+          // PANTALLA COMPLETA EN TODOS LOS TAMANOS. Ver `globals.css`, `.alv-panel`.
+          width: "100vw",
+          marginBottom: 0,
           background: T.panelBg,
           backgroundImage: `radial-gradient(circle at 50% 0%, ${T.panelGradFrom} 0%, ${T.panelGradTo} 100%)`,
-          border: `1px solid ${T.panelBorde}`,
-          // Despegado del piso: apoyado contra el borde de la ventana el panel
-          // se lee como una hoja cortada, no como algo que flota sobre el
-          // taller. Por eso además redondea las cuatro esquinas, no dos.
-          // Sin esquinas en teléfono: a pantalla completa, un radio sólo deja
-          // ver cuatro cachitos del hero por las puntas.
-          borderRadius: angosto ? 0 : 16,
-          boxShadow: "0 20px 60px oklch(6% 0.02 40 / 0.55)",
+          // Sin borde ni sombra: a pantalla completa no hay contra que recortarse.
+          border: 0,
+          borderRadius: 0,
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
@@ -888,6 +905,67 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
                       }}
                     >
                       «{m.cita}»
+                    </p>
+                  </div>
+                )}
+
+                {/*
+                  ══════════════════════════════════════════════════════════
+                  LA SEGUNDA VOZ. Ver D-239 y `28` §4D.
+                  ══════════════════════════════════════════════════════════
+
+                  Va DESPUES de que Leonardo dijo que no dejó anotación, nunca
+                  en lugar de eso: primero el silencio de los cuadernos —que es
+                  la tesis del producto— y recién después el dato, dicho por
+                  otro. Si apareciera primero, o sin el rótulo, se leería como
+                  si Leonardo supiera su propia fecha de nacimiento porque la
+                  escribió, que es justo lo que no pasó.
+
+                  ⚠ NO SE PARECE A LO QUE DICE LEONARDO, y es a propósito. La
+                  respuesta de Leonardo es serif, 18 px, sin caja. Esto es la
+                  fuente de lectura chica, sobre fondo propio, con una barra al
+                  costado de otro color y el crédito al pie. Que nadie confunda
+                  una enciclopedia de hoy con un cuaderno de 1500.
+
+                  ⚠ EL CREDITO NO ES DECORACION. El artículo es CC BY-SA 4.0: la
+                  atribución es la licencia. Viaja con el texto desde el
+                  servidor (`CREDITO_WIKI`) justamente para que un refactor del
+                  componente no pueda perderla sin que nada falle.
+                */}
+                {m.revelado && m.wikipedia && (
+                  <div
+                    style={{
+                      marginLeft: sangria,
+                      borderLeft: `2px solid ${T.otraVozBarra}`,
+                      background: T.otraVozBg,
+                      borderRadius: "0 8px 8px 0",
+                      padding: "12px 14px",
+                    }}
+                  >
+                    <p style={{
+                      margin: "0 0 6px", fontFamily: FUENTE.lectura, fontSize: 12.5,
+                      lineHeight: 1.4, color: T.otraVozEtiqueta, letterSpacing: ".02em",
+                    }}>
+                      {t.otraVoz}
+                    </p>
+                    <p style={{
+                      margin: 0, fontFamily: FUENTE.lectura, fontSize: angosto ? 15 : 15.5,
+                      lineHeight: 1.6, color: T.otraVozTexto,
+                    }}>
+                      {m.wikipedia.texto}
+                    </p>
+                    <p style={{
+                      margin: "10px 0 0", fontFamily: FUENTE.lectura, fontSize: 11.5,
+                      lineHeight: 1.5, color: T.notaEtiqueta,
+                    }}>
+                      {m.wikipedia.credito}{" "}
+                      <a href={m.wikipedia.url} target="_blank" rel="noopener noreferrer">
+                        {t.otraVozVer}
+                      </a>
+                      {" · "}
+                      <a href={m.wikipedia.licenciaUrl} target="_blank" rel="noopener noreferrer">
+                        {m.wikipedia.licencia}
+                      </a>
                     </p>
                   </div>
                 )}

@@ -93,15 +93,28 @@ export const T = {
 export const FOCO = "oklch(72% 0.05 80)";
 
 /**
- * EL ANCHO DE LA COMPOSICION (D-255). El rail y la columna de lectura se topan
- * y se centran JUNTOS. Antes el rail se pegaba al borde izquierdo y la lectura
- * —topada en 760— se centraba en lo que sobraba: a 1.916 px quedaban dos
- * objetos sueltos con 428 px de vacío por lado.
+ * LA COMPOSICION DEL CODICE SE APOYA A LA IZQUIERDA (D-256), no se centra.
  *
- * ⚠ La lectura sigue en 760 y eso no se toca: es lo que mantiene el largo de
- * línea. Lo que cambia es contra qué se centra.
+ * D-255 arregló el defecto real —el rail pegado al borde y la lectura centrada
+ * en lo que sobraba, dos objetos sueltos con 428 px de vacío por lado— pero lo
+ * arregló centrando el conjunto en 1.140. A 1.920 eso deja 780 px de vacío
+ * repartidos en dos, y el rail y el texto quedan codo con codo en una franja
+ * angosta en el medio: se corrigió la separación y se perdió el aire.
+ *
+ * Apoyada a la izquierda, el sobrante cae entero de un lado. El borde izquierdo
+ * queda estructurado —margen, rail, canal, texto— y la derecha es aire, que es
+ * como se lee cualquier superficie de lectura larga.
+ *
+ * ⚠ LOS TRES NUMEROS SE LEEN JUNTOS Y SALEN DE UNA CUENTA:
+ *   MARGEN + rail(320) + CANAL_RAIL + 760 de lectura.
+ * La lectura sigue en 760 y eso no se toca: es lo que mantiene el largo de
+ * línea en ~68 caracteres. `ANCHO_LECTURA` es ese 760 más los dos rellenos, y
+ * si alguno de los tres cambia hay que rehacerlo.
  */
-export const ANCHO_COMPOSICION = 1140;
+export const MARGEN_CODICE = "clamp(20px, 3.5vw, 80px)";
+export const CANAL_RAIL = 88;
+export const MARGEN_DERECHO = 24;
+export const ANCHO_LECTURA = 760 + CANAL_RAIL + MARGEN_DERECHO;
 
 /**
  * El margen lateral del códice. La columna de lectura tiene 760 px de tope;

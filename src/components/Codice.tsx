@@ -102,6 +102,7 @@ const COPY = {
     otras: "Otras preguntas sugeridas",
     abrir: "Ampliar",
     cerrarLista: "Cerrar",
+    descartarSugeridas: "Quitar las preguntas sugeridas",
     placeholder: "Escribí tu consulta a Leonardo da Vinci…",
     // El largo entra en escritorio; en un teléfono el textarea es de un
     // renglón y el placeholder se partía al medio, mostrando una frase cortada.
@@ -138,6 +139,7 @@ const COPY = {
     otras: "Other suggested questions",
     abrir: "Expand",
     cerrarLista: "Close",
+    descartarSugeridas: "Dismiss the suggested questions",
     placeholder: "Write your question for Leonardo da Vinci…",
     placeholderCorto: "Write your question…",
     enviar: "Ask",
@@ -243,6 +245,13 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
    */
   const [hechas, setHechas] = useState<string[]>([]);
   const [sugAbiertas, setSugAbiertas] = useState(true);
+  /**
+   * ⚠ SOLO SE DESCARTA PLEGADO, Y SOLO VUELVE RECARGANDO. Pedido del dueño: la
+   * cruz aparece al lado del ▲ cuando la lista está cerrada. No hay botón para
+   * traerla de vuelta porque no se pidió — y porque el mapa de temas cubre lo
+   * mismo y está siempre a la vista.
+   */
+  const [sugDescartadas, setSugDescartadas] = useState(false);
   const [entrada, setEntrada] = useState("");
   const [enVuelo, setEnVuelo] = useState(false);
   const [curioso, setCurioso] = useState(0);
@@ -1101,7 +1110,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           <div ref={finLista} />
         </div>
 
-        {restantes.length > 0 && (
+        {restantes.length > 0 && !sugDescartadas && (
           <div
             style={{
               boxSizing: "border-box",
@@ -1151,6 +1160,53 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
                   {sugAbiertas ? "▼" : "▲"}
                 </span>
               </button>
+
+              {/*
+                LA CRUZ VA AFUERA DEL BOTON DE PLEGAR, no adentro: un `button`
+                dentro de otro `button` no es HTML válido y el navegador lo
+                desarma solo — el click terminaría plegando en vez de descartar.
+
+                ⚠ SOLO CON LA LISTA PLEGADA, como lo pidió el dueño. Con la
+                lista abierta, «cerrar» y «descartar» quedarían uno al lado del
+                otro haciendo cosas parecidas pero distintas, y una de las dos
+                no tiene vuelta atrás.
+
+                El glifo pesa como el ▲ —mismo color, un cuerpo más grande
+                porque una × abierta se lee más liviana que un triángulo
+                lleno— y **el relleno es ÁREA TÁCTIL, no dibujo**: la cruz se
+                ve igual de chica en los dos tamaños, pero en teléfono el
+                blanco de toque son los 44 px que pide `28` §6. El margen
+                negativo evita que la fila crezca por eso.
+              */}
+              {!sugAbiertas && (
+                <button
+                  type="button"
+                  className="alv-btn-texto"
+                  onClick={() => setSugDescartadas(true)}
+                  aria-label={t.descartarSugeridas}
+                  title={t.descartarSugeridas}
+                  style={{
+                    flex: "0 0 auto",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: angosto ? 44 : 30,
+                    height: angosto ? 44 : 30,
+                    margin: angosto ? "-15px -12px -12px 0" : "-8px -8px -8px 0",
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                    fontFamily: FUENTE.lectura,
+                    fontSize: 15,
+                    lineHeight: 1,
+                    color: "oklch(66% 0.006 75)",
+                    transition: "color .18s ease",
+                  }}
+                >
+                  ×
+                </button>
+              )}
             </div>
 
             {sugAbiertas && (

@@ -33,7 +33,7 @@ import { useAngosto } from "../hooks/useAngosto.js";
 import { consultar, MAX_CARACTERES, type Idioma } from "../lib/cliente-chat.js";
 import { consultaParaEmbeber, type Turno } from "../lib/conversacion.js";
 import type { PasajePublico, RespuestaPublica } from "../lib/respuesta.js";
-import { ANCHO_LECTURA, CANAL_RAIL, FUENTE, MARGEN_CODICE, MARGEN_DERECHO, T, TEXTO_LECTURA } from "./estilos.js";
+import { CANAL, FUENTE, T, TEXTO_LECTURA } from "./estilos.js";
 import { ANCHO_MAPA, MapaTemas } from "./MapaTemas.js";
 
 const GUTENBERG = "https://www.gutenberg.org/files/5000/5000-h/5000-h.htm";
@@ -500,18 +500,17 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
   const sinMensajes = mensajes.length === 0;
 
   /**
-   * EL CANAL DEL PIE, ALINEADO CON LA LECTURA (D-255). Antes salía de `CANAL`,
-   * que centraba una columna de 760 en lo que sobrara del panel. Ahora la
-   * conversación se alinea a la izquierda contra el rail, así que el pie tiene
-   * que usar exactamente el mismo relleno o el composer queda corrido del texto
-   * que está arriba.
+   * EL CANAL DEL PIE SIGUE A LA COLUMNA DE LECTURA, que va centrada en lo que
+   * queda a la derecha del rail. Eso es lo que hace `CANAL` y por eso vuelve
+   * (D-257): con un relleno fijo el composer quedaría corrido del texto que
+   * tiene encima en cuanto la ventana cambie de ancho.
    */
   const canalPie = angosto
     ? {
         paddingLeft: "max(12px, env(safe-area-inset-left))",
         paddingRight: "max(12px, env(safe-area-inset-right))",
       }
-    : { paddingLeft: CANAL_RAIL, paddingRight: MARGEN_DERECHO };
+    : { paddingLeft: CANAL, paddingRight: CANAL };
 
   /** Si la lista de sugeridas está, el pelo lo lleva ella; si no, el composer. */
   const haySugeridas = restantes.length > 0 && !sugDescartadas;
@@ -658,31 +657,20 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           EL CUERPO ES UNA FILA: el mapa a la izquierda y la conversacion a la
           derecha. Ver `MapaTemas.tsx` y `28-estado-y-plan.md` §4A.
 
-          ⚠ EL ANCHO DE LECTURA NO CRECE CON EL PANEL. La conversacion sigue
-          topeada en 760 px y centrada en lo que sobra; si creciera con la
-          ventana, las lineas quedarian largas y se leeria peor. El rail se
-          lleva su columna y la lectura no se entera.
+          ⚠ EL RAIL VA PEGADO AL BORDE Y EL CHAT CENTRADO EN LO QUE QUEDA
+          (D-257). Es la disposicion de siempre y la que el dueño eligio despues
+          de ver las otras dos: D-255 junto las dos columnas y centro el
+          conjunto, D-256 apoyo todo a la izquierda, y ninguna de las dos es
+          esto. El rail es el canto de la hoja; el texto va en el medio de lo
+          que sobra, como en cualquier panel lateral.
+
+          ⚠ EL ANCHO DE LECTURA NO CRECE CON EL PANEL: sigue topeado en 760 px.
+          Si creciera con la ventana las lineas quedarian largas y se leeria
+          peor. El rail se lleva su columna y la lectura no se entera.
 
           En telefono el rail no esta: entra por el cajon, mas abajo.
-
-          ⚠ EL RAIL Y LA LECTURA SON UNA SOLA PIEZA, APOYADA A LA IZQUIERDA
-          (D-255, corregido en D-256). Antes de D-255 el rail se pegaba al borde
-          y la conversacion se centraba en lo que sobraba: dos objetos sueltos
-          con 428 px de vacio por lado. D-255 los junto pero centro el conjunto,
-          y eso los comprimio en una franja angosta en el medio.
-
-          Ahora el sobrante cae entero a la derecha. Ver `MARGEN_CODICE`.
         */}
-        <div
-          style={{
-            display: "flex",
-            flex: "1 1 0",
-            minHeight: 0,
-            width: "100%",
-            paddingLeft: angosto ? 0 : MARGEN_CODICE,
-            boxSizing: "border-box",
-          }}
-        >
+        <div style={{ display: "flex", flex: "1 1 0", minHeight: 0 }}>
           {!angosto && (
             <aside
               // El pelo del canto se desvanece arriba y abajo: `.alv-pelo-v`.
@@ -701,17 +689,11 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           )}
 
           {/*
-            ⚠ EL TOPE VA EN LA COLUMNA, NO EN EL HILO (D-256). Con el conjunto
-            apoyado a la izquierda, la columna ya no la limita nadie: si el tope
-            viviera sólo en el hilo, la conversacion cortaria en 872 y el
-            composer se estiraria hasta el borde de la ventana, mucho mas ancho
-            que el texto que tiene arriba.
+            ⚠ LA COLUMNA NO LLEVA TOPE (D-257): tiene que ocupar todo lo que
+            queda para que el hilo y el pie puedan centrarse ADENTRO. Un tope
+            acá los pegaría al rail, que es lo que D-256 hizo sin querer.
           */}
-          <div style={{
-            display: "flex", flexDirection: "column", flex: "1 1 0",
-            minWidth: 0, minHeight: 0,
-            maxWidth: angosto ? "none" : ANCHO_LECTURA,
-          }}>
+          <div style={{ display: "flex", flexDirection: "column", flex: "1 1 0", minWidth: 0, minHeight: 0 }}>
         <div
           className="alv-scroll"
           style={{
@@ -719,16 +701,12 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             minHeight: "clamp(120px,22vh,240px)",
             boxSizing: "border-box",
             overflowY: "auto",
-            // El canal de la izquierda separa la lectura del rail; a la derecha
-            // no hace falta, porque de ese lado no hay nada contra que separarse.
-            padding: angosto
-              ? "16px 16px"
-              : `clamp(14px,3vh,30px) ${MARGEN_DERECHO}px clamp(14px,3vh,30px) ${CANAL_RAIL}px`,
+            padding: angosto ? "16px 16px" : "clamp(14px,3vh,30px) max(5vw,24px)",
             display: "flex",
             flexDirection: "column",
             gap: 16,
-            maxWidth: angosto ? 760 : ANCHO_LECTURA,
-            margin: angosto ? "0 auto" : 0,
+            maxWidth: 760,
+            margin: "0 auto",
             width: "100%",
           }}
         >
@@ -1373,7 +1351,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             // teléfono sin indicador, `env()` vale 0 y no sobra nada.
             padding: angosto
               ? "10px 12px calc(14px + env(safe-area-inset-bottom))"
-              : `6px ${MARGEN_DERECHO}px 26px ${CANAL_RAIL}px`,
+              : `6px ${CANAL} 26px`,
             // El pelo lo lleva el bloque de arriba cuando existe: tres líneas
             // apiladas en el último cuarto de pantalla eran demasiada
             // separación para lo poco que había que separar (D-255).

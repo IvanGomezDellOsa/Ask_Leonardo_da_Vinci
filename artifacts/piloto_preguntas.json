@@ -1,0 +1,1225 @@
+{
+  "criterio": {
+    "conceptualBajaA": 5,
+    "directaNoSube": true,
+    "gateNoEmpeora": true
+  },
+  "fallos": [
+    "B-02es",
+    "B-02en",
+    "B-04es",
+    "B-05es",
+    "B-06es",
+    "B-06en",
+    "B-07es",
+    "B-07en",
+    "B-09en",
+    "H-05es",
+    "H-05en",
+    "H-10en",
+    "H-11es",
+    "H-17es"
+  ],
+  "lote": [
+    {
+      "chunkId": "rt-0652",
+      "lang": "es",
+      "titulo": "The relation of art and nature",
+      "texto": "HE WHO DESPISES PAINTING LOVES NEITHER PHILOSOPHY NOR NATURE.\nIf you condemn painting, which is the only imitator of all visible works of nature, you will certainly despise a subtle invention which brings philosophy and subtle speculation to the consideration of the nature of all forms—seas and plains, trees, animals, plants and flowers—which are surrounded by shade and light. And this is true knowledge and the legitimate issue of nature; for painting is born of nature—or, to speak more correctly, we will say it is the grandchild of nature; for all visible things are produced by nature, and these her children have given birth to painting. Hence we may justly call it the grandchild of nature and related to God."
+    },
+    {
+      "chunkId": "rt-0493",
+      "lang": "es",
+      "titulo": "The artist's private life and choice of company",
+      "texto": "OF THE LIFE OF THE PAINTER IN THE COUNTRY.\nA painter needs such mathematics as belong to painting. And the absence of all companions who are alienated from his studies; his brain must be easily impressed by the variety of objects, which successively come before him, and also free from other cares . And if, when considering and defining one subject, a second subject intervenes—as happens when an object occupies the mind, then he must decide which of these cases is the more difficult to work out, and follow that up until it becomes quite clear, and then work out the explanation of the other . And above all he must keep his mind as clear as the surface of a mirror, which assumes colours as various as those of the different objects. And his companions should be like him as to their studies, and if such cannot be found he should keep his speculations to himself alone, so that at last he will find no more useful company [than his own]."
+    },
+    {
+      "chunkId": "rt-0478",
+      "lang": "es",
+      "titulo": "On images reflected in water",
+      "texto": "Painters often deceive themselves, by representing water in which they make the water reflect the objects seen by the man. But the water reflects the object from one side and the man sees it from the other; and it often happens that the painter sees an object from below, and thus one and the same object is seen from hind part before and upside down, because the water shows the image of the object in one way, and the eye sees it in another."
+    },
+    {
+      "chunkId": "rt-0012",
+      "lang": "es",
+      "titulo": "General introductions to the book on painting",
+      "texto": "Many will think they may reasonably blame me by alleging that my proofs are opposed to the authority of certain men held in the highest reverence by their inexperienced judgments; not considering that my works are the issue of pure and simple experience, who is the one true mistress. These rules are sufficient to enable you to know the true from the false—and this aids men to look only for things that are possible and with due moderation—and not to wrap yourself in ignorance, a thing which can have no good result, so that in despair you would give yourself up to melancholy."
+    },
+    {
+      "chunkId": "rt-0023",
+      "lang": "es",
+      "titulo": "The function of the eye",
+      "texto": "OF THE 10 ATTRIBUTES OF THE EYE, ALL CONCERNED IN PAINTING.\nPainting is concerned with all the 10 attributes of sight; which are:—Darkness, Light, Solidity and Colour, Form and Position, Distance and Propinquity, Motion and Rest. This little work of mine will be a tissue [of the studies] of these attributes, reminding the painter of the rules and methods by which he should use his art to imitate all the works of Nature which adorn the world."
+    },
+    {
+      "chunkId": "rt-0534",
+      "lang": "es",
+      "titulo": "On the limitations of painting",
+      "texto": "WHY A PAINTING CAN NEVER APPEAR DETACHED AS NATURAL OBJECTS DO.\nPainters often fall into despair of imitating nature when they see their pictures fail in that relief and vividness which objects have that are seen in a mirror; while they allege that they have colours which for brightness or depth far exceed the strength of light and shade in the reflections in the mirror, thus displaying their own ignorance rather than the real cause, because they do not know it. It is impossible that painted objects should appear in such relief as to resemble those reflected in the mirror, although both are seen on a flat surface, unless they are seen with only one eye; and the reason is that two eyes see one object behind another as a and b see m and n. m cannot exactly occupy [the space of] n because the base of the visual lines is so broad that the second body is seen beyond the first. But if you close one eye, as at s the body f will conceal r, because the line of sight proceeds from a single point and makes its base in the first body, whence the second, of the same size, can never be seen."
+    },
+    {
+      "chunkId": "rt-0018",
+      "lang": "es",
+      "titulo": "The use of the book on painting",
+      "texto": "These rules are of use only in correcting the figures; since every man makes some mistakes in his first compositions and he who knows them not, cannot amend them. But you, knowing your errors, will correct your works and where you find mistakes amend them, and remember never to fall into them again. But if you try to apply these rules in composition you will never make an end, and will produce confusion in your works.\nThese rules will enable you to have a free and sound judgment; since good judgment is born of clear understanding, and a clear understanding comes of reasons derived from sound rules, and sound rules are the issue of sound experience—the common mother of all the sciences and arts. Hence, bearing in mind the precepts of my rules, you will be able, merely by your amended judgment, to criticise and recognise every thing that is out of proportion in a work, whether in the perspective or in the figures or any thing else."
+    },
+    {
+      "chunkId": "rt-0651",
+      "lang": "es",
+      "titulo": "The relation of art and nature",
+      "texto": "What is fair in men, passes away, but not so in art."
+    },
+    {
+      "chunkId": "rt-0013",
+      "lang": "es",
+      "titulo": "General introductions to the book on painting",
+      "texto": "Among all the studies of natural causes and reasons Light chiefly delights the beholder; and among the great features of Mathematics the certainty of its demonstrations is what preeminently (tends to) elevate the mind of the investigator. Perspective, therefore, must be preferred to all the discourses and systems of human learning. In this branch [of science] the beam of light is explained on those methods of demonstration which form the glory not so much of Mathematics as of Physics and are graced with the flowers of both . But its axioms being laid down at great length, I shall abridge them to a conclusive brevity, arranging them on the method both of their natural order and of mathematical demonstration; sometimes by deduction of the effects from the causes, and sometimes arguing the causes from the effects; adding also to my own conclusions some which, though not included in them, may nevertheless be inferred from them. Thus, if the Lord—who is the light of all things—vouchsafe to enlighten me, I will treat of Light; wherefore I will divide the present work into 3 Parts ."
+    },
+    {
+      "chunkId": "rt-0654-0",
+      "lang": "es",
+      "titulo": "Painting is superior to poetry",
+      "texto": "And if the poet gratifies the sense by means of the ear, the painter does so by the eye—the worthier sense; but I will say no more of this but that, if a good painter represents the fury of a battle, and if a poet describes one, and they are both together put before the public, you will see where most of the spectators will stop, to which they will pay most attention, on which they will bestow most praise, and which will satisfy them best. Undoubtedly painting being by a long way the more intelligible and beautiful, will please most. Write up the name of God [Christ] in some spot and setup His image opposite and you will see which will be most reverenced. Painting comprehends in itself all the forms of nature, while you have nothing but words, which are not universal as form is, and if you have the effects of the representation, we have the representation of the effects. Take a poet who describes the beauty of a lady to her lover and a painter who represents her and you will see to which nature guides the enamoured critic. Certainly the proof should be allowed to rest on the verdict of experience. You have ranked painting among the mechanical arts but, in truth, if painters were as apt at praising their own works in writing as you are, it would not lie under the stigma of so base a name. If you call it mechanical because it is, in the first place, manual, and that it is the hand which produces what is to be found in the imagination, you too writers, who set down manually with the pen what is devised in your mind."
+    },
+    {
+      "chunkId": "rt-0019",
+      "lang": "es",
+      "titulo": "Necessity of theoretical knowledge",
+      "texto": "OF THE MISTAKES MADE BY THOSE WHO PRACTISE WITHOUT KNOWLEDGE.\nThose who are in love with practice without knowledge are like the sailor who gets into a ship without rudder or compass and who never can be certain whether he is going. Practice must always be founded on sound theory, and to this Perspective is the guide and the gateway; and without this nothing can be done well in the matter of drawing."
+    },
+    {
+      "chunkId": "rt-0020",
+      "lang": "es",
+      "titulo": "Necessity of theoretical knowledge",
+      "texto": "The painter who draws merely by practice and by eye, without any reason, is like a mirror which copies every thing placed in front of it without being conscious of their existence."
+    },
+    {
+      "chunkId": "rt-0040",
+      "lang": "es",
+      "titulo": "General remarks on perspective",
+      "texto": "ON PAINTING.\nPerspective is the best guide to the art of Painting.\nThe art of perspective is of such a nature as to make what is flat appear in relief and what is in relief flat."
+    },
+    {
+      "chunkId": "rt-0042",
+      "lang": "es",
+      "titulo": "The elements of perspective:--of the point",
+      "texto": "All the problems of perspective are made clear by the five terms of mathematicians, which are:—the point, the line, the angle, the superficies and the solid. The point is unique of its kind. And the point has neither height, breadth, length, nor depth, whence it is to be regarded as indivisible and as having no dimensions in space. The line is of three kinds, straight, curved and sinuous and it has neither breadth, height, nor depth. Hence it is indivisible, excepting in its length, and its ends are two points. The angle is the junction of two lines in a point."
+    },
+    {
+      "chunkId": "rt-0043",
+      "lang": "es",
+      "titulo": "The elements of perspective:--of the point",
+      "texto": "A point is not part of a line.\nOF THE NATURAL POINT.\nThe smallest natural point is larger than all mathematical points, and this is proved because the natural point has continuity, and any thing that is continuous is infinitely divisible; but the mathematical point is indivisible because it has no size."
+    },
+    {
+      "chunkId": "rt-0045",
+      "lang": "es",
+      "titulo": "The elements of perspective:--of the point",
+      "texto": "1, The superficies is a limitation of the body. 2, and the limitation of a body is no part of that body. 4, and the limitation of one body is that which begins another. 3, that which is not part of any body is nothing. Nothing is that which fills no space.\nIf one single point placed in a circle may be the starting point of an infinite number of lines, and the termination of an infinite number of lines, there must be an infinite number of points separable from this point, and these when reunited become one again; whence it follows that the part may be equal to the whole."
+    },
+    {
+      "chunkId": "rt-0046",
+      "lang": "es",
+      "titulo": "The elements of perspective:--of the point",
+      "texto": "The point, being indivisible, occupies no space. That which occupies no space is nothing. The limiting surface of one thing is the beginning of another. 2. That which is no part of any body is called nothing. 1. That which has no limitations, has no form. The limitations of two conterminous bodies are interchangeably the surface of each. All the surfaces of a body are not parts of that body."
+    },
+    {
+      "chunkId": "rt-0047",
+      "lang": "es",
+      "titulo": "Of the line",
+      "texto": "DEFINITION OF THE NATURE OF THE LINE.\nThe line has in itself neither matter nor substance and may rather be called an imaginary idea than a real object; and this being its nature it occupies no space. Therefore an infinite number of lines may be conceived of as intersecting each other at a point, which has no dimensions and is only of the thickness (if thickness it may be called) of one single line.\nHOW WE MAY CONCLUDE THAT A SUPERFICIES TERMINATES IN A POINT?\nAn angular surface is reduced to a point where it terminates in an angle. Or, if the sides of that angle are produced in a straight line, then—beyond that angle—another surface is generated, smaller, or equal to, or larger than the first."
+    },
+    {
+      "chunkId": "rt-0048",
+      "lang": "es",
+      "titulo": "Of the line",
+      "texto": "OF DRAWING OUTLINE.\nConsider with the greatest care the form of the outlines of every object, and the character of their undulations. And these undulations must be separately studied, as to whether the curves are composed of arched convexities or angular concavities."
+    },
+    {
+      "chunkId": "rt-0049",
+      "lang": "es",
+      "titulo": "The nature of the outline",
+      "texto": "The nature of the outline.\nThe boundaries of bodies are the least of all things. The proposition is proved to be true, because the boundary of a thing is a surface, which is not part of the body contained within that surface; nor is it part of the air surrounding that body, but is the medium interposted between the air and the body, as is proved in its place. But the lateral boundaries of these bodies is the line forming the boundary of the surface, which line is of invisible thickness. Wherefore O painter! do not surround your bodies with lines, and above all when representing objects smaller than nature; for not only will their external outlines become indistinct, but their parts will be invisible from distance."
+    },
+    {
+      "chunkId": "rt-0050",
+      "lang": "es",
+      "titulo": "Definition of perspective",
+      "texto": "Definition of Perspective.\n[Drawing is based upon perspective, which is nothing else than a thorough knowledge of the function of the eye. And this function simply consists in receiving in a pyramid the forms and colours of all the objects placed before it. I say in a pyramid, because there is no object so small that it will not be larger than the spot where these pyramids are received into the eye. Therefore, if you extend the lines from the edges of each body as they converge you will bring them to a single point, and necessarily the said lines must form a pyramid.]\n[Perspective is nothing more than a rational demonstration applied to the consideration of how objects in front of the eye transmit their image to it, by means of a pyramid of lines. The Pyramid is the name I apply to the lines which, starting from the surface and edges of each object, converge from a distance and meet in a single point.]\n[Perspective is a rational demonstration, by which we may practically and clearly understand how objects transmit their own image, by lines forming a Pyramid (centred) in the eye.]\nPerspective is a rational demonstration by which experience confirms that every object sends its image to the eye by a pyramid of lines; and bodies of equal size will result in a pyramid of larger or smaller size, according to the difference in their distance, one from the other. By a pyramid of lines I mean those which start from the surface and edges of bodies, and, converging from a distance meet in a single point. A point is said to be that which [having no dimensions] cannot be divided, and this point placed in the eye receives all the points of the cone."
+    },
+    {
+      "chunkId": "rt-0652",
+      "lang": "en",
+      "titulo": "The relation of art and nature",
+      "texto": "HE WHO DESPISES PAINTING LOVES NEITHER PHILOSOPHY NOR NATURE.\nIf you condemn painting, which is the only imitator of all visible works of nature, you will certainly despise a subtle invention which brings philosophy and subtle speculation to the consideration of the nature of all forms—seas and plains, trees, animals, plants and flowers—which are surrounded by shade and light. And this is true knowledge and the legitimate issue of nature; for painting is born of nature—or, to speak more correctly, we will say it is the grandchild of nature; for all visible things are produced by nature, and these her children have given birth to painting. Hence we may justly call it the grandchild of nature and related to God."
+    },
+    {
+      "chunkId": "rt-0493",
+      "lang": "en",
+      "titulo": "The artist's private life and choice of company",
+      "texto": "OF THE LIFE OF THE PAINTER IN THE COUNTRY.\nA painter needs such mathematics as belong to painting. And the absence of all companions who are alienated from his studies; his brain must be easily impressed by the variety of objects, which successively come before him, and also free from other cares . And if, when considering and defining one subject, a second subject intervenes—as happens when an object occupies the mind, then he must decide which of these cases is the more difficult to work out, and follow that up until it becomes quite clear, and then work out the explanation of the other . And above all he must keep his mind as clear as the surface of a mirror, which assumes colours as various as those of the different objects. And his companions should be like him as to their studies, and if such cannot be found he should keep his speculations to himself alone, so that at last he will find no more useful company [than his own]."
+    },
+    {
+      "chunkId": "rt-0013",
+      "lang": "en",
+      "titulo": "General introductions to the book on painting",
+      "texto": "Among all the studies of natural causes and reasons Light chiefly delights the beholder; and among the great features of Mathematics the certainty of its demonstrations is what preeminently (tends to) elevate the mind of the investigator. Perspective, therefore, must be preferred to all the discourses and systems of human learning. In this branch [of science] the beam of light is explained on those methods of demonstration which form the glory not so much of Mathematics as of Physics and are graced with the flowers of both . But its axioms being laid down at great length, I shall abridge them to a conclusive brevity, arranging them on the method both of their natural order and of mathematical demonstration; sometimes by deduction of the effects from the causes, and sometimes arguing the causes from the effects; adding also to my own conclusions some which, though not included in them, may nevertheless be inferred from them. Thus, if the Lord—who is the light of all things—vouchsafe to enlighten me, I will treat of Light; wherefore I will divide the present work into 3 Parts ."
+    },
+    {
+      "chunkId": "rt-0017",
+      "lang": "en",
+      "titulo": "The plan of the book on painting",
+      "texto": "ON THE SECTIONS OF [THE BOOK ON] PAINTING.\nThe first thing in painting is that the objects it represents should appear in relief, and that the grounds surrounding them at different distances shall appear within the vertical plane of the foreground of the picture by means of the 3 branches of Perspective, which are: the diminution in the distinctness of the forms of the objects, the diminution in their magnitude; and the diminution in their colour. And of these 3 classes of Perspective the first results from [the structure of] the eye, while the other two are caused by the atmosphere which intervenes between the eye and the objects seen by it. The second essential in painting is appropriate action and a due variety in the figures, so that the men may not all look like brothers, &c."
+    },
+    {
+      "chunkId": "rt-0651",
+      "lang": "en",
+      "titulo": "The relation of art and nature",
+      "texto": "What is fair in men, passes away, but not so in art."
+    },
+    {
+      "chunkId": "rt-0654-1",
+      "lang": "en",
+      "titulo": "Painting is superior to poetry",
+      "texto": "as you are, it would not lie under the stigma of so base a name. If you call it mechanical because it is, in the first place, manual, and that it is the hand which produces what is to be found in the imagination, you too writers, who set down manually with the pen what is devised in your mind. And if you say it is mechanical because it is done for money, who falls into this error—if error it can be called—more than you? If you lecture in the schools do you not go to whoever pays you most? Do you do any work without pay? Still, I do not say this as blaming such views, for every form of labour looks for its reward. And if a poet should say: \"I will invent a fiction with a great purpose,\" the painter can do the same, as Apelles painted Calumny. If you were to say that poetry is more eternal, I say the works of a coppersmith are more eternal still, for time preserves them longer than your works or ours; nevertheless they have not much imagination [29]. And a picture, if painted on copper with enamel colours may be yet more permanent. We, by our arts may be called the grandsons of God. If poetry deals with moral philosophy, painting deals with natural philosophy. Poetry describes the action of the mind, painting considers what the mind may effect by the motions [of the body]. If poetry can terrify people by hideous fictions, painting can do as much by depicting the same things in action. Supposing that a poet applies himself to represent beauty, ferocity, or a base, a foul or a monstrous thing, as against a painter, he may in his ways bring forth a variety of forms; but will the painter not satisfy more? are there not pictures to be seen, so like the actual things, that they deceive men and animals?"
+    },
+    {
+      "chunkId": "rt-0654-0",
+      "lang": "en",
+      "titulo": "Painting is superior to poetry",
+      "texto": "And if the poet gratifies the sense by means of the ear, the painter does so by the eye—the worthier sense; but I will say no more of this but that, if a good painter represents the fury of a battle, and if a poet describes one, and they are both together put before the public, you will see where most of the spectators will stop, to which they will pay most attention, on which they will bestow most praise, and which will satisfy them best. Undoubtedly painting being by a long way the more intelligible and beautiful, will please most. Write up the name of God [Christ] in some spot and setup His image opposite and you will see which will be most reverenced. Painting comprehends in itself all the forms of nature, while you have nothing but words, which are not universal as form is, and if you have the effects of the representation, we have the representation of the effects. Take a poet who describes the beauty of a lady to her lover and a painter who represents her and you will see to which nature guides the enamoured critic. Certainly the proof should be allowed to rest on the verdict of experience. You have ranked painting among the mechanical arts but, in truth, if painters were as apt at praising their own works in writing as you are, it would not lie under the stigma of so base a name. If you call it mechanical because it is, in the first place, manual, and that it is the hand which produces what is to be found in the imagination, you too writers, who set down manually with the pen what is devised in your mind."
+    },
+    {
+      "chunkId": "rt-0653",
+      "lang": "en",
+      "titulo": "Painting is superior to poetry",
+      "texto": "THAT PAINTING SURPASSES ALL HUMAN WORKS BY THE SUBTLE CONSIDERATIONS BELONGING TO IT.\nThe eye, which is called the window of the soul, is the principal means by which the central sense can most completely and abundantly appreciate the infinite works of nature; and the ear is the second, which acquires dignity by hearing of the things the eye has seen. If you, historians, or poets, or mathematicians had not seen things with your eyes you could not report of them in writing. And if you, 0 poet, tell a story with your pen, the painter with his brush can tell it more easily, with simpler completeness and less tedious to be understood. And if you call painting dumb poetry, the painter may call poetry blind painting. Now which is the worse defect? to be blind or dumb? Though the poet is as free as the painter in the invention of his fictions they are not so satisfactory to men as paintings; for, though poetry is able to describe forms, actions and places in words, the painter deals with the actual similitude of the forms, in order to represent them. Now tell me which is the nearer to the actual man: the name of man or the image of the man. The name of man differs in different countries, but his form is never changed but by death."
+    },
+    {
+      "chunkId": "rt-0655",
+      "lang": "en",
+      "titulo": "Painting is superior to sculpture",
+      "texto": "THAT SCULPTURE IS LESS INTELLECTUAL THAN PAINTING, AND LACKS MANY CHARACTERISTICS OF NATURE."
+    },
+    {
+      "chunkId": "rt-0306",
+      "lang": "en",
+      "titulo": "On the colour of the atmosphere",
+      "texto": "The surface of an object partakes of the colour of the light which illuminates it; and of the colour of the atmosphere which lies between the eye and that object, that is of the colour of the transparent medium lying between the object and the eye; and among colours of a similar character the second will be of the same tone as the first, and this is caused by the increased thickness of the colour of the medium lying between the object and the eye.\n307. OF PAINTING.\nOf various colours which are none of them blue that which at a great distance will look bluest is the nearest to black; and so, conversely, the colour which is least like black will at a great distance best preserve its own colour.\nHence the green of fields will assume a bluer hue than yellow or white will, and conversely yellow or white will change less than green, and red still less."
+    },
+    {
+      "chunkId": "rt-0019",
+      "lang": "en",
+      "titulo": "Necessity of theoretical knowledge",
+      "texto": "OF THE MISTAKES MADE BY THOSE WHO PRACTISE WITHOUT KNOWLEDGE.\nThose who are in love with practice without knowledge are like the sailor who gets into a ship without rudder or compass and who never can be certain whether he is going. Practice must always be founded on sound theory, and to this Perspective is the guide and the gateway; and without this nothing can be done well in the matter of drawing."
+    },
+    {
+      "chunkId": "rt-0020",
+      "lang": "en",
+      "titulo": "Necessity of theoretical knowledge",
+      "texto": "The painter who draws merely by practice and by eye, without any reason, is like a mirror which copies every thing placed in front of it without being conscious of their existence."
+    },
+    {
+      "chunkId": "rt-0040",
+      "lang": "en",
+      "titulo": "General remarks on perspective",
+      "texto": "ON PAINTING.\nPerspective is the best guide to the art of Painting.\nThe art of perspective is of such a nature as to make what is flat appear in relief and what is in relief flat."
+    },
+    {
+      "chunkId": "rt-0042",
+      "lang": "en",
+      "titulo": "The elements of perspective:--of the point",
+      "texto": "All the problems of perspective are made clear by the five terms of mathematicians, which are:—the point, the line, the angle, the superficies and the solid. The point is unique of its kind. And the point has neither height, breadth, length, nor depth, whence it is to be regarded as indivisible and as having no dimensions in space. The line is of three kinds, straight, curved and sinuous and it has neither breadth, height, nor depth. Hence it is indivisible, excepting in its length, and its ends are two points. The angle is the junction of two lines in a point."
+    },
+    {
+      "chunkId": "rt-0043",
+      "lang": "en",
+      "titulo": "The elements of perspective:--of the point",
+      "texto": "A point is not part of a line.\nOF THE NATURAL POINT.\nThe smallest natural point is larger than all mathematical points, and this is proved because the natural point has continuity, and any thing that is continuous is infinitely divisible; but the mathematical point is indivisible because it has no size."
+    },
+    {
+      "chunkId": "rt-0045",
+      "lang": "en",
+      "titulo": "The elements of perspective:--of the point",
+      "texto": "1, The superficies is a limitation of the body. 2, and the limitation of a body is no part of that body. 4, and the limitation of one body is that which begins another. 3, that which is not part of any body is nothing. Nothing is that which fills no space.\nIf one single point placed in a circle may be the starting point of an infinite number of lines, and the termination of an infinite number of lines, there must be an infinite number of points separable from this point, and these when reunited become one again; whence it follows that the part may be equal to the whole."
+    },
+    {
+      "chunkId": "rt-0046",
+      "lang": "en",
+      "titulo": "The elements of perspective:--of the point",
+      "texto": "The point, being indivisible, occupies no space. That which occupies no space is nothing. The limiting surface of one thing is the beginning of another. 2. That which is no part of any body is called nothing. 1. That which has no limitations, has no form. The limitations of two conterminous bodies are interchangeably the surface of each. All the surfaces of a body are not parts of that body."
+    },
+    {
+      "chunkId": "rt-0047",
+      "lang": "en",
+      "titulo": "Of the line",
+      "texto": "DEFINITION OF THE NATURE OF THE LINE.\nThe line has in itself neither matter nor substance and may rather be called an imaginary idea than a real object; and this being its nature it occupies no space. Therefore an infinite number of lines may be conceived of as intersecting each other at a point, which has no dimensions and is only of the thickness (if thickness it may be called) of one single line.\nHOW WE MAY CONCLUDE THAT A SUPERFICIES TERMINATES IN A POINT?\nAn angular surface is reduced to a point where it terminates in an angle. Or, if the sides of that angle are produced in a straight line, then—beyond that angle—another surface is generated, smaller, or equal to, or larger than the first."
+    },
+    {
+      "chunkId": "rt-0048",
+      "lang": "en",
+      "titulo": "Of the line",
+      "texto": "OF DRAWING OUTLINE.\nConsider with the greatest care the form of the outlines of every object, and the character of their undulations. And these undulations must be separately studied, as to whether the curves are composed of arched convexities or angular concavities."
+    },
+    {
+      "chunkId": "rt-0049",
+      "lang": "en",
+      "titulo": "The nature of the outline",
+      "texto": "The nature of the outline.\nThe boundaries of bodies are the least of all things. The proposition is proved to be true, because the boundary of a thing is a surface, which is not part of the body contained within that surface; nor is it part of the air surrounding that body, but is the medium interposted between the air and the body, as is proved in its place. But the lateral boundaries of these bodies is the line forming the boundary of the surface, which line is of invisible thickness. Wherefore O painter! do not surround your bodies with lines, and above all when representing objects smaller than nature; for not only will their external outlines become indistinct, but their parts will be invisible from distance."
+    },
+    {
+      "chunkId": "rt-0050",
+      "lang": "en",
+      "titulo": "Definition of perspective",
+      "texto": "Definition of Perspective.\n[Drawing is based upon perspective, which is nothing else than a thorough knowledge of the function of the eye. And this function simply consists in receiving in a pyramid the forms and colours of all the objects placed before it. I say in a pyramid, because there is no object so small that it will not be larger than the spot where these pyramids are received into the eye. Therefore, if you extend the lines from the edges of each body as they converge you will bring them to a single point, and necessarily the said lines must form a pyramid.]\n[Perspective is nothing more than a rational demonstration applied to the consideration of how objects in front of the eye transmit their image to it, by means of a pyramid of lines. The Pyramid is the name I apply to the lines which, starting from the surface and edges of each object, converge from a distance and meet in a single point.]\n[Perspective is a rational demonstration, by which we may practically and clearly understand how objects transmit their own image, by lines forming a Pyramid (centred) in the eye.]\nPerspective is a rational demonstration by which experience confirms that every object sends its image to the eye by a pyramid of lines; and bodies of equal size will result in a pyramid of larger or smaller size, according to the difference in their distance, one from the other. By a pyramid of lines I mean those which start from the surface and edges of bodies, and, converging from a distance meet in a single point. A point is said to be that which [having no dimensions] cannot be divided, and this point placed in the eye receives all the points of the cone."
+    },
+    {
+      "chunkId": "rt-0545",
+      "lang": "es",
+      "titulo": "The right position of the artist, when painting and of the spectator",
+      "texto": "If you cannot arrange that those who look at your work should stand at one particular point, when constructing your work, stand back until your eye is at least 20 times as far off as the greatest height and width of your work. This will make so little difference when the eye of the spectator moves, that it will be hardly appreciable, and it will look very good.\nIf the point of sight is at t you would make the figures on the circle d b e all of one size, as each of them bears the same relation to the point t. But consider the diagram given below and you will see that this is wrong, and why I shall make b smaller than d e .\nIt is easy to understand that if 2 objects equal to each other are placed side by side the one at 3 braccia distance looks smaller than that placed at 2 braccia. This however is rather theoretical than for practice, because you stand close by .\nAll the objects in the foreground, whether large or small, are to be drawn of their proper size, and if you see them from a distance they will appear just as they ought, and if you see them close they will diminish of themselves.\nTake care that the vertical plan on which you work out the perspective of the objects seen is of the same form as the wall on which the work is to be executed."
+    },
+    {
+      "chunkId": "rt-0499",
+      "lang": "es",
+      "titulo": "On the productive power of minor artists",
+      "texto": "Nor is the painter praiseworthy who does but one thing well, as the nude figure, heads, draperies, animals, landscapes or other such details, irrespective of other work; for there can be no mind so inept, that after devoting itself to one single thing and doing it constantly, it should fail to do it well."
+    },
+    {
+      "chunkId": "rt-0500",
+      "lang": "es",
+      "titulo": "On the productive power of minor artists",
+      "texto": "THAT A PAINTER IS NOT ADMIRABLE UNLESS HE IS UNIVERSAL.\nSome may distinctly assert that those persons are under a delusion who call that painter a good master who can do nothing well but a head or a figure. Certainly this is no great achievement; after studying one single thing for a life-time who would not have attained some perfection in it? But, since we know that painting embraces and includes in itself every object produced by nature or resulting from the fortuitous actions of men, in short, all that the eye can see, he seems to me but a poor master who can only do a figure well. For do you not perceive how many and various actions are performed by men only; how many different animals there are, as well as trees, plants, flowers, with many mountainous regions and plains, springs and rivers, cities with public and private buildings, machines, too, fit for the purposes of men, divers costumes, decorations and arts? And all these things ought to be regarded as of equal importance and value, by the man who can be termed a good painter."
+    },
+    {
+      "chunkId": "rt-0502",
+      "lang": "es",
+      "titulo": "A caution against one-sided study",
+      "texto": "HOW, IN IMPORTANT WORKS, A MAN SHOULD NOT TRUST ENTIRELY TO HIS MEMORY WITHOUT CONDESCENDING TO DRAW FROM NATURE.\nAny master who should venture to boast that he could remember all the forms and effects of nature would certainly appear to me to be graced with extreme ignorance, inasmuch as these effects are infinite and our memory is not extensive enough to retain them. Hence, O! painter, beware lest the lust of gain should supplant in you the dignity of art; for the acquisition of glory is a much greater thing than the glory of riches. Hence, for these and other reasons which might be given, first strive in drawing to represent your intention to the eye by expressive forms, and the idea originally formed in your imagination; then go on taking out or putting in, until you have satisfied yourself. Then have living men, draped or nude, as you may have purposed in your work, and take care that in dimensions and size, as determined by perspective, nothing is left in the work which is not in harmony with reason and the effects in nature. And this will be the way to win honour in your art."
+    },
+    {
+      "chunkId": "rt-0501",
+      "lang": "es",
+      "titulo": "On the productive power of minor artists",
+      "texto": "OF THE MISERABLE PRETENCES MADE BY THOSE WHO FALSELY AND UNWORTHILY ACQUIRE THE NAME OF PAINTERS.\nNow there is a certain race of painters who, having studied but little, must need take as their standard of beauty mere gold and azure, and these, with supreme conceit, declare that they will not give good work for miserable payment, and that they could do as well as any other if they were well paid. But, ye foolish folks! cannot such artists keep some good work, and then say: this is a costly work and this more moderate and this is average work and show that they can work at all prices?"
+    },
+    {
+      "chunkId": "rt-0547",
+      "lang": "es",
+      "titulo": "The right position of the artist, when painting and of the spectator",
+      "texto": "WHERE A SPECTATOR SHOULD STAND TO LOOK AT A PICTURE.\nSupposing a b to be the picture and d to be the light, I say that if you place yourself between c and e you will not understand the picture well and particularly if it is done in oils, or still more if it is varnished, because it will be lustrous and somewhat of the nature of a mirror. And for this reason the nearer you go towards the point c, the less you will see, because the rays of light falling from the window on the picture are reflected to that point. But if you place yourself between e and d you will get a good view of it, and the more so as you approach the point d, because that spot is least exposed to these reflected rays of light."
+    },
+    {
+      "chunkId": "rt-0530",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "OF JUDGING YOUR OWN PICTURES.\nWe know very well that errors are better recognised in the works of others than in our own; and that often, while reproving little faults in others, you may ignore great ones in yourself. To avoid such ignorance, in the first place make yourself a master of perspective, then acquire perfect knowledge of the proportions of men and other animals, and also, study good architecture, that is so far as concerns the forms of buildings and other objects which are on the face of the earth; these forms are infinite, and the better you know them the more admirable will your work be. And in cases where you lack experience do not shrink from drawing them from nature. But, to carry out my promise above [in the title]—I say that when you paint you should have a flat mirror and often look at your work as reflected in it, when you will see it reversed, and it will appear to you like some other painter's work, so you will be better able to judge of its faults than in any other way. Again, it is well that you should often leave off work and take a little relaxation, because, when you come back to it you are a better judge; for sitting too close at work may greatly deceive you. Again, it is good to retire to a distance because the work looks smaller and your eye takes in more of it at a glance and sees more easily the discords or disproportion in the limbs and colours of the objects."
+    },
+    {
+      "chunkId": "rt-0542",
+      "lang": "es",
+      "titulo": "The right position of the artist, when painting and of the spectator",
+      "texto": "WHY GROUPS OF FIGURES ONE ABOVE ANOTHER ARE TO BE AVOIDED.\nThe universal practice which painters adopt on the walls of chapels is greatly and reasonably to be condemned. Inasmuch as they represent one historical subject on one level with a landscape and buildings, and then go up a step and paint another, varying the point [of sight], and then a third and a fourth, in such a way as that on one wall there are 4 points of sight, which is supreme folly in such painters. We know that the point of sight is opposite the eye of the spectator of the scene; and if you would [have me] tell you how to represent the life of a saint divided into several pictures on one and the same wall, I answer that you must set out the foreground with its point of sight on a level with the eye of the spectator of the scene, and upon this plane represent the more important part of the story large and then, diminishing by degrees the figures, and the buildings on various hills and open spaces, you can represent all the events of the history. And on the remainder of the wall up to the top put trees, large as compared with the figures, or angels if they are appropriate to the story, or birds or clouds or similar objects; otherwise do not trouble yourself with it for your whole work will be wrong."
+    },
+    {
+      "chunkId": "rt-0532",
+      "lang": "es",
+      "titulo": "On the management of works",
+      "texto": "THAT A PAINTER OUGHT TO BE CURIOUS TO HEAR THE OPINIONS OF EVERY ONE ON HIS WORK.\nCertainly while a man is painting he ought not to shrink from hearing every opinion. For we know very well that a man, though he may not be a painter, is familiar with the forms of other men and very capable of judging whether they are hump backed, or have one shoulder higher or lower than the other, or too big a mouth or nose, and other defects; and, as we know that men are competent to judge of the works of nature, how much more ought we to admit that they can judge of our errors; since you know how much a man may be deceived in his own work. And if you are not conscious of this in yourself study it in others and profit by their faults. Therefore be curious to hear with patience the opinions of others, consider and weigh well whether those who find fault have ground or not for blame, and, if so amend; but, if not make as though you had not heard, or if he should be a man you esteem show him by argument the cause of his mistake."
+    },
+    {
+      "chunkId": "rt-0521",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "To draw a nude figure from nature, or any thing else, hold in your hand a plumb-line to enable you to judge of the relative position of objects."
+    },
+    {
+      "chunkId": "rt-0522",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "OF DRAWING AN OBJECT.\nWhen you draw take care to set up a principal line which you must observe all throughout the object you are drawing; every thing should bear relation to the direction of this principal line."
+    },
+    {
+      "chunkId": "rt-0523",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "OF A MODE OF DRAWING A PLACE ACCURATELY.\nHave a piece of glass as large as a half sheet of royal folio paper and set thus firmly in front of your eyes that is, between your eye and the thing you want to draw; then place yourself at a distance of 2/3 of a braccia from the glass fixing your head with a machine in such a way that you cannot move it at all. Then shut or entirely cover one eye and with a brush or red chalk draw upon the glass that which you see beyond it; then trace it on paper from the glass, afterwards transfer it onto good paper, and paint it if you like, carefully attending to the arial perspective.\nHOW TO LEARN TO PLACE YOUR FIGURES CORRECTLY.\nIf you want to acquire a practice of good and correct attitudes for your figures, make a square frame or net, and square it out with thread; place this between your eye and the nude model you are drawing, and draw these same squares on the paper on which you mean to draw the figure, but very delicately. Then place a pellet of wax on a spot of the net which will serve as a fixed point, which, whenever you look at your model, must cover the pit of the throat; or, if his back is turned, it may cover one of the vertebrae of the neck. Thus these threads will guide you as to each part of the body which, in any given attitude will be found below the pit of the throat, or the angles of the shoulders, or the nipples, or hips and other parts of the body; and the transverse lines of the net will show you how much the figure is higher over the leg on which it is posed than over the other, and the same with the hips, and the knees and the feet. But always fix the net perpendicularly so that all the divisions that you see the model divided into by the net work correspond with your drawing of the model on the net work you have sketched. The squares you draw may be as much smaller than those of the net as you wish that your figure should be smaller than nature. Afterwards remember when drawing figures, to use the rule of the corresponding proportions of the limbs as you have learnt it from the frame and net. This should be 3 braccia and a half high and 3 braccia wide; 7 braccia distant from you and 1 braccio from the model."
+    },
+    {
+      "chunkId": "rt-0524",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "A METHOD OF DRAWING AN OBJECT IN RELIEF AT NIGHT.\nPlace a sheet of not too transparent paper between the relievo and the light and you can draw thus very well."
+    },
+    {
+      "chunkId": "rt-0525",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "If you want to represent a figure on a wall, the wall being foreshortened, while the figure is to appear in its proper form, and as standing free from the wall, you must proceed thus: have a thin plate of iron and make a small hole in the centre; this hole must be round. Set a light close to it in such a position as that it shines through the central hole, then place any object or figure you please so close to the wall that it touches it and draw the outline of the shadow on the wall; then fill in the shade and add the lights; place the person who is to see it so that he looks through that same hole where at first the light was; and you will never be able to persuade yourself that the image is not detached from the wall."
+    },
+    {
+      "chunkId": "rt-0526",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "TO DRAW A FIGURE ON A WALL 12 BRACCIA HIGH WHICH SHALL LOOK 24 BRACCIA HIGH.\nIf you wish to draw a figure or any other object to look 24 braccia high you must do it in this way. First, on the surface m r draw half the man you wish to represent; then the other half; then put on the vault m n [the rest of] the figure spoken of above; first set out the vertical plane on the floor of a room of the same shape as the wall with the coved part on which you are to paint your figure. Then, behind it, draw a figure set out in profile of whatever size you please, and draw lines from it to the point f and, as these lines cut m n on the vertical plane, so will the figure come on the wall, of which the vertical plane gives a likeness, and you will have all the [relative] heights and prominences of the figure. And the breadth or thickness which are on the upright wall m n are to be drawn in their proper form, since, as the wall recedes the figure will be foreshortened by itself; but [that part of] the figure which goes into the cove you must foreshorten, as if it were standing upright; this diminution you must set out on a flat floor and there must stand the figure which is to be transferred from the vertical plane r n in its real size and reduce it once more on a vertical plane; and this will be a good method\n."
+    },
+    {
+      "chunkId": "rt-0527",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "If you would to draw a cube in an angle of a wall, first draw the object in its own proper shape and raise it onto a vertical plane until it resembles the angle in which the said object is to be represented."
+    },
+    {
+      "chunkId": "rt-0528",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "Why are paintings seen more correctly in a mirror than out of it?"
+    },
+    {
+      "chunkId": "rt-0529",
+      "lang": "es",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "HOW THE MIRROR IS THE MASTER [AND GUIDE] OF PAINTERS.\nWhen you want to see if your picture corresponds throughout with the objects you have drawn from nature, take a mirror and look in that at the reflection of the real things, and compare the reflected image with your picture, and consider whether the subject of the two images duly corresponds in both, particularly studying the mirror. You should take the mirror for your guide—that is to say a flat mirror—because on its surface the objects appear in many respects as in a painting. Thus you see, in a painting done on a flat surface, objects which appear in relief, and in the mirror—also a flat surface—they look the same. The picture has one plane surface and the same with the mirror. The picture is intangible, in so far as that which appears round and prominent cannot be grasped in the hands; and it is the same with the mirror. And since you can see that the mirror, by means of outlines, shadows and lights, makes objects appear in relief, you, who have in your colours far stronger lights and shades than those in the mirror, can certainly, if you compose your picture well, make that also look like a natural scene reflected in a large mirror."
+    },
+    {
+      "chunkId": "rt-0531",
+      "lang": "es",
+      "titulo": "On the management of works",
+      "texto": "OF A METHOD OF LEARNING WELL BY HEART.\nWhen you want to know a thing you have studied in your memory proceed in this way: When you have drawn the same thing so many times that you think you know it by heart, test it by drawing it without the model; but have the model traced on flat thin glass and lay this on the drawing you have made without the model, and note carefully where the tracing does not coincide with your drawing, and where you find you have gone wrong; and bear in mind not to repeat the same mistakes. Then return to the model, and draw the part in which you were wrong again and again till you have it well in your mind. If you have no flat glass for tracing on, take some very thin kidts-kin parchment, well oiled and dried. And when you have used it for one drawing you can wash it clean with a sponge and make a second."
+    },
+    {
+      "chunkId": "rt-0533",
+      "lang": "es",
+      "titulo": "On the limitations of painting",
+      "texto": "HOW IN SMALL OBJECTS ERRORS ARE LESS EVIDENT THAN IN LARGE ONES.\nIn objects of minute size the extent of error is not so perceptible as in large ones; and the reason is that if this small object is a representation of a man or of some other animal, from the immense diminution the details cannot be worked out by the artist with the finish that is requisite. Hence it is not actually complete; and, not being complete, its faults cannot be determined. For instance: Look at a man at a distance of 300 braccia and judge attentively whether he be handsome or ugly, or very remarkable or of ordinary appearance. You will find that with the utmost effort you cannot persuade yourself to decide. And the reason is that at such a distance the man is so much diminished that the character of the details cannot be determined. And if you wish to see how much this man is diminished [by distance] hold one of your fingers at a span's distance from your eye, and raise or lower it till the top joint touches the feet of the figure you are looking at, and you will see an incredible reduction. For this reason we often doubt as to the person of a friend at a distance."
+    },
+    {
+      "chunkId": "rt-0535",
+      "lang": "es",
+      "titulo": "On the limitations of painting",
+      "texto": "WHY OF TWO OBJECTS OF EQUAL SIZE A PAINTED ONE WILL LOOK LARGER THAN A SOLID ONE.\nThe reason of this is not so easy to demonstrate as many others. Still I will endeavour to accomplish it, if not wholly, at any rate in part. The perspective of diminution demonstrates by reason, that objects diminish in proportion as they are farther from the eye, and this reasoning is confirmed by experience. Hence, the lines of sight that extend between the object and the eye, when they are directed to the surface of a painting are all intersected at uniform limits, while those lines which are directed towards a piece of sculpture are intersected at various limits and are of various lengths. The lines which are longest extend to a more remote limb than the others and therefore that limb looks smaller. As there are numerous lines each longer than the others—since there are numerous parts, each more remote than the others and these, being farther off, necessarily appear smaller, and by appearing smaller it follows that their diminution makes the whole mass of the object look smaller. But this does not occur in painting; since the lines of sight all end at the same distance there can be no diminution, hence the parts not being diminished the whole object is undiminished, and for this reason painting does not diminish, as a piece of sculpture does."
+    },
+    {
+      "chunkId": "rt-0494",
+      "lang": "es",
+      "titulo": "The artist's private life and choice of company",
+      "texto": "OF THE LIFE OF THE PAINTER IN HIS STUDIO.\nTo the end that well-being of the body may not injure that of the mind, the painter or draughtsman must remain solitary, and particularly when intent on those studies and reflections which will constantly rise up before his eye, giving materials to be well stored in the memory. While you are alone you are entirely your own [master] and if you have one companion you are but half your own, and the less so in proportion to the indiscretion of his behaviour. And if you have many companions you will fall deeper into the same trouble. If you should say: \"I will go my own way and withdraw apart, the better to study the forms of natural objects\", I tell you, you will not be able to help often listening to their chatter. And so, since one cannot serve two masters, you will badly fill the part of a companion, and carry out your studies of art even worse. And if you say: \"I will withdraw so far that their words cannot reach me and they cannot disturb me\", I can tell you that you will be thought mad. But, you see, you will at any rate be alone. And if you must have companions ship find it in your studio. This may assist you to have the advantages which arise from various speculations. All other company may be highly mischievous."
+    },
+    {
+      "chunkId": "rt-0506",
+      "lang": "es",
+      "titulo": "How to acquire universality",
+      "texto": "PAINTING.\nThe mind of the painter must resemble a mirror, which always takes the colour of the object it reflects and is completely occupied by the images of as many objects as are in front of it. Therefore you must know, Oh Painter! that you cannot be a good one if you are not the universal master of representing by your art every kind of form produced by nature. And this you will not know how to do if you do not see them, and retain them in your mind. Hence as you go through the fields, turn your attention to various objects, and, in turn look now at this thing and now at that, collecting a store of divers facts selected and chosen from those of less value. But do not do like some painters who, when they are wearied with exercising their fancy dismiss their work from their thoughts and take exercise in walking for relaxation, but still keep fatigue in their mind which, though they see various objects [around them], does not apprehend them; but, even when they meet friends or relations and are saluted by them, although they see and hear them, take no more cognisance of them than if they had met so much empty air."
+    },
+    {
+      "chunkId": "rt-0543",
+      "lang": "es",
+      "titulo": "The right position of the artist, when painting and of the spectator",
+      "texto": "A PICTURE OF OBJECTS IN PERSPECTIVE WILL LOOK MORE LIFELIKE WHEN SEEN FROM THE POINT FROM WHICH THE OBJECTS WERE DRAWN.\nIf you want to represent an object near to you which is to have the effect of nature, it is impossible that your perspective should not look wrong, with every false relation and disagreement of proportion that can be imagined in a wretched work, unless the spectator, when he looks at it, has his eye at the very distance and height and direction where the eye or the point of sight was placed in doing this perspective. Hence it would be necessary to make a window, or rather a hole, of the size of your face through which you can look at the work; and if you do this, beyond all doubt your work, if it is correct as to light and shade, will have the effect of nature; nay you will hardly persuade yourself that those objects are painted; otherwise do not trouble yourself about it, unless indeed you make your view at least 20 times as far off as the greatest width or height of the objects represented, and this will satisfy any spectator placed anywhere opposite to the picture.\nIf you want the proof briefly shown, take a piece of wood in the form of a little column, eight times as high as it is thick, like a column without any plinth or capital; then mark off on a flat wall 40 equal spaces, equal to its width so that between them they make 40 columns resembling your little column; you then must fix, opposite the centre space, and at 4 braccia from the wall, a thin strip of iron with a small round hole in the middle about as large as a big pearl. Close to this hole place a light touching it. Then place your column against each mark on the wall and draw the outline of its shadow; afterwards shade it and look through the hole in the iron plate."
+    },
+    {
+      "chunkId": "rt-0498",
+      "lang": "es",
+      "titulo": "On the productive power of minor artists",
+      "texto": "He is a poor disciple who does not excel his master."
+    },
+    {
+      "chunkId": "rt-0483",
+      "lang": "es",
+      "titulo": "The course of instruction for an artist",
+      "texto": "The youth should first learn perspective, then the proportions of objects. Then he may copy from some good master, to accustom himself to fine forms. Then from nature, to confirm by practice the rules he has learnt. Then see for a time the works of various masters. Then get the habit of putting his art into practice and work."
+    },
+    {
+      "chunkId": "rt-0011",
+      "lang": "es",
+      "titulo": "General introductions to the book on painting",
+      "texto": "Though I may not, like them, be able to quote other authors, I shall rely on that which is much greater and more worthy:—on experience, the mistress of their Masters. They go about puffed up and pompous, dressed and decorated with [the fruits], not of their own labours, but of those of others. And they will not allow me my own. They will scorn me as an inventor; but how much more might they—who are not inventors but vaunters and declaimers of the works of others—be blamed.\nINTRODUCTION.\nAnd those men who are inventors and interpreters between Nature and Man, as compared with boasters and declaimers of the works of others, must be regarded and not otherwise esteemed than as the object in front of a mirror, when compared with its image seen in the mirror. For the first is something in itself, and the other nothingness.—Folks little indebted to Nature, since it is only by chance that they wear the human form and without it I might class them with the herds of beasts."
+    },
+    {
+      "chunkId": "rt-0487",
+      "lang": "es",
+      "titulo": "The study of the antique",
+      "texto": "It is better to imitate [copy] the antique than modern work."
+    },
+    {
+      "chunkId": "rt-0490",
+      "lang": "es",
+      "titulo": "How to acquire practice",
+      "texto": "OF STUDY AND THE ORDER OF STUDY.\nI say that first you ought to learn the limbs and their mechanism, and having this knowledge, their actions should come next, according to the circumstances in which they occur in man. And thirdly to compose subjects, the studies for which should be taken from natural actions and made from time to time, as circumstances allow; and pay attention to them in the streets and piazze and fields, and note them down with a brief indication of the forms; thus for a head make an o, and for an arm a straight or a bent line, and the same for the legs and the body, and when you return home work out these notes in a complete form. The Adversary says that to acquire practice and do a great deal of work it is better that the first period of study should be employed in drawing various compositions done on paper or on walls by divers masters, and that in this way practice is rapidly gained, and good methods; to which I reply that the method will be good, if it is based on works of good composition and by skilled masters. But since such masters are so rare that there are but few of them to be found, it is a surer way to go to natural objects, than to those which are imitated from nature with great deterioration, and so form bad methods; for he who can go to the fountain does not go to the water-jar."
+    },
+    {
+      "chunkId": "rt-0458",
+      "lang": "es",
+      "titulo": "On the treatment of light for landscapes",
+      "texto": "The landscape has a finer azure [tone] when, in fine weather the sun is at noon than at any other time of the day, because the air is purified of moisture; and looking at it under that aspect you will see the trees of a beautiful green at the outside and the shadows dark towards the middle; and in the remoter distance the atmosphere which comes between you and them looks more beautiful when there is something dark beyond. And still the azure is most beautiful. The objects seen from the side on which the sun shines will not show you their shadows. But, if you are lower than the sun, you can see what is not seen by the sun and that will be all in shade. The leaves of the trees, which come between you and the sun are of two principal colours which are a splendid lustre of green, and the reflection of the atmosphere which lights up the objects which cannot be seen by the sun, and the shaded portions which only face the earth, and the darkest which are surrounded by something that is not dark. The trees in the landscape which are between you and the sun are far more beautiful than those you see when you are between the sun and them; and this is so because those which face the sun show their leaves as transparent towards the ends of their branches, and those that are not transparent—that is at the ends—reflect the light; and the shadows are dark because they are not concealed by any thing.\nThe trees, when you place yourself between them and the sun, will only display to you their light and natural colour, which, in itself, is not very strong, and besides this some reflected lights which, being against a background which does not differ very much from themselves in tone, are not conspicuous; and if you are lower down than they are situated, they may also show those portions on which the light of the sun does not fall and these will be dark.\nIn the Wind.\nBut, if you are on the side whence the wind blows, you will see the trees look very much lighter than on the other sides, and this happens because the wind turns up the under side of the leaves, which, in all trees, is much whiter than the upper sides; and, more especially, will they be very light indeed if the wind blows from the quarter where the sun is, and if you have your back turned to it."
+    },
+    {
+      "chunkId": "rt-0660",
+      "lang": "es",
+      "titulo": "On the history of painting",
+      "texto": "THAT PAINTING DECLINES AND DETERIORATES FROM AGE TO AGE, WHEN PAINTERS HAVE NO OTHER STANDARD THAN PAINTING ALREADY DONE.\nHence the painter will produce pictures of small merit if he takes for his standard the pictures of others. But if he will study from natural objects he will bear good fruit; as was seen in the painters after the Romans who always imitated each other and so their art constantly declined from age to age. After these came Giotto the Florentine who—not content with imitating the works of Cimabue his master—being born in the mountains and in a solitude inhabited only by goats and such beasts, and being guided by nature to his art, began by drawing on the rocks the movements of the goats of which he was keeper. And thus he began to draw all the animals which were to be found in the country, and in such wise that after much study he excelled not only all the masters of his time but all those of many bygone ages. Afterwards this art declined again, because everyone imitated the pictures that were already done; thus it went on from century to century until Tomaso, of Florence, nicknamed Masaccio, showed by his perfect works how those who take for their standard any one but nature—the mistress of all masters—weary themselves in vain. And, I would say about these mathematical studies that those who only study the authorities and not the works of nature are descendants but not sons of nature the mistress of all good authors. Oh! how great is the folly of those who blame those who learn from nature , setting aside those authorities who themselves were the disciples of nature."
+    },
+    {
+      "chunkId": "rt-0661",
+      "lang": "es",
+      "titulo": "On the history of painting",
+      "texto": "That the first drawing was a simple line drawn round the shadow of a man cast by the sun on a wall."
+    },
+    {
+      "chunkId": "rt-0483",
+      "lang": "en",
+      "titulo": "The course of instruction for an artist",
+      "texto": "The youth should first learn perspective, then the proportions of objects. Then he may copy from some good master, to accustom himself to fine forms. Then from nature, to confirm by practice the rules he has learnt. Then see for a time the works of various masters. Then get the habit of putting his art into practice and work."
+    },
+    {
+      "chunkId": "rt-0487",
+      "lang": "en",
+      "titulo": "The study of the antique",
+      "texto": "It is better to imitate [copy] the antique than modern work."
+    },
+    {
+      "chunkId": "rt-0011",
+      "lang": "en",
+      "titulo": "General introductions to the book on painting",
+      "texto": "Though I may not, like them, be able to quote other authors, I shall rely on that which is much greater and more worthy:—on experience, the mistress of their Masters. They go about puffed up and pompous, dressed and decorated with [the fruits], not of their own labours, but of those of others. And they will not allow me my own. They will scorn me as an inventor; but how much more might they—who are not inventors but vaunters and declaimers of the works of others—be blamed.\nINTRODUCTION.\nAnd those men who are inventors and interpreters between Nature and Man, as compared with boasters and declaimers of the works of others, must be regarded and not otherwise esteemed than as the object in front of a mirror, when compared with its image seen in the mirror. For the first is something in itself, and the other nothingness.—Folks little indebted to Nature, since it is only by chance that they wear the human form and without it I might class them with the herds of beasts."
+    },
+    {
+      "chunkId": "rt-0502",
+      "lang": "en",
+      "titulo": "A caution against one-sided study",
+      "texto": "HOW, IN IMPORTANT WORKS, A MAN SHOULD NOT TRUST ENTIRELY TO HIS MEMORY WITHOUT CONDESCENDING TO DRAW FROM NATURE.\nAny master who should venture to boast that he could remember all the forms and effects of nature would certainly appear to me to be graced with extreme ignorance, inasmuch as these effects are infinite and our memory is not extensive enough to retain them. Hence, O! painter, beware lest the lust of gain should supplant in you the dignity of art; for the acquisition of glory is a much greater thing than the glory of riches. Hence, for these and other reasons which might be given, first strive in drawing to represent your intention to the eye by expressive forms, and the idea originally formed in your imagination; then go on taking out or putting in, until you have satisfied yourself. Then have living men, draped or nude, as you may have purposed in your work, and take care that in dimensions and size, as determined by perspective, nothing is left in the work which is not in harmony with reason and the effects in nature. And this will be the way to win honour in your art."
+    },
+    {
+      "chunkId": "rt-0660",
+      "lang": "en",
+      "titulo": "On the history of painting",
+      "texto": "THAT PAINTING DECLINES AND DETERIORATES FROM AGE TO AGE, WHEN PAINTERS HAVE NO OTHER STANDARD THAN PAINTING ALREADY DONE.\nHence the painter will produce pictures of small merit if he takes for his standard the pictures of others. But if he will study from natural objects he will bear good fruit; as was seen in the painters after the Romans who always imitated each other and so their art constantly declined from age to age. After these came Giotto the Florentine who—not content with imitating the works of Cimabue his master—being born in the mountains and in a solitude inhabited only by goats and such beasts, and being guided by nature to his art, began by drawing on the rocks the movements of the goats of which he was keeper. And thus he began to draw all the animals which were to be found in the country, and in such wise that after much study he excelled not only all the masters of his time but all those of many bygone ages. Afterwards this art declined again, because everyone imitated the pictures that were already done; thus it went on from century to century until Tomaso, of Florence, nicknamed Masaccio, showed by his perfect works how those who take for their standard any one but nature—the mistress of all masters—weary themselves in vain. And, I would say about these mathematical studies that those who only study the authorities and not the works of nature are descendants but not sons of nature the mistress of all good authors. Oh! how great is the folly of those who blame those who learn from nature , setting aside those authorities who themselves were the disciples of nature."
+    },
+    {
+      "chunkId": "rt-0530",
+      "lang": "en",
+      "titulo": "On various helps in preparing a picture",
+      "texto": "OF JUDGING YOUR OWN PICTURES.\nWe know very well that errors are better recognised in the works of others than in our own; and that often, while reproving little faults in others, you may ignore great ones in yourself. To avoid such ignorance, in the first place make yourself a master of perspective, then acquire perfect knowledge of the proportions of men and other animals, and also, study good architecture, that is so far as concerns the forms of buildings and other objects which are on the face of the earth; these forms are infinite, and the better you know them the more admirable will your work be. And in cases where you lack experience do not shrink from drawing them from nature. But, to carry out my promise above [in the title]—I say that when you paint you should have a flat mirror and often look at your work as reflected in it, when you will see it reversed, and it will appear to you like some other painter's work, so you will be better able to judge of its faults than in any other way. Again, it is well that you should often leave off work and take a little relaxation, because, when you come back to it you are a better judge; for sitting too close at work may greatly deceive you. Again, it is good to retire to a distance because the work looks smaller and your eye takes in more of it at a glance and sees more easily the discords or disproportion in the limbs and colours of the objects."
+    },
+    {
+      "chunkId": "rt-0107",
+      "lang": "en",
+      "titulo": "On natural perspective",
+      "texto": "OF EQUAL OBJECTS THE MOST REMOTE LOOK THE SMALLEST.\nThe practice of perspective may be divided into … parts , of which the first treats of objects seen by the eye at any distance; and it shows all these objects just as the eye sees them diminished, without obliging a man to stand in one place rather than another so long as the plane does not produce a second foreshortening.\nBut the second practice is a combination of perspective derived partly from art and partly from nature and the work done by its rules is in every portion of it, influenced by natural perspective and artificial perspective. By natural perspective I mean that the plane on which this perspective is represented is a flat surface, and this plane, although it is parallel both in length and height, is forced to diminish in its remoter parts more than in its nearer ones. And this is proved by the first of what has been said above, and its diminution is natural. But artificial perspective, that is that which is devised by art, does the contrary; for objects equal in size increase on the plane where it is foreshortened in proportion as the eye is more natural and nearer to the plane, and as the part of the plane on which it is figured is farther from the eye.\nAnd let this plane be d e on which are seen 3 equal circles which are beyond this plane d e, that is the circles a b c. Now you see that the eye h sees on the vertical plane the sections of the images, largest of those that are farthest and smallest of the nearest."
+    },
+    {
+      "chunkId": "rt-0543",
+      "lang": "en",
+      "titulo": "The right position of the artist, when painting and of the spectator",
+      "texto": "A PICTURE OF OBJECTS IN PERSPECTIVE WILL LOOK MORE LIFELIKE WHEN SEEN FROM THE POINT FROM WHICH THE OBJECTS WERE DRAWN.\nIf you want to represent an object near to you which is to have the effect of nature, it is impossible that your perspective should not look wrong, with every false relation and disagreement of proportion that can be imagined in a wretched work, unless the spectator, when he looks at it, has his eye at the very distance and height and direction where the eye or the point of sight was placed in doing this perspective. Hence it would be necessary to make a window, or rather a hole, of the size of your face through which you can look at the work; and if you do this, beyond all doubt your work, if it is correct as to light and shade, will have the effect of nature; nay you will hardly persuade yourself that those objects are painted; otherwise do not trouble yourself about it, unless indeed you make your view at least 20 times as far off as the greatest width or height of the objects represented, and this will satisfy any spectator placed anywhere opposite to the picture.\nIf you want the proof briefly shown, take a piece of wood in the form of a little column, eight times as high as it is thick, like a column without any plinth or capital; then mark off on a flat wall 40 equal spaces, equal to its width so that between them they make 40 columns resembling your little column; you then must fix, opposite the centre space, and at 4 braccia from the wall, a thin strip of iron with a small round hole in the middle about as large as a big pearl. Close to this hole place a light touching it. Then place your column against each mark on the wall and draw the outline of its shadow; afterwards shade it and look through the hole in the iron plate."
+    },
+    {
+      "chunkId": "rt-0490",
+      "lang": "en",
+      "titulo": "How to acquire practice",
+      "texto": "OF STUDY AND THE ORDER OF STUDY.\nI say that first you ought to learn the limbs and their mechanism, and having this knowledge, their actions should come next, according to the circumstances in which they occur in man. And thirdly to compose subjects, the studies for which should be taken from natural actions and made from time to time, as circumstances allow; and pay attention to them in the streets and piazze and fields, and note them down with a brief indication of the forms; thus for a head make an o, and for an arm a straight or a bent line, and the same for the legs and the body, and when you return home work out these notes in a complete form. The Adversary says that to acquire practice and do a great deal of work it is better that the first period of study should be employed in drawing various compositions done on paper or on walls by divers masters, and that in this way practice is rapidly gained, and good methods; to which I reply that the method will be good, if it is based on works of good composition and by skilled masters. But since such masters are so rare that there are but few of them to be found, it is a surer way to go to natural objects, than to those which are imitated from nature with great deterioration, and so form bad methods; for he who can go to the fountain does not go to the water-jar."
+    },
+    {
+      "chunkId": "rt-0458",
+      "lang": "en",
+      "titulo": "On the treatment of light for landscapes",
+      "texto": "The landscape has a finer azure [tone] when, in fine weather the sun is at noon than at any other time of the day, because the air is purified of moisture; and looking at it under that aspect you will see the trees of a beautiful green at the outside and the shadows dark towards the middle; and in the remoter distance the atmosphere which comes between you and them looks more beautiful when there is something dark beyond. And still the azure is most beautiful. The objects seen from the side on which the sun shines will not show you their shadows. But, if you are lower than the sun, you can see what is not seen by the sun and that will be all in shade. The leaves of the trees, which come between you and the sun are of two principal colours which are a splendid lustre of green, and the reflection of the atmosphere which lights up the objects which cannot be seen by the sun, and the shaded portions which only face the earth, and the darkest which are surrounded by something that is not dark. The trees in the landscape which are between you and the sun are far more beautiful than those you see when you are between the sun and them; and this is so because those which face the sun show their leaves as transparent towards the ends of their branches, and those that are not transparent—that is at the ends—reflect the light; and the shadows are dark because they are not concealed by any thing.\nThe trees, when you place yourself between them and the sun, will only display to you their light and natural colour, which, in itself, is not very strong, and besides this some reflected lights which, being against a background which does not differ very much from themselves in tone, are not conspicuous; and if you are lower down than they are situated, they may also show those portions on which the light of the sun does not fall and these will be dark.\nIn the Wind.\nBut, if you are on the side whence the wind blows, you will see the trees look very much lighter than on the other sides, and this happens because the wind turns up the under side of the leaves, which, in all trees, is much whiter than the upper sides; and, more especially, will they be very light indeed if the wind blows from the quarter where the sun is, and if you have your back turned to it."
+    },
+    {
+      "chunkId": "rt-0498",
+      "lang": "en",
+      "titulo": "On the productive power of minor artists",
+      "texto": "He is a poor disciple who does not excel his master."
+    },
+    {
+      "chunkId": "rt-0499",
+      "lang": "en",
+      "titulo": "On the productive power of minor artists",
+      "texto": "Nor is the painter praiseworthy who does but one thing well, as the nude figure, heads, draperies, animals, landscapes or other such details, irrespective of other work; for there can be no mind so inept, that after devoting itself to one single thing and doing it constantly, it should fail to do it well."
+    },
+    {
+      "chunkId": "rt-0500",
+      "lang": "en",
+      "titulo": "On the productive power of minor artists",
+      "texto": "THAT A PAINTER IS NOT ADMIRABLE UNLESS HE IS UNIVERSAL.\nSome may distinctly assert that those persons are under a delusion who call that painter a good master who can do nothing well but a head or a figure. Certainly this is no great achievement; after studying one single thing for a life-time who would not have attained some perfection in it? But, since we know that painting embraces and includes in itself every object produced by nature or resulting from the fortuitous actions of men, in short, all that the eye can see, he seems to me but a poor master who can only do a figure well. For do you not perceive how many and various actions are performed by men only; how many different animals there are, as well as trees, plants, flowers, with many mountainous regions and plains, springs and rivers, cities with public and private buildings, machines, too, fit for the purposes of men, divers costumes, decorations and arts? And all these things ought to be regarded as of equal importance and value, by the man who can be termed a good painter."
+    },
+    {
+      "chunkId": "rt-0501",
+      "lang": "en",
+      "titulo": "On the productive power of minor artists",
+      "texto": "OF THE MISERABLE PRETENCES MADE BY THOSE WHO FALSELY AND UNWORTHILY ACQUIRE THE NAME OF PAINTERS.\nNow there is a certain race of painters who, having studied but little, must need take as their standard of beauty mere gold and azure, and these, with supreme conceit, declare that they will not give good work for miserable payment, and that they could do as well as any other if they were well paid. But, ye foolish folks! cannot such artists keep some good work, and then say: this is a costly work and this more moderate and this is average work and show that they can work at all prices?"
+    },
+    {
+      "chunkId": "rt-0661",
+      "lang": "en",
+      "titulo": "On the history of painting",
+      "texto": "That the first drawing was a simple line drawn round the shadow of a man cast by the sun on a wall."
+    },
+    {
+      "chunkId": "rt-0586",
+      "lang": "es",
+      "titulo": "The selection of forms",
+      "texto": "OF THE DELUSIONS WHICH ARISE IN JUDGING OF THE LIMBS.\nA painter who has clumsy hands will paint similar hands in his works, and the same will occur with any limb, unless long study has taught him to avoid it. Therefore, O Painter, look carefully what part is most ill-favoured in your own person and take particular pains to correct it in your studies. For if you are coarse, your figures will seem the same and devoid of charm; and it is the same with any part that may be good or poor in yourself; it will be shown in some degree in your figures."
+    },
+    {
+      "chunkId": "rt-0654-1",
+      "lang": "es",
+      "titulo": "Painting is superior to poetry",
+      "texto": "as you are, it would not lie under the stigma of so base a name. If you call it mechanical because it is, in the first place, manual, and that it is the hand which produces what is to be found in the imagination, you too writers, who set down manually with the pen what is devised in your mind. And if you say it is mechanical because it is done for money, who falls into this error—if error it can be called—more than you? If you lecture in the schools do you not go to whoever pays you most? Do you do any work without pay? Still, I do not say this as blaming such views, for every form of labour looks for its reward. And if a poet should say: \"I will invent a fiction with a great purpose,\" the painter can do the same, as Apelles painted Calumny. If you were to say that poetry is more eternal, I say the works of a coppersmith are more eternal still, for time preserves them longer than your works or ours; nevertheless they have not much imagination [29]. And a picture, if painted on copper with enamel colours may be yet more permanent. We, by our arts may be called the grandsons of God. If poetry deals with moral philosophy, painting deals with natural philosophy. Poetry describes the action of the mind, painting considers what the mind may effect by the motions [of the body]. If poetry can terrify people by hideous fictions, painting can do as much by depicting the same things in action. Supposing that a poet applies himself to represent beauty, ferocity, or a base, a foul or a monstrous thing, as against a painter, he may in his ways bring forth a variety of forms; but will the painter not satisfy more? are there not pictures to be seen, so like the actual things, that they deceive men and animals?"
+    },
+    {
+      "chunkId": "rt-0507",
+      "lang": "es",
+      "titulo": "Useful games and exercises",
+      "texto": "OF GAMES TO BE PLAYED BY THOSE WHO DRAW.\nWhen, Oh draughtsmen, you desire to find relaxation in games you should always practise such things as may be of use in your profession, by giving your eye good practice in judging accurately of the breadth and length of objects. Thus, to accustom your mind to such things, let one of you draw a straight line at random on a wall, and each of you, taking a blade of grass or of straw in his hand, try to cut it to the length that the line drawn appears to him to be, standing at a distance of 10 braccia; then each one may go up to the line to measure the length he has judged it to be. And he who has come nearest with his measure to the length of the pattern is the best man, and the winner, and shall receive the prize you have settled beforehand. Again you should take forshortened measures: that is take a spear, or any other cane or reed, and fix on a point at a certain distance; and let each one estimate how many times he judges that its length will go into that distance. Again, who will draw best a line one braccio long, which shall be tested by a thread. And such games give occasion to good practice for the eye, which is of the first importance in painting."
+    },
+    {
+      "chunkId": "rt-0508",
+      "lang": "es",
+      "titulo": "Useful games and exercises",
+      "texto": "A WAY OF DEVELOPING AND AROUSING THE MIND TO VARIOUS INVENTIONS.\nI cannot forbear to mention among these precepts a new device for study which, although it may seem but trivial and almost ludicrous, is nevertheless extremely useful in arousing the mind to various inventions. And this is, when you look at a wall spotted with stains, or with a mixture of stones, if you have to devise some scene, you may discover a resemblance to various landscapes, beautified with mountains, rivers, rocks, trees, plains, wide valleys and hills in varied arrangement; or again you may see battles and figures in action; or strange faces and costumes, and an endless variety of objects, which you could reduce to complete and well drawn forms. And these appear on such walls confusedly, like the sound of bells in whose jangle you may find any name or word you choose to imagine."
+    },
+    {
+      "chunkId": "rt-0585",
+      "lang": "es",
+      "titulo": "Of representing imaginary animals",
+      "texto": "HOW YOU SHOULD MAKE AN IMAGINARY ANIMAL LOOK NATURAL.\nYou know that you cannot invent animals without limbs, each of which, in itself, must resemble those of some other animal. Hence if you wish to make an animal, imagined by you, appear natural—let us say a Dragon, take for its head that of a mastiff or hound, with the eyes of a cat, the ears of a porcupine, the nose of a greyhound, the brow of a lion, the temples of an old cock, the neck of a water tortoise."
+    },
+    {
+      "chunkId": "rt-0554",
+      "lang": "en",
+      "titulo": "On the choice of light for a picture",
+      "texto": "OF THE JUDGMENT TO BE MADE OF A PAINTER'S WORK.\nFirst you must consider whether the figures have the relief required by their situation and the light which illuminates them; for the shadows should not be the same at the extreme ends of the composition as in the middle, because it is one thing when figures are surrounded by shadows and another when they have shadows only on one side. Those which are in the middle of the picture are surrounded by shadows, because they are shaded by the figures which stand between them and the light. And those are lighted on one side only which stand between the principal group and the light, because where they do not look towards the light they face the group and the darkness of the group is thrown on them: and where they do not face the group they face the brilliant light and it is their own darkness shadowing them, which appears there.\nIn the second place observe the distribution or arrangement of figures, and whether they are distributed appropriately to the circumstances of the story. Thirdly, whether the figures are actively intent on their particular business."
+    },
+    {
+      "chunkId": "rt-0545",
+      "lang": "en",
+      "titulo": "The right position of the artist, when painting and of the spectator",
+      "texto": "If you cannot arrange that those who look at your work should stand at one particular point, when constructing your work, stand back until your eye is at least 20 times as far off as the greatest height and width of your work. This will make so little difference when the eye of the spectator moves, that it will be hardly appreciable, and it will look very good.\nIf the point of sight is at t you would make the figures on the circle d b e all of one size, as each of them bears the same relation to the point t. But consider the diagram given below and you will see that this is wrong, and why I shall make b smaller than d e .\nIt is easy to understand that if 2 objects equal to each other are placed side by side the one at 3 braccia distance looks smaller than that placed at 2 braccia. This however is rather theoretical than for practice, because you stand close by .\nAll the objects in the foreground, whether large or small, are to be drawn of their proper size, and if you see them from a distance they will appear just as they ought, and if you see them close they will diminish of themselves.\nTake care that the vertical plan on which you work out the perspective of the objects seen is of the same form as the wall on which the work is to be executed."
+    },
+    {
+      "chunkId": "rt-0084",
+      "lang": "en",
+      "titulo": "Demonstration of perspective by means of a vertical glass plane",
+      "texto": "Pictorial perspective can never make an object at the same distance, look of the same size as it appears to the eye. You see that the apex of the pyramid f c d is as far from the object c d as the same point f is from the object a b; and yet c d, which is the base made by the painter's point, is smaller than a b which is the base of the lines from the objects converging in the eye and refracted at s t, the surface of the eye. This may be proved by experiment, by the lines of vision and then by the lines of the painter's plumbline by cutting the real lines of vision on one and the same plane and measuring on it one and the same object."
+    },
+    {
+      "chunkId": "rt-0507",
+      "lang": "en",
+      "titulo": "Useful games and exercises",
+      "texto": "OF GAMES TO BE PLAYED BY THOSE WHO DRAW.\nWhen, Oh draughtsmen, you desire to find relaxation in games you should always practise such things as may be of use in your profession, by giving your eye good practice in judging accurately of the breadth and length of objects. Thus, to accustom your mind to such things, let one of you draw a straight line at random on a wall, and each of you, taking a blade of grass or of straw in his hand, try to cut it to the length that the line drawn appears to him to be, standing at a distance of 10 braccia; then each one may go up to the line to measure the length he has judged it to be. And he who has come nearest with his measure to the length of the pattern is the best man, and the winner, and shall receive the prize you have settled beforehand. Again you should take forshortened measures: that is take a spear, or any other cane or reed, and fix on a point at a certain distance; and let each one estimate how many times he judges that its length will go into that distance. Again, who will draw best a line one braccio long, which shall be tested by a thread. And such games give occasion to good practice for the eye, which is of the first importance in painting."
+    },
+    {
+      "chunkId": "rt-0508",
+      "lang": "en",
+      "titulo": "Useful games and exercises",
+      "texto": "A WAY OF DEVELOPING AND AROUSING THE MIND TO VARIOUS INVENTIONS.\nI cannot forbear to mention among these precepts a new device for study which, although it may seem but trivial and almost ludicrous, is nevertheless extremely useful in arousing the mind to various inventions. And this is, when you look at a wall spotted with stains, or with a mixture of stones, if you have to devise some scene, you may discover a resemblance to various landscapes, beautified with mountains, rivers, rocks, trees, plains, wide valleys and hills in varied arrangement; or again you may see battles and figures in action; or strange faces and costumes, and an endless variety of objects, which you could reduce to complete and well drawn forms. And these appear on such walls confusedly, like the sound of bells in whose jangle you may find any name or word you choose to imagine."
+    },
+    {
+      "chunkId": "rt-0585",
+      "lang": "en",
+      "titulo": "Of representing imaginary animals",
+      "texto": "HOW YOU SHOULD MAKE AN IMAGINARY ANIMAL LOOK NATURAL.\nYou know that you cannot invent animals without limbs, each of which, in itself, must resemble those of some other animal. Hence if you wish to make an animal, imagined by you, appear natural—let us say a Dragon, take for its head that of a mastiff or hound, with the eyes of a cat, the ears of a porcupine, the nose of a greyhound, the brow of a lion, the temples of an old cock, the neck of a water tortoise."
+    },
+    {
+      "chunkId": "rt-0245",
+      "lang": "en",
+      "titulo": "The effect of light or dark backgrounds on the apparent size of objects",
+      "texto": "WHY BODIES IN LIGHT AND SHADE HAVE THEIR OUTLINES ALTERED BY THE COLOUR AND BRIGHTNESS OF THE OBJECTS SERVING AS A BACKGROUND TO THEM.\nIf you look at a body of which the illuminated portion lies and ends against a dark background, that part of the light which will look brightest will be that which lies against the dark [background] at d. But if this brighter part lies against a light background, the edge of the object, which is itself light, will be less distinct than before, and the highest light will appear to be between the limit of the background m f and the shadow. The same thing is seen with regard to the dark [side], inasmuch as that edge of the shaded portion of the object which lies against a light background, as at l, it looks much darker than the rest. But if this shadow lies against a dark background, the edge of the shaded part will appear lighter than before, and the deepest shade will appear between the edge and the light at the point o."
+    },
+    {
+      "chunkId": "rt-0169",
+      "lang": "en",
+      "titulo": "On the shape of derived shadows",
+      "texto": "ALL BODIES, IN PROPORTION AS THEY ARE NEARER TO, OR FARTHER FROM THE SOURCE OF LIGHT, WILL PRODUCE LONGER OR SHORTER DERIVED SHADOWS.\nAmong bodies of equal size, that one which is illuminated by the largest light will have the shortest shadow. Experiment confirms this proposition. Thus the body m n is surrounded by a larger amount of light than the body p q, as is shown above. Let us say that v c a b d x is the sky, the source of light, and that s t is a window by which the luminous rays enter, and so m n and p q are bodies in light and shade as exposed to this light; m n will have a small derived shadow, because its original shadow will be small; and the derivative light will be large, again, because the original light c d will be large and p q will have more derived shadow because its original shadow will be larger, and its derived light will be smaller than that of the body m n because that portion of the hemisphere a b which illuminates it is smaller than the hemisphere c d which illuminates the body m n."
+    },
+    {
+      "chunkId": "rt-0196",
+      "lang": "en",
+      "titulo": "On the relative size of cast shadows",
+      "texto": "THE BODY WHICH IS NEAREST TO THE LIGHT CASTS THE LARGEST SHADOW, AND WHY?\nIf an object placed in front of a single light is very close to it you will see that it casts a very large shadow on the opposite wall, and the farther you remove the object from the light the smaller will the image of the shadow become.\nWHY A SHADOW LARGER THAN THE BODY THAT PRODUCES IT BECOMES OUT OF PROPORTION.\nThe disproportion of a shadow which is larger than the body producing it, results from the light being smaller than the body, so that it cannot be at an equal distance from the edges of the body ; and the portions which are most remote are made larger than the nearer portions for this reason .\nWHY A SHADOW WHICH IS LARGER THAN THE BODY CAUSING IT HAS ILL-DEFINED OUTLINES.\nThe atmosphere which surrounds a light is almost like light itself for brightness and colour; but the farther off it is the more it loses this resemblance. An object which casts a large shadow and is near to the light, is illuminated both by that light by the luminous atmosphere; hence this diffused light gives the shadow ill-defined edges."
+    },
+    {
+      "chunkId": "rt-0576",
+      "lang": "en",
+      "titulo": "Of the light on the face",
+      "texto": "Where the shadow should be on the face."
+    },
+    {
+      "chunkId": "rt-0228",
+      "lang": "en",
+      "titulo": "On indistinctness at short distances",
+      "texto": "The eye cannot take in a luminous angle which is too close to it.\nThat part of a surface will be better lighted on which the light falls at the greater angle. And that part, on which the shadow falls at the greatest angle, will receive from those rays least of the benefit of the light."
+    },
+    {
+      "chunkId": "rt-0150",
+      "lang": "en",
+      "titulo": "On the intensity of shadows as dependent on the distance from the light",
+      "texto": "The smaller the light that falls upon an object the more shadow it will display. And the light will illuminate a smaller portion of the object in proportion as it is nearer to it; and conversely, a larger extent of it in proportion as it is farther off.\nA light which is smaller than the object on which it falls will light up a smaller extent of it in proportion as it is nearer to it, and the converse, as it is farther from it. But when the light is larger than the object illuminated it will light a larger extent of the object in proportion as it is nearer and the converse when they are farther apart."
+    },
+    {
+      "chunkId": "rt-0275",
+      "lang": "en",
+      "titulo": "On the colours of derived shadows",
+      "texto": "ANY SHADOW CAST BY AN OPAQUE BODY SMALLER THAN THE LIGHT CAUSING THE SHADOW WILL THROW A DERIVED SHADOW WHICH IS TINGED BY THE COLOUR OF THE LIGHT.\nLet n be the source of the shadow e f; it will assume its hue. Let o be the source of h e which will in the same way be tinged by its hue and so also the colour of v h will be affected by p which causes it; and the shadow of the triangle z k y will be affected by the colour of q, because it is produced by it. [7] In proportion as c d goes into a d, will n r s be darker than m; and the rest of the space will be shadowless [11]. f g is the highest light, because here the whole light of the window a d falls; and thus on the opaque body m e is in equally high light; z k y is a triangle which includes the deepest shadow, because the light a d cannot reach any part of it. x h is the 2nd grade of shadow, because it receives only 1/3 of the light from the window, that is c d. The third grade of shadow is h e, where two thirds of the light from the window is visible. The last grade of shadow is b d e f, because the highest grade of light from the window falls at f."
+    },
+    {
+      "chunkId": "rt-0180",
+      "lang": "en",
+      "titulo": "Shadow as produced by two lights of different size",
+      "texto": "A body in light and shade placed between two equal lights side by side will cast shadows in proportion to the [amount of] light. And the shadows will be one darker than the other in proportion as one light is nearer to the said body than the other on the opposite side.\nA body placed at an equal distance between two lights will cast two shadows, one deeper than the other in proportion, as the light which causes it is brighter than the other."
+    },
+    {
+      "chunkId": "rt-0152",
+      "lang": "en",
+      "titulo": "On the intensity of shadows as dependent on the distance from the light",
+      "texto": "That portion of the primary shadow will be least dark which is farthest from the edges.\nThe derived shadow will be darker than the primary shadow where it is contiguous with it."
+    },
+    {
+      "chunkId": "rt-0151",
+      "lang": "en",
+      "titulo": "On the intensity of shadows as dependent on the distance from the light",
+      "texto": "That portion of an illuminated object which is nearest to the source of light will be the most strongly illuminated."
+    },
+    {
+      "chunkId": "rt-0110",
+      "lang": "en",
+      "titulo": "ON Prolegomena",
+      "texto": "You must first explain the theory and then the practice. First you must describe the shadows and lights on opaque objects, and then on transparent bodies."
+    },
+    {
+      "chunkId": "rt-0111",
+      "lang": "en",
+      "titulo": "Scheme of the books on light and shade",
+      "texto": "INTRODUCTION.\n[Having already treated of the nature of shadows and the way in which they are cast , I will now consider the places on which they fall; and their curvature, obliquity, flatness or, in short, any character I may be able to detect in them.]\nShadow is the obstruction of light. Shadows appear to me to be of supreme importance in perspective, because, without them opaque and solid bodies will be ill defined; that which is contained within their outlines and their boundaries themselves will be ill-understood unless they are shown against a background of a different tone from themselves. And therefore in my first proposition concerning shadow I state that every opaque body is surrounded and its whole surface enveloped in shadow and light. And on this proposition I build up the first Book. Besides this, shadows have in themselves various degrees of darkness, because they are caused by the absence of a variable amount of the luminous rays; and these I call Primary shadows because they are the first, and inseparable from the object to which they belong. And on this I will found my second Book. From these primary shadows there result certain shaded rays which are diffused through the atmosphere and these vary in character according to that of the primary shadows whence they are derived. I shall therefore call these shadows Derived shadows because they are produced by other shadows; and the third Book will treat of these. Again these derived shadows, where they are intercepted by various objects, produce effects as various as the places where they are cast and of this I will treat in the fourth Book. And since all round the derived shadows, where the derived shadows are intercepted, there is always a space where the light falls and by reflected dispersion is thrown back towards its cause, it meets the original shadow and mingles with it and modifies it somewhat in its nature; and on this I will compose my fifth Book. Besides this, in the sixth Book I will investigate the many and various diversities of reflections resulting from these rays which will modify the original [shadow] by [imparting] some of the various colours from the different objects whence these reflected rays are derived. Again, the seventh Book will treat of the various distances that may exist between the spot where the reflected rays fall and that where they originate, and the various shades of colour which they will acquire in falling on opaque bodies."
+    },
+    {
+      "chunkId": "rt-0112",
+      "lang": "en",
+      "titulo": "Different principles and plans of treatment",
+      "texto": "First I will treat of light falling through windows which I will call Restricted [Light] and then I will treat of light in the open country, to which I will give the name of diffused Light. Then I will treat of the light of luminous bodies."
+    },
+    {
+      "chunkId": "rt-0113",
+      "lang": "en",
+      "titulo": "Different principles and plans of treatment",
+      "texto": "OF PAINTING.\nThe conditions of shadow and light [as seen] by the eye are 3. Of these the first is when the eye and the light are on the same side of the object seen; the 2nd is when the eye is in front of the object and the light is behind it. The 3rd is when the eye is in front of the object and the light is on one side, in such a way as that a line drawn from the object to the eye and one from the object to the light should form a right angle where they meet."
+    },
+    {
+      "chunkId": "rt-0114",
+      "lang": "en",
+      "titulo": "Different principles and plans of treatment",
+      "texto": "OF PAINTING.\nThis is another section: that is, of the nature of a reflection (from) an object placed between the eye and the light under various aspects."
+    },
+    {
+      "chunkId": "rt-0115",
+      "lang": "en",
+      "titulo": "Different principles and plans of treatment",
+      "texto": "OF PAINTING.\nAs regards all visible objects 3 things must be considered. These are the position of the eye which sees: that of the object seen [with regard] to the light, and the position of the light which illuminates the object, b is the eye, a the object seen, c the light, a is the eye, b the illuminating body, c is the illuminated object."
+    },
+    {
+      "chunkId": "rt-0116",
+      "lang": "en",
+      "titulo": "Different principles and plans of treatment",
+      "texto": "Let a be the light, b the eye, c the object seen by the eye and in the light. These show, first, the eye between the light and the body; the 2nd, the light between the eye and the body; the 3rd the body between the eye and the light, a is the eye, b the illuminated object, c the light."
+    },
+    {
+      "chunkId": "rt-0117",
+      "lang": "en",
+      "titulo": "Different sorts of light",
+      "texto": "OF PAINTING.\nOF THE THREE KINDS OF LIGHT THAT ILLUMINATE OPAQUE BODIES.\nThe first kind of Light which may illuminate opaque bodies is called Direct light—as that of the sun or any other light from a window or flame. The second is Diffused [universal] light, such as we see in cloudy weather or in mist and the like. The 3rd is Subdued light, that is when the sun is entirely below the horizon, either in the evening or morning."
+    },
+    {
+      "chunkId": "rt-0118",
+      "lang": "en",
+      "titulo": "Different sorts of light",
+      "texto": "OF LIGHT.\nThe lights which may illuminate opaque bodies are of 4 kinds. These are: diffused light as that of the atmosphere, within our horizon. And Direct, as that of the sun, or of a window or door or other opening. The third is Reflected light; and there is a 4th which is that which passes through [semi] transparent bodies, as linen or paper or the like, but not transparent like glass, or crystal, or other diaphanous bodies, which produce the same effect as though nothing intervened between the shaded object and the light that falls upon it; and this we will discuss fully in our discourse."
+    },
+    {
+      "chunkId": "rt-0119",
+      "lang": "en",
+      "titulo": "Definition of the nature of shadows",
+      "texto": "WHAT LIGHT AND SHADOW ARE.\nShadow is the absence of light, merely the obstruction of the luminous rays by an opaque body. Shadow is of the nature of darkness. Light [on an object] is of the nature of a luminous body; one conceals and the other reveals. They are always associated and inseparable from all objects. But shadow is a more powerful agent than light, for it can impede and entirely deprive bodies of their light, while light can never entirely expel shadow from a body, that is from an opaque body."
+    },
+    {
+      "chunkId": "rt-0120",
+      "lang": "en",
+      "titulo": "Definition of the nature of shadows",
+      "texto": "Shadow is the diminution of light by the intervention of an opaque body. Shadow is the counterpart of the luminous rays which are cut off by an opaque body.\nThis is proved because the shadow cast is the same in shape and size as the luminous rays were which are transformed into a shadow."
+    },
+    {
+      "chunkId": "rt-0121",
+      "lang": "en",
+      "titulo": "Definition of the nature of shadows",
+      "texto": "Shadow is the diminution alike of light and of darkness, and stands between darkness and light.\nA shadow may be infinitely dark, and also of infinite degrees of absence of darkness.\nThe beginnings and ends of shadow lie between the light and darkness and may be infinitely diminished and infinitely increased. Shadow is the means by which bodies display their form.\nThe forms of bodies could not be understood in detail but for shadow."
+    },
+    {
+      "chunkId": "rt-0122",
+      "lang": "en",
+      "titulo": "Definition of the nature of shadows",
+      "texto": "OF THE NATURE OF SHADOW.\nShadow partakes of the nature of universal matter. All such matters are more powerful in their beginning and grow weaker towards the end, I say at the beginning, whatever their form or condition may be and whether visible or invisible. And it is not from small beginnings that they grow to a great size in time; as it might be a great oak which has a feeble beginning from a small acorn. Yet I may say that the oak is most powerful at its beginning, that is where it springs from the earth, which is where it is largest (To return:) Darkness, then, is the strongest degree of shadow and light is its least. Therefore, O Painter, make your shadow darkest close to the object that casts it, and make the end of it fading into light, seeming to have no end."
+    },
+    {
+      "chunkId": "rt-0123",
+      "lang": "en",
+      "titulo": "Of the various kinds of shadows",
+      "texto": "Darkness is absence of light. Shadow is diminution of light. Primitive shadow is that which is inseparable from a body not in the light. Derived shadow is that which is disengaged from a body in shadow and pervades the air. A cast transparent shadow is that which is surrounded by an illuminated surface. A simple shadow is one which receives no light from the luminous body which causes it. A simple shadow begins within the line which starts from the edge of the luminous body a b."
+    },
+    {
+      "chunkId": "rt-0124",
+      "lang": "en",
+      "titulo": "Of the various kinds of shadows",
+      "texto": "A simple shadow is one where no light at all interferes with it.\nA compound shadow is one which is somewhat illuminated by one or more lights."
+    },
+    {
+      "chunkId": "rt-0125",
+      "lang": "en",
+      "titulo": "Of the various kinds of shadows",
+      "texto": "WHAT IS THE DIFFERENCE BETWEEN A SHADOW THAT IS INSEPARABLE FROM A BODY AND A CAST SHADOW?\nAn inseparable shadow is that which is never absent from the illuminated body. As, for instance a ball, which so long as it is in the light always has one side in shadow which never leaves it for any movement or change of position in the ball. A separate shadow may be and may not be produced by the body itself. Suppose the ball to be one braccia distant from a wall with a light on the opposite side of it; this light will throw upon the wall exactly as broad a shadow as is to be seen on the side of the ball that is turned towards the wall. That portion of the cast shadow will not be visible when the light is below the ball and the shadow is thrown up towards the sky and finding no obstruction on its way is lost."
+    },
+    {
+      "chunkId": "rt-0126",
+      "lang": "en",
+      "titulo": "Of the various kinds of light",
+      "texto": "HOW THERE ARE 2 KINDS OF LIGHT, ONE SEPARABLE FROM, AND THE OTHER INSEPARABLE FROM BODIES.\nOf the various kinds of light (126, 127).\nSeparate light is that which falls upon the body. Inseparable light is the side of the body that is illuminated by that light. One is called primary, the other derived. And, in the same way there are two kinds of shadow:—One primary and the other derived. The primary is that which is inseparable from the body, the derived is that which proceeds from the body conveying to the surface of the wall the form of the body causing it."
+    },
+    {
+      "chunkId": "rt-0127",
+      "lang": "en",
+      "titulo": "Of the various kinds of light",
+      "texto": "How there are 2 different kinds of light; one being called diffused, the other restricted. The diffused is that which freely illuminates objects. The restricted is that which being admitted through an opening or window illuminates them on that side only."
+    },
+    {
+      "chunkId": "rt-0128",
+      "lang": "en",
+      "titulo": "General remarks",
+      "texto": "Light is the chaser away of darkness. Shade is the obstruction of light. Primary light is that which falls on objects and causes light and shade. And derived lights are those portions of a body which are illuminated by the primary light. A primary shadow is that side of a body on which the light cannot fall.\nThe general distribution of shadow and light is that sum total of the rays thrown off by a shaded or illuminated body passing through the air without any interference and the spot which intercepts and cuts off the distribution of the dark and light rays.\nAnd the eye can best distinguish the forms of objects when it is placed between the shaded and the illuminated parts."
+    },
+    {
+      "chunkId": "rt-0129",
+      "lang": "en",
+      "titulo": "General remarks",
+      "texto": "MEMORANDUM OF THINGS I REQUIRE TO HAVE GRANTED [AS AXIOMS] IN MY EXPLANATION OF PERSPECTIVE.\nI ask to have this much granted me—to assert that every ray passing through air of equal density throughout, travels in a straight line from its cause to the object or place it falls upon.\nFIRST BOOK ON LIGHT AND SHADE."
+    },
+    {
+      "chunkId": "rt-0130-0",
+      "lang": "en",
+      "titulo": "ON On the nature of light",
+      "texto": "The reason by which we know that a light radiates from a single centre is this: We plainly see that a large light is often much broader than some small object which nevertheless—and although the rays [of the large light] are much more than twice the extent [of the small body]—always has its shadow cast on the nearest surface very visibly. Let c f be a broad light and n be the object in front of it, casting a shadow on the plane, and let a b be the plane. It is clear that it is not the broad light that will cast the shadow n on the plane, but that the light has within it a centre is shown by this experiment. The shadow falls on the plane as is shown at m o t r. Why, to two [eyes] or in front of two eyes do 3 objects appear as two? Why, when you estimate the direction of an object with two sights the nearer appears confused. I say that the eye projects an infinite number of lines which mingle or join those reaching it which come to it from the object looked at. And it is only the central and sensible line that can discern and discriminate colours and objects; all the others are false and illusory. And if you place 2 objects at half an arm's length apart if the nearer of the two is close to the eye its form will remain far more confused than that of the second; the reason is that the first is overcome by a greater number of false lines than the second and so is rendered vague. Light acts in the same manner, for in the effects of its lines (=rays), and particularly in perspective, it much resembles the eye; and its central rays are what cast the true shadow. When the object in front of it is too quickly overcome with dim rays it will cast a broad and disproportionate shadow, ill defined;"
+    },
+    {
+      "chunkId": "rt-0130-1",
+      "lang": "en",
+      "titulo": "ON On the nature of light",
+      "texto": "is rendered vague. Light acts in the same manner, for in the effects of its lines (=rays), and particularly in perspective, it much resembles the eye; and its central rays are what cast the true shadow. When the object in front of it is too quickly overcome with dim rays it will cast a broad and disproportionate shadow, ill defined; but when the object which is to cast the shadow and cuts off the rays near to the place where the shadow falls, then the shadow is distinct; and the more so in proportion as the light is far off, because at a long distance the central ray is less overcome by false rays; because the lines from the eye and the solar and other luminous rays passing through the atmosphere are obliged to travel in straight lines. Unless they are deflected by a denser or rarer air, when they will be bent at some point, but so long as the air is free from grossness or moisture they will preserve their direct course, always carrying the image of the object that intercepts them back to their point of origin. And if this is the eye, the intercepting object will be seen by its colour, as well as by form and size. But if the intercepting plane has in it some small perforation opening into a darker chamber—not darker in colour, but by absence of light—you will see the rays enter through this hole and transmitting to the plane beyond all the details of the object they proceed from both as to colour and form; only every thing will be upside down. But the size [of the image] where the lines are reconstructed will be in proportion to the relative distance of the aperture from the plane on which the lines fall [on one hand] and from their origin [on the other]. There they intersect and form 2 pyramids with their point meeting [a common apex] and their bases opposite."
+    },
+    {
+      "chunkId": "rt-0130-2",
+      "lang": "en",
+      "titulo": "ON On the nature of light",
+      "texto": "upside down. But the size [of the image] where the lines are reconstructed will be in proportion to the relative distance of the aperture from the plane on which the lines fall [on one hand] and from their origin [on the other]. There they intersect and form 2 pyramids with their point meeting [a common apex] and their bases opposite. Let a b be the point of origin of the lines, d e the first plane, and c the aperture with the intersection of the lines; f g is the inner plane. You will find that a falls upon the inner plane below at g, and b which is below will go up to the spot f; it will be quite evident to experimenters that every luminous body has in itself a core or centre, from which and to which all the lines radiate which are sent forth by the surface of the luminous body and reflected back to it; or which, having been thrown out and not intercepted, are dispersed in the air."
+    },
+    {
+      "chunkId": "rt-0131",
+      "lang": "en",
+      "titulo": "ON On the nature of light",
+      "texto": "THE RAYS WHETHER SHADED OR LUMINOUS HAVE GREATER STRENGTH AND EFFECT AT THEIR POINTS THAN AT THEIR SIDES.\nAlthough the points of luminous pyramids may extend into shaded places and those of pyramids of shadow into illuminated places, and though among the luminous pyramids one may start from a broader base than another; nevertheless, if by reason of their various length these luminous pyramids acquire angles of equal size their light will be equal; and the case will be the same with the pyramids of shadow; as may be seen in the intersected pyramids a b c and d e f, which though their bases differ in size are equal as to breadth and light."
+    },
+    {
+      "chunkId": "rt-0856",
+      "lang": "es",
+      "titulo": "PHYSIOLOGY",
+      "texto": "I teach you to preserve your health; and in this you will succed better in proportion as you shun physicians, because their medicines are the work of alchemists."
+    },
+    {
+      "chunkId": "rt-0763",
+      "lang": "es",
+      "titulo": "Decorations for feasts",
+      "texto": "The water should be allowed to fall from the whole circle a b.\nVI. Studies of architectural details."
+    },
+    {
+      "chunkId": "rt-0682",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Obstacles cannot crush me Every obstacle yields to stern resolve He who is fixed to a star does not change his mind."
+    },
+    {
+      "chunkId": "rt-0695",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Nothing is so much to be feared as Evil Report. This Evil Report is born of life."
+    },
+    {
+      "chunkId": "rt-0580",
+      "lang": "es",
+      "titulo": "General suggestions for historical pictures",
+      "texto": "The sorest misfortune is when your views are in advance of your work."
+    },
+    {
+      "chunkId": "rt-0510",
+      "lang": "es",
+      "titulo": "On the construction of windows",
+      "texto": "The larger the wall the less the light will be."
+    },
+    {
+      "chunkId": "rt-0003",
+      "lang": "es",
+      "titulo": "Admonition to readers",
+      "texto": "Let no man who is not a Mathematician read the elements of my work."
+    },
+    {
+      "chunkId": "rt-1169",
+      "lang": "es",
+      "titulo": "MORALS",
+      "texto": "Avoid studies of which the result dies with the worker.\nMen are in error when they lament the flight of time, accusing it of being too swift, and not perceiving that it is sufficient as it passes; but good memory, with which nature has endowed us, causes things long past to seem present."
+    },
+    {
+      "chunkId": "rt-0684",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Truth the sun. falsehood a mask. innocence, malignity.\nFire destroys falsehood, that is sophistry, and restores truth, driving out darkness.\nFire may be represented as the destroy of all sophistry, and as the image and demonstration of truth; because it is light and drives out darkness which conceals all essences [or subtle things].\nTRUTH.\nFire destroys all sophistry, that is deceit; and maintains truth alone, that is gold.\nTruth at last cannot be hidden. Dissimulation is of no avail. Dissimulation is to no purpose before so great a judge. Falsehood puts on a mask. Nothing is hidden under the sun.\nFire is to represent truth because it destroys all sophistry and lies; and the mask is for lying and falsehood which conceal truth."
+    },
+    {
+      "chunkId": "rt-0685",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Movement will cease before we are weary of being useful.\nMovement will fail sooner than usefulness. Death sooner than I am never weary of weariness. being useful, In serving others I is a motto for carnval. cannot do enough. Without fatigue.\nNo labour is sufficient to tire me.\nHands into which ducats and precious stones fall like snow; they never become tired by serving, but this service is only for its utility and not for our I am never weary own benefit. of being useful.\nNaturally nature has so disposed me."
+    },
+    {
+      "chunkId": "rt-0686",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "This shall be placed in the hand of Ingratitude. Wood nourishes the fire that consumes it."
+    },
+    {
+      "chunkId": "rt-0687",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "TO REPRESENT INGRATITUDE.\nWhen the sun appears which dispels darkness in general, you put out the light which dispelled it for you in particular for your need and convenience."
+    },
+    {
+      "chunkId": "rt-0688",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "On this side Adam and Eve on the other; O misery of mankind, of how many things do you make yourself the slave for money!"
+    },
+    {
+      "chunkId": "rt-0690",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Constancy does not begin, but is that which perseveres.\nLove, Fear, and Esteem,— Write these on three stones. Of servants.\nFame alone raises herself to Heaven, because virtuous things are in favour with God.\nDisgrace should be represented upside down, because all her deeds are contrary to God and tend to hell."
+    },
+    {
+      "chunkId": "rt-0697",
+      "lang": "es",
+      "titulo": "Mottoes and Emblems",
+      "texto": "A felled tree which is shooting again.\nI am still hopeful. A falcon, Time.\nSuch as harm is when it hurts me not, is good which avails me not.\nHe who offends others, does not secure himself."
+    },
+    {
+      "chunkId": "rt-0494",
+      "lang": "en",
+      "titulo": "The artist's private life and choice of company",
+      "texto": "OF THE LIFE OF THE PAINTER IN HIS STUDIO.\nTo the end that well-being of the body may not injure that of the mind, the painter or draughtsman must remain solitary, and particularly when intent on those studies and reflections which will constantly rise up before his eye, giving materials to be well stored in the memory. While you are alone you are entirely your own [master] and if you have one companion you are but half your own, and the less so in proportion to the indiscretion of his behaviour. And if you have many companions you will fall deeper into the same trouble. If you should say: \"I will go my own way and withdraw apart, the better to study the forms of natural objects\", I tell you, you will not be able to help often listening to their chatter. And so, since one cannot serve two masters, you will badly fill the part of a companion, and carry out your studies of art even worse. And if you say: \"I will withdraw so far that their words cannot reach me and they cannot disturb me\", I can tell you that you will be thought mad. But, you see, you will at any rate be alone. And if you must have companions ship find it in your studio. This may assist you to have the advantages which arise from various speculations. All other company may be highly mischievous."
+    },
+    {
+      "chunkId": "rt-0491",
+      "lang": "en",
+      "titulo": "Industry and thoroughness the first conditions",
+      "texto": "WHAT RULES SHOULD BE GIVEN TO BOYS LEARNING TO PAINT.\nWe know for certain that sight is one of the most rapid actions we can perform. In an instant we see an infinite number of forms, still we only take in thoroughly one object at a time. Supposing that you, Reader, were to glance rapidly at the whole of this written page, you would instantly perceive that it was covered with various letters; but you could not, in the time, recognise what the letters were, nor what they were meant to tell. Hence you would need to see them word by word, line by line to be able to understand the letters. Again, if you wish to go to the top of a building you must go up step by step; otherwise it will be impossible that you should reach the top. Thus I say to you, whom nature prompts to pursue this art, if you wish to have a sound knowledge of the forms of objects begin with the details of them, and do not go on to the second [step] till you have the first well fixed in memory and in practice. And if you do otherwise you will throw away your time, or certainly greatly prolong your studies. And remember to acquire diligence rather than rapidity."
+    },
+    {
+      "chunkId": "rt-0376",
+      "lang": "en",
+      "titulo": "Of walking up and down",
+      "texto": "I ask the weight [pressure] of this man at every degree of motion on these steps, what weight he gives to b and to c.\nObserve the perpendicular line below the centre of gravity of the man."
+    },
+    {
+      "chunkId": "rt-0056",
+      "lang": "en",
+      "titulo": "The relations of the distance point to the vanishing point",
+      "texto": "there are only bases without pyramids which constantly diminish up to this point. And from the first base where the vertical plane is placed towards the point in the eye there will be only pyramids without bases; as shown in the example given above. Now, let a b be the said vertical plane and r the point of the pyramid terminating in the eye, and n the point of diminution which is always in a straight line opposite the eye and always moves as the eye moves—just as when a rod is moved its shadow moves, and moves with it, precisely as the shadow moves with a body. And each point is the apex of a pyramid, all having a common base with the intervening vertical plane. But although their bases are equal their angles are not equal, because the diminishing point is the termination of a smaller angle than that of the eye. If you ask me: \"By what practical experience can you show me these points?\" I reply—so far as concerns the diminishing point which moves with you —when you walk by a ploughed field look at the straight furrows which come down with their ends to the path where you are walking, and you will see that each pair of furrows will look as though they tried to get nearer and meet at the [farther] end."
+    },
+    {
+      "chunkId": "rt-1364",
+      "lang": "en",
+      "titulo": "Miscellaneous drafts of letters and personal records (1356—1368)",
+      "texto": "[When I did well, as a boy you used to put me in prison. Now if I do it being grown up, you will do worse to me."
+    },
+    {
+      "chunkId": "rt-0012",
+      "lang": "en",
+      "titulo": "General introductions to the book on painting",
+      "texto": "Many will think they may reasonably blame me by alleging that my proofs are opposed to the authority of certain men held in the highest reverence by their inexperienced judgments; not considering that my works are the issue of pure and simple experience, who is the one true mistress. These rules are sufficient to enable you to know the true from the false—and this aids men to look only for things that are possible and with due moderation—and not to wrap yourself in ignorance, a thing which can have no good result, so that in despair you would give yourself up to melancholy."
+    },
+    {
+      "chunkId": "rt-1287",
+      "lang": "en",
+      "titulo": "JESTS AND TALES",
+      "texto": "A man gave up his intimacy with one of his friends because he often spoke ill of his other friends. The neglected friend one day lamenting to this former friend, after much complaining, entreated him to say what might be the cause that had made him forget so much friendship. To which he answered: \"I will no longer be intimate with you because I love you, and I do not choose that you, by speaking ill of me, your friend, to others, should produce in others, as in me, a bad impression of yourself, by speaking evil to them of me, your friend. Therefore, being no longer intimate together, it will seem as though we had become enemies; and in speaking evil of me, as is your wont, you will not be blamed so much as if we continued intimate."
+    },
+    {
+      "chunkId": "rt-0682",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Obstacles cannot crush me Every obstacle yields to stern resolve He who is fixed to a star does not change his mind."
+    },
+    {
+      "chunkId": "rt-0684",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Truth the sun. falsehood a mask. innocence, malignity.\nFire destroys falsehood, that is sophistry, and restores truth, driving out darkness.\nFire may be represented as the destroy of all sophistry, and as the image and demonstration of truth; because it is light and drives out darkness which conceals all essences [or subtle things].\nTRUTH.\nFire destroys all sophistry, that is deceit; and maintains truth alone, that is gold.\nTruth at last cannot be hidden. Dissimulation is of no avail. Dissimulation is to no purpose before so great a judge. Falsehood puts on a mask. Nothing is hidden under the sun.\nFire is to represent truth because it destroys all sophistry and lies; and the mask is for lying and falsehood which conceal truth."
+    },
+    {
+      "chunkId": "rt-0685",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Movement will cease before we are weary of being useful.\nMovement will fail sooner than usefulness. Death sooner than I am never weary of weariness. being useful, In serving others I is a motto for carnval. cannot do enough. Without fatigue.\nNo labour is sufficient to tire me.\nHands into which ducats and precious stones fall like snow; they never become tired by serving, but this service is only for its utility and not for our I am never weary own benefit. of being useful.\nNaturally nature has so disposed me."
+    },
+    {
+      "chunkId": "rt-0686",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "This shall be placed in the hand of Ingratitude. Wood nourishes the fire that consumes it."
+    },
+    {
+      "chunkId": "rt-0687",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "TO REPRESENT INGRATITUDE.\nWhen the sun appears which dispels darkness in general, you put out the light which dispelled it for you in particular for your need and convenience."
+    },
+    {
+      "chunkId": "rt-0688",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "On this side Adam and Eve on the other; O misery of mankind, of how many things do you make yourself the slave for money!"
+    },
+    {
+      "chunkId": "rt-0690",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Constancy does not begin, but is that which perseveres.\nLove, Fear, and Esteem,— Write these on three stones. Of servants.\nFame alone raises herself to Heaven, because virtuous things are in favour with God.\nDisgrace should be represented upside down, because all her deeds are contrary to God and tend to hell."
+    },
+    {
+      "chunkId": "rt-0695",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "Nothing is so much to be feared as Evil Report. This Evil Report is born of life."
+    },
+    {
+      "chunkId": "rt-0697",
+      "lang": "en",
+      "titulo": "Mottoes and Emblems",
+      "texto": "A felled tree which is shooting again.\nI am still hopeful. A falcon, Time.\nSuch as harm is when it hurts me not, is good which avails me not.\nHe who offends others, does not secure himself."
+    },
+    {
+      "chunkId": "rt-0384",
+      "lang": "en",
+      "titulo": "On the human body in action",
+      "texto": "No animal can simply move [by its dead weight] a greater weight than the sum of its own weight outside the centre of his fulcrum."
+    },
+    {
+      "chunkId": "rt-0370",
+      "lang": "en",
+      "titulo": "The movement of the human figure",
+      "texto": "How a man proceeds to raise himself to his feet, when he is sitting on level ground."
+    },
+    {
+      "chunkId": "rt-0373",
+      "lang": "en",
+      "titulo": "The movement of the human figure",
+      "texto": "If a man, in taking a jump from firm ground, can leap 3 braccia, and when he was taking his leap it were to recede 1/3 of a braccio, that would be taken off his former leap; and so if it were thrust forward 1/3 of a braccio, by how much would his leap be increased?"
+    },
+    {
+      "chunkId": "rt-0387",
+      "lang": "en",
+      "titulo": "On the human body in action",
+      "texto": "Of delivering a blow to the right or left."
+    },
+    {
+      "chunkId": "rt-0386",
+      "lang": "en",
+      "titulo": "On the human body in action",
+      "texto": "When two men are at the opposite ends of a plank that is balanced, and if they are of equal weight, and if one of them wants to make a leap into the air, then his leap will be made down from his end of the plank and the man will never go up again but must remain in his place till the man at the other end dashes up the board."
+    },
+    {
+      "chunkId": "rt-0374",
+      "lang": "en",
+      "titulo": "The movement of the human figure",
+      "texto": "OF DRAWING.\nWhen a man who is running wants to neutralise the impetus that carries him on he prepares a contrary impetus which is generated by his hanging backwards. This can be proved, since, if the impetus carries a moving body with a momentum equal to 4 and the moving body wants to turn and fall back with a momentum of 4, then one momentum neutralises the other contrary one, and the impetus is neutralised."
+    },
+    {
+      "chunkId": "rt-1308",
+      "lang": "en",
+      "titulo": "PROPHECIES",
+      "texto": "*( Of the Shadow cast by a man at night with a light. )*\nHuge figures will appear in human shape, and the nearer you get to them, the more will their immense size diminish."
+    },
+    {
+      "chunkId": "rt-0380",
+      "lang": "en",
+      "titulo": "On the human body in action",
+      "texto": "OF THE HUMAN BODY IN ACTION.\nWhen you want to represent a man as moving some weight consider what the movements are that are to be represented by different lines; that is to say either from below upwards, with a simple movement, as a man does who stoops forward to take up a weight which he will lift as he straightens himself. Or as a man does who wants to squash something backwards, or to force it forwards or to pull it downwards with ropes passed through pullies . And here remember that the weight of a man pulls in proportion as his centre of gravity is distant from his fulcrum, and to this is added the force given by his legs and bent back as he raises himself."
+    },
+    {
+      "chunkId": "rt-0382",
+      "lang": "en",
+      "titulo": "On the human body in action",
+      "texto": "OF PAINTING.\nIf you have to draw a man who is in motion, or lifting or pulling, or carrying a weight equal to his own, in what way must you set on his legs below his body?"
+    },
+    {
+      "chunkId": "rt-1268",
+      "lang": "en",
+      "titulo": "Fables on animals (1265-1270)",
+      "texto": "A FABLE.\nThe vain and wandering butterfly, not content with being able to fly at its ease through the air, overcome by the tempting flame of the candle, decided to fly into it; but its sportive impulse was the cause of a sudden fall, for its delicate wings were burnt in the flame. And the hapless butterfly having dropped, all scorched, at the foot of the candlestick, after much lamentation and repentance, dried the tears from its swimming eyes, and raising its face exclaimed: O false light! how many must thou have miserably deceived in the past, like me; or if I must indeed see light so near, ought I not to have known the sun from the false glare of dirty tallow?\nA FABLE.\nThe monkey, finding a nest of small birds, went up to it greatly delighted. But they, being already fledged, he could only succeed in taking the smallest; greatly delighted he took it in his hand and went to his abode; and having begun to look at the little bird he took to kissing it, and from excess of love he kissed it so much and turned it about and squeezed it till he killed it. This is said for those who by not punishing their children let them come to mischief."
+    },
+    {
+      "chunkId": "rt-1122",
+      "lang": "en",
+      "titulo": "On Flying machines (1122-1126)",
+      "texto": "Man when flying must stand free from the waist upwards so as to be able to balance himself as he does in a boat so that the centre of gravity in himself and in the machine may counterbalance each other, and be shifted as necessity demands for the changes of its centre of resistance."
+    },
+    {
+      "chunkId": "rt-1123",
+      "lang": "en",
+      "titulo": "On Flying machines (1122-1126)",
+      "texto": "Remember that your flying machine must imitate no other than the bat, because the web is what by its union gives the armour, or strength to the wings.\nIf you imitate the wings of feathered birds, you will find a much stronger structure, because they are pervious; that is, their feathers are separate and the air passes through them. But the bat is aided by the web that connects the whole and is not pervious."
+    },
+    {
+      "chunkId": "rt-1124",
+      "lang": "en",
+      "titulo": "On Flying machines (1122-1126)",
+      "texto": "TO ESCAPE THE PERIL OF DESTRUCTION.\nDestruction to such a machine may occur in two ways; of which the first is the breaking of the machine. The second would be when the machine should turn on its edge or nearly on its edge, because it ought always to descend in a highly oblique direction, and almost exactly balanced on its centre. As regards the first—the breaking of the machine—, that may be prevented by making it as strong as possible; and in whichever direction it may tend to turn over, one centre must be very far from the other; that is, in a machine 30 braccia long the centres must be 4 braccia one from the other."
+    },
+    {
+      "chunkId": "rt-1125",
+      "lang": "en",
+      "titulo": "On Flying machines (1122-1126)",
+      "texto": "Bags by which a man falling from a height of 6 braccia may avoid hurting himself, by a fall whether into water or on the ground; and these bags, strung together like a rosary, are to be fixed on one's back."
+    },
+    {
+      "chunkId": "rt-1126",
+      "lang": "en",
+      "titulo": "On Flying machines (1122-1126)",
+      "texto": "An object offers as much resistance to the air as the air does to the object. You may see that the beating of its wings against the air supports a heavy eagle in the highest and rarest atmosphere, close to the sphere of elemental fire. Again you may see the air in motion over the sea, fill the swelling sails and drive heavily laden ships. From these instances, and the reasons given, a man with wings large enough and duly connected might learn to overcome the resistance of the air, and by conquering it, succeed in subjugating it and rising above it."
+    },
+    {
+      "chunkId": "rt-0492",
+      "lang": "es",
+      "titulo": "Industry and thoroughness the first conditions",
+      "texto": "HOW THAT DILIGENCE [ACCURACY] SHOULD FIRST BE LEARNT RATHER THAN RAPID EXECUTION.\nIf you, who draw, desire to study well and to good purpose, always go slowly to work in your drawing; and discriminate in. the lights, which have the highest degree of brightness, and to what extent and likewise in the shadows, which are those that are darker than the others and in what way they intermingle; then their masses and the relative proportions of one to the other. And note in their outlines, which way they tend; and which part of the lines is curved to one side or the other, and where they are more or less conspicuous and consequently broad or fine; and finally, that your light and shade blend without strokes and borders [but] looking like smoke. And when you have thus schooled your hand and your judgment by such diligence, you will acquire rapidity before you are aware."
+    },
+    {
+      "chunkId": "rt-0009",
+      "lang": "es",
+      "titulo": "General introductions to the book on painting",
+      "texto": "INTRODUCTION.\nSeeing that I can find no subject specially useful or pleasing—since the men who have come before me have taken for their own every useful or necessary theme—I must do like one who, being poor, comes last to the fair, and can find no other way of providing himself than by taking all the things already seen by other buyers, and not taken but refused by reason of their lesser value. I, then, will load my humble pack with this despised and rejected merchandise, the refuse of so many buyers; and will go about to distribute it, not indeed in great cities, but in the poorer towns, taking such a price as the wares I offer may be worth."
+    },
+    {
+      "chunkId": "rt-0519",
+      "lang": "es",
+      "titulo": "On the best light for painting",
+      "texto": "That the light should fall upon a picture from one window only. This may be seen in the case of objects in this form. If you want to represent a round ball at a certain height you must make it oval in this shape, and stand so far off as that by foreshortening it appears round."
+    },
+    {
+      "chunkId": "rt-0484",
+      "lang": "es",
+      "titulo": "The course of instruction for an artist",
+      "texto": "OF THE ORDER OF LEARNING TO DRAW.\nFirst draw from drawings by good masters done from works of art and from nature, and not from memory; then from plastic work, with the guidance of the drawing done from it; and then from good natural models and this you must put into practice."
+    },
+    {
+      "chunkId": "rt-0485",
+      "lang": "es",
+      "titulo": "The course of instruction for an artist",
+      "texto": "PRECEPTS FOR DRAWING.\nThe artist ought first to exercise his hand by copying drawings from the hand of a good master. And having acquired that practice, under the criticism of his master, he should next practise drawing objects in relief of a good style, following the rules which will presently be given."
+    },
+    {
+      "chunkId": "rt-0486",
+      "lang": "es",
+      "titulo": "The study of the antique",
+      "texto": "OF DRAWING.\nWhich is best, to draw from nature or from the antique? and which is more difficult to do outlines or light and shade?"
+    },
+    {
+      "chunkId": "rt-0488",
+      "lang": "es",
+      "titulo": "The necessity of anatomical knowledge",
+      "texto": "OF PAINTING.\nIt is indispensable to a Painter who would be thoroughly familiar with the limbs in all the positions and actions of which they are capable, in the nude, to know the anatomy of the sinews, bones, muscles and tendons so that, in their various movements and exertions, he may know which nerve or muscle is the cause of each movement and show those only as prominent and thickened, and not the others all over [the limb], as many do who, to seem great draughtsmen, draw their nude figures looking like wood, devoid of grace; so that you would think you were looking at a sack of walnuts rather than the human form, or a bundle of radishes rather than the muscles of figures."
+    },
+    {
+      "chunkId": "rt-0489",
+      "lang": "es",
+      "titulo": "The necessity of anatomical knowledge",
+      "texto": "HOW IT IS NECESSARY TO A PAINTER THAT HE SHOULD KNOW THE INTRINSIC FORMS [STRUCTURE] OF MAN.\nThe painter who is familiar with the nature of the sinews, muscles, and tendons, will know very well, in giving movement to a limb, how many and which sinews cause it; and which muscle, by swelling, causes the contraction of that sinew; and which sinews, expanded into the thinnest cartilage, surround and support the said muscle. Thus he will variously and constantly demonstrate the different muscles by means of the various attitudes of his figures, and will not do, as many who, in a variety of movements, still display the very same things [modelling] in the arms, back, breast and legs. And these things are not to be regarded as minor faults."
+    },
+    {
+      "chunkId": "rt-0491",
+      "lang": "es",
+      "titulo": "Industry and thoroughness the first conditions",
+      "texto": "WHAT RULES SHOULD BE GIVEN TO BOYS LEARNING TO PAINT.\nWe know for certain that sight is one of the most rapid actions we can perform. In an instant we see an infinite number of forms, still we only take in thoroughly one object at a time. Supposing that you, Reader, were to glance rapidly at the whole of this written page, you would instantly perceive that it was covered with various letters; but you could not, in the time, recognise what the letters were, nor what they were meant to tell. Hence you would need to see them word by word, line by line to be able to understand the letters. Again, if you wish to go to the top of a building you must go up step by step; otherwise it will be impossible that you should reach the top. Thus I say to you, whom nature prompts to pursue this art, if you wish to have a sound knowledge of the forms of objects begin with the details of them, and do not go on to the second [step] till you have the first well fixed in memory and in practice. And if you do otherwise you will throw away your time, or certainly greatly prolong your studies. And remember to acquire diligence rather than rapidity."
+    },
+    {
+      "chunkId": "rt-0495",
+      "lang": "es",
+      "titulo": "The distribution of time for studying",
+      "texto": "OF WHETHER IT IS BETTER TO DRAW WITH COMPANIONS OR NOT.\nI say and insist that drawing in company is much better than alone, for many reasons. The first is that you would be ashamed to be seen behindhand among the students, and such shame will lead you to careful study. Secondly, a wholesome emulation will stimulate you to be among those who are more praised than yourself, and this praise of others will spur you on. Another is that you can learn from the drawings of others who do better than yourself; and if you are better than they, you can profit by your contempt for their defects, while the praise of others will incite you to farther merits."
+    },
+    {
+      "chunkId": "rt-0496",
+      "lang": "es",
+      "titulo": "The distribution of time for studying",
+      "texto": "OF STUDYING, IN THE DARK, WHEN YOU WAKE, OR IN BED BEFORE YOU GO TO SLEEP.\nI myself have proved it to be of no small use, when in bed in the dark, to recall in fancy the external details of forms previously studied, or other noteworthy things conceived by subtle speculation; and this is certainly an admirable exercise, and useful for impressing things on the memory."
+    },
+    {
+      "chunkId": "rt-0497",
+      "lang": "es",
+      "titulo": "The distribution of time for studying",
+      "texto": "OF THE TIME FOR STUDYING SELECTION OF SUBJECTS.\nWinter evenings ought to be employed by young students in looking over the things prepared during the summer; that is, all the drawings from the nude done in the summer should be brought together and a choice made of the best [studies of] limbs and bodies among them, to apply in practice and commit to memory.\nOF POSITIONS.\nAfter this in the following summer you should select some one who is well grown and who has not been brought up in doublets, and so may not be of stiff carriage, and make him go through a number of agile and graceful actions; and if his muscles do not show plainly within the outlines of his limbs that does not matter at all. It is enough that you can see good attitudes and you can correct [the drawing of] the limbs by those you studied in the winter."
+    },
+    {
+      "chunkId": "rt-0839",
+      "lang": "es",
+      "titulo": "On involuntary muscular action",
+      "texto": "HOW THE NERVES SOMETIMES ACT OF THEMSELVES WITHOUT ANY COMMANDS FROM THE OTHER FUNCTIONS OF THE SOUL.\nThis is most plainly seen; for you will see palsied and shivering persons move, and their trembling limbs, as their head and hands, quake without leave from their soul and their soul with all its power cannot prevent their members from trembling. The same thing happens in falling sickness, or in parts that have been cut off, as in the tails of lizards. The idea or imagination is the helm and guiding-rein of the senses, because the thing conceived of moves the sense. Pre-imagining, is imagining the things that are to be. Post-imagining, is imagining the things that are past."
+    },
+    {
+      "chunkId": "rt-0110",
+      "lang": "es",
+      "titulo": "ON Prolegomena",
+      "texto": "You must first explain the theory and then the practice. First you must describe the shadows and lights on opaque objects, and then on transparent bodies."
+    },
+    {
+      "chunkId": "rt-0005",
+      "lang": "es",
+      "titulo": "Suggestions for the arrangement of MSS. treating of particular subjects",
+      "texto": "Of digging a canal. Put this in the Book of useful inventions and in proving them bring forward the propositions already proved. And this is the proper order; since if you wished to show the usefulness of any plan you would be obliged again to devise new machines to prove its utility and thus would confuse the order of the forty Books and also the order of the diagrams; that is to say you would have to mix up practice with theory, which would produce a confused and incoherent work."
+    },
+    {
+      "chunkId": "rt-0210",
+      "lang": "es",
+      "titulo": "Experiments with the mirror",
+      "texto": "No man can see the image of another man in a mirror in its proper place with regard to the objects; because every object falls on [the surface of] the mirror at equal angles. And if the one man, who sees the other in the mirror, is not in a direct line with the image he will not see it in the place where it really falls; and if he gets into the line, he covers the other man and puts himself in the place occupied by his image. Let n o be the mirror, b the eye of your friend and d your own eye. Your friend's eye will appear to you at a, and to him it will seem that yours is at c, and the intersection of the visual rays will occur at m, so that either of you touching m will touch the eye of the other man which shall be open. And if you touch the eye of the other man in the mirror it will seem to him that you are touching your own."
+    },
+    {
+      "chunkId": "rt-1288",
+      "lang": "es",
+      "titulo": "JESTS AND TALES",
+      "texto": "A man was arguing and boasting that he knew many and various tricks. Another among the bystanders said: \"I know how to play a trick which will make whomsoever I like pull off his breeches.\" The first man— the boaster—said: \"You won't make me pull off mine, and I bet you a pair of hose on it.\" He who proposed the game, having accepted the offer, produced breeches and drew them across the face of him who bet the pair of hose and won the bet [4].\nA man said to an acquaintance: \"Your eyes are changed to a strange colour.\" The other replied: \"It often happens, but you have not noticed it.\" \"When does it happen?\" said the former. \"Every time that my eyes see your ugly face, from the shock of so unpleasing a sight they suddenly turn pale and change to a strange colour.\"\nA man said to another: \"Your eyes are changed to a strange colour.\" The other replied: \"It is because my eyes behold your strange ugly face.\"\nA man said that in his country were the strangest things in the world. Another answered: \"You, who were born there, confirm this as true, by the strangeness of your ugly face.\""
+    },
+    {
+      "chunkId": "rt-0593",
+      "lang": "es",
+      "titulo": "Of appropriate gestures",
+      "texto": "A picture or representation of human figures, ought to be done in such a way as that the spectator may easily recognise, by means of their attitudes, the purpose in their minds. Thus, if you have to represent a man of noble character in the act of speaking, let his gestures be such as naturally accompany good words; and, in the same way, if you wish to depict a man of a brutal nature, give him fierce movements; as with his arms flung out towards the listener, and his head and breast thrust forward beyond his feet, as if following the speaker's hands. Thus it is with a deaf and dumb person who, when he sees two men in conversation—although he is deprived of hearing—can nevertheless understand, from the attitudes and gestures of the speakers, the nature of their discussion. I once saw in Florence a man who had become deaf who, when you spoke very loud did not understand you, but if you spoke gently and without making any sound, understood merely from the movement of the lips. Now perhaps you will say that the lips of a man who speaks loudly do not move like those of one speaking softly, and that if they were to move them alike they would be alike understood. As to this argument, I leave the decision to experiment; make a man speak to you gently and note [the motion of] his lips."
+    },
+    {
+      "chunkId": "rt-1165",
+      "lang": "es",
+      "titulo": "MORALS",
+      "texto": "0 sleepers! what a thing is slumber! Sleep resembles death. Ah, why then dost thou not work in such wise as that after death thou mayst retain a resemblance to perfect life, when, during life, thou art in sleep so like to the hapless dead?"
+    },
+    {
+      "chunkId": "rt-0474",
+      "lang": "es",
+      "titulo": "Light and shade on clouds",
+      "texto": "Describe how the clouds are formed and how they dissolve, and what cause raises vapour."
+    }
+  ]
+}

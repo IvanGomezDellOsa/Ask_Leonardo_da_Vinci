@@ -91,7 +91,7 @@ const tema = (t: string, idi: Idioma): string => {
  * sobre como esta organizado el manuscrito, no sobre el mundo. Preguntarle a
  * Leonardo por ellos es preguntarle por la edicion de Richter.
  */
-const EDITORIAL = /MSS?|manuscript|arrangement of|the arrangement|book \d+ of|plans? for the|suggestions? for|list of|introduction|prolegomena|contents/i;
+const EDITORIAL = /\bMSS?\b|manuscript|arrangement of|the arrangement|book \d+ of|plans? for the|suggestions? for|list of|introduction|prolegomena|contents/i;
 
 const PLANTILLA: Record<Idioma, (x: string) => string> = {
   es: (x) => `¿Qué dejaste escrito sobre ${x}?`,

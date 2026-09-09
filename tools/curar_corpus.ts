@@ -146,7 +146,7 @@ const ajenos = chunks.filter((c) =>
  */
 /**
  * ⚠ LA REGEX SE CONSTRUYE EN CADA LLAMADA, y el limite de palabra va como
- * `(?![a-z])` en vez de ``.
+ * `(?![a-z])` en vez de `\b`.
  *
  * Esta linea nacio con un `\b` que un heredoc convirtio en el **caracter de
  * control backspace** (0x08). La regex quedo exigiendo un byte que no existe en

@@ -1991,7 +1991,6 @@ function HojaPagina({
   /** Sólo el volumen de texto: lo bajado, o el estado en que está. */
   volumen?: VolumenTexto | "falla" | null;
 }) {
-  const T = paleta;
   // Proporcional y no un margen fijo: con 84 px de aire a cada lado, en una
   // ventana baja la hoja queda de 152 px y el reproductor terminaba en 68.
   const anchoVideo = Math.round(w * 0.82);

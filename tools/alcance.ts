@@ -27,7 +27,6 @@
 
 import { writeFileSync } from "node:fs";
 import { cargarExtractor } from "../src/lib/embed.js";
-import { Corpus } from "../src/lib/retrieval.js";
 import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
 
 const ART = new URL("../artifacts/", import.meta.url);

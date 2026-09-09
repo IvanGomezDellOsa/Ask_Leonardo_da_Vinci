@@ -24,7 +24,7 @@
  * despues.
  */
 
-import { readFileSync, existsSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { writeFileSync } from "node:fs";
 import { Corpus, recortar } from "../src/lib/retrieval.js";
 import { ART, RAIZ, SALIDAS, cargarCasos, leerJsonl, type Resultado } from "./comun.js";

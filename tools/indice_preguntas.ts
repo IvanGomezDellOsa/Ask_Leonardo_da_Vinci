@@ -36,7 +36,7 @@
 
 import { existsSync, readFileSync, writeFileSync, renameSync } from "node:fs";
 import { cargarExtractor } from "../src/lib/embed.js";
-import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
+import { cargarMotor, type Idioma } from "../src/lib/grounding.js";
 import { rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
 import { proveedorPorId } from "../src/lib/llm.js";
 import { cargarCasos } from "../evals/comun.js";

@@ -34,7 +34,7 @@
 
 import { writeFileSync } from "node:fs";
 import { cargarExtractor } from "../src/lib/embed.js";
-import { Corpus, rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
+import { rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
 import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
 
 const ART = new URL("../artifacts/", import.meta.url);
@@ -75,7 +75,6 @@ const CANDIDATAS: { tema: string; es: string; en: string; toc: string }[] = [
 
 /** Un índice por idioma (D-107): se mide lo que el producto hace de verdad. */
 const motor = cargarMotor(ART);
-const corpus = motor.por.en.corpus;
 const extractor = await cargarExtractor();
 
 const embeber = async (t: string): Promise<Float32Array> =>

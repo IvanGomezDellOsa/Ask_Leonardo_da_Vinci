@@ -150,7 +150,7 @@ for (const r of resultados) {
 
 // El resto del reporte (listas detalladas) usa la voz con más faltantes, o la
 // única pedida por --voz. Evita un reporte doble cuando sólo interesa una.
-const { conTraduccion, faltanNumeros, faltanNombres, vacios, sinTraducir } =
+const { faltanNumeros, faltanNombres, vacios } =
   resultados.reduce((a, b) => (a.faltanNumeros.length + a.faltanNombres.length >=
                                 b.faltanNumeros.length + b.faltanNombres.length ? a : b));
 

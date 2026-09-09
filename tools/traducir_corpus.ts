@@ -44,7 +44,7 @@
 
 import { readFileSync, writeFileSync, existsSync, appendFileSync } from "node:fs";
 import { deepseek } from "../src/lib/llm.js";
-import { ART, RAIZ, claves, dormir, progreso } from "../evals/comun.js";
+import { ART, claves, dormir, progreso } from "../evals/comun.js";
 
 interface Chunk { id: string; voice: string; text: string; richterTitle: string | null; nWords: number }
 interface Traduccion { id: string; texto: string; titulo: string | null }

@@ -45,9 +45,8 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { cargarExtractor } from "../src/lib/embed.js";
-import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
+import { cargarMotor, type Idioma } from "../src/lib/grounding.js";
 import { responder } from "../src/lib/responder.js";
 import { huellaPrompt, varianteVigente, proveedorPorId } from "../src/lib/llm.js";
 

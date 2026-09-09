@@ -29,8 +29,8 @@
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { cargarExtractor } from "../src/lib/embed.js";
-import { Corpus, rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
-import { cargarMotor, decidirCon, capaCurada, type Idioma } from "../src/lib/grounding.js";
+import { rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
+import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
 import { ART, cargarCasos } from "./comun.js";
 import { MAPA } from "../src/data/mapa.js";
 import { HUELLA_PORTADA, PORTADA } from "../src/data/portada.js";

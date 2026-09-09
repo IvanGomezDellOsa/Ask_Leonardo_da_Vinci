@@ -17,8 +17,6 @@
  * aparte y con otro modelo (`06` v3 punto 5, D-063).
  */
 
-import { readFileSync, existsSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { cargarExtractor } from "../src/lib/embed.js";
 import { responder } from "../src/lib/responder.js";
 import { cargarMotor, decidirCon } from "../src/lib/grounding.js";

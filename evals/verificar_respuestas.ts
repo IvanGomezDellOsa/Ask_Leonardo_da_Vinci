@@ -21,7 +21,7 @@
  * casos etiquetados a mano y reporta kappa de Cohen (D-063).
  */
 
-import { readFileSync, existsSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { Corpus, recortar } from "../src/lib/retrieval.js";
 import { groq, gemini, deepseek, type CuotaAgotada } from "../src/lib/llm.js";

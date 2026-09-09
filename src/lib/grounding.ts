@@ -18,7 +18,7 @@
  */
 
 import { readFileSync, existsSync } from "node:fs";
-import { Corpus, Recuperado, Voz } from "./retrieval.js";
+import { Corpus, Recuperado } from "./retrieval.js";
 
 export type Idioma = "es" | "en";
 
@@ -401,7 +401,7 @@ export function decidir(
       ? corpus.chunks
           .map((c, i) => ({ c, i }))
           .filter(({ c }) => c.id === curado.notaDeRichter)
-          .map(({ c, i }) => ({ chunk: c, cos: 1, rankDenso: 1, rankBm25: null, rrf: 1 }))
+          .map(({ c }) => ({ chunk: c, cos: 1, rankDenso: 1, rankBm25: null, rrf: 1 }))
       : [];
     /**
      * LA CITA EN EL IDIOMA DE LA CONSULTA (D-125). `citaEs` viaja verificada

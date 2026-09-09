@@ -23,7 +23,7 @@ import { createServer, type Server } from "node:http";
 import { AddressInfo } from "node:net";
 import {
   ContadorUpstash, ContadorMemoria, Limitador, identidad, ipDe, LIMITES,
-  limitesDelEntorno, verificarTurnstile, contadorDelEntorno,
+  limitesDelEntorno, verificarTurnstile, contadorDelEntorno, sospechosa,
 } from "../src/lib/limites.js";
 
 let fallos = 0;
@@ -88,6 +88,27 @@ console.log(`\n# Control de abuso — ${new Date().toISOString().slice(0, 10)}\n
 
 // ---------------------------------------------------------------------------
 console.log(`## La identidad del visitante\n`);
+
+{
+  /**
+   * ⚠ UNA SAL QUE NO ES SECRETA NO ES UNA SAL. Ver D-247. El modo de fallo real
+   * fue pegar en Vercel **el comando en vez de su resultado**: eso deja una sal
+   * fija y pública, con la que los 2^32 hashes de IPv4 se tabulan en segundos.
+   * No fallaba nada — andaba igual, en silencio.
+   */
+  comprobar("el comando pegado en vez de su resultado se rechaza",
+            sospechosa("openssl rand -hex 32") !== null,
+            "es el error que de verdad se cometió");
+  comprobar("una sal corta se rechaza", sospechosa("abc123") !== null);
+  comprobar("una sal con espacios se rechaza", sospechosa("mi sal secreta larga de 32+ caracteres") !== null);
+  comprobar("un `openssl rand -hex 32` de verdad se acepta",
+            sospechosa("7f861b88328859cbf14e04b76a9b2a6d484b66dff71d5859a3fcf1348514b013") === null);
+  comprobar("una passphrase larga sin espacios se acepta",
+            sospechosa("EsteEsUnSecretoLargoQueNoEsHexadecimalPeroSirve") === null,
+            "no se exige hexadecimal: se exige que sea secreta y larga");
+  comprobar("32 caracteres justos se aceptan", sospechosa("a".repeat(32)) === null);
+  comprobar("31 caracteres no", sospechosa("a".repeat(31)) !== null);
+}
 
 {
   const ip = "203.0.113.7";

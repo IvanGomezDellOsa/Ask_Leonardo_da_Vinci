@@ -48,15 +48,48 @@ import { createHash, randomBytes } from "node:crypto";
  */
 let salCache: string | null = null;
 
+/**
+ * ⚠ UNA SAL QUE NO ES SECRETA NO ES UNA SAL. Ver D-247.
+ *
+ * Esto tomaba cualquier cadena no vacía. El modo de fallo que apareció de
+ * verdad: pegar en el panel de Vercel **el comando en vez de su resultado** —
+ * `SAL_IP = "openssl rand -hex 32"`—. Eso es una sal fija, corta y pública, y
+ * con una sal conocida los 2^32 hashes de IPv4 se tabulan en segundos: el hash
+ * deja de proteger nada y el aviso de privacidad publicado pasa a decir algo
+ * que no es cierto. **Y no fallaba: andaba igual, en silencio.**
+ *
+ * Se pide lo único que distingue un secreto de una frase: **32 caracteres o más
+ * y sin espacios**. Un `openssl rand -hex 32` da 64 hex y pasa; el comando
+ * pegado tiene espacios y no. No se valida que sea hexadecimal — una passphrase
+ * larga también sirve — ni se rompe el arranque: se avisa fuerte y se cae a la
+ * sal efímera, que es MAS privada aunque proteja menos el límite diario.
+ *
+ * Se exporta para poder probarla: `sal()` memoiza en `salCache`, así que sólo
+ * se la puede llamar una vez por proceso y no se la puede ejercitar con varios
+ * valores. La regla vive separada del cacheo justamente por eso.
+ */
+export function sospechosa(s: string): string | null {
+  if (/\s/.test(s)) return "tiene espacios: parece un comando pegado, no su resultado";
+  if (s.length < 32) return `mide ${s.length} caracteres: hacen falta 32 o más`;
+  return null;
+}
+
 export function sal(env: Record<string, string | undefined>): string {
   if (salCache) return salCache;
   const s = env.SAL_IP?.trim();
-  if (s) {
+  const mal = s ? sospechosa(s) : null;
+  if (s && !mal) {
     salCache = s;
   } else {
     salCache = randomBytes(32).toString("hex");
-    console.warn("[limites] SAL_IP no configurada: sal efímera por instancia. " +
-                 "El límite diario por IP no sobrevive a un reinicio.");
+    if (mal) {
+      console.warn(`[limites] ⚠ SAL_IP NO SIRVE COMO SAL: ${mal}. ` +
+                   "Se ignora y se usa una efímera. Generá el valor con " +
+                   "`openssl rand -hex 32` y pegá LO QUE IMPRIME, no el comando.");
+    } else {
+      console.warn("[limites] SAL_IP no configurada: sal efímera por instancia. " +
+                   "El límite diario por IP no sobrevive a un reinicio.");
+    }
   }
   return salCache;
 }

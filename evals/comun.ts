@@ -14,6 +14,14 @@ export interface Caso {
   q: string;
   lang: Idioma;
   category: string;
+  /**
+   * QUE BANCO. Ausente = los 120 de control, que son los que fijan la linea de
+   * base historica. `"comun"` son los 50 de D-236, escritos como tipea una
+   * persona. Se separan a proposito: mezclarlos moveria `gate.aciertos` y
+   * `recall.*` por CONSTRUCCION, y esos numeros dejarian de poder compararse con
+   * su propia historia. Cada banco se mide en su propio punto.
+   */
+  banco?: "comun";
   expected_passages: number[];
   should_abstain: boolean;
   nota?: string;

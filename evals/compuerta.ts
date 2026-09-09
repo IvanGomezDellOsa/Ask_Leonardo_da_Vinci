@@ -85,6 +85,31 @@ for (const [k, v] of porCategoria) console.log(`| ${k} | ${v.n} | ${v.fil} | ${v
 console.log(`\n## Por idioma\n`);
 for (const [k, v] of porIdioma) console.log(`  ${k}: ${v.fil} filtraciones · ${v.sob} sobre-abstenciones`);
 
+/**
+ * EL BANCO COMUN APARTE. Ver D-236. Los 120 de control y los 50 escritos como
+ * tipea una persona miden cosas distintas, y un promedio las esconde a las dos.
+ */
+{
+  const fil = new Set(filtraciones), sob = new Set(sobreAbstenciones);
+  const porBanco = new Map<string, { n: number; fil: number; sob: number }>();
+  for (const c of casos) {
+    const b = c.banco === "comun" ? "común" : "control";
+    const v = porBanco.get(b) ?? { n: 0, fil: 0, sob: 0 };
+    v.n++;
+    if (fil.has(c.id)) v.fil++;
+    if (sob.has(c.id)) v.sob++;
+    porBanco.set(b, v);
+  }
+  console.log(`
+## Por banco
+`);
+  console.log(`| banco | n | aciertos | filtraciones | sobre-abst. |`);
+  console.log(`|---|---:|---:|---:|---:|`);
+  for (const [k, v] of porBanco) {
+    console.log(`| ${k} | ${v.n} | **${v.n - v.fil - v.sob}** | ${v.fil} | ${v.sob} |`);
+  }
+}
+
 console.log(`\nfiltraciones      : ${filtraciones.join(", ") || "—"}`);
 console.log(`sobre-abstenciones: ${sobreAbstenciones.join(", ") || "—"}`);
 console.log(`\n> La filtración es ALTA POR DISEÑO: τ está en el punto de 0% de pérdida y`);

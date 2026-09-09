@@ -133,24 +133,67 @@ if (generar) {
    * es exactamente el vocabulario que el visitante NO usa — y el índice no
    * serviría para nada. Se pide gusto, opinión y consejo a propósito.
    */
-  const SYS = `Recibís un fragmento de los cuadernos de Leonardo da Vinci.
+  /**
+   * ⚠ EL IDIOMA SE FIJA POR ENTRADA, NO SE DEJA AL MODELO. Ver D-243.
+   *
+   * La primera corrida decía «en el mismo idioma que el fragmento» — y el
+   * fragmento **siempre está en inglés**, porque `chunk.text` es el original de
+   * Richter. El modelo eligió solo, y de los diez primeros salieron unos en
+   * inglés y otros en castellano.
+   *
+   * No es cosmético: **hay un índice por idioma** (D-107). Una pregunta
+   * castellana pegada a un chunk del índice inglés reintroduce exactamente la
+   * búsqueda cross-lingüe que D-105 midió como mala y que motivó separar los dos
+   * índices. El idioma de la pregunta tiene que ser el del ÍNDICE al que va, que
+   * es `x.lang`, no el del texto que se le muestra al modelo.
+   */
+  const sys = (lang: Idioma): string => `Recibís un fragmento de los cuadernos de Leonardo da Vinci.
 Escribí 3 preguntas que UNA PERSONA CUALQUIERA —no un experto— podría hacerle a Leonardo y que ESTE fragmento contestaría.
 Reglas:
 - de gusto, de opinión o de consejo, no de definición;
 - con palabras de todos los días, NUNCA el vocabulario técnico del fragmento;
 - cortas, como se escriben en un teléfono;
-- en el mismo idioma que el fragmento.
+- ${lang === "es" ? "EN CASTELLANO, siempre, aunque el fragmento esté en inglés." : "IN ENGLISH, always."}
 Devolvé sólo las 3 preguntas, una por línea, sin numerar.`;
 
-  let n = 0;
+  /**
+   * ⚠ SE COMPRUEBA EL IDIOMA, NO SE CONFIA EN LA INSTRUCCION. Ver D-243.
+   *
+   * Con el idioma pedido explícitamente en el prompt, **el modelo igual devolvió
+   * inglés en 4 de 21 pedidos castellanos (19%)**: el fragmento que ve está en
+   * inglés y arrastra. Una instrucción no es una garantía, y acá el costo de que
+   * falle es meter búsqueda cross-lingüe en un índice que existe justamente para
+   * no tenerla (D-105, D-107).
+   *
+   * La heurística es tosca a propósito —acentos, signos de apertura y una
+   * docena de funcionales— pero sólo tiene que distinguir castellano de inglés,
+   * no clasificar idiomas. Si falla, se reintenta una vez y después se descarta:
+   * es mejor un chunk sin preguntas que uno con preguntas en el idioma que no va.
+   */
+  const ES = /[áéíóúñ¿¡]|\b(qué|cómo|por qué|cuál|hago|puedo|para|los|las|una|del)\b/i;
+  const idiomaOk = (qs: string[], lang: Idioma): boolean =>
+    qs.every((q) => ES.test(q) === (lang === "es"));
+
+  let n = 0, descartados = 0;
   for (const x of j.lote) {
     if (x.preguntas?.length) continue;
     await new Promise((r) => setTimeout(r, 3500));
     try {
-      const r = await proveedor.generar(SYS, [{ role: "user", content: x.texto.slice(0, 1400) }]);
-      x.preguntas = (r?.texto ?? "").split("\n")
-        .map((s: string) => s.replace(/^[-*\d.)\s]+/, "").trim())
-        .filter((s: string) => s.length > 8).slice(0, 3);
+      let qs: string[] = [];
+      for (let intento = 0; intento < 2 && !qs.length; intento++) {
+        const r = await proveedor.generar(sys(x.lang), [{ role: "user", content: x.texto.slice(0, 1400) }]);
+        const cand = (r?.texto ?? "").split("\n")
+          .map((s: string) => s.replace(/^[-*\d.)\s]+/, "").trim())
+          .filter((s: string) => s.length > 8).slice(0, 3);
+        if (cand.length && idiomaOk(cand, x.lang)) qs = cand;
+        else if (intento === 0) await new Promise((r2) => setTimeout(r2, 2000));
+      }
+      if (!qs.length) {
+        descartados++;
+        console.log(`  ✗ ${x.chunkId} [${x.lang}]: el modelo no devolvió el idioma pedido`);
+        continue;
+      }
+      x.preguntas = qs;
       n++;
       if (n % 10 === 0) {
         const tmp = new URL("piloto_preguntas.json.tmp", LOTE);

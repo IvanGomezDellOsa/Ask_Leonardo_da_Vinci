@@ -39,6 +39,16 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
    "pasajes": 182,
    "temas": [
     {
+     "visible": "Sobre materiales químicos",
+     "consulta": "Sobre materiales químicos",
+     "pasajes": 11
+    },
+    {
+     "visible": "Sobre varias ayudas para preparar un cuadro",
+     "consulta": "Sobre varias ayudas para preparar un cuadro",
+     "pasajes": 10
+    },
+    {
      "visible": "Sobre la preparación y uso de los colores",
      "consulta": "Sobre la preparación y uso de los colores",
      "pasajes": 9
@@ -49,19 +59,20 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 8
     },
     {
+     "visible": "La posición correcta del artista, al pintar y del espectador",
+     "consulta": "La posición correcta del artista, al pintar y del espectador",
+     "pasajes": 8,
+     "iman": true
+    },
+    {
      "visible": "De los gestos apropiados",
      "consulta": "De los gestos apropiados",
      "pasajes": 8
     },
     {
-     "visible": "Sobre materiales químicos",
-     "consulta": "Sobre materiales químicos",
+     "visible": "De la representación del diluvio",
+     "consulta": "De la representación del diluvio",
      "pasajes": 8
-    },
-    {
-     "visible": "Sobre varias ayudas para preparar un cuadro",
-     "consulta": "Sobre varias ayudas para preparar un cuadro",
-     "pasajes": 6
     },
     {
      "visible": "Sobre la elección de la luz para un cuadro",
@@ -74,20 +85,9 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 6
     },
     {
-     "visible": "De la representación del diluvio",
-     "consulta": "De la representación del diluvio",
-     "pasajes": 6
-    },
-    {
      "visible": "Del yeso y del papel",
      "consulta": "Del yeso y del papel",
      "pasajes": 6
-    },
-    {
-     "visible": "La posición correcta del artista, al pintar y del espectador",
-     "consulta": "La posición correcta del artista, al pintar y del espectador",
-     "pasajes": 5,
-     "iman": true
     },
     {
      "visible": "La distribución de la luz y la sombra",
@@ -100,13 +100,13 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 5
     },
     {
-     "visible": "Cómo adquirir universalidad",
-     "consulta": "Cómo adquirir universalidad",
+     "visible": "Sobre la capacidad productiva de los artistas menores",
+     "consulta": "Sobre la capacidad productiva de los artistas menores",
      "pasajes": 4
     },
     {
-     "visible": "Sobre varias ayudas en la preparación de un cuadro",
-     "consulta": "Sobre varias ayudas en la preparación de un cuadro",
+     "visible": "Cómo adquirir universalidad",
+     "consulta": "Cómo adquirir universalidad",
      "pasajes": 4
     },
     {
@@ -135,8 +135,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 3
     },
     {
-     "visible": "Sobre la capacidad productiva de los artistas menores",
-     "consulta": "Sobre la capacidad productiva de los artistas menores",
+     "visible": "La distribución del tiempo para el estudio",
+     "consulta": "La distribución del tiempo para el estudio",
      "pasajes": 3
     },
     {
@@ -150,11 +150,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 3
     },
     {
-     "visible": "La posición correcta del artista, al pintar, y del espectador",
-     "consulta": "La posición correcta del artista, al pintar, y del espectador",
-     "pasajes": 3
-    },
-    {
      "visible": "De la luz en el rostro",
      "consulta": "De la luz en el rostro",
      "pasajes": 3
@@ -162,11 +157,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Sobre los barnices",
      "consulta": "Sobre los barnices",
-     "pasajes": 3
-    },
-    {
-     "visible": "Sobre los materiales químicos",
-     "consulta": "Sobre los materiales químicos",
      "pasajes": 3
     },
     {
@@ -200,13 +190,13 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 2
     },
     {
-     "visible": "La distribución del tiempo para el estudio",
-     "consulta": "La distribución del tiempo para el estudio",
+     "visible": "Juegos y ejercicios útiles",
+     "consulta": "Juegos y ejercicios útiles",
      "pasajes": 2
     },
     {
-     "visible": "Juegos y ejercicios útiles",
-     "consulta": "Juegos y ejercicios útiles",
+     "visible": "Sobre el manejo de las obras",
+     "consulta": "Sobre el manejo de las obras",
      "pasajes": 2
     },
     {
@@ -225,6 +215,11 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 2
     },
     {
+     "visible": "Bosquejar figuras y retratos",
+     "consulta": "DE Bosquejar figuras y retratos",
+     "pasajes": 2
+    },
+    {
      "visible": "Cómo representar las diferencias de edad y sexo",
      "consulta": "Cómo representar las diferencias de edad y sexo",
      "pasajes": 2
@@ -232,11 +227,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "De cómo representar una tempestad",
      "consulta": "De cómo representar una tempestad",
-     "pasajes": 2
-    },
-    {
-     "visible": "De cómo representar el diluvio",
-     "consulta": "De cómo representar el diluvio",
      "pasajes": 2
     },
     {
@@ -270,16 +260,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 1
     },
     {
-     "visible": "La distribución del tiempo para estudiar",
-     "consulta": "La distribución del tiempo para estudiar",
-     "pasajes": 1
-    },
-    {
-     "visible": "Sobre el poder productivo de los artistas menores",
-     "consulta": "Sobre el poder productivo de los artistas menores",
-     "pasajes": 1
-    },
-    {
      "visible": "Una advertencia contra el estudio unilateral",
      "consulta": "Una advertencia contra el estudio unilateral",
      "pasajes": 1
@@ -290,16 +270,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 1
     },
     {
-     "visible": "Sobre el manejo de las obras",
-     "consulta": "Sobre el manejo de las obras",
-     "pasajes": 1
-    },
-    {
-     "visible": "Sobre la gestión de las obras",
-     "consulta": "Sobre la gestión de las obras",
-     "pasajes": 1
-    },
-    {
      "visible": "De las gradaciones de luz y sombra",
      "consulta": "De las gradaciones de luz y sombra",
      "pasajes": 1
@@ -307,16 +277,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Sobre la iluminación de los objetos blancos",
      "consulta": "Sobre la iluminación de los objetos blancos",
-     "pasajes": 1
-    },
-    {
-     "visible": "De dibujar figuras y retratos",
-     "consulta": "DE De dibujar figuras y retratos",
-     "pasajes": 1
-    },
-    {
-     "visible": "Bosquejar figuras y retratos",
-     "consulta": "DE Bosquejar figuras y retratos",
      "pasajes": 1
     },
     {
@@ -460,6 +420,11 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 4
     },
     {
+     "visible": "Sobre la naturaleza de la luz",
+     "consulta": "SOBRE Sobre la naturaleza de la luz",
+     "pasajes": 4
+    },
+    {
      "visible": "La diferencia entre luz y lustre",
      "consulta": "La diferencia entre luz y lustre",
      "pasajes": 4
@@ -490,13 +455,13 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 3
     },
     {
-     "visible": "Sobre la naturaleza de la luz",
-     "consulta": "SOBRE Sobre la naturaleza de la luz",
+     "visible": "Sobre la intensidad de las sombras según la distancia de la luz",
+     "consulta": "SOBRE LA INTENSIDAD DE LAS SOMBRAS SEGÚN LA DISTANCIA DE LA LUZ",
      "pasajes": 3
     },
     {
-     "visible": "Sobre la intensidad de las sombras según la distancia de la luz",
-     "consulta": "SOBRE LA INTENSIDAD DE LAS SOMBRAS SEGÚN LA DISTANCIA DE LA LUZ",
+     "visible": "Diferentes clases de sombras derivadas",
+     "consulta": "DIFERENTES CLASES DE SOMBRAS DERIVADAS",
      "pasajes": 3
     },
     {
@@ -545,11 +510,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 2
     },
     {
-     "visible": "Diferentes clases de sombras derivadas",
-     "consulta": "DIFERENTES CLASES DE SOMBRAS DERIVADAS",
-     "pasajes": 2
-    },
-    {
      "visible": "Sombra producida por dos luces de diferente tamaño",
      "consulta": "Sombra producida por dos luces de diferente tamaño",
      "pasajes": 2
@@ -590,18 +550,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 1
     },
     {
-     "visible": "Sobre la naturaleza de la luz",
-     "consulta": "Sobre la naturaleza de la luz",
-     "pasajes": 1
-    },
-    {
      "visible": "Las relaciones de los cuerpos luminosos con los iluminados",
      "consulta": "Las relaciones de los cuerpos luminosos con los iluminados",
-     "pasajes": 1
-    },
-    {
-     "visible": "Diferentes clases de sombras derivadas",
-     "consulta": "Diferentes clases de sombras derivadas",
      "pasajes": 1
     },
     {
@@ -658,19 +608,14 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 15
     },
     {
+     "visible": "Hierro estañado, -hierro perforado",
+     "consulta": "Hierro estañado, -hierro perforado",
+     "pasajes": 8
+    },
+    {
      "visible": "El día 6 de octubre",
      "consulta": "El día 6 de octubre",
      "pasajes": 6
-    },
-    {
-     "visible": "Hierro estañado, -hierro perforado",
-     "consulta": "Hierro estañado, -hierro perforado",
-     "pasajes": 4
-    },
-    {
-     "visible": "Hierro estañado,—hierro perforado",
-     "consulta": "Hierro estañado,—hierro perforado",
-     "pasajes": 4
     },
     {
      "visible": "Memoranda sin fecha",
@@ -680,12 +625,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Notas sobre discípulos",
      "consulta": "Notas sobre discípulos (1458-1468.)",
-     "pasajes": 1
-    },
-    {
-     "visible": "Notas sobre los alumnos",
-     "consulta": "Notas sobre los alumnos (1458-1468.)",
-     "pasajes": 1
+     "pasajes": 2
     },
     {
      "visible": "Benedetto, 24 grossoni",
@@ -712,7 +652,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Canales en relación con el Arno",
      "consulta": "Canales en relación con el Arno (1001-1008)",
-     "pasajes": 6
+     "pasajes": 7
     },
     {
      "visible": "Los Apeninos",
@@ -793,11 +733,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "visible": "Costumbres de Naciones Asiáticas",
      "consulta": "Costumbres de Naciones Asiáticas (1099. 1100)",
      "pasajes": 2
-    },
-    {
-     "visible": "Canales en conexión con el Arno",
-     "consulta": "Canales en conexión con el Arno (1001-1008)",
-     "pasajes": 1
     },
     {
      "visible": "Notas sobre edificios en Milán",
@@ -1176,6 +1111,11 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 9
     },
     {
+     "visible": "Proporciones de la cabeza y del rostro",
+     "consulta": "Proporciones de la cabeza y del rostro",
+     "pasajes": 7
+    },
+    {
      "visible": "Proporciones del brazo",
      "consulta": "Proporciones del brazo",
      "pasajes": 7
@@ -1194,11 +1134,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "visible": "Las proporciones varían a diferentes edades",
      "consulta": "Las proporciones varían a diferentes edades",
      "pasajes": 6
-    },
-    {
-     "visible": "Proporciones de la cabeza y del rostro",
-     "consulta": "Proporciones de la cabeza y del rostro",
-     "pasajes": 5
     },
     {
      "visible": "El movimiento del brazo",
@@ -1238,11 +1173,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Observaciones preliminares",
      "consulta": "OBSERVACIONES PRELIMINARES",
-     "pasajes": 2
-    },
-    {
-     "visible": "Proporciones de la cabeza y la cara",
-     "consulta": "Proporciones de la cabeza y la cara",
      "pasajes": 2
     },
     {
@@ -1321,7 +1251,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Reglas de Vida",
      "consulta": "Reglas de Vida (1188-1202)",
-     "pasajes": 7
+     "pasajes": 10
     },
     {
      "visible": "Psicología",
@@ -1346,11 +1276,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Sobre las riquezas",
      "consulta": "Sobre las riquezas (1183—1187)",
-     "pasajes": 3
-    },
-    {
-     "visible": "Reglas de vida",
-     "consulta": "Reglas de vida (1188-1202)",
      "pasajes": 3
     },
     {
@@ -1416,6 +1341,11 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 8
     },
     {
+     "visible": "La producción de la pirámide de la visión",
+     "consulta": "La producción de la pirámide de la visión",
+     "pasajes": 7
+    },
+    {
      "visible": "La intersección de los rayos",
      "consulta": "La intersección de los rayos",
      "pasajes": 6
@@ -1431,18 +1361,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 4
     },
     {
-     "visible": "La producción de la pirámide de la visión",
-     "consulta": "La producción de la pirámide de la visión",
-     "pasajes": 4
-    },
-    {
      "visible": "Prueba experimental de la existencia de la pirámide de la vista",
      "consulta": "Prueba experimental de la existencia de la pirámide de la vista",
-     "pasajes": 3
-    },
-    {
-     "visible": "La producción de la pirámide de visión",
-     "consulta": "La producción de la pirámide de visión",
      "pasajes": 3
     },
     {
@@ -1453,6 +1373,11 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Demostración de la perspectiva mediante un plano de vidrio vertical",
      "consulta": "Demostración de la perspectiva mediante un plano de vidrio vertical",
+     "pasajes": 3
+    },
+    {
+     "visible": "El ángulo de la visión varía con la distancia",
+     "consulta": "El ángulo de la visión varía con la distancia",
      "pasajes": 3
     },
     {
@@ -1483,11 +1408,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Refracción de los rayos que caen sobre el ojo",
      "consulta": "Refracción de los rayos que caen sobre el ojo",
-     "pasajes": 2
-    },
-    {
-     "visible": "El ángulo de la visión varía con la distancia",
-     "consulta": "El ángulo de la visión varía con la distancia",
      "pasajes": 2
     },
     {
@@ -1541,11 +1461,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 1
     },
     {
-     "visible": "El ángulo de visión varía con la distancia",
-     "consulta": "El ángulo de visión varía con la distancia",
-     "pasajes": 1
-    },
-    {
      "visible": "Pirámides opuestas en yuxtaposición",
      "consulta": "Pirámides opuestas en yuxtaposición",
      "pasajes": 1
@@ -1578,6 +1493,11 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 5
     },
     {
+     "visible": "Sobre las manchas en la luna",
+     "consulta": "Sobre las manchas en la luna (903-907)",
+     "pasajes": 5
+    },
+    {
      "visible": "Las leyes fundamentales del sistema solar",
      "consulta": "Las leyes fundamentales del sistema solar (859-864)",
      "pasajes": 4
@@ -1595,11 +1515,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Explicación del lumen cinereum en la luna",
      "consulta": "Explicación del lumen cinereum en la luna",
-     "pasajes": 4
-    },
-    {
-     "visible": "Sobre las manchas en la luna",
-     "consulta": "Sobre las manchas en la luna (903-907)",
      "pasajes": 4
     },
     {
@@ -1635,11 +1550,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "De la naturaleza de la luz del sol",
      "consulta": "De la naturaleza de la luz del sol",
-     "pasajes": 1
-    },
-    {
-     "visible": "Sobre las manchas de la luna",
-     "consulta": "Sobre las manchas de la luna (903-907)",
      "pasajes": 1
     },
     {
@@ -1773,29 +1683,29 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 9
     },
     {
+     "visible": "Borradores diversos de cartas y registros personales",
+     "consulta": "Borradores diversos de cartas y registros personales (1356—1368)",
+     "pasajes": 8
+    },
+    {
      "visible": "Borradores de cartas e informes referentes a Armenia",
      "consulta": "Borradores de cartas e informes referentes a Armenia (1336. 1337)",
      "pasajes": 6
     },
     {
-     "visible": "Borradores diversos de cartas y registros personales",
-     "consulta": "Borradores diversos de cartas y registros personales (1356—1368)",
+     "visible": "Borradores de cartas a Lodovico il Moro",
+     "consulta": "Borradores de cartas a Lodovico il Moro (1340-1345)",
      "pasajes": 6
     },
     {
-     "visible": "Borradores de cartas a Lodovico il Moro",
-     "consulta": "Borradores de cartas a Lodovico il Moro (1340-1345)",
-     "pasajes": 5
+     "visible": "Borrador de carta para enviar a Piacenza",
+     "consulta": "Borrador de carta para enviar a Piacenza (1346. 1347)",
+     "pasajes": 4
     },
     {
      "visible": "Notas con fechas",
      "consulta": "Notas con fechas (1369—1378)",
      "pasajes": 4
-    },
-    {
-     "visible": "Borrador de carta para enviar a Piacenza",
-     "consulta": "Borrador de carta para enviar a Piacenza (1346. 1347)",
-     "pasajes": 3
     },
     {
      "visible": "Notas sobre eventos observados en el extranjero",
@@ -1806,21 +1716,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "visible": "Registros varios (1354. 1355)-",
      "consulta": "Registros varios (1354. 1355)-",
      "pasajes": 2
-    },
-    {
-     "visible": "Borradores varios de cartas y registros personales",
-     "consulta": "Borradores varios de cartas y registros personales (1356—1368)",
-     "pasajes": 2
-    },
-    {
-     "visible": "Borradores de Cartas a Lodovico il Moro",
-     "consulta": "Borradores de Cartas a Lodovico il Moro (1340-1345)",
-     "pasajes": 1
-    },
-    {
-     "visible": "Borrador de carta para ser enviada a Piacenza",
-     "consulta": "Borrador de carta para ser enviada a Piacenza (1346. 1347)",
-     "pasajes": 1
     },
     {
      "visible": "Carta al Cardenal Ippolito d'Este",
@@ -1847,7 +1742,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "El efecto de fondos claros u oscuros sobre el tamaño aparente de los objetos",
      "consulta": "El efecto de fondos claros u oscuros sobre el tamaño aparente de los objetos",
-     "pasajes": 9
+     "pasajes": 10
     },
     {
      "visible": "El papel de la luz y la sombra en lo que se ve de lejos",
@@ -1867,12 +1762,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Qué es la perspectiva de la desaparición",
      "consulta": "PERSPECTIVA DE DESAPARICIÓN Definición",
-     "pasajes": 1
-    },
-    {
-     "visible": "Qué es la perspectiva de la desaparición",
-     "consulta": "PERSPPECTIVA DE LA DESAPARICIÓN Definición",
-     "pasajes": 1
+     "pasajes": 2
     },
     {
      "visible": "Una ilustración por experimento",
@@ -1888,11 +1778,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "visible": "Un experimento",
      "consulta": "Un experimento",
      "pasajes": 1
-    },
-    {
-     "visible": "El efecto de los fondos claros u oscuros sobre el tamaño aparente de los objetos",
-     "consulta": "El efecto de los fondos claros u oscuros sobre el tamaño aparente de los objetos",
-     "pasajes": 1
     }
    ]
   },
@@ -1907,13 +1792,13 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 10
     },
     {
-     "visible": "Sugerencias para la disposición de manuscritos que tratan de asuntos particulares",
-     "consulta": "Sugerencias para la disposición de manuscritos que tratan de asuntos particulares",
-     "pasajes": 4
-    },
-    {
      "visible": "Introducciones generales al libro sobre pintura",
      "consulta": "Introducciones generales al libro sobre pintura",
+     "pasajes": 5
+    },
+    {
+     "visible": "Sugerencias para la disposición de manuscritos que tratan de asuntos particulares",
+     "consulta": "Sugerencias para la disposición de manuscritos que tratan de asuntos particulares",
      "pasajes": 4
     },
     {
@@ -1954,11 +1839,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "El desorden en los manuscritos",
      "consulta": "El desorden en los manuscritos",
-     "pasajes": 1
-    },
-    {
-     "visible": "Introducciones generales al libro de pintura",
-     "consulta": "Introducciones generales al libro de pintura",
      "pasajes": 1
     },
     {
@@ -2060,7 +1940,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Motes y Emblemas",
      "consulta": "Motes y Emblemas",
-     "pasajes": 7
+     "pasajes": 9
     },
     {
      "visible": "Representaciones alegóricas",
@@ -2080,11 +1960,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Sobre la batalla de Anghiari",
      "consulta": "Sobre la batalla de Anghiari",
-     "pasajes": 2
-    },
-    {
-     "visible": "Lemas y Emblemas",
-     "consulta": "Lemas y Emblemas",
      "pasajes": 2
     },
     {
@@ -2154,7 +2029,7 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Los efectos recíprocos de los colores sobre objetos colocados uno frente a otro",
      "consulta": "TEORÍA DE LOS COLORES Los efectos recíprocos de los colores sobre objetos colocados uno frente a otro",
-     "pasajes": 7
+     "pasajes": 9
     },
     {
      "visible": "Sobre la reflexión de los colores",
@@ -2162,9 +2037,9 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 3
     },
     {
-     "visible": "Los efectos recíprocos de los colores en objetos colocados opuestos entre sí",
-     "consulta": "TEORÍA DE LOS COLORES Los efectos recíprocos de los colores en objetos colocados opuestos entre sí",
-     "pasajes": 2
+     "visible": "Sobre el uso de colores oscuros y claros en la pintura",
+     "consulta": "Sobre el uso de colores oscuros y claros en la pintura",
+     "pasajes": 3
     },
     {
      "visible": "El efecto de los colores en la cámara oscura",
@@ -2182,11 +2057,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
      "pasajes": 2
     },
     {
-     "visible": "Sobre el uso de colores oscuros y claros en la pintura",
-     "consulta": "Sobre el uso de colores oscuros y claros en la pintura",
-     "pasajes": 2
-    },
-    {
      "visible": "Sobre los colores del arcoíris",
      "consulta": "Sobre los colores del arcoíris",
      "pasajes": 2
@@ -2199,11 +2069,6 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Sobre la naturaleza de los colores",
      "consulta": "Sobre la naturaleza de los colores",
-     "pasajes": 1
-    },
-    {
-     "visible": "Sobre el uso de los colores oscuros y claros en la pintura",
-     "consulta": "Sobre el uso de los colores oscuros y claros en la pintura",
      "pasajes": 1
     }
    ]

@@ -272,18 +272,63 @@ if (sinTabla.size) {
   process.exit(1);
 }
 
+/**
+ * ══════════════════════════════════════════════════════════════════════
+ * UN TEMA CASTELLANO POR TEMA INGLES. Ver D-241.
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * La traducción del corpus tradujo el MISMO título inglés de dos maneras en
+ * chunks distintos: «Sobre los materiales químicos» y «Sobre materiales
+ * químicos», «Lemas y Emblemas» y «Motes y Emblemas», «Sobre el manejo de las
+ * obras» y «Sobre la gestión de las obras». **27 títulos ingleses tienen dos
+ * traducciones cada uno.**
+ *
+ * Eso explica exactamente la asimetría del mapa —423 temas en castellano contra
+ * 396 en inglés, y 423 − 396 = 27— que hasta hoy nadie había mirado. En el rail
+ * castellano el visitante veía el mismo tema DOS VECES, con dos redacciones
+ * parecidas y los pasajes repartidos entre las dos.
+ *
+ * ⚠ SE ARREGLA ACA Y NO EN EL CORPUS. Las dos variantes son traducciones
+ * correctas; ninguna está mal. Reescribir `chunks_es.json` obligaría a
+ * reconstruir el índice castellano y a recalibrar τ_es, o sea a mover los
+ * números medidos de todo el proyecto para arreglar un problema de rótulos.
+ * Acá se agrupa por el título INGLES —que es el identificador real del tema— y
+ * se elige una variante castellana: la que cubre más chunks, y a igualdad, la
+ * primera alfabéticamente, para que dos corridas den lo mismo.
+ *
+ * ⚠ LA VARIANTE ELEGIDA SIGUE SIENDO UN TITULO QUE EXISTE, así que
+ * `mapa.consultasHuerfanas` sigue dando 0 y la consulta que se manda sigue
+ * siendo texto del corpus. La otra variante no se pierde: sus pasajes se cuentan
+ * en el tema unificado, y el buscador la encuentra igual porque filtra por
+ * `consulta` además de por `visible`.
+ */
 function construir(idioma: Idioma) {
-  const porSeccion = new Map<string, Map<string, number>>();
+  /** sección → título inglés → (variante del idioma → cuántos chunks) */
+  const porSeccion = new Map<string, Map<string, Map<string, number>>>();
   for (const c of chunks) {
     if (c.voice !== "leonardo") continue;
     const secEn = (c.section || "").trim();
     if (!secEn) continue;
     /** ⚠ El titulo del idioma que se va a consultar, nunca el del otro. */
     const titulo = idioma === "es" ? (trad[c.id]?.titulo || c.richterTitle) : c.richterTitle;
-    if (!titulo) continue;
+    if (!titulo || !c.richterTitle) continue;
     if (!porSeccion.has(secEn)) porSeccion.set(secEn, new Map());
-    const m = porSeccion.get(secEn)!;
-    m.set(titulo, (m.get(titulo) ?? 0) + 1);
+    const porTema = porSeccion.get(secEn)!;
+    if (!porTema.has(c.richterTitle)) porTema.set(c.richterTitle, new Map());
+    const vs = porTema.get(c.richterTitle)!;
+    vs.set(titulo, (vs.get(titulo) ?? 0) + 1);
+  }
+
+  /** La variante que cubre más chunks; a igualdad, la primera alfabéticamente. */
+  const elegir = (vs: Map<string, number>): string =>
+    [...vs.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]![0];
+
+  let unificados = 0;
+  for (const porTema of porSeccion.values()) {
+    for (const vs of porTema.values()) if (vs.size > 1) unificados += vs.size - 1;
+  }
+  if (unificados) {
+    console.log(`  [${idioma}] ${unificados} tema(s) duplicado(s) por doble traducción, unificados`);
   }
 
   return [...porSeccion.entries()]
@@ -292,15 +337,19 @@ function construir(idioma: Idioma) {
       return {
         seccion: nombre,
         glosa: GLOSA[secEn]![idioma],
-        pasajes: [...m.values()].reduce((a, x) => a + x, 0),
+        pasajes: [...m.values()].reduce((a, vs) => a + [...vs.values()].reduce((x, y) => x + y, 0), 0),
         temas: [...m.entries()]
-          .map(([titulo, n]) => ({
-            visible: rotulo(titulo, nombre),
-            /** ⚠ EL TITULO ORIGINAL: es lo que `alcance.json` midió. */
-            consulta: titulo,
-            pasajes: n,
-            iman: IMANES.has(titulo) || undefined,
-          }))
+          .map(([tituloEn, vs]) => {
+            const consulta = elegir(vs);
+            return {
+              visible: rotulo(consulta, nombre),
+              /** ⚠ EL TITULO ORIGINAL: es lo que `alcance.json` midió. */
+              consulta,
+              pasajes: [...vs.values()].reduce((a, x) => a + x, 0),
+              /** El imán se marca por el título INGLES: es el identificador del tema. */
+              iman: IMANES.has(tituloEn) || IMANES.has(consulta) || undefined,
+            };
+          })
           .sort((a, b) => b.pasajes - a.pasajes),
       };
     })

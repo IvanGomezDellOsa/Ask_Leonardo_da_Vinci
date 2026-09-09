@@ -159,20 +159,38 @@ Devolvé sólo las 3 preguntas, una por línea, sin numerar.`;
   /**
    * ⚠ SE COMPRUEBA EL IDIOMA, NO SE CONFIA EN LA INSTRUCCION. Ver D-243.
    *
-   * Con el idioma pedido explícitamente en el prompt, **el modelo igual devolvió
-   * inglés en 4 de 21 pedidos castellanos (19%)**: el fragmento que ve está en
-   * inglés y arrastra. Una instrucción no es una garantía, y acá el costo de que
-   * falle es meter búsqueda cross-lingüe en un índice que existe justamente para
-   * no tenerla (D-105, D-107).
+   * Con el idioma pedido explícitamente en el prompt, **4 de 54 entradas
+   * castellanas volvieron en inglés (7%)**: el fragmento que ve está en inglés y
+   * arrastra. Una instrucción no es una garantía, y acá el costo de que falle es
+   * meter búsqueda cross-lingüe en un índice que existe justamente para no
+   * tenerla (D-105, D-107).
    *
    * La heurística es tosca a propósito —acentos, signos de apertura y una
    * docena de funcionales— pero sólo tiene que distinguir castellano de inglés,
    * no clasificar idiomas. Si falla, se reintenta una vez y después se descarta:
    * es mejor un chunk sin preguntas que uno con preguntas en el idioma que no va.
    */
-  const ES = /[áéíóúñ¿¡]|\b(qué|cómo|por qué|cuál|hago|puedo|para|los|las|una|del)\b/i;
-  const idiomaOk = (qs: string[], lang: Idioma): boolean =>
-    qs.every((q) => ES.test(q) === (lang === "es"));
+  const MARCAS_ES = /[áéíóúñ¿¡]|\b(qué|cómo|cuál|cuándo|por|para|los|las|una|del|con|mis?|si|más|hacer|puedo|hago|mejor|cosas?|cuando|dónde|donde|es|un|que)\b/gi;
+  const MARCAS_EN = /\b(the|is|are|do|does|did|you|your|what|how|why|when|of|to|in|it|and|can|should|my|if|make|things?|better)\b/gi;
+  /**
+   * ⚠ SE DECIDE POR MAYORIA ENTRE DOS LISTAS, NO POR UNA SOLA. La primera versión
+   * preguntaba «¿tiene marcas de castellano?» y nada más — y una pregunta corta y
+   * sin tilde («Me conviene estar solo cuando pinto?») no tiene ninguna, así que
+   * daba inglés. **Aplicada sobre 180 entradas ya generadas marcó 111 como
+   * desalineadas y las borré: casi todas estaban bien.** Un detector que sólo
+   * busca evidencia de un lado no distingue «es del otro idioma» de «no hay
+   * evidencia», y esa diferencia costó 91 generaciones.
+   *
+   * Contar marcas de los DOS idiomas y quedarse con el que gana convierte la
+   * ausencia de evidencia en un empate, que es lo que de verdad es.
+   */
+  const idiomaOk = (qs: string[], lang: Idioma): boolean => {
+    const t = qs.join(" ");
+    const es = (t.match(MARCAS_ES) ?? []).length;
+    const en = (t.match(MARCAS_EN) ?? []).length;
+    if (es === en) return true;            // empate: no hay evidencia, no se descarta
+    return (es > en) === (lang === "es");
+  };
 
   let n = 0, descartados = 0;
   for (const x of j.lote) {

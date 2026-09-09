@@ -32,6 +32,7 @@ import { cargarExtractor } from "../src/lib/embed.js";
 import { Corpus, rangosDeRichter, caeEnRangos } from "../src/lib/retrieval.js";
 import { cargarMotor, decidirCon, capaCurada, type Idioma } from "../src/lib/grounding.js";
 import { ART, cargarCasos } from "./comun.js";
+import { MAPA } from "../src/data/mapa.js";
 
 const LINEA = new URL("linea_base.json", ART);
 const fijar = process.argv.includes("--fijar");
@@ -106,6 +107,33 @@ const medido: Record<string, Punto> = {};
   medido["indice.chunksLeonardo"] = { valor: motor.por.en.corpus.filasPorVoz.leonardo.length, decision: "D-098" };
   medido["tau.en"] = { valor: motor.por.en.umbrales.tau.en, decision: "D-100" };
   medido["tau.es"] = { valor: motor.por.es.umbrales.tau.es, decision: "D-108" };
+}
+
+// ---- ¿el mapa de temas sigue apuntando a títulos que existen? ------------
+{
+  /**
+   * ⚠ EL MAPA GUARDA LOS TITULOS ORIGINALES COMO CONSULTAS. Ver D-233.
+   *
+   * `src/data/mapa.ts` está bundleado y viaja al navegador; sus `consulta` son
+   * los títulos de Richter con los que se midió el 345/375 de `alcance.json`.
+   * **Si alguien regenera el corpus sin correr `npm run mapa`, esos títulos
+   * pueden dejar de existir y cada clic mandaría una consulta muerta** — sin
+   * excepción, sin error y sin que nadie se entere: el gate simplemente
+   * devolvería peores pasajes. Es exactamente el modo de fallo que D-211 y
+   * D-226 arreglaron en los otros dos artefactos que se alinean por id.
+   *
+   * Se cuentan las consultas que YA NO existen. Tiene que ser 0.
+   */
+  const titulos = new Set<string>();
+  for (const c of motor.por.es.corpus.chunks) {
+    if (c.voice !== "leonardo") continue;
+    const t = c.tituloEs ?? c.richterTitle;
+    if (t) titulos.add(t);
+  }
+  const huerfanas = MAPA.flatMap((s) => s.temas).filter((t) => !titulos.has(t.consulta));
+  medido["mapa.temas"] = { valor: MAPA.reduce((a, s) => a + s.temas.length, 0), decision: "D-233" };
+  medido["mapa.consultasHuerfanas"] = { valor: huerfanas.length, decision: "D-233",
+    nota: "Temas del mapa cuyo título ya no existe en el corpus. Si sube, el mapa quedó viejo: correr `npm run mapa`." };
 }
 
 // ---- ¿el índice castellano habla castellano? ----------------------------

@@ -248,7 +248,7 @@ export function contadorDelEntorno(env: Record<string, string | undefined>): Con
   console.warn(
     "[limites] sin base compartida: los contadores viven en memoria y son POR INSTANCIA. " +
     "El techo diario efectivo pasa a ser (techo × instancias). " +
-    "Configurar UPSTASH_REDIS_REST_URL/_TOKEN (o KV_REST_API_URL/_TOKEN). Ver docs/22-publicar.md.",
+    "Configurar UPSTASH_REDIS_REST_URL/_TOKEN (o KV_REST_API_URL/_TOKEN). Ver .env.example.",
   );
   return new ContadorMemoria();
 }

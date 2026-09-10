@@ -215,28 +215,11 @@ export const fasesDe = (lang: "es" | "en") => ({
 export const RESPETAR_MOVIMIENTO_REDUCIDO = false;
 
 /**
- * El idioma del visitante. Ver D-150.
+ * ⚠ ACA VIVIA `detectarIdioma()`, y se fue con la ruta `/en`.
  *
- * SE REVIERTE UNA DECISION VIEJA DEL PROYECTO —«bilingüe con selector
- * explícito, sin autodetección»— a pedido del dueño. El motivo original de esa
- * regla era el momento de la espera del modelo: se prefería ofrecer el idioma
- * como popout para llenar un tiempo que igual se estaba gastando. Esa
- * estrategia se descartó: hacerlo esperar sin popouts encima es mejor
- * experiencia, y entonces preguntar el idioma pierde su excusa. Se detecta, y
- * el selector queda a la vista para corregir.
- *
- * CASTELLANO SOLO SI EL NAVEGADOR PIDE CASTELLANO; TODO LO DEMAS, INGLES. No es
- * arbitrario: el corpus es la traducción inglesa de Richter, así que el inglés
- * es el idioma en que el proyecto está más cerca de su fuente.
+ * Leía `navigator.languages` y devolvía «es» o «en» para que `Hero` corrigiera
+ * el idioma al montar (D-150). Desde que cada idioma tiene su URL, el idioma lo
+ * decide la ruta y esa función no la llamaba nadie: quedaba código muerto que
+ * parecía una opción disponible. Si alguna vez se quiere SUGERIR el otro idioma
+ * —un aviso, no una redirección— vuelve del historial en una línea.
  */
-export function detectarIdioma(): "es" | "en" {
-  if (typeof navigator === "undefined") return "es";
-  const preferidos = navigator.languages?.length ? navigator.languages : [navigator.language];
-  for (const etiqueta of preferidos) {
-    const base = (etiqueta || "").toLowerCase().split("-")[0];
-    if (base === "es") return "es";
-    if (base === "en") return "en";
-  }
-  // Ni castellano ni inglés entre las preferencias: gana la lengua de la fuente.
-  return "en";
-}

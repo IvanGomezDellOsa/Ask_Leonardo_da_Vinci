@@ -30,13 +30,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ADELANTO_VIDEO, APERTURA, DUR_CH, ESCRITURA, LINEAS, detectarIdioma, fasesDe,
+  ADELANTO_VIDEO, APERTURA, DUR_CH, ESCRITURA, LINEAS, fasesDe,
   RESPETAR_MOVIMIENTO_REDUCIDO,
 } from "../lib/intro.js";
 import { modeloEnCache, useEmbedder } from "../hooks/useEmbedder.js";
 import { useAngosto } from "../hooks/useAngosto.js";
 import { elegirEncuadre, focoEnPantalla, type Encuadre } from "../lib/encuadre.js";
 import type { Idioma } from "../lib/cliente-chat.js";
+import { RUTA } from "../lib/rutas.js";
 import { FUENTE } from "./estilos.js";
 import { Biblioteca } from "./Biblioteca.js";
 import { Museo } from "./Museo.js";
@@ -44,6 +45,20 @@ import { Codice } from "./Codice.js";
 import { Explainer } from "./Explainer.js";
 
 type Fase = "escribiendo" | "brasa" | "abriendo" | "listo";
+
+/**
+ * CAMBIAR DE IDIOMA NO ES LLEGAR AL SITIO, y desde que cada idioma tiene su URL
+ * eso dejó de ser obvio: el selector navega, o sea recarga, o sea que la intro
+ * volvía a escribirse entera —siete segundos— cada vez que alguien tocaba EN.
+ *
+ * La marca la deja el propio enlace y se consume al leerla, así que **sólo
+ * saltea el viaje entre idiomas**: recargar a mano sigue mostrando la intro,
+ * que es lo que el dueño decidió que se vea al llegar (D-136, D-139).
+ *
+ * `sessionStorage` y no `localStorage`: muere con la pestaña. Y va en
+ * `try/catch` porque Safari en privado tira al escribir.
+ */
+const SALTAR_INTRO = "alv-cambio-idioma";
 
 /**
  * La apertura, en una sola definición. La usan el velo que se disuelve y todo
@@ -181,10 +196,23 @@ const COPY = {
   subir: { es: "Volver al inicio", en: "Back to the top" },
 } as const;
 
-export function Hero() {
+/**
+ * EL IDIOMA ENTRA POR PROP Y NO SE DETECTA. Ver `src/lib/rutas.ts`.
+ *
+ * Era `useState<Idioma>("es")` corregido al montar con `navigator.language`
+ * (D-150). Andaba para el visitante y **no para un buscador**: el HTML servido
+ * decía siempre `lang="es"`, con título y descripción en castellano, y la
+ * versión inglesa del sitio no existía para nadie que no ejecutara JavaScript.
+ * Ahora lo decide la ruta —`/` y `/en`—, que es lo único que un `hreflang`
+ * puede declarar, y las dos páginas siguen siendo estáticas.
+ *
+ * Lo que se pierde: quien llega a `/` con el navegador en inglés ya no ve el
+ * sitio en inglés solo. Lo tiene a un clic, en el mismo selector de siempre, y
+ * el buscador lo manda directo a `/en` cuando busca en inglés.
+ */
+export function Hero({ lang }: { lang: Idioma }) {
   const angosto = useAngosto();
   const [fase, setFase] = useState<Fase>("escribiendo");
-  const [lang, setLang] = useState<Idioma>("es");
   const [explainerAbierto, setExplainerAbierto] = useState(false);
   /**
    * `false` en el servidor y en el primer render del cliente. Ver D-150.
@@ -337,14 +365,22 @@ export function Hero() {
     // Se chequea en el efecto y no en el estado inicial porque el servidor no
     // tiene forma de saberlo, y un estado inicial distinto entre servidor y
     // cliente rompe la hidratación.
-    // EL IDIOMA SE RESUELVE ACA, EN EL MISMO EFECTO QUE ARMA EL RELOJ. Ver
-    // D-150. Si viviera en su propio efecto habría un orden entre los dos que
-    // nadie garantiza, y los temporizadores podrían quedar armados sobre el
-    // cronograma del idioma equivocado — la escritura terminaría antes o
-    // después de que caiga el velo.
-    const idioma = detectarIdioma();
-    setLang(idioma);
+    // EL CRONOGRAMA ES POR IDIOMA y el idioma ya está resuelto: viene de la
+    // ruta. Antes se detectaba en este mismo efecto para que los
+    // temporizadores no quedaran armados sobre el cronograma del idioma
+    // equivocado; ahora no hay carrera posible porque no hay nada que
+    // resolver.
     setMontado(true);
+
+    // Se viene del otro idioma: el taller ya se abrió una vez en esta pestaña.
+    try {
+      if (sessionStorage.getItem(SALTAR_INTRO)) {
+        sessionStorage.removeItem(SALTAR_INTRO);
+        setFase("listo");
+        arrancarVideo();
+        return;
+      }
+    } catch { /* sessionStorage bloqueado: se ve la intro, que es el default */ }
 
     const quieto =
       RESPETAR_MOVIMIENTO_REDUCIDO &&
@@ -355,7 +391,7 @@ export function Hero() {
       return;
     }
 
-    const fases = fasesDe(idioma);
+    const fases = fasesDe(lang);
     temporizadores.current = [
       setTimeout(arrancarVideo, Math.max(0, fases.escritura - ADELANTO_VIDEO)),
       setTimeout(() => setFase("brasa"), fases.escritura),
@@ -365,7 +401,7 @@ export function Hero() {
 
     const pendientes = temporizadores.current;
     return () => pendientes.forEach(clearTimeout);
-  }, [arrancarVideo]);
+  }, [arrancarVideo, lang]);
 
   // Cambiar el `src` descarta el elemento cargado y lo deja en pausa: si el
   // fuego ya estaba corriendo cuando la ventana cambió de forma, se retoma.
@@ -385,13 +421,6 @@ export function Hero() {
     document.addEventListener("visibilitychange", alVolver);
     return () => document.removeEventListener("visibilitychange", alVolver);
   }, []);
-
-  // El `lang` del documento tiene que decir la verdad: es lo que usan el
-  // lector de pantalla para elegir voz y el navegador para ofrecer traducir.
-  // Se planta "es" en el servidor y se corrige acá cuando el usuario elige.
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
 
   const saltear = () => {
     if (fase === "listo") return;
@@ -632,15 +661,30 @@ export function Hero() {
             transition: TRANSICION_APERTURA,
           }}
         >
+          {/*
+            SON ENLACES, NO BOTONES, desde que cada idioma tiene su URL. Tres
+            cosas que un `onClick` no daba: el rastreador encuentra la otra
+            versión siguiendo el enlace —que es lo que el `hreflang` declara y
+            esto confirma—, se puede abrir en otra pestaña, y el `lang` del
+            documento llega bien desde el servidor en vez de corregirse por JS.
+
+            `stopPropagation` sigue haciendo falta: un click en cualquier parte
+            del hero saltea la intro, y elegir idioma no es saltearla.
+          */}
           {(["es", "en"] as const).map((codigo) => (
-            <button
+            <a
               key={codigo}
-              type="button"
+              href={RUTA[codigo]}
+              hrefLang={codigo}
+              aria-current={lang === codigo ? "page" : undefined}
               onClick={(e) => {
                 e.stopPropagation();
-                setLang(codigo);
+                if (codigo === lang) return;
+                try { sessionStorage.setItem(SALTAR_INTRO, "1"); } catch { /* ídem */ }
               }}
               style={{
+                display: "inline-block",
+                textDecoration: "none",
                 fontFamily: FUENTE.lectura,
                 fontSize: angosto ? ESCALA_MOVIL.pastilla : 13,
                 fontWeight: lang === codigo ? 600 : 500,
@@ -655,7 +699,7 @@ export function Hero() {
               }}
             >
               {codigo.toUpperCase()}
-            </button>
+            </a>
           ))}
         </div>
 
@@ -746,16 +790,26 @@ export function Hero() {
                 a mitad de la página. Cuando ya no hay nada que animar, es un
                 párrafo común y el cambio de idioma es instantáneo.
               */
+              /*
+                LA PRIMERA LINEA ES EL <h1> DE LA PAGINA, y es la única que hay.
+                No cambia un píxel —`estilo` ya fija cuerpo, peso y `margin: 0`,
+                así que los estilos por omisión del `h1` no llegan a aplicarse—
+                pero el documento pasa a tener encabezado de primer nivel: hasta
+                acá había siete `<h2>` colgando de nada. Sigue siendo el mismo
+                texto que se escribe a mano; sólo cambia la etiqueta.
+              */
+              const Etiqueta = li === 0 ? "h1" : "p";
+
               if (!escribiendo) {
                 return (
-                  <p key={li} style={estilo}>
+                  <Etiqueta key={li} style={estilo}>
                     {texto}
-                  </p>
+                  </Etiqueta>
                 );
               }
 
               return (
-                <p key={li} aria-label={texto} style={estilo}>
+                <Etiqueta key={li} aria-label={texto} style={estilo}>
                   {ESCRITURA[lang].lineas[li]!.map((palabra, wi) => (
                     <span key={wi} aria-hidden="true" style={{ display: "inline-block", whiteSpace: "pre" }}>
                       {palabra.map((c, ci) => (
@@ -771,7 +825,7 @@ export function Hero() {
                       ))}
                     </span>
                   ))}
-                </p>
+                </Etiqueta>
               );
             })}
           </div>

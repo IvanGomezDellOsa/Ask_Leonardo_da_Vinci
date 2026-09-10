@@ -42,6 +42,7 @@
     "limites": "tsx tools/probar_limites.ts",
     "exportar:portada": "tsx tools/exportar_portada.ts",
     "biblioteca": "tsx tools/optimizar_biblioteca.ts",
+    "marca": "tsx tools/marca.ts",
     "wikipedia": "tsx tools/wikipedia.ts",
     "retitular": "tsx tools/retitular_es.ts",
     "mapa": "tsx tools/mapa_temas.ts",

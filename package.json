@@ -45,6 +45,7 @@
     "wikipedia": "tsx tools/wikipedia.ts",
     "retitular": "tsx tools/retitular_es.ts",
     "mapa": "tsx tools/mapa_temas.ts",
+    "mapa:abstenciones": "tsx tools/mapa_abstenciones.ts",
     "muestra:mapa": "tsx tools/muestra_mapa.ts",
     "precalcular:mapa": "tsx tools/precalcular_mapa.ts",
     "imanes": "tsx tools/imanes.ts",

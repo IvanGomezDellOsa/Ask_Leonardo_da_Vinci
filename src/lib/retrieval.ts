@@ -345,6 +345,26 @@ export class Corpus {
    * (aviones, fotografia, energia nuclear). Toda pregunta contestable tiene al
    * menos una, y la mediana es 4.
    */
+  /**
+   * ⚠ EL VOCABULARIO CUBRE TITULO + TEXTO, IGUAL QUE LOS DOS INDICES (D-260).
+   *
+   * Hasta acá miraba SOLO el cuerpo del pasaje, y el denso y BM25 los dos
+   * indexan `richterTitle + text`. Esa asimetria tenia una clase entera de
+   * falsos positivos que nadie habia medido: **los rotulos del indice de
+   * Richter**. «Fisiologia» no aparece ni una vez en los 1.431 pasajes —adentro
+   * Leonardo habla de ojos, nervios y musculos— asi que el tema se quedaba sin
+   * anclas y la guarda abstenia ANTES de calcular el coseno. Con el coseno
+   * calculado da **0,8862** contra τ_es 0,8410 y el pasaje mas cercano es
+   * PHYSIOLOGY: el embedding hacia bien su trabajo y no se lo consultaba.
+   *
+   * ⚠ POR QUE NO SE VIO EN D-231: la guarda se valido sobre el banco de 120
+   * preguntas TIPEADAS, y el mapa de 396 titulos llego dos decisiones despues
+   * (D-233). El instrumento estaba bien medido contra otra poblacion.
+   *
+   * La guarda sigue haciendo lo suyo: los titulos son palabras de contenido
+   * —«Fisiologia», «Ironia», «Prolegomenos»—, no saludos. «hola» y «gracias» no
+   * ganan una sola ancla con esto.
+   */
   anclas(consulta: string, idioma: "es" | "en"): string[] {
     this.vocabulario ??= { es: null, en: null };
     if (!this.vocabulario[idioma]) {
@@ -352,7 +372,11 @@ export class Corpus {
       for (const c of this.chunks) {
         if (c.voice !== "leonardo") continue;
         const texto = idioma === "es" ? (c.textoEs ?? c.text) : c.text;
+        const titulo = idioma === "es"
+          ? (c.tituloEs ?? c.richterTitle ?? "")
+          : (c.richterTitle ?? "");
         for (const t of this.tokenizar(texto)) v.add(t);
+        for (const t of this.tokenizar(titulo)) v.add(t);
       }
       this.vocabulario[idioma] = v;
     }

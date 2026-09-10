@@ -83,8 +83,79 @@ type Mensaje =
        * antemano en vez de sostener lo que se acaba de decir.
        */
       revelado: boolean;
+      /**
+       * `true` sólo en la decisión `abstiene`. NO cubre `curada`: ahí Leonardo
+       * también dice que no dejó anotación, pero la respuesta trae la nota de
+       * Richter o el dato de la segunda voz, y empujar el índice encima de una
+       * respuesta que sí llegó sobra (D-258).
+       */
+      abstiene: boolean;
       pasajes: PasajeAbrible[];
     };
+
+/**
+ * LA RECOMENDACION DE LA PREGUNTA ASISTIDA (D-258). Sólo en teléfono: en
+ * escritorio el rail está siempre a la vista y esto sería ruido al lado de lo
+ * que ya se ve.
+ *
+ * Aparece en los DOS momentos en que alguien no sabe qué preguntar: con la
+ * conversación vacía, y justo después de una abstención. En ningún otro: si
+ * Leonardo contestó, no hay nada que recomendar.
+ *
+ * EL BRILLO CRUZA LA INSCRIPCION, no un borde. Es `background-clip: text`
+ * sobre un degradado que se mueve — el movimiento vive en `globals.css` como
+ * `.alv-reco-cta`, con su corte por `prefers-reduced-motion`.
+ */
+function Recomendacion({
+  t, onAbrir,
+}: {
+  t: { recoTitulo: string; recoTexto: string; recoAccion: string };
+  onAbrir: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="alv-reco"
+      onClick={onAbrir}
+      style={{
+        display: "block",
+        width: "100%",
+        marginTop: 4,
+        padding: "14px 16px 14px 18px",
+        textAlign: "left",
+        background: "none",
+        border: 0,
+        borderLeft: `1px solid ${T.bordeIzq}`,
+        cursor: "pointer",
+        fontFamily: FUENTE.lectura,
+      }}
+    >
+      <span
+        style={{
+          display: "block",
+          marginBottom: 6,
+          fontFamily: FUENTE.titulo,
+          fontSize: 19,
+          fontWeight: 600,
+          letterSpacing: ".005em",
+          color: T.titulo,
+        }}
+      >
+        {t.recoTitulo}
+      </span>
+      <span style={{ display: "block", marginBottom: 10, fontSize: 14, lineHeight: 1.6, color: T.tenue }}>
+        {t.recoTexto}
+      </span>
+      <span className="alv-reco-cta">
+        {t.recoAccion}
+        <svg width="14" height="9" viewBox="0 0 14 9" fill="none" aria-hidden="true">
+          <path d="M0 4.5h12M8.8 1l3.5 3.5L8.8 8" stroke="oklch(80% 0.012 80)" strokeWidth="1.1"
+                strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+    </button>
+  );
+}
 
 /**
  * `Omit` sobre una unión la aplasta a las claves comunes; distribuido, cada
@@ -130,6 +201,22 @@ const COPY = {
     sinNotaAviso: "Mis papeles callan, y Richter, mi editor, tampoco comenta el silencio.",
     abstiene: "Sobre eso no he dejado anotación en mis cuadernos, y prefiero no inventarte una.",
     abrirMapa: "Ver los temas de los cuadernos",
+    /**
+     * LA RECOMENDACION (D-258). Mismo título en los dos momentos en que
+     * aparece —al abrir y tras una abstención— **a propósito**: es un solo
+     * componente haciendo un solo trabajo, y repetir el nombre es lo que hace
+     * que el visitante aprenda cómo se llama esto. Con dos títulos se leería
+     * como dos cosas distintas.
+     *
+     * ⚠ DICE «DE QUE ESCRIBIO», NO «QUE TE PUEDE RESPONDER», y la diferencia
+     * está medida: 354 de 394 temas se recuperan preguntando por su propio
+     * nombre (90%) y 33 se abstienen aun así. El panel es el índice de lo que
+     * escribió, no la lista de lo que contesta.
+     */
+    recoAsistida: "Pregunta asistida",
+    recoTitulo: "Recomendación: pregunta asistida",
+    recoTexto: "Abre el índice de sus cuadernos: elegís un tema y la pregunta se arma sola.",
+    recoAccion: "Ver de qué escribió",
   },
   en: {
     titulo: "Consult Leonardo da Vinci",
@@ -158,6 +245,10 @@ const COPY = {
     sinNotaAviso: "My papers are silent, and Richter, my editor, does not comment on the silence either.",
     abstiene: "On that matter I left no notation in my notebooks, and I would rather not invent one for you.",
     abrirMapa: "See the subjects in the notebooks",
+    recoAsistida: "Guided questions",
+    recoTitulo: "Recommended: guided questions",
+    recoTexto: "It opens the index of his notebooks: pick a subject and the question is asked for you.",
+    recoAccion: "See what he wrote about",
   },
 } as const;
 
@@ -367,6 +458,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
       cita: null, wikipedia: null,
       sinNota: false,
       revelado: false,
+      abstiene: false,
       pasajes: [],
     });
 
@@ -395,7 +487,7 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
       revelar(id, t.curada);
       return;
     }
-    parchear(id, { pendiente: false, completo: t.abstiene, pasajes: [] });
+    parchear(id, { pendiente: false, completo: t.abstiene, abstiene: true, pasajes: [] });
     revelar(id, t.abstiene);
   };
 
@@ -498,6 +590,8 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
   const restantes = sugerencias.filter((s) => !hechas.includes(s.id));
 
   const sinMensajes = mensajes.length === 0;
+  /** El último mensaje del hilo: la recomendación se cuelga sólo de él (D-258). */
+  const ultimo = mensajes[mensajes.length - 1];
 
   /**
    * EL CANAL DEL PIE SIGUE A LA COLUMNA DE LECTURA, que va centrada en lo que
@@ -574,39 +668,23 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           EN TELEFONO LA FILA SE QUEDA, sin el título: ahí vive el botón que
           abre el cajón del mapa, y sin fila no hay dónde ponerlo.
         */}
+        {/*
+          ⚠ NO HAY HAMBURGER (D-258). Tres rayas arriba a la izquierda son el
+          lugar y el dibujo de un menú de navegación: o se confundía con eso, o
+          se ignoraba, y en los dos casos nadie llegaba a la pregunta asistida.
+          Lo reemplaza la pestaña del canto, más abajo, que dice su nombre.
+        */}
         {angosto && (
           <div
             style={{
               boxSizing: "border-box",
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              gap: 10,
+              justifyContent: "flex-end",
               padding: "calc(10px + env(safe-area-inset-top)) 12px 10px",
               flexShrink: 0,
             }}
           >
-            <button
-              type="button"
-              className="alv-btn-texto"
-              onClick={() => setMapaAbierto(true)}
-              aria-label={t.abrirMapa}
-              aria-expanded={mapaAbierto}
-              style={{
-                flex: "0 0 44px", width: 44, height: 44, marginLeft: -5, padding: 0,
-                background: "none", border: 0, cursor: "pointer", display: "flex",
-                flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 4,
-              }}
-            >
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  aria-hidden="true"
-                  style={{ display: "block", width: 17, height: 1.5, background: T.tenue }}
-                />
-              ))}
-            </button>
-
             <button
               type="button"
               className="alv-cerrar"
@@ -701,7 +779,9 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             minHeight: "clamp(120px,22vh,240px)",
             boxSizing: "border-box",
             overflowY: "auto",
-            padding: angosto ? "16px 16px" : "clamp(14px,3vh,30px) max(5vw,24px)",
+            // ⚠ 40 px A LA IZQUIERDA EN TELEFONO, no 16: es el ancho de la
+            // pestaña más su aire. Sin esto el texto pasa por debajo (D-258).
+            padding: angosto ? "16px 16px 16px 40px" : "clamp(14px,3vh,30px) max(5vw,24px)",
             display: "flex",
             flexDirection: "column",
             gap: 16,
@@ -752,6 +832,8 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
                 >
                   {t.nota}
                 </p>
+                {/* Sólo en teléfono: en escritorio el rail ya está a la vista (D-258). */}
+                {angosto && <Recomendacion t={t} onAbrir={() => setMapaAbierto(true)} />}
               </div>
             </div>
           )}
@@ -1158,6 +1240,17 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             );
           })}
 
+          {/*
+            ⚠ SOLO DESPUES DE LA ULTIMA, y no de cada abstención del hilo: con
+            una por mensaje, tres rechazos seguidos dejan tres bloques
+            idénticos en el scroll. Y sólo con el revelado terminado, misma
+            regla que la evidencia: aparecer mientras Leonardo todavía habla se
+            lee como si la recomendación hubiera estado esperando de antemano.
+          */}
+          {angosto && ultimo?.tipo === "leonardo" && ultimo.abstiene && ultimo.revelado && (
+            <Recomendacion t={t} onAbrir={() => setMapaAbierto(true)} />
+          )}
+
           <div ref={finLista} />
         </div>
 
@@ -1460,6 +1553,40 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           EL CAJON DEL MAPA, SOLO EN TELEFONO. Va dentro del panel y no en un
           portal: asi hereda el recorte y no se escapa por encima del borde.
         */}
+        {/*
+          LA PESTAÑA DEL CANTO (D-258). Cuelga del borde izquierdo, dice su
+          nombre en vertical y cada 5,4 s asoma 4 px: informa qué es y pide que
+          la abran, que son los dos problemas que el hamburger no resolvía.
+
+          ⚠ SE ABRE CON TAP, NUNCA CON ARRASTRE. El borde izquierdo del iPhone
+          es el gesto de volver atrás del sistema y ahí no se compite: un
+          arrastre nuestro perdería contra él o, peor, ganaría a veces.
+
+          ⚠ `zIndex: 4` — POR DEBAJO DEL VELO DEL CAJON, que va en 5. Con la
+          pestaña encima quedaría flotando sobre su propio cajón abierto.
+
+          El dibujo mide 28 px y el botón 44: el relleno es área táctil, como
+          la cruz de las sugeridas (D-249).
+        */}
+        {angosto && (
+          <button
+            type="button"
+            className="alv-pestana"
+            onClick={() => setMapaAbierto(true)}
+            aria-label={t.abrirMapa}
+            aria-expanded={mapaAbierto}
+            style={{
+              position: "absolute", left: 0, top: "50%", marginTop: -70, zIndex: 4,
+              width: 44, height: 140, padding: 0, background: "none", border: 0,
+              cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "flex-start",
+            }}
+          >
+            <span className="alv-pestana-hoja" aria-hidden="true">
+              <span className="alv-pestana-tx">{t.recoAsistida}</span>
+            </span>
+          </button>
+        )}
+
         {angosto && (
           <>
             <div

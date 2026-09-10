@@ -17,7 +17,7 @@
  */
 import { cargarExtractor } from "../src/lib/embed.js";
 import { cargarMotor, decidirCon, type Idioma } from "../src/lib/grounding.js";
-import { MAPA } from "../src/data/mapa.js";
+import { consultaDe, MAPA } from "../src/data/mapa.js";
 
 const ART = new URL("../artifacts/", import.meta.url);
 const motor = cargarMotor(ART);
@@ -36,16 +36,19 @@ for (const lang of ["es", "en"] as Idioma[]) {
   for (const s of MAPA[lang]) {
     for (const t of s.temas) {
       temas++;
-      const vec = await embeber(t.consulta);
-      if (decidirCon(motor, t.consulta, vec, lang).tipo !== "abstiene") continue;
-      const anclas = corpus.anclas(t.consulta, lang).length;
+      /** ⚠ LA CONSULTA EFECTIVA, con su refuerzo si lo tiene: es lo que manda
+          el clic (D-261). Medir el título pelado mediría otra cosa. */
+      const q = consultaDe(t);
+      const vec = await embeber(q);
+      if (decidirCon(motor, q, vec, lang).tipo !== "abstiene") continue;
+      const anclas = corpus.anclas(q, lang).length;
       /**
        * ⚠ EL COSENO **REAL**, salteando la guarda. `decidirCon` devuelve
        * `cosMax: 0` cuando corta en la capa 1a, y ese cero es un centinela, no
        * una medición: leerlo como «el embedding no llega» es exactamente el
        * error que costó D-260.
        */
-      const { cosMax } = corpus.buscar(vec, t.consulta, "leonardo", 3);
+      const { cosMax } = corpus.buscar(vec, q, "leonardo", 3);
       const culpa = anclas === 0 && cosMax >= tau;
       if (culpa) porGuarda++;
       filas.push(`  ${cosMax.toFixed(4)}  ${anclas === 0 ? "sin anclas" : `${anclas} anclas `}  ` +

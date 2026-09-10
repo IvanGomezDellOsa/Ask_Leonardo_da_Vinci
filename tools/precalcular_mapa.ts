@@ -44,7 +44,7 @@ import { cargarExtractor } from "../src/lib/embed.js";
 import { cargarMotor, type Idioma } from "../src/lib/grounding.js";
 import { responder } from "../src/lib/responder.js";
 import { huellaPrompt, varianteVigente, proveedorPorId } from "../src/lib/llm.js";
-import { MAPA } from "../src/data/mapa.js";
+import { consultaDe, MAPA } from "../src/data/mapa.js";
 
 const RAIZ = new URL("../", import.meta.url);
 const ART = new URL("artifacts/", RAIZ);
@@ -143,8 +143,11 @@ for (const lang of ["es", "en"] as Idioma[]) {
     if (EXCLUIDAS.has(s.seccion)) continue;
     if (soloSeccion && s.seccion !== soloSeccion) continue;
     for (const t of s.temas) {
-      if (yaVigente.has(`${lang}:${t.consulta}`)) continue;
-      pendientes.push({ lang, seccion: s.seccion, visible: t.visible, consulta: t.consulta });
+      /** ⚠ LA MISMA CONSULTA QUE MANDA EL CLIC (D-261), o se congelaría una
+          respuesta bajo una clave que el rail no vuelve a producir. */
+      const consulta = consultaDe(t);
+      if (yaVigente.has(`${lang}:${consulta}`)) continue;
+      pendientes.push({ lang, seccion: s.seccion, visible: t.visible, consulta });
     }
   }
 }

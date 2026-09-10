@@ -1,6 +1,6 @@
 {
   "regla": "Números offline, deterministas y sin juez. `npm run regresion` los recalcula y falla si alguno se movió. Ver D-115.",
-  "fijado": "2026-09-09",
+  "fijado": "2026-09-10",
   "parcial": true,
   "puntos": {
     "recall.A.k3.fallos": {
@@ -83,6 +83,11 @@
       "valor": 0,
       "decision": "D-241",
       "nota": "Temas de más que tiene un idioma sobre el otro. Tiene que ser 0: son el mismo corpus y las mismas secciones."
+    },
+    "mapa.refuerzos": {
+      "valor": 7,
+      "decision": "D-261",
+      "nota": "Temas cuyo título no alcanza a recuperar sus propios pasajes y llevan términos de refuerzo. Si se mueve: `npm run mapa:abstenciones`."
     },
     "mapa.consultasHuerfanas": {
       "valor": 0,

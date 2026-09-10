@@ -25,7 +25,7 @@
 
 import { useMemo, useRef, useState } from "react";
 
-import { MAPA, type SeccionDelMapa } from "../data/mapa.js";
+import { consultaDe, MAPA, type SeccionDelMapa } from "../data/mapa.js";
 import { FUENTE, T } from "./estilos.js";
 
 type Idioma = "es" | "en";
@@ -312,7 +312,13 @@ function Seccion({
             <button
               key={x.consulta}
               type="button"
-              onClick={() => onElegir(x.consulta, x.visible)}
+              /*
+                ⚠ `consultaDe`, NO `x.consulta`. Siete temas de 792 llevan un
+                refuerzo pegado —términos sacados de sus propios pasajes— porque
+                su título pelado no alcanza a encontrarse a sí mismo (D-261). El
+                visitante sigue viendo `visible` y nada más.
+              */
+              onClick={() => onElegir(consultaDe(x), x.visible)}
               title={pasajes(x.pasajes)}
               className="alv-mapa-tema"
               style={{

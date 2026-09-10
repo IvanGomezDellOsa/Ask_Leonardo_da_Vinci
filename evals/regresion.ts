@@ -202,6 +202,24 @@ const medido: Record<string, Punto> = {};
     decision: "D-241",
     nota: "Temas de más que tiene un idioma sobre el otro. Tiene que ser 0: son el mismo corpus y las mismas secciones.",
   };
+  /**
+   * ⚠ CUANTOS TEMAS NECESITAN REFUERZO PARA ENCONTRARSE A SI MISMOS (D-261).
+   *
+   * Son 7 de 792, y `npm run mapa` los calcula solo. **Este punto es barato y
+   * el que lo mide de verdad no lo es**: comprobar que ninguno se abstiene pide
+   * embeber las 792 consultas, que es `npm run mapa:abstenciones` y tarda
+   * minutos. Acá se vigila el proxy: si el corpus cambia y este número se
+   * mueve, hay que correr el medidor y leer los casos.
+   *
+   * Que suba no es necesariamente malo —el generador arregló más temas—, pero
+   * **es siempre una señal de que el corpus se movió debajo del mapa**.
+   */
+  medido["mapa.refuerzos"] = {
+    valor: MAPA.es.flatMap((s) => s.temas).filter((t) => t.refuerzo).length
+         + MAPA.en.flatMap((s) => s.temas).filter((t) => t.refuerzo).length,
+    decision: "D-261",
+    nota: "Temas cuyo título no alcanza a recuperar sus propios pasajes y llevan términos de refuerzo. Si se mueve: `npm run mapa:abstenciones`.",
+  };
   medido["mapa.consultasHuerfanas"] = { valor: huerfanas, decision: "D-233",
     nota: "Temas del mapa, en cualquiera de los dos idiomas, cuyo título ya no existe en el corpus. Si sube, el mapa quedó viejo: correr `npm run mapa`." };
 }

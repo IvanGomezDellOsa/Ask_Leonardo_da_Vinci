@@ -37,6 +37,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 interface Chunk {
   id: string; richterTitle: string | null; section: string | null; voice: string;
+  text: string; richterNos: number[];
 }
 type Idioma = "es" | "en";
 
@@ -399,6 +400,114 @@ function construir(idioma: Idioma) {
 
 const mapa = { es: construir("es"), en: construir("en") };
 
+/* ══════════════════════════════════════════════════════════════════════
+   EL REFUERZO: los temas cuyo TITULO no alcanza para encontrarse a sí mismo
+   ══════════════════════════════════════════════════════════════════════
+
+   D-260 dejó 7 temas de 792 que el gate no contesta cuando se les pregunta
+   por su propio nombre. No es que el corpus no los tenga —cada tema del mapa
+   ES un conjunto de pasajes de Richter—: es que el rótulo del índice no se
+   parece al texto que hay debajo. «Asia Central» da 0,8238 contra τ 0,8410.
+
+   ⚠ ESTO NO ES REFORMULAR LA PREGUNTA DEL USUARIO, que `28` §3.3 descarta. La
+   consulta de un tema del mapa **la escribimos nosotros** desde el índice de
+   Richter: el panel es, literalmente, un generador de consultas. Arreglar una
+   consulta que generamos mal no es tocar lo que escribió el visitante.
+
+   ⚠ Y LOS TERMINOS NO SE INVENTAN: salen de los propios pasajes del tema, por
+   frecuencia relativa contra el corpus entero. Nadie elige palabras a mano.
+
+   ⚠ EL REFUERZO SOLO SE ACEPTA SI ADEMAS ACIERTA. Pasar τ no alcanza: el
+   primer pasaje recuperado tiene que ser UNO DE LOS SUYOS. Hacer que un tema
+   conteste con el pasaje equivocado es peor que dejarlo abstenerse — es la
+   misma falla que D-110 sacó del sistema, presentar algo como respaldo cuando
+   no lo es.
+
+   ⚠ NO TOCA `consulta`. El título original queda donde estaba, así que
+   `mapa.consultasHuerfanas` sigue midiendo lo que medía y `alcance.json` sigue
+   describiendo lo que describe: la alcanzabilidad **del título pelado**. */
+
+const { cargarMotor, decidirCon } = await import("../src/lib/grounding.js");
+const { cargarExtractor } = await import("../src/lib/embed.js");
+const motorRef = cargarMotor(new URL("artifacts/", RAIZ));
+const extractorRef = await cargarExtractor();
+const embeberRef = async (t: string): Promise<Float32Array> =>
+  (await extractorRef("query: " + t, { pooling: "mean", normalize: true })).data as Float32Array;
+
+/** Variante del título en cada idioma → título inglés, que es la identidad. */
+const identidad: Record<Idioma, Map<string, string>> = { es: new Map(), en: new Map() };
+for (const c of chunks) {
+  if (c.voice !== "leonardo" || !c.richterTitle) continue;
+  identidad.en.set(c.richterTitle, c.richterTitle);
+  const te = trad[c.id]?.titulo;
+  if (te) identidad.es.set(te, c.richterTitle);
+}
+
+const tokens = (t: string): string[] =>
+  (t.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "").match(/[a-z][a-z'-]{3,}/g) ?? []);
+
+/** En cuántos pasajes aparece cada término. Se calcula una vez por idioma. */
+const df: Record<Idioma, Map<string, number>> = { es: new Map(), en: new Map() };
+const textoDe = (c: Chunk, i: Idioma): string => (i === "es" ? (trad[c.id]?.texto || c.text) : c.text);
+const leonardos = chunks.filter((c) => c.voice === "leonardo");
+for (const idi of ["es", "en"] as Idioma[]) {
+  for (const c of leonardos) {
+    for (const t of new Set(tokens(textoDe(c, idi)))) df[idi].set(t, (df[idi].get(t) ?? 0) + 1);
+  }
+}
+
+let reforzados = 0;
+const sinArreglo: string[] = [];
+
+for (const idi of ["es", "en"] as Idioma[]) {
+  const { corpus, umbrales } = motorRef.por[idi];
+  const tau = umbrales.tau[idi];
+  const N = leonardos.length;
+
+  for (const sec of mapa[idi]) {
+    for (const tema of sec.temas) {
+      if (decidirCon(motorRef, tema.consulta, await embeberRef(tema.consulta), idi).tipo !== "abstiene") continue;
+
+      const tituloEn = identidad[idi].get(tema.consulta);
+      const mios = leonardos.filter((c) => c.richterTitle === tituloEn);
+      const nosMios = new Set(mios.flatMap((c) => c.richterNos));
+      if (!mios.length) { sinArreglo.push(`[${idi}] ${tema.visible} — sin pasajes propios`); continue; }
+
+      /** tf·idf sobre los pasajes del tema: los términos que lo distinguen. */
+      const tf = new Map<string, number>();
+      for (const c of mios) for (const t of tokens(textoDe(c, idi))) tf.set(t, (tf.get(t) ?? 0) + 1);
+      const puntuados = [...tf.entries()]
+        .map(([t, f]) => [t, f * Math.log(N / (df[idi].get(t) ?? 1))] as const)
+        .sort((a, b) => b[1] - a[1]);
+
+      /** Se prueba con 4, 6 y 8: el refuerzo más corto que cumple. */
+      let elegido: string | null = null;
+      for (const n of [4, 6, 8]) {
+        const terminos = puntuados.slice(0, n).map(([t]) => t);
+        if (terminos.length < 2) break;
+        const candidata = `${tema.consulta}: ${terminos.join(", ")}`;
+        const vec = await embeberRef(candidata);
+        if (decidirCon(motorRef, candidata, vec, idi).tipo === "abstiene") continue;
+        const { top } = corpus.buscar(vec, candidata, "leonardo", 3);
+        if (!top[0] || !top[0].chunk.richterNos.some((x) => nosMios.has(x))) continue;
+        elegido = terminos.join(", ");
+        break;
+      }
+
+      if (elegido) { (tema as { refuerzo?: string }).refuerzo = elegido; reforzados++; }
+      else sinArreglo.push(`[${idi}] ${tema.visible} (τ ${tau.toFixed(4)})`);
+    }
+  }
+}
+
+console.log(`
+  refuerzos escritos: ${reforzados}`);
+if (sinArreglo.length) {
+  console.log(`  sin arreglo, siguen abstiniéndose: ${sinArreglo.length}`);
+  for (const x of sinArreglo) console.log(`    ${x}`);
+}
+
+
 const salida = new URL("src/data/mapa.ts", RAIZ);
 mkdirSync(new URL("./", salida), { recursive: true });
 writeFileSync(salida, `\
@@ -424,7 +533,22 @@ export interface TemaDelMapa {
   pasajes: number;
   /** Aparece como «lo más cercano» a casi cualquier cosa: no se destaca. */
   iman?: boolean;
+  /**
+   * Términos sacados de los propios pasajes del tema, para los pocos cuyo
+   * título no alcanza a encontrarse a sí mismo (D-261). **No se muestra
+   * nunca**: viaja pegado a la consulta y el visitante ve sólo \`visible\`.
+   */
+  refuerzo?: string;
 }
+
+/**
+ * ⚠ LO QUE SE MANDA A BUSCAR. Una sola definición, porque la usan el rail, el
+ * precalculado del mapa y el medidor de abstenciones: si cada uno armara la
+ * consulta por su lado, congelaríamos una respuesta bajo una clave que el clic
+ * no vuelve a producir — que es exactamente el agujero que D-112 cerró.
+ */
+export const consultaDe = (t: TemaDelMapa): string =>
+  t.refuerzo ? \`\${t.consulta}: \${t.refuerzo}\` : t.consulta;
 
 export interface SeccionDelMapa {
   seccion: string;

@@ -20,7 +20,22 @@ export interface TemaDelMapa {
   pasajes: number;
   /** Aparece como «lo más cercano» a casi cualquier cosa: no se destaca. */
   iman?: boolean;
+  /**
+   * Términos sacados de los propios pasajes del tema, para los pocos cuyo
+   * título no alcanza a encontrarse a sí mismo (D-261). **No se muestra
+   * nunca**: viaja pegado a la consulta y el visitante ve sólo `visible`.
+   */
+  refuerzo?: string;
 }
+
+/**
+ * ⚠ LO QUE SE MANDA A BUSCAR. Una sola definición, porque la usan el rail, el
+ * precalculado del mapa y el medidor de abstenciones: si cada uno armara la
+ * consulta por su lado, congelaríamos una respuesta bajo una clave que el clic
+ * no vuelve a producir — que es exactamente el agujero que D-112 cerró.
+ */
+export const consultaDe = (t: TemaDelMapa): string =>
+  t.refuerzo ? `${t.consulta}: ${t.refuerzo}` : t.consulta;
 
 export interface SeccionDelMapa {
   seccion: string;
@@ -742,7 +757,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Para colocar la masa v r en el…",
      "consulta": "Para colocar la masa v r en el…",
-     "pasajes": 1
+     "pasajes": 1,
+     "refuerzo": "torre, vacio, rayo, credenza"
     },
     {
      "visible": "Nota sobre Pavía",
@@ -777,7 +793,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Los Dardanelos",
      "consulta": "Los Dardanelos",
-     "pasajes": 1
+     "pasajes": 1,
+     "refuerzo": "egeo, ponto, fluye, siempre"
     },
     {
      "visible": "Constantinopla",
@@ -792,7 +809,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Asia Central",
      "consulta": "Asia Central",
-     "pasajes": 1
+     "pasajes": 1,
+     "refuerzo": "hacia, millas, fluye, india"
     },
     {
      "visible": "Sobre los nativos de los países cálidos",
@@ -1326,7 +1344,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "La nada",
      "consulta": "La nada",
-     "pasajes": 1
+     "pasajes": 1,
+     "refuerzo": "existencia, futuro, nada, presente"
     }
    ]
   },
@@ -2101,7 +2120,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "Un caso excepcional",
      "consulta": "Un caso excepcional",
-     "pasajes": 1
+     "pasajes": 1,
+     "refuerzo": "brumosos, enfrentan, matiz, bordes, miembros, nieva"
     },
     {
      "visible": "Un experimento",
@@ -2708,7 +2728,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "A disputed proposition",
      "consulta": "A disputed proposition",
-     "pasajes": 1
+     "pasajes": 1,
+     "refuerzo": "triangle, plane, shadow, light"
     },
     {
      "visible": "On reverberation",
@@ -2918,7 +2939,8 @@ export const MAPA: Record<"es" | "en", SeccionDelMapa[]> =
     {
      "visible": "The Dardanelles",
      "consulta": "The Dardanelles",
-     "pasajes": 1
+     "pasajes": 1,
+     "refuerzo": "egean, pontus, flows, higher"
     },
     {
      "visible": "Constantinople",

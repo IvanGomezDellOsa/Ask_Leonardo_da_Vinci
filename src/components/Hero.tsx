@@ -40,9 +40,9 @@ import type { Idioma } from "../lib/cliente-chat.js";
 import { RUTA } from "../lib/rutas.js";
 import { FUENTE } from "./estilos.js";
 import { Biblioteca } from "./Biblioteca.js";
+import { Espacio } from "./Espacio.js";
 import { Museo } from "./Museo.js";
 import { Codice } from "./Codice.js";
-import { Explainer } from "./Explainer.js";
 
 type Fase = "escribiendo" | "brasa" | "abriendo" | "listo";
 
@@ -213,7 +213,6 @@ const COPY = {
 export function Hero({ lang }: { lang: Idioma }) {
   const angosto = useAngosto();
   const [fase, setFase] = useState<Fase>("escribiendo");
-  const [explainerAbierto, setExplainerAbierto] = useState(false);
   /**
    * `false` en el servidor y en el primer render del cliente. Ver D-150.
    *
@@ -225,6 +224,13 @@ export function Hero({ lang }: { lang: Idioma }) {
    */
   const [montado, setMontado] = useState(false);
   const [codiceAbierto, setCodiceAbierto] = useState(false);
+  /**
+   * «Cómo funciona» se abre desde la última sección, no desde acá, pero el hero
+   * sigue necesitando saberlo: es él quien traba el scroll del `body` y quien
+   * decide si se ve la flecha de volver arriba. La sección lo avisa, igual que
+   * el museo avisa cuando se entra a la sala.
+   */
+  const [explainerAbierto, setExplainerAbierto] = useState(false);
   /** La flecha de «hay más abajo». Se apaga al primer scroll. */
   const [pistaScroll, setPistaScroll] = useState(true);
   /**
@@ -280,6 +286,7 @@ export function Hero({ lang }: { lang: Idioma }) {
   const [dentroDelMuseo, setDentroDelMuseo] = useState(false);
   const alLeer = useCallback((v: boolean) => setLeyendoTomo(v), []);
   const alEntrarAlMuseo = useCallback((v: boolean) => setDentroDelMuseo(v), []);
+  const alExplicar = useCallback((v: boolean) => setExplainerAbierto(v), []);
 
   /**
    * EL ENCUADRE SE RECALCULA EN CADA `resize`, NO UNA VEZ AL MONTAR. Ver D-147.
@@ -434,7 +441,6 @@ export function Hero({ lang }: { lang: Idioma }) {
   // —y el hero renderiza una vez por cada punto de la barra de progreso—, así
   // que el listener se desengancha y reengancha ~100 veces por carga.
   const cerrarCodice = useCallback(() => setCodiceAbierto(false), []);
-  const cerrarExplainer = useCallback(() => setExplainerAbierto(false), []);
 
   // Frío: ya. Caliente: cuando la intro terminó. Mientras no se sabe, se espera
   // —son unos pocos ms de leer la Cache API.
@@ -1070,9 +1076,18 @@ export function Hero({ lang }: { lang: Idioma }) {
             <button
               type="button"
               className="alv-btn-texto"
+              /*
+                ⚠ YA NO ABRE EL PANEL ACA: BAJA HASTA LA ULTIMA PANTALLA.
+                «Cómo funciona» vive ahora en el espacio vectorial, que muestra
+                la maquinaria ANTES de explicarla — y el mismo texto se abre
+                desde allá. Un panel encima del hero le hacía leer a alguien que
+                todavía no había visto nada.
+              */
               onClick={(e) => {
                 e.stopPropagation();
-                setExplainerAbierto(true);
+                document
+                  .getElementById("espacio")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
               style={{
                 display: "inline-flex",
@@ -1170,7 +1185,6 @@ export function Hero({ lang }: { lang: Idioma }) {
           </div>
         )}
 
-        {explainerAbierto && <Explainer lang={lang} onCerrar={cerrarExplainer} />}
 
         {codiceAbierto && <Codice lang={lang} onCerrar={cerrarCodice} />}
 
@@ -1216,6 +1230,15 @@ export function Hero({ lang }: { lang: Idioma }) {
         dentro del handler del botón (D-162).
       */}
       <Museo lang={lang} onDentro={alEntrarAlMuseo} />
+
+      {/*
+        LA CUARTA PANTALLA: el espacio vectorial del índice.
+        Va última porque es la que explica a las tres de arriba, y montarla no
+        cuesta nada: hasta que alguien se le acerca esto es una columna de
+        texto. Three y los 144 KB de la proyección entran por `import()` y
+        `fetch` con la sección todavía a media pantalla de distancia.
+      */}
+      <Espacio lang={lang} onExplicando={alExplicar} />
 
       {/*
         LA VUELTA AL PRINCIPIO (D-172).

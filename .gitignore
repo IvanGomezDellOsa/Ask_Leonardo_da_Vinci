@@ -47,3 +47,11 @@ artifacts/q8/
 
 # Configuracion local del agente (rutas de la maquina, no del proyecto)
 .claude/
+
+# TEMPORAL — el README todavia no esta revisado por el dueno (12-09-2026).
+# Se escribio en otra conversacion y hasta que el no lo lea no se publica: un
+# README a medias es lo primero que ve cualquiera que entra al repositorio.
+# QUITAR ESTAS LINEAS cuando el README este aprobado.
+/README.md
+/README.en.md
+/.github/readme/

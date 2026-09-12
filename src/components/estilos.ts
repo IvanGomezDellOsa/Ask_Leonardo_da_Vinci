@@ -19,6 +19,13 @@ export const FUENTE = {
   manuscrita: "var(--fuente-manuscrita), Georgia, serif",
   /** Source Serif 4: lectura larga — respuestas y pasajes de Richter. */
   lectura: "var(--fuente-lectura), Georgia, serif",
+  /**
+   * Geist y Geist Mono: SÓLO el espacio vectorial, la última pantalla. Es la
+   * única sección que no habla desde el cuaderno sino desde la máquina que lo
+   * lee, y por eso es la única que no usa una serif.
+   */
+  maquina: "var(--fuente-maquina), system-ui, -apple-system, sans-serif",
+  maquinaMono: "var(--fuente-maquina-mono), ui-monospace, SFMono-Regular, monospace",
 } as const;
 
 /** Los tonos del códice. */

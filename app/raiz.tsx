@@ -24,7 +24,13 @@
 // es un specifier que Turbopack intercepta para descargar las fuentes en build.
 // Con `/index.js` el interceptor no lo reconoce y el archivo real no exporta
 // nada — el build falla con "the module has no exports at all".
-import { Cormorant_Garamond, IM_Fell_English, Source_Serif_4 } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  Geist,
+  Geist_Mono,
+  IM_Fell_English,
+  Source_Serif_4,
+} from "next/font/google";
 import type { Metadata, Viewport } from "next/types.js";
 /**
  * LAS DOS MEDICIONES DE VERCEL, y las dos obligaron a corregir el aviso de
@@ -72,7 +78,35 @@ const sourceSerif = Source_Serif_4({
   display: "swap",
 });
 
-const FUENTES = `${cormorant.variable} ${imFell.variable} ${sourceSerif.variable}`;
+/**
+ * LAS DOS DEL ESPACIO VECTORIAL, la última pantalla. Son de otra familia a
+ * propósito: esa sección no es del cuaderno sino de la máquina que lo lee, y
+ * una grotesca y su monoespaciada son el idioma de esa otra cosa.
+ *
+ * ⚠ `preload: false` EN LAS DOS. El resto del sitio no las usa: precargarlas
+ * sería hacerle pagar dos descargas más a todo el que entra por la portada,
+ * para una pantalla a la que se llega bajando tres veces. Se piden recién
+ * cuando el navegador se encuentra con texto que las necesita (R10).
+ */
+const geist = Geist({
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+  variable: "--fuente-maquina",
+  display: "swap",
+  preload: false,
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--fuente-maquina-mono",
+  display: "swap",
+  preload: false,
+});
+
+const FUENTES =
+  `${cormorant.variable} ${imFell.variable} ${sourceSerif.variable} ` +
+  `${geist.variable} ${geistMono.variable}`;
 
 const TITULO = "Ask Leonardo da Vinci";
 

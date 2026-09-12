@@ -303,7 +303,11 @@ a:hover {
 .alv-pestana-hoja {
   position: relative;
   width: 28px;
-  height: 140px;
+  /* ⚠ 176 px, NO 140: la inscripción no entraba. «PREGUNTA ASISTIDA» mide
+     ~151 px en Cormorant 600 a 11,5 px con 0,17 em de espaciado —«GUIDED
+     QUESTIONS», ~143— y con `overflow: hidden` lo que sobraba se cortaba en
+     silencio. 176 deja la caja centrada con aire arriba y abajo. */
+  height: 176px;
   border: 1px solid oklch(34% 0.006 70);
   border-left: 0;
   border-radius: 0 14px 14px 0;
@@ -366,8 +370,8 @@ a:hover {
 
 @keyframes alv-pestana-brillo {
   0% { top: -60px; }
-  55% { top: 140px; }
-  100% { top: 140px; }
+  55% { top: 176px; }
+  100% { top: 176px; }
 }
 
 /* El bloque: el brillo cruza LA INSCRIPCION, no un borde. `background-clip:
@@ -3028,4 +3032,952 @@ a:hover {
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+/* ==========================================================================
+ * EL ESPACIO VECTORIAL — la cuarta pantalla
+ * ==========================================================================
+ *
+ * La única sección que no habla desde el cuaderno sino desde la máquina que lo
+ * lee, y la única en negro puro con una grotesca. Eso es deliberado: es el
+ * cambio de voz lo que avisa que acá abajo se muestra otra cosa.
+ *
+ * ⚠ TRES REGLAS, y cualquier pieza nueva las respeta:
+ *   · EL HUESO ES TINTA, NUNCA SUPERFICIE — los vectores, las palabras que
+ *     importan, la bajada, el foco. Una caja rellena de hueso inventa un
+ *     material que ninguna otra cosa de la pantalla usa.
+ *   · LAS CÁPSULAS VIVEN EN EL APARATO: la barra, el canto del cajón, el
+ *     diálogo. En la columna de la izquierda hay tipografía suelta sobre negro,
+ *     y un botón ahí sería un botón en una página de libro.
+ *   · LO QUE AGRUPA ES EL HUECO. Dos filetes de 44 px separan marca, pieza y
+ *     acción; el hueco entre bloques es tres veces el de adentro.
+ */
+
+.alv-espacio {
+  position: relative;
+  width: 100%;
+  /* La reserva de alto va en dos declaraciones, igual que el museo. */
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #000;
+  color: #9d9d9d;
+  font-family: var(--fuente-maquina), system-ui, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  /* Los tonos, acá y no en `:root`: no los usa ninguna otra sección. */
+  --esp-borde: #1c1c1c;
+  --esp-borde2: #2b2b2b;
+  --esp-gris: #767676;
+  --esp-gris-cl: #9d9d9d;
+  --esp-blanco: #ededed;
+  --esp-hueso: #e8dfcd;
+  --esp-suave: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.alv-espacio [hidden] {
+  display: none !important;
+}
+
+.alv-espacio button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(232, 223, 205, 0.12);
+}
+
+.alv-esp-lienzo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* `none` y no `pan-y`: el pellizco de dos dedos es el zoom de la escena. */
+  touch-action: none;
+  cursor: grab;
+}
+.alv-esp-lienzo:active {
+  cursor: grabbing;
+}
+
+.alv-esp-vineta {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 54%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+/* La escena: el lienzo y todo lo que se le apoya encima. En escritorio ocupa
+   la sección entera; en teléfono es una caja de alto propio con la columna de
+   texto arriba. */
+.alv-esp-escena {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- la columna de la izquierda ---------------------------------------- */
+
+.alv-esp-cab {
+  position: absolute;
+  z-index: 2;
+  top: clamp(26px, 3.6vw, 48px);
+  left: clamp(24px, 3.6vw, 52px);
+  max-width: 34ch;
+  /* La capa no recibe eventos salvo donde hay algo que tocar. */
+  pointer-events: none;
+}
+
+.alv-esp-cab h2 {
+  margin: 0;
+  font-weight: 500;
+  font-size: clamp(31px, 3.8vw, 50px);
+  line-height: 1.02;
+  letter-spacing: -0.038em;
+  color: var(--esp-blanco);
+  text-wrap: balance;
+}
+
+/* El logo va EN EL MEDIO, no arriba: lo primero que se lee es de quién es
+   esto, y el dibujo entra después separando el nombre del proyecto de la
+   bajada de la pieza, que son dos cosas distintas. */
+.alv-esp-marca {
+  display: block;
+  width: clamp(146px, 14.5vw, 226px);
+  height: auto;
+  margin: 18px 0 0 -7px;
+}
+
+/* ⚠ ES UNA BAJADA, NO UN RÓTULO. Estuvo en versalitas monoespaciadas a 12 px,
+   o sea MÁS CHICA QUE EL CUERPO DE TEXTO de abajo: dos títulos del mismo peso
+   peleando y ningún rango entre ellos. Tres tamaños que bajan —50, 21, 15— son
+   lo que convierte una pelea en una jerarquía.
+
+   El filete corto de arriba es lo que agrupa: con 20 px arriba del logo y 33
+   abajo los cuatro elementos se leían como una lista de cuatro cosas sueltas. */
+.alv-esp-bajada {
+  position: relative;
+  margin: 40px 0 0;
+  padding-top: 26px;
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 300;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: var(--esp-hueso);
+  text-wrap: balance;
+}
+.alv-esp-bajada::before,
+.alv-esp-mas::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 1px;
+  background: rgba(232, 223, 205, 0.22);
+}
+
+.alv-esp-tesis {
+  margin: 18px 0 0;
+  font-size: clamp(14px, 1.1vw, 16.5px);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--esp-gris-cl);
+}
+.alv-esp-tesis b {
+  color: var(--esp-hueso);
+  font-weight: 400;
+}
+
+/* NO ES UN BOTÓN: ES UN RENGLÓN MÁS DE LA COLUMNA. Fue una cápsula con relleno
+   de hueso y rompía la pantalla — ver las tres reglas de arriba. Sin caja, pero
+   con 44 px de alto igual: el relleno vertical no se ve y es lo que hace que en
+   un teléfono se pueda tocar sin apuntar. */
+.alv-esp-mas {
+  position: relative;
+  pointer-events: auto;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  margin: 30px 0 0;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 400;
+  letter-spacing: -0.008em;
+  color: var(--esp-hueso);
+}
+/* El subrayado se dibuja de izquierda a derecha: `transform` y nada más, que
+   es lo único que el compositor resuelve sin volver a maquetar. */
+.alv-esp-mas span {
+  position: relative;
+}
+.alv-esp-mas span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.24s var(--esp-suave);
+}
+.alv-esp-mas:hover span::after,
+.alv-esp-mas:focus-visible span::after {
+  transform: scaleX(1);
+}
+.alv-esp-mas:focus-visible {
+  outline: 1px solid var(--esp-hueso);
+  outline-offset: 4px;
+}
+.alv-esp-mas svg {
+  width: 11px;
+  height: 10px;
+  fill: currentColor;
+  transition: transform 0.24s var(--esp-suave);
+}
+.alv-esp-mas:hover svg {
+  transform: translateX(3px);
+}
+
+.alv-esp-pie {
+  margin: 16px 0 0;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--esp-gris);
+}
+.alv-esp-pie b {
+  color: var(--esp-gris-cl);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- los mandos --------------------------------------------------------- */
+
+.alv-esp-mandos {
+  pointer-events: auto;
+  position: absolute;
+  left: 50%;
+  bottom: clamp(22px, 2.6vw, 32px);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--esp-borde);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.alv-esp-mandos button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--esp-gris-cl);
+  cursor: pointer;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  transition: background 0.15s var(--esp-suave), color 0.15s var(--esp-suave);
+}
+.alv-esp-mandos button:hover {
+  background: #151515;
+  color: var(--esp-blanco);
+}
+.alv-esp-mandos button:focus-visible {
+  outline: 1px solid var(--esp-hueso);
+  outline-offset: -1px;
+}
+.alv-esp-mandos button[aria-expanded="true"],
+.alv-esp-mandos button[aria-pressed="true"] {
+  background: #1a1a1a;
+  color: var(--esp-blanco);
+}
+.alv-esp-mandos svg {
+  width: 9px;
+  height: 11px;
+  fill: currentColor;
+}
+.alv-esp-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--esp-borde2);
+  margin: 0 4px;
+}
+
+/* El zoom es un mando, no un rótulo: acá la rueda sola scrollea la página
+   —esto es la última sección de una página larga— así que entrar tiene que
+   poder hacerse con el dedo en un botón. */
+.alv-esp-zoom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.alv-esp-zoom span {
+  min-width: 8ch;
+  padding: 0 4px;
+  text-align: center;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--esp-gris);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.alv-esp-mandos .alv-esp-paso {
+  padding: 0;
+  width: 30px;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.alv-esp-pista {
+  position: absolute;
+  left: 50%;
+  bottom: calc(clamp(22px, 2.6vw, 32px) + 50px);
+  transform: translateX(-50%);
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--esp-gris);
+  white-space: nowrap;
+  transition: opacity 0.6s var(--esp-suave);
+}
+.alv-esp-pista[data-ver="no"] {
+  opacity: 0;
+}
+
+/* ---- la lista de temas, colgada de su canto ----------------------------- */
+
+.alv-esp-rail {
+  pointer-events: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(300px, 78vw);
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 3.4vw, 44px) 14px 20px 0;
+  box-sizing: border-box;
+  border-left: 1px solid var(--esp-borde);
+  background: rgba(4, 4, 4, 0.92);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition: transform 0.45s var(--esp-suave);
+}
+.alv-esp-rail[data-abierto="no"] {
+  transform: translateX(101%);
+}
+
+/* LA LENGÜETA. La lista vivía detrás de un botón chico: había que buscarlo y
+   leerlo con atención para saber qué abría. El canto del cajón está SIEMPRE a
+   la vista, dice su nombre y viaja con él.
+   ⚠ SIN ALTO FIJO: la inscripción va en `writing-mode`, así que el alto lo pide
+   el texto y nunca se corta, diga lo que diga y en el idioma que sea. */
+.alv-esp-lengueta {
+  pointer-events: auto;
+  position: absolute;
+  top: 50%;
+  left: -30px;
+  transform: translateY(-50%);
+  width: 30px;
+  padding: 18px 0;
+  border: 1px solid var(--esp-borde2);
+  border-right: 0;
+  border-radius: 11px 0 0 11px;
+  background: rgba(4, 4, 4, 0.92);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: var(--esp-gris-cl);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s var(--esp-suave), color 0.15s var(--esp-suave);
+}
+.alv-esp-lengueta span {
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.alv-esp-lengueta:hover {
+  background: #141414;
+  color: var(--esp-blanco);
+}
+.alv-esp-lengueta:focus-visible {
+  outline: 1px solid var(--esp-hueso);
+  outline-offset: -2px;
+}
+.alv-esp-lengueta::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 1px;
+  background: var(--esp-borde);
+}
+
+.alv-esp-rail-cab {
+  margin: 0 8px 2px 20px;
+}
+.alv-esp-rail-t {
+  margin: 0;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--esp-gris);
+}
+.alv-esp-rail-a {
+  margin: 0 20px 12px;
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--esp-gris);
+}
+.alv-esp-temas {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-left: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--esp-borde2) transparent;
+}
+.alv-esp-tema {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--esp-gris-cl);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s var(--esp-suave), color 0.15s var(--esp-suave);
+}
+.alv-esp-tema:hover {
+  background: #101010;
+  color: var(--esp-blanco);
+}
+.alv-esp-tema:focus-visible {
+  outline: 1px solid var(--esp-hueso);
+  outline-offset: -1px;
+}
+.alv-esp-tema[aria-pressed="true"] {
+  background: #151515;
+  color: var(--esp-blanco);
+}
+.alv-esp-punto {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--esp-borde2);
+  transition: background 0.15s var(--esp-suave), box-shadow 0.15s var(--esp-suave);
+}
+.alv-esp-tema[aria-pressed="true"] .alv-esp-punto {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+.alv-esp-tema .alv-esp-txt {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.alv-esp-tema .alv-esp-n {
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--esp-gris);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- la ficha del puntero ---------------------------------------------- */
+
+.alv-esp-ficha {
+  position: fixed;
+  z-index: 5;
+  max-width: 310px;
+  padding: 12px 14px;
+  background: rgba(8, 8, 8, 0.95);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--esp-borde2);
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s var(--esp-suave), transform 0.15s var(--esp-suave);
+  pointer-events: none;
+}
+.alv-esp-ficha[data-ver="si"] {
+  opacity: 1;
+  transform: none;
+}
+.alv-esp-ficha .alv-esp-r {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--esp-hueso);
+}
+.alv-esp-ficha .alv-esp-t {
+  display: block;
+  font-size: 14.5px;
+  line-height: 1.35;
+  color: var(--esp-blanco);
+}
+.alv-esp-ficha .alv-esp-s {
+  display: block;
+  margin-top: 7px;
+  font-size: 11.5px;
+  font-weight: 300;
+  color: var(--esp-gris);
+}
+
+/*
+ * EN TELÉFONO SON DOS PANTALLAS, NO UNA. Apiladas y no superpuestas: en una
+ * ventana de 667 px el texto tapa el dibujo, el dibujo no deja leer el texto y
+ * la barra de mandos cae sobre los dos. Separarlas cuesta una pantalla más de
+ * scroll y nada más.
+ *
+ * La sección pasa a ser columna flex y la cabecera va primera con `order`: por
+ * eso el marcado las tiene como hermanas y no hay nada duplicado.
+ */
+@media (max-width: 880px) {
+  .alv-espacio {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .alv-esp-cab {
+    position: static;
+    order: -1;
+    max-width: none;
+    padding: clamp(40px, 9vw, 64px) clamp(24px, 6vw, 40px) clamp(28px, 6vw, 40px);
+  }
+  /* La escena deja de ser el fondo y pasa a tener su propio alto. 62dvh es lo
+     que queda de una ventana de teléfono cuando la barra del navegador está
+     puesta: menos que eso y la nube no se lee. */
+  .alv-esp-escena {
+    position: relative;
+    inset: auto;
+    height: 62dvh;
+    min-height: 340px;
+  }
+  .alv-esp-ficha {
+    display: none;
+  }
+  /* ⚠ EN TELÉFONO EL CAJÓN TAMBIÉN ENTRA POR EL COSTADO, no desde abajo: abajo
+     está la barra de mandos y una lengüeta horizontal encima chocaría con ella
+     en 375 px de ancho. */
+  .alv-esp-rail {
+    padding-bottom: max(76px, calc(env(safe-area-inset-bottom) + 70px));
+  }
+  .alv-esp-temas {
+    padding-left: 8px;
+  }
+  .alv-esp-mandos {
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 6;
+    max-width: calc(100vw - 24px);
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 20px;
+  }
+  .alv-esp-mandos button {
+    padding: 0 10px;
+    font-size: 10.5px;
+  }
+  .alv-esp-sep {
+    display: none;
+  }
+  /* Con la escena separada del texto, la pista vuelve a tener dónde ponerse. */
+  .alv-esp-pista {
+    bottom: calc(max(16px, env(safe-area-inset-bottom)) + 64px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alv-espacio *,
+  .alv-espacio *::before,
+  .alv-espacio *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+ * «CÓMO FUNCIONA» — el diálogo del espacio vectorial
+ * ==========================================================================
+ *
+ * Vive acá y no con el resto de los paneles porque ya no se abre desde el hero:
+ * su única puerta es la última sección, y habla el idioma de esa sección
+ * —negro, grotesca, filetes de 1 px— y no el del cuaderno.
+ *
+ * ⚠ ES UN <dialog> DE VERDAD, no un div con `position: fixed`. `showModal()`
+ * trae gratis lo que a mano siempre sale mal: el foco encerrado adentro, Esc
+ * para cerrar, el resto de la página inerte para un lector de pantalla y la
+ * capa de fondo por encima de todo sin pelear con ningún z-index.
+ */
+
+.alv-dlg {
+  width: min(1120px, 94vw);
+  /*
+    ⚠ ALTO POR CONTENIDO, y es `fit-content` y no `auto`. El navegador le pone
+    `inset: 0` a un <dialog>, y una caja posicionada con arriba y abajo en cero
+    más alto automático NO se achica al contenido: se estira hasta el tope. Con
+    alto fijo, en cambio, la solapa corta dejaba 200 px de vacío abajo y un
+    panel con borde que termina en nada se lee como un error.
+  */
+  height: fit-content;
+  max-height: min(820px, 90dvh);
+  max-width: none;
+  padding: 0;
+  border: 1px solid #2b2b2b;
+  border-radius: 16px;
+  background: rgba(7, 7, 7, 0.97);
+  color: #9d9d9d;
+  font-family: var(--fuente-maquina), system-ui, sans-serif;
+  /* El filo de luz de arriba es lo que hace que el panel parezca una cosa
+     apoyada sobre la escena y no un recorte pegado encima. */
+  box-shadow:
+    0 40px 120px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  overflow: hidden;
+  --dlg-borde: #1c1c1c;
+  --dlg-borde2: #2b2b2b;
+  --dlg-gris: #767676;
+  --dlg-gris-cl: #9d9d9d;
+  --dlg-blanco: #ededed;
+  --dlg-hueso: #e8dfcd;
+  --dlg-suave: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * ⚠ EL FLEX VA EN EL <dialog>, Y SOLO CON `[open]`.
+ *
+ * El cuerpo scrollea porque es un ítem flexible con `min-height: 0` dentro de
+ * un contenedor de alto acotado. Con un envoltorio de `height: 100%` en el
+ * medio la cadena se corta —100 % de un `fit-content` es `auto`—, el ítem no
+ * tiene contra qué achicarse y el texto se RECORTA en vez de scrollear: la
+ * versión técnica y el aviso quedaban sin final.
+ *
+ * Y `[open]`: los estilos del autor le ganan a los del navegador sin importar
+ * la especificidad, así que un `display: flex` suelto haría visible al diálogo
+ * cerrado.
+ */
+.alv-dlg[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.alv-dlg::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+}
+.alv-dlg[open] {
+  animation: alv-dlg-entra 0.26s var(--dlg-suave);
+}
+.alv-dlg[open]::backdrop {
+  animation: alv-dlg-velo 0.26s var(--dlg-suave);
+}
+/* Sólo `opacity` y `transform`: las dos que el compositor resuelve sin volver
+   a maquetar la página. */
+@keyframes alv-dlg-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+}
+@keyframes alv-dlg-velo {
+  from {
+    opacity: 0;
+  }
+}
+
+.alv-dlg [hidden] {
+  display: none !important;
+}
+.alv-dlg button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(232, 223, 205, 0.12);
+}
+
+.alv-dlg-cab {
+  flex: 0 0 auto;
+  padding: clamp(24px, 2.6vw, 36px) clamp(24px, 3vw, 44px) 0;
+}
+
+/* LA FILA DE ARRIBA ES SÓLO PARA NAVEGAR: volver a la izquierda, cerrar a la
+   derecha, y nada de texto en el medio.
+   ⚠ «Volver» va ARRIBA del título, no debajo: colgado abajo se leía como una
+   acción sobre lo que se estaba por leer; arriba es lo que es —el camino de
+   vuelta— y queda enfrentado con la cruz, que hace el mismo trabajo. */
+.alv-dlg-fila {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 34px;
+}
+
+/* El volado repite el rótulo del enlace que abrió esto: quien entró sabe que
+   llegó adonde quería antes de leer el título. */
+.alv-dlg-ojal {
+  margin: 18px 0 0;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dlg-gris);
+}
+.alv-dlg h2 {
+  margin: 13px 0 0;
+  max-width: 24ch;
+  font-weight: 500;
+  font-size: clamp(22px, 2.2vw, 31px);
+  line-height: 1.08;
+  letter-spacing: -0.032em;
+  color: var(--dlg-blanco);
+  text-wrap: balance;
+}
+
+.alv-dlg-cerrar {
+  position: relative;
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--dlg-borde2);
+  border-radius: 999px;
+  background: none;
+  color: var(--dlg-gris);
+  cursor: pointer;
+  transition:
+    background 0.15s var(--dlg-suave),
+    color 0.15s var(--dlg-suave),
+    border-color 0.15s var(--dlg-suave);
+}
+/* ⚠ El dibujo mide 34 px y el área que responde 44: el relleno invisible es lo
+   que deja cerrar esto en un teléfono sin tener que apuntar. */
+.alv-dlg-cerrar::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+}
+.alv-dlg-cerrar:hover {
+  background: #171717;
+  color: var(--dlg-blanco);
+  border-color: #3d3d3d;
+}
+.alv-dlg-cerrar:focus-visible,
+.alv-dlg-atras:focus-visible {
+  outline: 1px solid var(--dlg-hueso);
+  outline-offset: 2px;
+}
+.alv-dlg-cerrar svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+}
+
+/* La vuelta: del alto de la cruz, porque comparten fila. */
+.alv-dlg-atras {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 34px;
+  padding: 0 16px 0 13px;
+  border: 1px solid var(--dlg-borde2);
+  border-radius: 999px;
+  background: none;
+  color: var(--dlg-gris-cl);
+  cursor: pointer;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  transition:
+    background 0.15s var(--dlg-suave),
+    color 0.15s var(--dlg-suave);
+}
+.alv-dlg-atras:hover {
+  background: #161616;
+  color: var(--dlg-blanco);
+}
+.alv-dlg-atras svg {
+  width: 11px;
+  height: 10px;
+  fill: currentColor;
+}
+
+/* Las solapas: dos versiones de LA MISMA explicación. Por eso el aviso de
+   privacidad no es una tercera — habla de otra cosa y rompería esa promesa. */
+.alv-dlg-solapas {
+  display: inline-flex;
+  gap: 2px;
+  margin-top: clamp(20px, 2.2vw, 28px);
+  padding: 4px;
+  border: 1px solid var(--dlg-borde);
+  border-radius: 999px;
+  background: #050505;
+}
+.alv-dlg-solapas button {
+  min-height: 32px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--dlg-gris);
+  cursor: pointer;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  transition:
+    background 0.15s var(--dlg-suave),
+    color 0.15s var(--dlg-suave);
+}
+.alv-dlg-solapas button:hover {
+  color: var(--dlg-gris-cl);
+}
+.alv-dlg-solapas button[aria-selected="true"] {
+  background: #1a1a1a;
+  color: var(--dlg-blanco);
+}
+.alv-dlg-solapas button:focus-visible {
+  outline: 1px solid var(--dlg-hueso);
+  outline-offset: -1px;
+}
+
+.alv-dlg-cuerpo {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--dlg-borde2) transparent;
+  margin-top: clamp(20px, 2.2vw, 28px);
+  border-top: 1px solid var(--dlg-borde);
+}
+.alv-dlg-prosa {
+  padding: clamp(24px, 2.6vw, 36px) clamp(24px, 3vw, 44px);
+}
+
+/*
+  DOS COLUMNAS, Y NO UNA TIRA EN EL MEDIO. 1.120 px en una sola columna son 130
+  caracteres por renglón, que nadie lee bien; partido en dos cada renglón mide
+  unos 60 y el ancho se usa entero.
+
+  ⚠ `column-count` y no un grid de dos celdas: el navegador reparte solo y
+  reparte parejo. A mano habría que decidir qué párrafo va de cada lado, y esa
+  cuenta se rompe con el primer texto que se edite.
+*/
+.alv-dlg-cols {
+  column-count: 2;
+  column-gap: clamp(30px, 3.2vw, 52px);
+  /* El filete tiene que VERSE: es lo que avisa que hay dos columnas y que se
+     lee bajando y recién después cruzando. */
+  column-rule: 1px solid #262626;
+  orphans: 2;
+  widows: 2;
+}
+.alv-dlg-prosa p {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--dlg-gris-cl);
+}
+.alv-dlg-cols p:last-child {
+  margin-bottom: 0;
+}
+
+/* EL PIE DEL PANEL. Cruza las dos columnas porque lo que dice es de otra clase
+   que el resto: a la izquierda qué pasa con lo que escribís, a la derecha por
+   dónde se lee entero. */
+.alv-dlg-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 26px;
+  justify-content: space-between;
+  margin: clamp(22px, 2.2vw, 30px) 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--dlg-borde);
+}
+.alv-dlg-prosa .alv-dlg-nota {
+  margin: 0;
+  font-size: 13px;
+  color: var(--dlg-gris);
+}
+
+/* Chico y apagado: es una nota al pie con enlace, no una acción de la página.
+   ⚠ EL AVISO NO LLEVA SOLAPA (D-215): la obligación de informar existe, pero
+   una solapa le da un peso que no tiene — es lo que nadie viene a leer. */
+.alv-dlg-priv {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--fuente-maquina-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dlg-gris);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition:
+    color 0.16s var(--dlg-suave),
+    text-decoration-color 0.16s var(--dlg-suave);
+}
+.alv-dlg-priv:hover {
+  color: var(--dlg-gris-cl);
+  text-decoration-color: currentColor;
+}
+.alv-dlg-priv:focus-visible {
+  outline: 1px solid var(--dlg-hueso);
+  outline-offset: 3px;
+}
+
+@media (max-width: 860px) {
+  .alv-dlg {
+    width: 96vw;
+    max-height: 92dvh;
+    border-radius: 14px;
+  }
+  .alv-dlg-cols {
+    column-count: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alv-dlg,
+  .alv-dlg::backdrop,
+  .alv-dlg * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

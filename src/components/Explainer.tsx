@@ -85,9 +85,7 @@
  * El texto en inglés conserva sus « — » porque ahí sí son correctos.
  */
 
-import { useEffect, useState } from "react";
-import { useAngosto } from "../hooks/useAngosto.js";
-import { FUENTE, T } from "./estilos.js";
+import { useEffect, useRef, useState } from "react";
 import type { Idioma } from "../lib/cliente-chat.js";
 
 const COPY = {
@@ -101,9 +99,10 @@ const COPY = {
       "Que no invente no es una promesa: está medido. Si a una IA común le pedís que hable como Leonardo, se inventa las citas: sobre 120 preguntas de prueba, el 96,9% de las frases que le atribuyó no existen en ninguna parte. En este proyecto, ≈ 0% inventado. El código que lo comprueba es público.",
       "No se guarda ninguna de tus preguntas.",
     ],
+    ojal: "El porqué y el cómo",
+    volver: "Volver",
     pestanaSimple: "Lo esencial",
     pestanaTecnica: "Explicación técnica",
-    boton: "Entendido",
     avisoPrivacidad: "Aviso de privacidad",
     cerrarAviso: "Cerrar",
     tituloPrivacidad: "Qué pasa con lo que escribís",
@@ -136,9 +135,10 @@ const COPY = {
       "That it does not invent is not a promise: it is measured. Ask an ordinary AI to speak as Leonardo and it invents the quotations: across 120 test questions, 96.9% of the phrases it attributed to him exist nowhere. In this project, ≈ 0% invented. The code that checks it is public.",
       "No question of yours is stored.",
     ],
+    ojal: "The why and the how",
+    volver: "Back",
     pestanaSimple: "The short version",
     pestanaTecnica: "Technical",
-    boton: "Got it",
     avisoPrivacidad: "Privacy notice",
     cerrarAviso: "Close",
     tituloPrivacidad: "What happens to what you write",
@@ -162,361 +162,180 @@ const COPY = {
     ],
   },
 } as const;
+/** El icono de la cruz y el de la flecha de volver, que no cambian nunca. */
+const CRUZ = (
+  <svg viewBox="0 0 11 11" aria-hidden="true">
+    <path d="M9.5.1 5.5 4.1 1.5.1.1 1.5l4 4-4 4 1.4 1.4 4-4 4 4 1.4-1.4-4-4 4-4z" />
+  </svg>
+);
+const ATRAS = (
+  <svg viewBox="0 0 11 10" aria-hidden="true">
+    <path d="M4.9 0 6.3 1.4 4.2 3.5H11v2H4.2l2.1 2.1L4.9 9 .4 4.5z" />
+  </svg>
+);
 
 export function Explainer({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void }) {
   const t = COPY[lang];
-  const angosto = useAngosto();
+  const dialogo = useRef<HTMLDialogElement>(null);
+  const cuerpo = useRef<HTMLDivElement>(null);
+  const solapas = useRef<(HTMLButtonElement | null)[]>([]);
+
   /**
    * Arranca SIEMPRE en la corta, incluso si ya se vio la técnica en esta sesión.
    * Quien abre esto quiere saber qué es, no volver a donde estaba leyendo: la
    * versión técnica es un desvío que se pide, no un estado que se recuerda.
    */
   const [tecnico, setTecnico] = useState(false);
-  const parrafos = tecnico ? t.tecnico : t.parrafos;
   /**
-   * EL AVISO DE PRIVACIDAD VA EN UN POPOUT, NO EN UNA PESTAÑA (D-215).
+   * EL AVISO DE PRIVACIDAD ES OTRA VISTA, NO UNA TERCERA SOLAPA (D-215).
    *
-   * La obligación de informar existe —el sitio trata la IP y manda la consulta a
-   * Google— pero **darle una pestaña le da un peso que no tiene**: es lo que
-   * nadie viene a leer. Un enlace al pie lo deja accesible sin ocuparle sitio a
-   * lo que la gente sí lee, que es el mismo calibre de D-178: no mentir no es
-   * declarar cada contra en la primera pantalla.
+   * Las dos solapas son dos versiones de LA MISMA explicación: meter ahí algo
+   * que habla de otra cosa rompe esa promesa. Y darle solapa le da además un
+   * peso que no tiene — es lo que nadie viene a leer. Un enlace al pie lo deja
+   * accesible sin ocuparle sitio a lo que la gente sí lee, que es el mismo
+   * calibre de D-178: no mentir no es declarar cada contra en la primera
+   * pantalla.
    */
   const [aviso, setAviso] = useState(false);
 
-  // Escape cierra: primero el aviso si está abierto, y recién después el panel.
+  // `showModal` y no `show`: es lo que trae el foco encerrado, la capa de fondo
+  // y el resto de la página inerte para un lector de pantalla.
   useEffect(() => {
-    const alTeclado = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      if (aviso) setAviso(false);
-      else onCerrar();
-    };
-    window.addEventListener("keydown", alTeclado);
-    return () => window.removeEventListener("keydown", alTeclado);
-  }, [onCerrar, aviso]);
+    dialogo.current?.showModal();
+  }, []);
+
+  const parrafos = aviso ? t.privacidad : tecnico ? t.tecnico : t.parrafos;
+  // La última línea de cada versión dice qué pasa con tus datos: es de otra
+  // clase que el resto y por eso va al pie, cruzando las dos columnas.
+  const cuerpoTexto = aviso ? parrafos : parrafos.slice(0, -1);
+  const nota = aviso ? null : parrafos[parrafos.length - 1];
+
+  function elegir(v: boolean, mover: boolean) {
+    setTecnico(v);
+    if (cuerpo.current) cuerpo.current.scrollTop = 0;
+    if (mover) solapas.current[v ? 1 : 0]?.focus();
+  }
+
+  /**
+   * ⚠ UN TABLIST SE MANEJA CON LAS FLECHAS, no con el tabulador. El tabulador
+   * entra una vez al grupo y sale; adentro se cambia de solapa con ← y →, y por
+   * eso la que no está elegida lleva `tabIndex={-1}`. Sin esto el grupo se
+   * recorre de a una, que no es lo que espera nadie que navegue sin mouse.
+   */
+  function alTeclaSolapa(e: React.KeyboardEvent) {
+    const salto = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
+    const fin = { Home: 0, End: 1 }[e.key];
+    if (salto === undefined && fin === undefined) return;
+    e.preventDefault();
+    elegir(fin !== undefined ? fin === 1 : !tecnico, true);
+  }
 
   return (
-    <div
-      onClick={onCerrar}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 80,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "oklch(6% 0.02 40 / 0.72)",
-        // `-webkit-` para Safari anterior a la 18.
-        WebkitBackdropFilter: "blur(4px)",
-        backdropFilter: "blur(4px)",
-        padding: angosto ? 12 : 20,
+    <dialog
+      ref={dialogo}
+      className="alv-dlg"
+      aria-labelledby="alv-dlg-t"
+      // Escape cierra, pero primero el aviso si está abierto: `onCancel` es el
+      // evento que el navegador dispara ANTES de cerrar, y cancelarlo lo frena.
+      onCancel={(e) => {
+        if (!aviso) return;
+        e.preventDefault();
+        setAviso(false);
+      }}
+      onClose={onCerrar}
+      // El clic en el velo no tiene evento propio: se detecta porque el blanco
+      // cae en el <dialog> y no en su contenido.
+      onClick={(e) => {
+        if (e.target === dialogo.current) dialogo.current?.close();
       }}
     >
-      <div
-        className="alv-in"
-        role="dialog"
-        aria-modal="true"
-        aria-label={t.titulo}
-        onClick={(e) => e.stopPropagation()}
-        /*
-         * CUERPO QUE SCROLLEA + PIE FIJO, y no un panel entero con `overflow`.
-         *
-         * Con el panel scrolleando de una pieza, «Entendido» quedaba debajo del
-         * pliegue cada vez que el texto crecía: pasó en D-177 y volvió a pasar
-         * al sumar el párrafo de apertura. **El arreglo no es recortar la copia
-         * hasta que entre** —eso se rompe con la próxima edición y encima empuja
-         * a escribir corto por el motivo equivocado—: es que la acción no
-         * dependa del largo del texto.
-         *
-         * Y lo necesita de todas formas la versión técnica, que scrollea siempre
-         * y por diseño.
-         */
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "min(520px,94vw)",
-          maxHeight: angosto ? "82dvh" : "86vh",
-          boxSizing: "border-box",
-          background: T.explainerBg,
-          border: `1px solid ${T.explainerBorde}`,
-          borderRadius: 14,
-          color: T.explainerTexto,
-          boxShadow: "0 30px 70px oklch(6% 0.02 40 / 0.6)",
-        }}
-      >
-        {/*
-          EL SELECTOR, ARRIBA Y COMO PESTAÑAS (D-181).
-          Antes era un enlace de texto al pie del cuerpo: chico, apagado y
-          debajo del pliegue justo cuando el texto crecía — o sea invisible
-          cuando más falta hacía. Y sobre todo **no dejaba ver que había dos
-          versiones**: había que leer hasta el final para enterarse.
+      <div className="alv-dlg-cab">
+          <div className="alv-dlg-fila">
+            <button
+              className="alv-dlg-atras"
+              type="button"
+              hidden={!aviso}
+              onClick={() => setAviso(false)}
+            >
+              {ATRAS} {t.volver}
+            </button>
+            <button
+              className="alv-dlg-cerrar"
+              type="button"
+              aria-label={t.cerrarAviso}
+              onClick={() => dialogo.current?.close()}
+            >
+              {CRUZ}
+            </button>
+          </div>
 
-          Como par de pestañas dice de entrada que hay una elección y cuál está
-          puesta. Va en la cabecera fija, no en el cuerpo, para que siga a la
-          vista mientras se scrollea la versión técnica.
+          <p className="alv-dlg-ojal">{aviso ? t.avisoPrivacidad : t.ojal}</p>
+          <h2 id="alv-dlg-t">{aviso ? t.tituloPrivacidad : t.titulo}</h2>
 
-          `role="tablist"` y no dos botones sueltos: para un lector de pantalla
-          esto es una elección entre dos vistas del mismo contenido, y las
-          flechas ← → lo recorren como corresponde.
-        */}
-        <div
-          role="tablist"
-          aria-label={t.titulo}
-          style={{
-            flexShrink: 0,
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 4,
-            margin: angosto ? "16px 20px 0" : "20px 34px 0",
-            padding: 4,
-            background: T.cajaBg,
-            border: `1px solid ${T.cajaBorde}`,
-            borderRadius: 999,
-          }}
-        >
-          {([false, true] as const).map((esTecnica) => {
-            const activa = tecnico === esTecnica;
-            return (
+          <div
+            className="alv-dlg-solapas"
+            role="tablist"
+            hidden={aviso}
+            aria-label={t.titulo}
+          >
+            {[t.pestanaSimple, t.pestanaTecnica].map((rotulo, k) => (
               <button
-                key={String(esTecnica)}
+                key={rotulo}
+                ref={(el) => {
+                  solapas.current[k] = el;
+                }}
                 type="button"
                 role="tab"
-                aria-selected={activa}
-                onClick={() => setTecnico(esTecnica)}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-                    e.preventDefault();
-                    setTecnico((v) => !v);
-                  }
-                }}
-                style={{
-                  /* En teléfono, 14 px de relleno y no 8: con 8 la pastilla
-                     medía 33 px de alto y el objetivo táctil mínimo es 44. */
-                  padding: angosto ? "14px 6px" : "9px 8px",
-                  border: "none",
-                  borderRadius: 999,
-                  cursor: "pointer",
-                  background: activa ? T.enviarBg : "transparent",
-                  color: activa ? T.enviarTexto : T.tenue,
-                  fontFamily: FUENTE.lectura,
-                  fontSize: angosto ? 13 : 13.5,
-                  fontWeight: activa ? 600 : 400,
-                  letterSpacing: ".02em",
-                  transition: "background .2s ease, color .2s ease",
-                }}
+                aria-selected={tecnico === (k === 1)}
+                tabIndex={tecnico === (k === 1) ? 0 : -1}
+                onClick={() => elegir(k === 1, false)}
+                onKeyDown={alTeclaSolapa}
               >
-                {esTecnica ? t.pestanaTecnica : t.pestanaSimple}
+                {rotulo}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
 
-        <div
-          className="alv-scroll"
-          style={{
-            overflowY: "auto",
-            padding: angosto ? "16px 20px 4px" : "20px 34px 6px",
-          }}
-        >
-        {/* Sin ceja: decía «Antes de empezar» y el diálogo se abre sólo
-            cuando alguien lo pide, así que ya se sabe que es el antes. */}
-        <h2
-          style={{
-            margin: "0 0 14px",
-            fontFamily: FUENTE.manuscrita,
-            fontSize: angosto ? 21 : 25,
-            fontWeight: 400,
-            color: T.titulo,
-          }}
-        >
-          {t.titulo}
-        </h2>
-
-        {parrafos.map((p, i) => (
-          <p
-            key={i}
-            style={{
-              margin: "0 0 11px",
-              fontFamily: FUENTE.lectura,
-              fontSize: angosto ? 15.5 : 17,
-              lineHeight: angosto ? 1.65 : 1.75,
-            }}
-          >
-            {p}
-          </p>
-        ))}
-
-        </div>
-
-        {/* El pie. `flexShrink: 0` es lo que lo mantiene entero cuando el cuerpo
-            se pasa de largo.
-
-            Y el degradé de arriba no es adorno: con el cuerpo cortado a ras, la
-            última línea queda partida al medio y parece el final del texto. El
-            desvanecido dice «sigue» sin gastar una flecha ni un renglón. */}
-        <div
-          style={{
-            position: "relative",
-            flexShrink: 0,
-            padding: angosto ? "14px 20px 18px" : "16px 34px 24px",
-          }}
-        >
-          <span
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              left: 1,
-              right: 1,
-              top: -34,
-              height: 34,
-              pointerEvents: "none",
-              background: `linear-gradient(to bottom, transparent, ${T.explainerBg})`,
-            }}
-          />
-        <button
-          type="button"
-          onClick={onCerrar}
-          style={{
-            display: "block",
-            width: "100%",
-            padding: 14,
-            background: T.enviarBg,
-            color: T.enviarTexto,
-            border: "none",
-            borderRadius: 8,
-            fontFamily: FUENTE.manuscrita,
-            fontSize: 17,
-            letterSpacing: ".02em",
-            cursor: "pointer",
-          }}
-        >
-          {t.boton}
-        </button>
-
-        {/* El enlace de línea del sistema, en su versión oscura. Relleno para
-            que el área táctil no sea la altura de una versalita de 10 px. */}
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
-          <button
-            type="button"
-            onClick={() => setAviso(true)}
-            className="alv-codice-linea"
-            style={{
-              background: "none",
-              border: "none",
-              padding: "10px 12px",
-              margin: "-4px 0 -8px",
-              cursor: "pointer",
-              fontFamily: FUENTE.lectura,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: ".15em",
-              textTransform: "uppercase",
-              color: T.tenue,
-            }}
-          >
-            <span style={{ borderBottom: "1px solid currentColor", paddingBottom: 2 }}>
-              {t.avisoPrivacidad}
-            </span>
-          </button>
-        </div>
-        </div>
-      </div>
-
-      {/*
-        EL AVISO, ENCIMA DEL PANEL Y NO EN LUGAR DE EL (D-215).
-        Se abre sobre «Cómo funciona» y al cerrarlo se vuelve exactamente a donde
-        se estaba: quien fue a mirar qué pasa con sus datos no perdió la lectura.
-
-        `stopPropagation` en el velo y en la caja: sin eso, un clic acá adentro
-        burbujea hasta el `onClick={onCerrar}` del velo de afuera y cierra los dos
-        paneles de una — el mismo defecto que el códice ya tuvo que atajar.
-      */}
-      {aviso && (
-        <div
-          onClick={(e) => { e.stopPropagation(); setAviso(false); }}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 90,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: angosto ? 16 : 28,
-            background: "oklch(6% 0.02 40 / 0.72)",
-          }}
-        >
+        {/*
+          CUERPO QUE SCROLLEA Y CABECERA FIJA, y no un panel entero con
+          `overflow`. Con el panel scrolleando de una pieza la acción quedaba
+          debajo del pliegue cada vez que el texto crecía: pasó en D-177 y
+          volvió a pasar al sumar el párrafo de apertura. **El arreglo no es
+          recortar la copia hasta que entre** —eso se rompe con la próxima
+          edición y encima empuja a escribir corto por el motivo equivocado—:
+          es que la salida no dependa del largo del texto. Por eso la cruz vive
+          arriba y no hay botón «Entendido» al final.
+        */}
+        <div className="alv-dlg-cuerpo" ref={cuerpo}>
           <div
-            className="alv-in"
-            role="dialog"
-            aria-modal="true"
-            aria-label={t.tituloPrivacidad}
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              boxSizing: "border-box",
-              display: "flex",
-              flexDirection: "column",
-              width: "min(640px, 100%)",
-              maxHeight: "min(82dvh, 720px)",
-              background: T.explainerBg,
-              border: `1px solid ${T.explainerBorde}`,
-              borderRadius: 14,
-              color: T.explainerTexto,
-              boxShadow: "0 30px 70px oklch(6% 0.02 40 / 0.6)",
-            }}
+            className="alv-dlg-prosa"
+            role={aviso ? undefined : "tabpanel"}
+            aria-label={aviso ? undefined : t.titulo}
           >
-            <div
-              className="alv-scroll"
-              style={{ overflowY: "auto", padding: angosto ? "20px 20px 4px" : "26px 34px 6px" }}
-            >
-              <h2
-                style={{
-                  margin: "0 0 14px",
-                  fontFamily: FUENTE.manuscrita,
-                  fontSize: angosto ? 20 : 23,
-                  fontWeight: 400,
-                  color: T.titulo,
-                }}
-              >
-                {t.tituloPrivacidad}
-              </h2>
-              {t.privacidad.map((p, i) => (
-                <p
-                  key={i}
-                  style={{
-                    margin: "0 0 11px",
-                    fontFamily: FUENTE.lectura,
-                    fontSize: angosto ? 14.5 : 15.5,
-                    lineHeight: angosto ? 1.65 : 1.7,
-                  }}
-                >
-                  {p}
-                </p>
+            <div className="alv-dlg-cols">
+              {cuerpoTexto.map((p) => (
+                <p key={p.slice(0, 40)}>{p}</p>
               ))}
             </div>
 
-            <div style={{ flexShrink: 0, padding: angosto ? "10px 20px 18px" : "12px 34px 22px" }}>
-              <button
-                type="button"
-                onClick={() => setAviso(false)}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  padding: 12,
-                  background: "transparent",
-                  color: T.explainerTexto,
-                  border: `1px solid ${T.cajaBorde}`,
-                  borderRadius: 8,
-                  fontFamily: FUENTE.lectura,
-                  fontSize: 15,
-                  cursor: "pointer",
-                }}
-              >
-                {t.cerrarAviso}
-              </button>
-            </div>
+            {nota && (
+              <div className="alv-dlg-pie">
+                <p className="alv-dlg-nota">{nota}</p>
+                <button
+                  className="alv-dlg-priv"
+                  type="button"
+                  onClick={() => {
+                    setAviso(true);
+                    if (cuerpo.current) cuerpo.current.scrollTop = 0;
+                  }}
+                >
+                  {t.avisoPrivacidad}
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      )}
-    </div>
+    </dialog>
   );
 }

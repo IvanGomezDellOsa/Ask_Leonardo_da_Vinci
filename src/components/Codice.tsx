@@ -1566,7 +1566,9 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
           pestaña encima quedaría flotando sobre su propio cajón abierto.
 
           El dibujo mide 28 px y el botón 44: el relleno es área táctil, como
-          la cruz de las sugeridas (D-249).
+          la cruz de las sugeridas (D-249). El alto es 176 y no 140 porque la
+          inscripción no entraba en 140 y se cortaba sin avisar; el motivo, con
+          la medición, está en `globals.css`.
         */}
         {angosto && (
           <button
@@ -1576,8 +1578,8 @@ export function Codice({ lang, onCerrar }: { lang: Idioma; onCerrar: () => void 
             aria-label={t.abrirMapa}
             aria-expanded={mapaAbierto}
             style={{
-              position: "absolute", left: 0, top: "50%", marginTop: -70, zIndex: 4,
-              width: 44, height: 140, padding: 0, background: "none", border: 0,
+              position: "absolute", left: 0, top: "50%", marginTop: -88, zIndex: 4,
+              width: 44, height: 176, padding: 0, background: "none", border: 0,
               cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "flex-start",
             }}
           >

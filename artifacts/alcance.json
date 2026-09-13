@@ -1,11 +1,11 @@
 {
   "regla": "Se consulta cada título de Richter por su propio nombre y se comprueba que el top-3 traiga sus propios pasajes, en es y en. La verdad son los richterNos del propio tema: no hay etiqueta humana. Ver D-104.",
-  "generado": "2026-09-09",
+  "generado": "2026-09-10",
   "resumen": {
     "temas": 394,
-    "ambos": 354,
-    "soloUno": 24,
-    "ninguno": 16
+    "ambos": 371,
+    "soloUno": 19,
+    "ninguno": 4
   },
   "pool": [
     {
@@ -1136,6 +1136,13 @@
       "margenMinimo": 0.0453
     },
     {
+      "titulo": "PHYSIOLOGY",
+      "tituloEs": "Fisiología",
+      "chunks": 4,
+      "palabras": 447,
+      "margenMinimo": 0.0452
+    },
+    {
       "titulo": "Theory of the elevation of water within the mountains",
       "tituloEs": "Teoría de la elevación del agua dentro de las montañas",
       "chunks": 1,
@@ -1238,6 +1245,13 @@
       "tituloEs": "Las relaciones del punto de distancia con el punto de fuga",
       "chunks": 2,
       "palabras": 700,
+      "margenMinimo": 0.0413
+    },
+    {
+      "titulo": "Aphorisms",
+      "tituloEs": "Aforismos",
+      "chunks": 3,
+      "palabras": 200,
       "margenMinimo": 0.0413
     },
     {
@@ -1367,6 +1381,13 @@
       "margenMinimo": 0.0378
     },
     {
+      "titulo": "Psychology (1140-1147)",
+      "tituloEs": "Psicología (1140-1147)",
+      "chunks": 6,
+      "palabras": 316,
+      "margenMinimo": 0.0375
+    },
+    {
       "titulo": "On the reflection of colours",
       "tituloEs": "Sobre la reflexión de los colores",
       "chunks": 3,
@@ -1399,6 +1420,13 @@
       "tituloEs": "Algunas notas sobre medicina (851-855)",
       "chunks": 4,
       "palabras": 156,
+      "margenMinimo": 0.0351
+    },
+    {
+      "titulo": "The Appenins (1063-1068)",
+      "tituloEs": "Los Apeninos (1063-1068)",
+      "chunks": 6,
+      "palabras": 368,
       "margenMinimo": 0.0351
     },
     {
@@ -1465,6 +1493,13 @@
       "margenMinimo": 0.0332
     },
     {
+      "titulo": "JESTS AND TALES",
+      "tituloEs": "Chanzas y cuentos",
+      "chunks": 13,
+      "palabras": 1709,
+      "margenMinimo": 0.0332
+    },
+    {
       "titulo": "Occasional references to the Sforza monument (719-724)",
       "tituloEs": "Referencias ocasionales al monumento Sforza (719-724)",
       "chunks": 5,
@@ -1507,10 +1542,24 @@
       "margenMinimo": 0.0309
     },
     {
+      "titulo": "Mottoes and Emblems",
+      "tituloEs": "Lemas y Emblemas",
+      "chunks": 9,
+      "palabras": 412,
+      "margenMinimo": 0.0299
+    },
+    {
       "titulo": "Appendix:--On shadows in movement",
       "tituloEs": "Apéndice:--Sobre las sombras en movimiento",
       "chunks": 2,
       "palabras": 343,
+      "margenMinimo": 0.0298
+    },
+    {
+      "titulo": "MORALS",
+      "tituloEs": "Moral",
+      "chunks": 14,
+      "palabras": 693,
       "margenMinimo": 0.0298
     },
     {
@@ -1525,6 +1574,13 @@
       "tituloEs": "Sobre las condiciones de la vista (834. 835)",
       "chunks": 2,
       "palabras": 357,
+      "margenMinimo": 0.0295
+    },
+    {
+      "titulo": "ON ON OF Preliminary observations",
+      "tituloEs": "OBSERVACIONES PRELIMINARES",
+      "chunks": 2,
+      "palabras": 183,
       "margenMinimo": 0.0295
     },
     {
@@ -1780,6 +1836,13 @@
       "margenMinimo": 0.0112
     },
     {
+      "titulo": "Politics (1203. 1204)",
+      "tituloEs": "Política (1203. 1204)",
+      "chunks": 2,
+      "palabras": 204,
+      "margenMinimo": 0.0101
+    },
+    {
       "titulo": "A caution against one-sided study",
       "tituloEs": "Una advertencia contra el estudio unilateral",
       "chunks": 1,
@@ -1806,6 +1869,13 @@
       "chunks": 2,
       "palabras": 480,
       "margenMinimo": 0.0034
+    },
+    {
+      "titulo": "Further researches (989-991)",
+      "tituloEs": "Investigaciones adicionales (989-991)",
+      "chunks": 6,
+      "palabras": 1656,
+      "margenMinimo": 0.0031
     }
   ]
 }

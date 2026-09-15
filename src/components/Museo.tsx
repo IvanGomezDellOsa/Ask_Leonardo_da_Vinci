@@ -301,6 +301,11 @@ export function Museo({
   const [progreso, setProgreso] = useState(0);
   const [enfocada, setEnfocada] = useState<number | null>(null);
   const [revelado, setRevelado] = useState<Revelado>("no");
+  /**
+   * Cuántas veces se salió de la sala. Es la `key` del lienzo: el motor suelta
+   * su contexto WebGL al salir (D-265) y ese lienzo ya no sirve para la próxima.
+   */
+  const [visita, setVisita] = useState(0);
   const seccionRef = useRef<HTMLElement | null>(null);
   const lienzoRef = useRef<HTMLCanvasElement | null>(null);
   const motorRef = useRef<MotorMuseo | null>(null);
@@ -356,6 +361,7 @@ export function Museo({
   const salir = useCallback(() => {
     motorRef.current?.destruir();
     motorRef.current = null;
+    setVisita((v) => v + 1);
     setEstado("cerrado");
     setEnfocada(null);
     setProgreso(0);
@@ -482,6 +488,7 @@ export function Museo({
       }}
     >
       <canvas
+        key={visita}
         ref={lienzoRef}
         className="alv-museo-lienzo"
         // No es contenido: lo que hay adentro lo describe la lista oculta del

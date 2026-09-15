@@ -2871,10 +2871,14 @@ a:hover {
 @media (pointer: coarse) {
   /* El botón de salir es la ÚNICA salida en táctil —no hay `Escape` ni capa de
      pausa— así que crece a 44 px, el mínimo cómodo de un pulgar. */
+  /* ⚠ `max(28px, …)` y no el inset solo (D-265): hay navegadores de Android que
+     informan `safe-area-inset-top` en 0 con la barra de estado y el notch
+     encima de la sala, y el botón quedaba tapado. 28 px es lo que ocupa esa
+     franja en un teléfono con notch; donde el inset llega, manda el inset. */
   .alv-museo-salir {
     height: 44px;
     padding: 0 18px;
-    top: calc(16px + env(safe-area-inset-top));
+    top: calc(16px + max(28px, env(safe-area-inset-top)));
     right: calc(16px + env(safe-area-inset-right));
   }
 
@@ -2894,7 +2898,8 @@ a:hover {
     left: calc(16px + env(safe-area-inset-left));
     right: calc(16px + env(safe-area-inset-right));
     bottom: auto;
-    top: calc(72px + env(safe-area-inset-top));
+    /* Baja lo mismo que el botón de salir, para no chocar con él (D-265). */
+    top: calc(72px + max(28px, env(safe-area-inset-top)));
     max-width: none;
     /* Más chica que en escritorio: acá tapa la sala, que es lo que se vino a
        ver. El recorte va en relleno e interlínea antes que en cuerpo, para no

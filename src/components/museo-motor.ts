@@ -2098,6 +2098,21 @@ export function construirMuseo(o: OpcionesMuseo): Museo {
         else if (mat) soltar(mat);
       });
       render.dispose();
+
+      /*
+       * ⚠ Y EL CONTEXTO SE SUELTA AHORA, NO CUANDO PASE EL RECOLECTOR (D-265).
+       *
+       * `dispose()` libera lo que Three sabe que creó, pero el contexto WebGL
+       * sigue vivo hasta que el navegador junta basura, con su búfer y todo lo
+       * que el driver retiene. En un teléfono eso alcanzó para que el espacio
+       * vectorial, dos pantallas más abajo, no pudiera crear el suyo: salía la
+       * carita triste de Chrome en vez de la esfera. Sólo pasaba después de
+       * visitar la sala.
+       *
+       * ⚠ Un lienzo con el contexto perdido no se puede volver a usar, así que
+       * `Museo.tsx` monta uno nuevo en cada visita (`key={visita}`).
+       */
+      render.forceContextLoss();
     },
   };
 }

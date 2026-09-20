@@ -40,6 +40,7 @@ import type { Idioma } from "../lib/cliente-chat.js";
 import { RUTA } from "../lib/rutas.js";
 import { FUENTE } from "./estilos.js";
 import { Biblioteca } from "./Biblioteca.js";
+import { Contacto } from "./Contacto.js";
 import { Espacio } from "./Espacio.js";
 import { Museo } from "./Museo.js";
 import { Codice } from "./Codice.js";
@@ -641,7 +642,28 @@ export function Hero({ lang }: { lang: Idioma }) {
           </>
         )}
 
-        {/* Selector de idioma. Oculto durante la intro: no hay nada que elegir todavía. */}
+        {/*
+          LA ESQUINA: contacto e idioma. Oculta durante la intro — no hay nada
+          que elegir ni a quién escribirle todavía.
+
+          DOS PASTILLAS Y NO UNA (D-267). Tienen el mismo cristal y el mismo
+          cuerpo, así que la esquina se lee como una sola pieza; pero van
+          separadas porque no son la misma clase de cosa: una CAMBIA LA PAGINA
+          —dos enlaces, dos URLs— y la otra ABRE UN PANEL. Metidas en la misma
+          cápsula, «Contacto» quedaba de tercera opción al lado de ES y EN, como
+          si fuera un idioma más.
+
+          El contacto va PRIMERO, a la izquierda: en árabe o hebreo el orden de
+          la fila se da vuelta solo y el selector queda igual de pegado al canto
+          de la pantalla, que es donde vivió siempre.
+
+          ⚠ ESTA CAJA ES EL ANCLA DEL PANEL DE CONTACTO. Es `absolute`, o sea
+          posicionada, y `Contacto.tsx` cuenta con eso: su panel es `absolute`
+          sin antepasado posicionado propio, así que cae a plomo con el canto
+          derecho de esta fila en vez de con el botón. Sacarle el `position` a
+          esta caja manda el panel a buscar al hero entero y lo tira al otro
+          extremo de la pantalla.
+        */}
         <div
           style={{
             position: "absolute",
@@ -650,63 +672,76 @@ export function Hero({ lang }: { lang: Idioma }) {
             zIndex: 6,
             display: "flex",
             alignItems: "center",
-            // −10% (D-158): la pastilla de idioma es lo único que se ve durante
-            // toda la intro y a 112 px de ancho pesaba como un botón de acción,
-            // que no es. Se achicó de a partes iguales —cuerpo, relleno y
-            // separación— para que siga siendo la misma pastilla y no otra.
-            gap: 3,
-            padding: 4,
-            background: "oklch(12% 0.02 40 / 0.4)",
-            border: "1px solid oklch(88% 0.04 85 / 0.22)",
-            borderRadius: 999,
-            // `-webkit-` para Safari anterior a la 18.
-            WebkitBackdropFilter: "blur(10px)",
-            backdropFilter: "blur(10px)",
+            // El aire entre las dos pastillas: más que la separación de adentro
+            // del selector (3 px) para que se vean como dos, y bastante menos
+            // que el margen del hero para que se vean juntas.
+            gap: 8,
             opacity: uiOpacity,
             pointerEvents: uiPointer,
             transition: TRANSICION_APERTURA,
           }}
         >
-          {/*
-            SON ENLACES, NO BOTONES, desde que cada idioma tiene su URL. Tres
-            cosas que un `onClick` no daba: el rastreador encuentra la otra
-            versión siguiendo el enlace —que es lo que el `hreflang` declara y
-            esto confirma—, se puede abrir en otra pestaña, y el `lang` del
-            documento llega bien desde el servidor en vez de corregirse por JS.
+          <Contacto lang={lang} angosto={angosto} />
 
-            `stopPropagation` sigue haciendo falta: un click en cualquier parte
-            del hero saltea la intro, y elegir idioma no es saltearla.
-          */}
-          {(["es", "en"] as const).map((codigo) => (
-            <a
-              key={codigo}
-              href={RUTA[codigo]}
-              hrefLang={codigo}
-              aria-current={lang === codigo ? "page" : undefined}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (codigo === lang) return;
-                try { sessionStorage.setItem(SALTAR_INTRO, "1"); } catch { /* ídem */ }
-              }}
-              style={{
-                display: "inline-block",
-                textDecoration: "none",
-                fontFamily: FUENTE.lectura,
-                fontSize: angosto ? ESCALA_MOVIL.pastilla : 13,
-                fontWeight: lang === codigo ? 600 : 500,
-                padding: angosto ? "7px 12px" : "6px 14px",
-                background: lang === codigo ? "oklch(93% 0.03 85 / 0.92)" : "none",
-                border: "none",
-                borderRadius: 999,
-                color: lang === codigo ? "oklch(20% 0.025 45)" : "oklch(92% 0.02 85 / 0.62)",
-                cursor: "pointer",
-                letterSpacing: ".12em",
-                transition: "all .25s ease",
-              }}
-            >
-              {codigo.toUpperCase()}
-            </a>
-          ))}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              // −10% (D-158): la pastilla de idioma es lo único que se ve durante
+              // toda la intro y a 112 px de ancho pesaba como un botón de acción,
+              // que no es. Se achicó de a partes iguales —cuerpo, relleno y
+              // separación— para que siga siendo la misma pastilla y no otra.
+              gap: 3,
+              padding: 4,
+              background: "oklch(12% 0.02 40 / 0.4)",
+              border: "1px solid oklch(88% 0.04 85 / 0.22)",
+              borderRadius: 999,
+              // `-webkit-` para Safari anterior a la 18.
+              WebkitBackdropFilter: "blur(10px)",
+              backdropFilter: "blur(10px)",
+            }}
+          >
+            {/*
+              SON ENLACES, NO BOTONES, desde que cada idioma tiene su URL. Tres
+              cosas que un `onClick` no daba: el rastreador encuentra la otra
+              versión siguiendo el enlace —que es lo que el `hreflang` declara y
+              esto confirma—, se puede abrir en otra pestaña, y el `lang` del
+              documento llega bien desde el servidor en vez de corregirse por JS.
+
+              `stopPropagation` sigue haciendo falta: un click en cualquier parte
+              del hero saltea la intro, y elegir idioma no es saltearla.
+            */}
+            {(["es", "en"] as const).map((codigo) => (
+              <a
+                key={codigo}
+                href={RUTA[codigo]}
+                hrefLang={codigo}
+                aria-current={lang === codigo ? "page" : undefined}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (codigo === lang) return;
+                  try { sessionStorage.setItem(SALTAR_INTRO, "1"); } catch { /* ídem */ }
+                }}
+                style={{
+                  display: "inline-block",
+                  textDecoration: "none",
+                  fontFamily: FUENTE.lectura,
+                  fontSize: angosto ? ESCALA_MOVIL.pastilla : 13,
+                  fontWeight: lang === codigo ? 600 : 500,
+                  padding: angosto ? "7px 12px" : "6px 14px",
+                  background: lang === codigo ? "oklch(93% 0.03 85 / 0.92)" : "none",
+                  border: "none",
+                  borderRadius: 999,
+                  color: lang === codigo ? "oklch(20% 0.025 45)" : "oklch(92% 0.02 85 / 0.62)",
+                  cursor: "pointer",
+                  letterSpacing: ".12em",
+                  transition: "all .25s ease",
+                }}
+              >
+                {codigo.toUpperCase()}
+              </a>
+            ))}
+          </div>
         </div>
 
         <div

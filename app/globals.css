@@ -1448,6 +1448,96 @@ a:hover {
   }
 }
 
+/* ==========================================================================
+ * EL CONTACTO DE LA ESQUINA (D-267)
+ * ==========================================================================
+ *
+ * Sólo hover y foco: la maqueta del panel vive en `Contacto.tsx`, como la del
+ * resto del hero. Acá está lo que una hoja de estilos hace mejor que React —un
+ * hover no debería costar un re-render— y lo que desde `style={{}}` no se puede
+ * escribir: `:focus-visible` no existe como propiedad en línea.
+ *
+ * ⚠ ESTOS SON LOS PRIMEROS `:focus-visible` DEL HERO. El anillo de D-255 llegó
+ * hasta el códice y no más; los botones del hero —primario, fantasma, el
+ * selector de idioma, las dos flechas— siguen sin devolver nada al teclado.
+ * Esto no lo arregla: pone el anillo donde hay código nuevo, con el mismo color
+ * (`FOCO` en `estilos.ts`), para no sumar una pieza más a la deuda.
+ */
+
+/* El rótulo se enciende como el idioma que no está elegido cuando se lo toca. */
+.alv-contacto-boton:hover {
+  color: oklch(99% 0.02 85);
+}
+
+.alv-contacto-boton:focus-visible,
+.alv-contacto-copiar:focus-visible,
+.alv-contacto-mailto:focus-visible,
+.alv-contacto-cerrar:focus-visible {
+  outline: 2px solid oklch(72% 0.05 80);
+  outline-offset: 2px;
+}
+
+.alv-contacto-copiar:hover {
+  background: oklch(99% 0.02 85);
+}
+
+.alv-contacto-mailto:hover {
+  color: oklch(99% 0.02 85);
+  text-decoration-color: oklch(99% 0.02 85 / 0.8);
+}
+
+/* La cruz: arriba a la derecha del panel, fuera del flujo, para que el volado
+   arranque en el borde de arriba y no desplazado por ella. */
+.alv-contacto-cerrar {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: oklch(90% 0.02 85 / 0.45);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* ⚠ El dibujo mide 24 px y el área que responde 40: el relleno invisible es lo
+   que deja cerrar esto en un teléfono sin tener que apuntar. Mismo recurso que
+   la cruz de «Cómo funciona». */
+.alv-contacto-cerrar::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+}
+
+.alv-contacto-cerrar:hover {
+  background: oklch(92% 0.03 85 / 0.12);
+  color: oklch(98% 0.02 85);
+}
+
+/* El panel baja del botón al abrirse. Sólo `opacity` y `transform`: las dos que
+   el compositor resuelve sin volver a maquetar la página. */
+.alv-contacto-panel {
+  animation: alv-contacto-entra 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes alv-contacto-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alv-contacto-panel {
+    animation: none;
+  }
+}
+
 /* ---- El volumen de texto (D-155) -----------------------------------------
  *
  * LA CAJA TIPOGRAFICA ES LA MISMA QUE MIDE `paginarTexto()`, Y ESO NO ES UNA

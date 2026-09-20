@@ -13,6 +13,8 @@
  * INVARIANTES
  * · Three y los 144 KB de la proyección entran por `import()` y `fetch` cuando
  *   la sección se acerca. Hasta entonces esto es una columna de texto (D-162).
+ * · ⚠ EL CONTEXTO WEBGL SE CREA RECIÉN CUANDO LA ESCENA SE VE, fuera de pantalla
+ *   no se dibuja, y si se pierde se rearma sobre un lienzo nuevo (D-266).
  * · La proyección la genera `pipeline/08_proyeccion.py` DESDE EL ÍNDICE. Si el
  *   índice se reconstruye y eso no, el dibujo miente en silencio.
  * · ⚠ LA RUEDA SOLA SCROLLEA LA PÁGINA. Es lo último de una página larga: si el
@@ -112,6 +114,17 @@ export function Espacio({
   const [hondura, setHondura] = useState(0);
   const [ficha, setFicha] = useState<Ficha>(null);
   const [explicando, setExplicando] = useState(false);
+  /** La escena está en pantalla. */
+  const [visible, setVisible] = useState(false);
+  /** Ya se vio alguna vez: recién ahí se crea el contexto WebGL (D-266). */
+  const [visto, setVisto] = useState(false);
+  /** El contexto se perdió o no se pudo crear, y hay que rearmar. */
+  const [perdido, setPerdido] = useState(false);
+  /** La `key` del lienzo: uno que perdió el contexto no sirve para otro intento. */
+  const [intento, setIntento] = useState(0);
+  const reintentos = useRef(0);
+  const armadoEn = useRef(0);
+  const escenaRef = useRef<HTMLDivElement | null>(null);
 
   const angosto = useAngosto();
 
@@ -128,6 +141,9 @@ export function Espacio({
       async ([e]) => {
         if (!e.isIntersecting) return;
         ojo.disconnect();
+        // El trozo de Three se baja ya, junto con los datos: lo único que
+        // espera a que la escena se vea es el contexto WebGL.
+        void import("./espacio-motor.js").catch(() => {});
         try {
           const r = await fetch("/proyeccion.json");
           const d = (await r.json()) as DatosEspacio;
@@ -145,8 +161,38 @@ export function Espacio({
     };
   }, []);
 
+  /*
+    ⚠ EL CONTEXTO WEBGL SE CREA RECIÉN CUANDO LA ESCENA SE VE (D-266), no a
+    media pantalla. Con ese margen la sección ya contaba como cerca estando en
+    la portada del museo: armaba su escena, la dejaba girando detrás y, en un
+    teléfono, entrar a la sala se la quitaba para siempre. Medido con un solo
+    contexto activo: el chequeo del museo y después la sala se lo sacaban, y
+    al volver quedaba la carita triste de Chrome.
+
+    `threshold` y no cero: una caja que apenas toca el borde de la ventana
+    cuenta como intersección, y ésa es justo la posición con el museo en
+    pantalla.
+  */
   useEffect(() => {
-    if (!datos) return;
+    const nodo = escenaRef.current;
+    if (!nodo || typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      setVisto(true);
+      return;
+    }
+    const ojo = new IntersectionObserver(
+      ([e]) => {
+        setVisible(e.isIntersecting);
+        if (e.isIntersecting) setVisto(true);
+      },
+      { threshold: 0.01 },
+    );
+    ojo.observe(nodo);
+    return () => ojo.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!datos || !visto) return;
     const lienzo = lienzoRef.current;
     if (!lienzo) return;
     let vivo = true;
@@ -157,14 +203,27 @@ export function Espacio({
       // bundle de la portada.
       const { construirEspacio } = await import("./espacio-motor.js");
       if (!vivo) return;
-      motor = construirEspacio({
-        lienzo,
-        datos,
-        alApuntar: (i, x, y) => setFicha(i === null ? null : { i, x, y }),
-        alHundir: setHondura,
-        quieto: matchMedia("(prefers-reduced-motion: reduce)").matches,
-      });
+      try {
+        motor = construirEspacio({
+          lienzo,
+          datos,
+          alApuntar: (i, x, y) => setFicha(i === null ? null : { i, x, y }),
+          alHundir: setHondura,
+          quieto: matchMedia("(prefers-reduced-motion: reduce)").matches,
+          alPerder: () => {
+            // Si la escena llevaba un rato viva, es una pérdida nueva y no el
+            // mismo intento fallando: vuelven a quedar reintentos.
+            if (performance.now() - armadoEn.current > 10000) reintentos.current = 0;
+            setPerdido(true);
+          },
+        });
+      } catch {
+        // Sin contexto al armar: el mismo camino que perderlo después.
+        setPerdido(true);
+        return;
+      }
       motorRef.current = motor;
+      armadoEn.current = performance.now();
       setListo(true);
     })();
 
@@ -173,8 +232,30 @@ export function Espacio({
       motor?.destruir();
       motorRef.current = null;
       setListo(false);
+      setHondura(0);
     };
-  }, [datos]);
+  }, [datos, visto, intento]);
+
+  /*
+    SE REARMA SOBRE UN LIENZO NUEVO, y sólo con la escena a la vista: pedir un
+    contexto mientras el museo tiene el suyo es volver a pelear por el mismo
+    lugar. Tres intentos; si el navegador no da contexto, queda la columna de
+    texto, que se sostiene sola.
+  */
+  useEffect(() => {
+    if (!perdido || !visible || reintentos.current >= 3) return;
+    const t = setTimeout(() => {
+      reintentos.current += 1;
+      setPerdido(false);
+      setIntento((v) => v + 1);
+    }, 600);
+    return () => clearTimeout(t);
+  }, [perdido, visible]);
+
+  // Fuera de pantalla no se dibuja: el bucle giraba igual detrás del museo.
+  useEffect(() => {
+    motorRef.current?.dormir(!visible);
+  }, [visible, listo]);
 
   useEffect(() => {
     motorRef.current?.pintar(encendida, porSeccion);
@@ -277,8 +358,8 @@ export function Espacio({
         una arriba de la otra. Que sean hermanas —y no una adentro de la otra—
         es lo que deja hacer las dos cosas con `order` y sin duplicar marcado.
       */}
-      <div className="alv-esp-escena">
-        <canvas ref={lienzoRef} className="alv-esp-lienzo" aria-hidden="true" />
+      <div className="alv-esp-escena" ref={escenaRef}>
+        <canvas key={intento} ref={lienzoRef} className="alv-esp-lienzo" aria-hidden="true" />
         <div className="alv-esp-vineta" aria-hidden="true" />
 
 

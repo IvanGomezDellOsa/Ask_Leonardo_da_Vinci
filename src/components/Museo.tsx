@@ -57,7 +57,12 @@ const COPY = {
 function hayWebgl(): boolean {
   try {
     const c = document.createElement("canvas");
-    return !!(c.getContext("webgl2") || c.getContext("webgl"));
+    const gl = c.getContext("webgl2") || c.getContext("webgl");
+    // ⚠ El contexto de prueba se suelta en el acto (D-266). Si no, queda vivo
+    // hasta que pase el recolector y en un teléfono ocupa uno de los pocos
+    // lugares que hay: medido, alcanzaba para quitárselo al espacio vectorial.
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    return !!gl;
   } catch {
     return false;
   }

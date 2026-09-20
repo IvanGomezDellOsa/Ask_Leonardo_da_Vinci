@@ -42,12 +42,16 @@ export type OpcionesEspacio = {
   alHundir: (v: number) => void;
   /** `prefers-reduced-motion`: sin entrada y sin giro propio. */
   quieto: boolean;
+  /** El navegador le quitó el contexto WebGL a este lienzo (D-266). */
+  alPerder?: () => void;
 };
 
 export type Espacio = {
   /** Enciende una seccion (o todas con `null`) y decide si van en color. */
   pintar(encendida: number | null, porSeccion: boolean): void;
   pausar(v: boolean): void;
+  /** Deja de dibujar mientras la sección no se ve, sin perder el estado. */
+  dormir(v: boolean): void;
   /** Suma a la hondura. Positivo entra. */
   hundir(d: number): void;
   /** El color CSS de cada seccion, para que el rail ponga el mismo. */
@@ -112,7 +116,7 @@ function dado(semilla: number): () => number {
 }
 
 export function construirEspacio(o: OpcionesEspacio): Espacio {
-  const { lienzo, datos, alApuntar, alHundir, quieto } = o;
+  const { lienzo, datos, alApuntar, alHundir, quieto, alPerder } = o;
   const n = datos.n;
   const pos = datos.pos;
 
@@ -346,6 +350,21 @@ export function construirEspacio(o: OpcionesEspacio): Espacio {
   lienzo.addEventListener("pointercancel", soltar);
   lienzo.addEventListener("pointermove", alMover);
 
+  /*
+   * ⚠ EL CONTEXTO SE PUEDE PERDER, Y NO VUELVE SOLO (D-266). Un teléfono deja
+   * pocos contextos WebGL vivos a la vez: entrar al museo con esta escena ya
+   * armada se lo quitaba, y el bucle seguía dibujando sobre un lienzo muerto
+   * —la carita triste de Chrome— hasta recargar. Acá sólo se avisa y se deja
+   * de dibujar; rearmar sobre un lienzo nuevo lo hace `Espacio.tsx`.
+   */
+  let perdido = false;
+  const alPerderContexto = () => {
+    perdido = true;
+    cancelAnimationFrame(pedido);
+    alPerder?.();
+  };
+  lienzo.addEventListener("webglcontextlost", alPerderContexto);
+
   // ── la ficha ─────────────────────────────────────────────────────────────
   const rayo = new THREE.Raycaster();
   const raton = new THREE.Vector2();
@@ -392,9 +411,11 @@ export function construirEspacio(o: OpcionesEspacio): Espacio {
   let z = AFUERA;
   let vivo = true;
   let pedido = 0;
+  /** Fuera de pantalla no se dibuja: es GPU que le hace falta al resto de la página. */
+  let dormido = false;
 
   function cuadro(ahora: number) {
-    if (!vivo) return;
+    if (!vivo || perdido || dormido) return;
     pedido = requestAnimationFrame(cuadro);
     const k = Math.min(1, (ahora - t0) / APERTURA);
     if (!armado) {
@@ -426,12 +447,19 @@ export function construirEspacio(o: OpcionesEspacio): Espacio {
     pausar: (v: boolean) => {
       pausado = v;
     },
+    dormir(v: boolean) {
+      if (v === dormido) return;
+      dormido = v;
+      if (v) cancelAnimationFrame(pedido);
+      else if (vivo && !perdido) pedido = requestAnimationFrame(cuadro);
+    },
     hundir,
     colores: CSS,
     destruir() {
       vivo = false;
       cancelAnimationFrame(pedido);
       ojo.disconnect();
+      lienzo.removeEventListener("webglcontextlost", alPerderContexto);
       lienzo.removeEventListener("wheel", alRodar);
       lienzo.removeEventListener("pointerdown", alBajar);
       lienzo.removeEventListener("pointerup", soltar);

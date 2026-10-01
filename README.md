@@ -14,7 +14,7 @@
 <p align="center">
   🌐 <a href="https://www.askleonardodavinci.online"><strong>askleonardodavinci.online</strong></a> (ES / EN)
   <br>
-  🎬 <a href="https://youtu.be/35xaHDucoX8"><strong>Ver video</strong></a>
+  🎬 <a href="https://youtu.be/35xaHDucoX8"><strong>Video de presentación</strong></a>
 </p>
 
 ---

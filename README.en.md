@@ -89,7 +89,7 @@ It is the site's "How it works" section. It shows visitors the passages turned i
 
 ## 🏗️ Architecture
 
-A RAG pipeline written from scratch: retrieval, the filter and quotation checking are the project's own code, with no frameworks such as LangChain or LlamaIndex. This way, every step can be controlled and measured on its own. The principle behind the design: **asking a model not to make things up is a hope; checking it in code is a guarantee.** Everything that can be decided without the model is decided before calling it, and whatever depends on the model is never the only line of defence.
+A RAG pipeline written from scratch: retrieval, the filter and quotation checking are the project's own code, with no frameworks such as LangChain or LlamaIndex. This way, every step can be controlled and measured on its own. Everything that can be decided without the model is decided before calling it, and whatever depends on the model is never the only line of defence.
 
 ```text
 Question
@@ -110,7 +110,7 @@ Verified answer + sources
 - **Cosine decides, fusion only orders.** A ranking always has a first place, whether or not relevant material exists; what determines whether there is an answer is similarity against a calibrated threshold.
 - **One index and one threshold per language.** With a shared threshold, the filter's accuracy dropped from 88.4% to 70.5%.
 - **Embeddings in the browser.** The query is vectorised on the user's device: no cost per query and no quota that can run out.
-- **Operating cost: US$0.** No persistent server and no vector database. The index is an int8 binary versioned in Git, BM25 is precomputed, and the 3D sections load only when someone visits them.
+- **No persistent server and no vector database.** The index is an int8 binary versioned in Git, BM25 is precomputed, and the 3D sections load only when someone visits them.
 
 ---
 
@@ -158,6 +158,7 @@ Development leaned heavily on AI throughout the whole cycle: as an engine to spe
 
 **Iván Gómez Dell'Osa**
 
+- Web: [ivangomezdellosa.com.ar](https://www.ivangomezdellosa.com.ar)
 - Email: [ivangomezdellosa@gmail.com](mailto:ivangomezdellosa@gmail.com)
 - LinkedIn: [linkedin.com/in/ivangomezdellosa](https://www.linkedin.com/in/ivangomezdellosa/)
 - GitHub: [IvanGomezDellOsa](https://github.com/IvanGomezDellOsa)

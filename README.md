@@ -89,7 +89,7 @@ Es la sección «Cómo funciona» del sitio. Le muestra al visitante los pasajes
 
 ## 🏗️ Arquitectura
 
-Pipeline RAG escrito desde cero: la recuperación, el filtro y la verificación de citas son código propio, sin frameworks como LangChain o LlamaIndex. De esta forma, cada paso se puede controlar y medir por separado. El principio que ordena el diseño: **pedirle a un modelo que no invente es una esperanza; comprobarlo por código es una garantía.** Todo lo que puede decidirse sin el modelo se decide antes de llamarlo, y lo que depende del modelo nunca es la única defensa.
+Pipeline RAG escrito desde cero: la recuperación, el filtro y la verificación de citas son código propio, sin frameworks como LangChain o LlamaIndex. De esta forma, cada paso se puede controlar y medir por separado. Todo lo que puede decidirse sin el modelo se decide antes de llamarlo, y lo que depende del modelo nunca es la única defensa.
 
 ```text
 Pregunta
@@ -110,7 +110,7 @@ Respuesta verificada + fuentes
 - **El coseno decide y la fusión sólo ordena.** Un ranking siempre tiene un primer puesto, exista o no material pertinente; lo que determina si hay respuesta es la similitud contra un umbral calibrado.
 - **Un índice y un umbral por idioma.** Con un umbral compartido, la exactitud del filtro caía de 88,4% a 70,5%.
 - **Embeddings en el navegador.** La consulta se vectoriza en el dispositivo del usuario: sin costo por consulta y sin una cuota que se pueda agotar.
-- **Costo de operación: US$0.** Sin servidor persistente ni base de datos vectorial. El índice es un binario int8 versionado en Git, BM25 está precomputado y las secciones 3D se cargan sólo cuando alguien las visita.
+- **Sin servidor persistente ni base de datos vectorial.** El índice es un binario int8 versionado en Git, BM25 está precomputado y las secciones 3D se cargan sólo cuando alguien las visita.
 
 ---
 
@@ -158,6 +158,7 @@ Desarrollo apoyado fuertemente en IA a lo largo de todo el ciclo: como motor par
 
 **Iván Gómez Dell'Osa**
 
+- Web: [ivangomezdellosa.com.ar](https://www.ivangomezdellosa.com.ar)
 - Email: [ivangomezdellosa@gmail.com](mailto:ivangomezdellosa@gmail.com)
 - LinkedIn: [linkedin.com/in/ivangomezdellosa](https://www.linkedin.com/in/ivangomezdellosa/)
 - GitHub: [IvanGomezDellOsa](https://github.com/IvanGomezDellOsa)
